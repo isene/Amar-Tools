@@ -1,0 +1,46 @@
+#############################<By NPCg 0.2>#############################
+
+                                                   Created: 2015-07-05
+Name:     Laeena Edior
+Type:     Seer (5)               Sex:   F            Height:   167
+Area:     Other                  Age:   33           Weight:   50
+----------------------------------------------------------------------
+Description:  
+----------------------------------------------------------------------
+SIZE:    3          Balance:         3        Dtraps:          4        
+STRNG:   5          Climb:           2        Tracking:        4        
+ENDUR:   3          Dodge:           5        *Sense magick:   6        
+COORD:   5          Hide:            5/5      
+LEARN:   10         Mvqt:            4/4      Medical lore:    4        
+AWARE:   5          Ride:            3        Read/write:      8        
+MAGAP:   8          Sleight:         5        Spoken:          9        
+                    Swim:            2        *Natural magick: 9        
+DB:      1          Tumble:          5        *Magick history: 8        
+BP:      6          *Drawing:        4        *Legend lore:    9        
+MD:      2          *Gardening:      4        
+                    *Tailoring:      0        
+----------------------------------------------------------------------
+Cult:    Fal Munir, Lay member (2)
+----------------------------------------------------------------------
+ENC:     8.5        Armour:   None           Social status:  UC       
+Status:  0          AP:       1              Money:          1428     
+----------------------------------------------------------------------
+Weapon          Skill    I/SR    Off    Def    Dam    HP    Range
+Unarmed           3       5       1      0      -3    0    
+Short sword       1       4       0      1      -1    12   
+> Th Knife        3       2       2      -      -1    -     15/25
+----------------------------------------------------------------------
+Magick lore:  9     Magick type:  perception  Spell lore:   9     
+
+Spell               Skill  DR  A?  R?  CT  Dur  Rng  Wt    AoE
+Det. Magic            3    9   A   Y   1r  1r   T          1C*
+Farsee                3    9   P   Y   1r  1m   T          1C*
+Identify Magic        3    11  -   Y   1h  I    1m         1O*, 1C*/1S*
+Read Thought          3    13  A   Y   1r  1r   5m         S+1C*
+Night Vision          2    9   P   Y   1m  10m  T    100kg 1C*
+Light                 8    7   P   Y   1r  5r   1m         1mr
+Det. Disemb. Spirit   2    11  A   N   1r  1r   S          10mr
+Det. Truth            9    9   A   Y   1r  5r   5m         1C*
+Enh. Awareness        9    9   P   Y   10m 10m  T          1C*
+
+#######################################################################

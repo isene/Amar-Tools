@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>Generate random encounter</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<form name="npc" method="post" action="/cgi-bin/html_enc_output.rb">
+  <table width="500" border="0" cellspacing="0" cellpadding="2" align="center">
+    <tr>
+      <td><center><b>Random encounters - for the Amar RPG</b></center></td>
+    </tr>
+  </table>
+  <table width="500" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#333333">
+    <tr>
+      <td>
+        <table width="100%" border="0" cellspacing="1" cellpadding="4">
+          <tr> 
+            <td width="200" bgcolor="#CCCCCC"><b>Day (1) or Night (0)</b></td>
+            <td bgcolor="#FFFFFF">
+              <select name="day">
+		<option><%= $Day %>
+                <option>0: Night
+                <option>1: Day
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <td width="200" bgcolor="#CCCCCC"><b>Terrain</b></td>
+            <td bgcolor="#FFFFFF">
+              <select name="terrain">
+		<option><%= $Terrain %>
+                <option>0: City 
+                <option>1: Rural
+                <option>2: Road
+                <option>3: Plains 
+                <option>4: Hills
+                <option>5: Mountains
+                <option>6: Woods
+                <option>7: Wilderness
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <td width="200" bgcolor="#CCCCCC"><b>General level adjustment</b></td>
+            <td bgcolor="#FFFFFF">
+              <select name="level">
+		<option><%= $Level %>
+                <option>-3: Puny encounters
+                <option>-2: Very low level
+                <option>-1: Lower level
+                <option>0: No adjustment
+                <option>1: Higher level
+                <option>2: Tough encounters
+                <option>3: Hero quest
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <td width="200" bgcolor="#CCCCCC"><b>Type</b></td>
+            <td bgcolor="#FFFFFF">
+              <select name="type">
+                <option value="(Type)">
+                (Type)
+                </option>
+		<% @sorted.each do |item| %>
+		  <option><%= item %> 
+		<% end %>
+                </option>
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <td width="200" bgcolor="#CCCCCC"><b>Number of encounters</b></td>
+            <td bgcolor="#FFFFFF">
+              <input type="text" name="enc_number" size="4">
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <p align="center">
+    <input type="submit" name="submit" value=" Submit ">
+  </p>
+</form>
+<p><center><a href="/index.html">Back to front page</a></center></p>
+<p><center><img src="/images/amar_areas.jpg" /></center></p>
+</body>
+</html>

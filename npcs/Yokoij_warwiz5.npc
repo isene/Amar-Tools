@@ -1,0 +1,44 @@
+#############################<By NPCg 0.2>#############################
+
+                                                   Created: 2002-08-22
+Name:     Yokoij Yukgai 
+Type:     Warrior (5)            Sex:   M            Height:   188
+Area:     Outskirts              Age:   38           Weight:   96
+----------------------------------------------------------------------
+Description:  Rough, Bully, Barbarian
+----------------------------------------------------------------------
+SIZE:    3          Balance:         11       Dtraps:          4        
+STRNG:   9          Climb:           8        Tracking:        5        
+ENDUR:   9          Dodge:           13       *Sense danger:   3        
+COORD:   11         Hide:            10/10    
+LEARN:   3          Mvqt:            8/8      Medicall:        5        
+AWARE:   3          Ride:            9        Read/write:      0        
+MAGAP:   0          Sleight:         5        Spoken:          4        
+                    Swim:            8        *Weapon lore:    6        
+DB:      2          Tumble:          11       *Cult lore:      4        
+BP:      7          *Weapon repair:  13       *Legend lore:    3        
+MD:      1          *Armour repair:  11       
+                    *Running:        11       
+----------------------------------------------------------------------
+Cult:    Anashina, Initiated (3)
+----------------------------------------------------------------------
+ENC:     8.5        Armour:   None           Social status:  LMC      
+Status:  0          AP:       1              Money:          8        
+----------------------------------------------------------------------
+Weapon          Skill    I/SR    Off    Def    Dam    HP    Range
+Unarmed           11      5       9      9      -2    0    
+Short sword       12      4       11     13     0     12   
+> Rock            11      2       9      -      -2    -     15/40
+> Th Knife        10      2       9      -      -1    -     15/25
+----------------------------------------------------------------------
+Magick lore:  7     Magick type:  black       Spell lore:   7     
+
+Spell               Skill  DR  A?  R?  CT  Dur  Rng  Wt    AoE
+Prot. f Undeads       4    11  +   N   1r  1m   T          1U*
+Prot. f Demons        5    11  +   N   1r  1m   T          1C*
+Darkness              4    11  +   Y   1r  1r   5m         1mr
+Command Demon         3    11  P   Y   1r  Spc  5m         1D*
+Agony                 3    9   A   Y   1r  1r   2m   100kg 1C*
+Death T               7    11  -   Y   1r  I    T          1C*
+
+#######################################################################

@@ -1,0 +1,45 @@
+#############################<By NPCg 0.2>#############################
+
+                                                   Created: 2002-08-22
+Name:     Arashia Chlewain
+Type:     Seer (4)               Sex:   F            Height:   170
+Area:     Outskirts              Age:   53           Weight:   81
+----------------------------------------------------------------------
+Description:  Blind. Senses everything by magick.
+----------------------------------------------------------------------
+SIZE:    3          Balance:         1        Dtraps:          2        
+STRNG:   3          Climb:           4        Tracking:        2        
+ENDUR:   2          Dodge:           0        *Sense magick:   9        
+COORD:   4          Hide:            3/3      
+LEARN:   9          Mvqt:            4/4      Medicall:        4        
+AWARE:   3          Ride:            2        Read/write:      6        
+MAGAP:   10         Sleight:         6        Spoken:          6        
+                    Swim:            4        *Natural magick: 9        
+DB:      1          Tumble:          2        *Magick history: 7        
+BP:      6          *Drawing:        1        *Legend lore:    6        
+MD:      3          *Gardening:      1        
+                    *Tailoring:      2        
+----------------------------------------------------------------------
+Cult:    Fal Munir, Initiated (11)
+----------------------------------------------------------------------
+ENC:     9.1        Armour:   None           Social status:  MC       
+Status:  -1         AP:       1              Money:          428      
+----------------------------------------------------------------------
+Weapon          Skill    I/SR    Off    Def    Dam    HP    Range
+Short sword       3       4       2      2      -1    12   
+Unarmed           3       5       1      -1     -3    0    
+> Th Knife        1       2       0      -      -2    -     15/25
+> Rock            1       2       -1     -      -3    -     15/40
+----------------------------------------------------------------------
+Magick lore:  9     Magick type:  perception  Spell lore:   9     
+
+Spell               Skill  DR  A?  R?  CT  Dur  Rng  Wt    AoE
+Night Vision          6    9   P   Y   1m  10m  T    100kg 1C*
+Animal Sense          3    9   +   Y   5r  5m   100m       1A*
+Det. Truth            2    9   A   Y   1r  5r   5m         1C*
+Read Thought          8    13  A   Y   1r  1r   5m         S+1C*
+Det. Magic            3    9   A   Y   1r  1r   T          1C*
+Farsee                5    9   P   Y   1r  1m   T          1C*
+Cone of Light         8    9   A   N   1r  2r   25m        =>3mr
+
+#######################################################################

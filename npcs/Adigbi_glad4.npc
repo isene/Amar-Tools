@@ -1,0 +1,35 @@
+#############################<By NPCg 0.2>#############################
+
+                                                   Created: 2002-08-22
+Name:     Adigbi Aolous 
+Type:     Gladiator (4)          Sex:   M            Height:   175
+Area:     Outskirts              Age:   30           Weight:   70
+----------------------------------------------------------------------
+Description:  
+----------------------------------------------------------------------
+SIZE:    3          Balance:         7        Dtraps:          4        
+STRNG:   6          Climb:           6        Tracking:        0        
+ENDUR:   9          Dodge:           9        *Sense evil/good:3        
+COORD:   8          Hide:            5/5      
+LEARN:   3          Mvqt:            8/8      Medicall:        3        
+AWARE:   4          Ride:            6        Read/write:      2        
+MAGAP:   0          Sleight:         3        Spoken:          2        
+                    Swim:            4        *Weapon Lore:    4        
+DB:      1          Tumble:          8        *Cult Lore:      3        
+BP:      7          *Weapon repair:  8        *Social Lore:    3        
+MD:      1          *Armour repair:  6        
+                    *Weapon making:  4        
+----------------------------------------------------------------------
+Cult:    Recolar, Lay member (1)
+----------------------------------------------------------------------
+ENC:     20.3       Armour:   Ringed mail    Social status:  LMC      
+Status:  -1         AP:       2              Money:          22       
+----------------------------------------------------------------------
+Weapon          Skill    I/SR    Off    Def    Dam    HP    Range
+Knife*2           8       4       7      7      -1    8    
+Halberd           9       2       9      12     3     7    
+B. axe 2H         9       3       8      10     3     8    
+> Bow (light)     6       1       6      -      1     -     30/130
+> Sling           4       1       1      -      0     -     40/120
+
+#######################################################################

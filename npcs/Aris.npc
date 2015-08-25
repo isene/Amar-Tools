@@ -1,0 +1,43 @@
+#############################<By NPCg 0.3>#############################
+                                                    Created: 2015-08-07
+Name:     Aris
+Type:     Warrior (8)            Sex:   F            Height:   168
+Area:     Feronir                Age:   51           Weight:   88
+----------------------------------------------------------------------
+Description:  
+----------------------------------------------------------------------
+SIZE:    3          Balance:         17       Dtraps:          6        
+STRNG:   13         Climb:           14       Tracking:        7        
+ENDUR:   14         Dodge:           19       *Sense danger:   5        
+COORD:   17         Hide:            11/11    
+LEARN:   3          Mvqt:            13/13    Medical lore:    4        
+AWARE:   4          Ride:            17       Read/write:      0        
+MAGAP:   0          Sleight:         6        Spoken:          5        
+                    Swim:            8        *Weapon lore:    7        
+DB:      3          Tumble:          13       *Cult lore:      5        
+BP:      8          *Weapon repair:  19       *Legend lore:    2        
+MD:      2          *Armour repair:  18       
+                    *Running:        17       
+----------------------------------------------------------------------
+Cult:    Taroc, Protector/Priest (9)
+----------------------------------------------------------------------
+ENC:     5          Armour:   None           Social status:  LMC      
+Status:  0          AP:       0              Money:          42       
+----------------------------------------------------------------------
+Weapon          Skill    I/SR    Off    Def    Dam    HP    Range
+Short sword       19      4       37     43     4     12   
+Rapier            17      3       17     19     1     7    
+> Th Knife        17      2       48     -      4     -     15/25
+> Rock            14      2       29     -      1     -     15/40
+----------------------------------------------------------------------
+Magick lore:  10    Magick type:  black       Spell lore:   8     
+
+Spell               Skill  DR  A?  R?  CT  Dur  Rng  Wt    AoE
+Banish                7    13  -   Y   1r  I    10m        1D*
+Possession            4    10  A   Y   1m  10m  S          1C*
+Animate Dead          8    13  P   N   1 d 1d/P T    50kg  1C*
+Prot. f Demons        5    11  +   N   1r  1m   T          1C*
+Darkness              6    11  +   Y   1r  1r   5m         1mr
+Exteriorize           2    14  P   N   10m 1m   S          S
+
+#######################################################################

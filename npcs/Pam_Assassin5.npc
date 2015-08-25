@@ -1,0 +1,35 @@
+#############################<By NPCg 0.2>#############################
+
+                                                   Created: 2015-07-06
+Name:     Pam Belum 
+Type:     Assassin (5)           Sex:   F            Height:   167
+Area:     Merisir                Age:   36           Weight:   72
+----------------------------------------------------------------------
+Description:  
+----------------------------------------------------------------------
+SIZE:    3          Balance:         9        Dtraps:          7        
+STRNG:   5          Climb:           11       Tracking:        8        
+ENDUR:   4          Dodge:           10       *Sense life:     8        
+COORD:   10         Hide:            13/13    
+LEARN:   4          Mvqt:            12/12    Medical lore:    4        
+AWARE:   7          Ride:            6        Read/write:      2        
+MAGAP:   2          Sleight:         10       Spoken:          4        
+                    Swim:            11       *Anatomy:        6        
+DB:      1          Tumble:          9        *Security:       3        
+BP:      6          *Set ambush:     10       *Social lore:    5        
+MD:      0          *Trapping:       7        
+                    *Hold breath:    8        
+----------------------------------------------------------------------
+Cult:    Kraagh, Lay member (5)
+----------------------------------------------------------------------
+ENC:     12.4       Armour:   Leather armour Social status:  LMC      
+Status:  -1         AP:       1              Money:          42       
+----------------------------------------------------------------------
+Weapon          Skill    I/SR    Off    Def    Dam    HP    Range
+Knife             10      4       8      9      -1    8    
+Knife*2           11      4       10     11     -1    8    
+Rapier            8       3       8      9      -1    7    
+> X-bow (medium)  11      1/4     13     -      3     -     25/175
+> Bow (light)     10      1       10     -      1     -     30/130
+
+#######################################################################

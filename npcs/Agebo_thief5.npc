@@ -1,0 +1,34 @@
+#############################<By NPCg 0.2>#############################
+
+                                                   Created: 2015-07-05
+Name:     Agebo 
+Type:     Thief (5)              Sex:   M            Height:   180
+Area:     Amaronir               Age:   35           Weight:   76
+----------------------------------------------------------------------
+Description:  
+----------------------------------------------------------------------
+SIZE:    3          Balance:         10       Dtraps:          9        
+STRNG:   4          Climb:           10       Tracking:        6        
+ENDUR:   8          Dodge:           9        *Night Vision:   8        
+COORD:   10         Hide:            10/10    
+LEARN:   6          Mvqt:            11/11    Medical lore:    2        
+AWARE:   8          Ride:            11       Read/write:      0        
+MAGAP:   1          Sleight:         13       Spoken:          5        
+                    Swim:            6        *Security:       6        
+DB:      1          Tumble:          10       *Cult Lore:      6        
+BP:      7          *Running:        10       *Social Lore:    0        
+MD:      1          *Trapping:       9        
+                    *Weapon repair:  7        
+----------------------------------------------------------------------
+Cult:    Tsankili, Initiated (3)
+----------------------------------------------------------------------
+ENC:     12.6       Armour:   Leather armour Social status:  LMC      
+Status:  -1         AP:       1              Money:          14       
+----------------------------------------------------------------------
+Weapon          Skill    I/SR    Off    Def    Dam    HP    Range
+Rapier/Knife      10      3       11     11     -1    7    
+Rapier            10      3       10     10     -1    7    
+> Bow (light)     9       1       9      -      1     -     30/130
+> X-bow (light)   11      1/3     13     -      2     -     20/100
+
+#######################################################################

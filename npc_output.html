@@ -1,0 +1,768 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>NPC Generation - For the Amar RPG</title>
+</head>
+
+<body bgcolor="#ffffff" text="#000000">
+        
+<table width="480" border="0" cellspacing="0" cellpadding="2" align="center">
+  <tbody>
+    <tr>
+      <td>         
+        <center><b>NPC Generation - for the Amar RPG</b></center>
+      </td>
+    </tr>     
+  </tbody>   
+</table>
+<table width="480" border="0" cellspacing="0" cellpadding="1"
+ align="center" bgcolor="#333333">
+  <tbody>
+    <tr>
+      <td>                  
+        <table width="100%" border="0" cellspacing="1" cellpadding="1">
+          <tbody>
+            <tr><td colspan="6" bgcolor="#666666">
+            <table width="100%" border="0" cellspacing="1" cellpadding="2">
+              <tbody>
+                <tr>
+                  <td width="118" bgcolor="#cccccc"><b>Name</b></td>
+                  <td colspan="5" bgcolor="#ffffff">
+                  <input type="text" size="58" name="name"
+                  value="<%= @name %>"></td>
+                </tr>
+                <tr>
+                  <td width="118" bgcolor="#cccccc"><b>Type</b></td>
+                  <td width="132" bgcolor="#ffffff">
+                  <input type="text" size="15" name="type"
+                  value="<%= @type %> (<%= @level %>)"</td>
+                  <td width="70" bgcolor="#cccccc"><b>Sex</b></td>
+                  <td width="40" bgcolor="#ffffff"><input type="text"
+                  size="2" name="sex" value="<%= @sex %>"</td>
+                  <td width="80" bgcolor="#cccccc"><b>Height</b></td>
+                  <td width="40" bgcolor="#ffffff"><input type="text"
+                  size="3" name="height" value="<%= @height %>"</td>
+                </tr>
+                <tr>
+                  <td width="118" bgcolor="#cccccc"><b>Area</b></td>
+                  <td width="132" bgcolor="#ffffff"><input type="text"
+                  size="15" name="area" value="<%= @area %>"</td>
+                  <td width="70" bgcolor="#cccccc"><b>Age</b></td>
+                  <td width="40" bgcolor="#ffffff"><input type="text"
+                  size="2" name="age" value="<%= @age %>"</td>
+                  <td width="80" bgcolor="#cccccc"><b>Weight</b></td>
+                  <td width="40" bgcolor="#ffffff"><input type="text"
+                  size="3" name="height" value="<%= @weight %>"</td>
+                </tr>
+                <tr>
+                  <td width="118" bgcolor="#cccccc" valign="top">
+                  <b>Description</b></td>
+                  <td colspan="5" bgcolor="#ffffff">
+                  <textarea cols="58" rows="3" name="description"><%= @description %></textarea></td>
+                </tr>
+              </tbody>
+            </table>
+            </td></tr>
+            <tr>
+              <td width="80" bgcolor="#cccccc"><b>SIZE</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="size" value="<%= @size %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>Balance</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="balance" value="<%= @balance %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>Detect traps</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="dtraps" value="<%= @dtraps %>"</td>
+            </tr>
+            <tr>
+              <td width="80" bgcolor="#cccccc"><b>STRNG</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="strng" value="<%= @strng %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>Climb</b></td>
+              <td width="40"
+              bgcolor="#ffffff"><input type="text" size="2"
+              name="climb" value="<%= @climb %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>Tracking</b></td>
+              <td width="40"
+              bgcolor="#ffffff"><input type="text" size="2"
+              name="tracking" value="<%= @tracking %>"</td>
+            </tr>
+            <tr>
+              <td width="80" bgcolor="#cccccc"><b>ENDUR</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="endur" value="<%= @endur %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>Dodge</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="dodge" value="<%= @dodge %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>*<input type="text"
+              size="15" name="percept1" value="<%= @percept1 %>"</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="percept1s" value="<%= @percept1s %>"</td>
+            </tr>
+            <tr>
+              <td width="80" bgcolor="#cccccc"><b>COORD</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="coord" value="<%= @coord %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>Hide</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="4" name="hide" value="<%= @hide %>/<%= @modhide %>"</td>
+              <td width="40" bgcolor="#cccccc" colspan="2"></td>
+            </tr>
+            <tr>
+              <td width="80" bgcolor="#cccccc"><b>LEARN</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="learn" value="<%= @learn %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>Move quietly</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="4" name="mvqt" value="<%= @mvqt %>/<%= @modmvqt %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>Medical lore</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="medicall" value="<%= @medicall %>"</td>
+            </tr>
+            <tr>
+              <td width="80" bgcolor="#cccccc"><b>AWARE</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="aware" value="<%= @aware %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>Ride</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="ride" value="<%= @ride %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>Read/write</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="readwrite" value="<%= @readwrite %>"</td>
+            </tr>
+            <tr>
+              <td width="80" bgcolor="#cccccc"><b>MAGAP</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="magap" value="<%= @magap %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>Sleight</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="sleight" value="<%= @sleight %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>Spoken</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="spoken" value="<%= @spoken %>"</td>
+            </tr>
+            <tr>
+              <td width="40" bgcolor="#cccccc" colspan="2"></td>
+              <td width="140" bgcolor="#cccccc"><b>Swim</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="swim" value="<%= @swim %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>*<input type="text"
+              size="15" name="lore1" value="<%= @lore1 %>"</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="lore1s" value="<%= @lore1s %>"</td>
+            </tr>
+            <tr>
+              <td width="80" bgcolor="#cccccc"><b>DB</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="db" value="<%= @db %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>Tumble</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="tumble" value="<%= @tumble %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>*<input type="text"
+              size="15" name="lore2" value="<%= @lore2 %>"</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="lore2s" value="<%= @lore2s %>"</td>
+            </tr>
+            <tr>
+              <td width="80" bgcolor="#cccccc"><b>BP</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="bp" value="<%= @bp %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>*<input type="text"
+              size="15" name="physical1" value="<%= @physical1 %>"</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="physical1s" value="<%= @physical1s %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>*<input type="text"
+              size="15" name="lore3" value="<%= @lore3 %>"</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="lore3s" value="<%= @lore3s %>"</td>
+            </tr>
+            <tr>
+              <td width="80" bgcolor="#cccccc"><b>MD</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="md" value="<%= @md %>"</td>
+              <td width="140" bgcolor="#cccccc"><b>*<input type="text"
+              size="15" name="physical2" value="<%= @physical2 %>"</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="physical2s" value="<%= @physical2s %>"</td>
+              <td width="40" bgcolor="#cccccc" colspan="2"></td>
+            </tr>
+            <tr>
+              <td width="120" bgcolor="#cccccc" colspan="2"></td>
+              <td width="140" bgcolor="#cccccc"><b>*<input type="text"
+              size="15" name="physical3" value="<%= @physical3 %>"</b></td>
+              <td width="40" bgcolor="#ffffff"><input type="text"
+              size="2" name="physical3s" value="<%= @physical3s %>"</td>
+              <td width="40" bgcolor="#cccccc" colspan="2"></td>
+            </tr>
+            <tr>
+              <td width="80" bgcolor="#cccccc"><b>Cult</b></td>
+              <td width="40" bgcolor="#ffffff" colspan="5">
+              <input type="text" size="62" name="cult"
+              value="<%= @cult %>, <%= @cultstat1 %> (<%= @cs %>)"</td>
+            </tr>
+            <tr>
+              <td colspan="6" bgcolor="#555555">
+                <table width="100%" border="0" cellspacing="1" cellpadding="1">
+                  <tbody>
+                    <tr>
+                      <td width="80" bgcolor="#cccccc"><b>ENC</b></td>
+                      <td width="40" bgcolor="#ffffff"><input
+                      type="text" size="4" name="enc" value="<%= @enc %>"</td>
+                      <td width="70" bgcolor="#cccccc"><b>Armour</b></td>
+                      <td width="130" bgcolor="#ffffff"><input
+                      type="text" size="18" name="armour" value="<%= @armour %>"</td>
+                      <td width="120" bgcolor="#cccccc"><b>Social status</b></td>
+                      <td width="40" bgcolor="#ffffff"><input
+                      type="text" size="3" name="socstatus" value="<%= @socstatus %>"</td>
+                    </tr>
+                    <tr>
+                      <td width="80" bgcolor="#cccccc"><b>STATUS</b></td>
+                      <td width="40" bgcolor="#ffffff"><input
+                      type="text" size="2" name="status" value="<%= @status %>"</td>
+                      <td width="70" bgcolor="#cccccc"><b>AP</b></td>
+                      <td width="130" bgcolor="#ffffff"><input
+                      type="text" size="2" name="ap" value="<%= @ap %>"</td>
+                      <td width="120" bgcolor="#cccccc"><b>Money</b></td>
+                      <td width="40" bgcolor="#ffffff"><input
+                      type="text" size="3" name="money" value="<%= @money %>"</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="6" bgcolor="#ffffff">
+                <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                  <tbody>
+                    <tr>
+                      <td width="130" bgcolor="#cccccc" align="center">
+                      <b>Weapon</b></td>
+                      <td width="50" bgcolor="#cccccc" align="center">
+                      <b>Skill</b></td>
+                      <td width="50" bgcolor="#cccccc" align="center">
+                      <b>I/SR</b></td>
+                      <td width="50" bgcolor="#cccccc" align="center">
+                      <b>Off</b></td>
+                      <td width="50" bgcolor="#cccccc" align="center">
+                      <b>Def</b></td>
+                      <td width="50" bgcolor="#cccccc" align="center">
+                      <b>Dam</b></td>
+                      <td width="50" bgcolor="#cccccc" align="center">
+                      <b>HP</b></td>
+                      <td width="50" bgcolor="#cccccc" align="center">
+                      <b>Range</b></td>
+                    </tr>
+                    <tr>
+                      <td width="130" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="melee1"
+                      value="<%= @melee1 %>"</b></td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee1s"
+                      value="<%= @melee1s %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee1i"
+                      value="<%= @melee1i %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee1o"
+                      value="<%= @melee1o %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee1d"
+                      value="<%= @melee1d %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee1dam"
+                      value="<%= @melee1dam %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee1hp"
+                      value="<%= @melee1hp %>"</td>
+                      <td width="50" align="center">
+                      -</td>
+                    </tr>
+		    <% if @ml2 %>
+                    <tr>
+                      <td width="130" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="melee2"
+                      value="<%= @melee2 %>"</b></td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee2s"
+                      value="<%= @melee2s %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee2i"
+                      value="<%= @melee2i %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee2o"
+                      value="<%= @melee2o %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee2d"
+                      value="<%= @melee2d %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee2dam"
+                      value="<%= @melee2dam %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee2hp"
+                      value="<%= @melee2hp %>"</td>
+                      <td width="50" align="center">
+                      -</td>
+                    </tr>
+                    <% end %>
+                    <% if @ml3 %>
+                    <tr>
+                      <td width="130" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="melee3"
+                      value="<%= @melee3 %>"</b></td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee3s"
+                      value="<%= @melee3s %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee3i"
+                      value="<%= @melee3i %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee3o"
+                      value="<%= @melee3o %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee3d"
+                      value="<%= @melee3d %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee3dam"
+                      value="<%= @melee3dam %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="melee3hp"
+                      value="<%= @melee3hp %>"</td>
+                      <td width="50" align="center">
+                      -</td>
+                    </tr>
+		    <% end %>
+                    <tr>
+                      <td width="130" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="missile1"
+                      value="<%= @missile1 %>"</b></td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="missile1s"
+                      value="<%= @missile1s %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="missile1sr"
+                      value="<%= @missile1sr %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="missile1o"
+                      value="<%= @missile1o %>"</td>
+                      <td width="50" align="center">
+                      -</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="missile1dam"
+                      value="<%= @missile1dam %>"</td>
+                      <td width="50" align="center">
+                      -</td>
+                      <td width="50" align="center">
+                      <input type="text" size="5" name="missile1rng"
+                      value="<%= @missile1rng %>/<%= @missile1rmax %>"</td>
+                    </tr>
+                    <% if @ms2 %>
+                    <tr>
+                      <td width="130" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="missile2"
+                      value="<%= @missile2 %>"</b></td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="missile2s"
+                      value="<%= @missile2s %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="missile2sr"
+                      value="<%= @missile2sr %>"</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="missile2o"
+                      value="<%= @missile2o %>"</td>
+                      <td width="50" align="center">
+                      -</td>
+                      <td width="50" align="center">
+                      <input type="text" size="2" name="missile2dam"
+                      value="<%= @missile2dam %>"</td>
+                      <td width="50" align="center">
+                      -</td>
+                      <td width="50" align="center">
+                      <input type="text" size="5" name="missile2rng"
+                      value="<%= @missile2rng %>/<%= @missile2rmax %>"</td>
+                    </tr>
+                    <% end %>
+                  </tbody>         
+                </table>
+              </td>
+            </tr>
+            <% if @mg %>
+            <tr>
+              <td colspan="6" bgcolor="#333333">
+                <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                  <tbody>
+                    <tr>
+                      <td width="80" bgcolor="#cccccc"><b>Mag. lore</b></td>
+                      <td width="50" bgcolor="#ffffff"><input
+                      type="text" size="2" name="maglore"
+                      value="<%= @maglore %>"</td>
+                      <td width="80" bgcolor="#cccccc"><b>M. type</b></td>
+                      <td width="140" bgcolor="#ffffff"><input
+                      type="text" size="12" name="magtype1"
+                      value="<%= @magtype1 %>"</td>
+                      <td width="80" bgcolor="#cccccc"><b>Spell lore</b></td>
+                      <td width="50" bgcolor="#ffffff"><input
+                      type="text" size="2" name="splore"
+                      value="<%= @splore %>"</td>
+                    </tr>
+                  </tbody>         
+                </table>
+              </td>
+            </tr>
+	    <% end %>
+            <% if @sp0 %>
+            <tr>
+              <td colspan="6" bgcolor="#ffffff">
+                <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                  <tbody>
+                    <tr>
+                      <td width="165" bgcolor="#cccccc" align="center">
+                      <b>Spell</b></td>
+                      <td width="35" bgcolor="#cccccc" align="center">
+                      <b>Skill</b></td>
+                      <td width="35" bgcolor="#cccccc" align="center">
+                      <b>DR</b></td>
+                      <td width="35" bgcolor="#cccccc" align="center">
+                      <b>A?</b></td>
+                      <td width="35" bgcolor="#cccccc" align="center">
+                      <b>R?</b></td>
+                      <td width="35" bgcolor="#cccccc" align="center">
+                      <b>CT</b></td>
+                      <td width="35" bgcolor="#cccccc" align="center">
+                      <b>Dur</b></td>
+                      <td width="35" bgcolor="#cccccc" align="center">
+                      <b>Rng</b></td>
+                      <td width="35" bgcolor="#cccccc" align="center">
+                      <b>Wt</b></td>
+                      <td width="35" bgcolor="#cccccc" align="center">
+                      <b>AoE</b></td>
+                    </tr>
+                    <tr>
+                      <td width="165" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="spell0n"
+                      value="<%= @spell0n %>"</b></td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell0s"
+                      value="<%= @spell0s %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell0dr"
+                      value="<%= @spell0dr %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell0ap"
+                      value="<%= @spell0ap %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell0r"
+                      value="<%= @spell0r %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell0ct"
+                      value="<%= @spell0ct %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell0dur"
+                      value="<%= @spell0dur %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="3" name="spell0rng"
+                      value="<%= @spell0rng %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="4" name="spell0wt"
+                      value="<%= @spell0wt %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="8" name="spell0aoe"
+                      value="<%= @spell0aoe %>"</td>
+                    </tr>
+                    <% if @sp1 %>
+                    <tr>
+                      <td width="165" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="spell1n"
+                      value="<%= @spell1n %>"</b></td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell1s"
+                      value="<%= @spell1s %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell1dr"
+                      value="<%= @spell1dr %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell1ap"
+                      value="<%= @spell1ap %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell1r"
+                      value="<%= @spell1r %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell1ct"
+                      value="<%= @spell1ct %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell1dur"
+                      value="<%= @spell1dur %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="3" name="spell1rng"
+                      value="<%= @spell1rng %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="4" name="spell1wt"
+                      value="<%= @spell1wt %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="8" name="spell1aoe"
+                      value="<%= @spell1aoe %>"</td>
+                    </tr>
+                    <% end %>
+                    <% if @sp2 %>
+                    <tr>
+                      <td width="165" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="spell2n"
+                      value="<%= @spell2n %>"</b></td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell2s"
+                      value="<%= @spell2s %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell2dr"
+                      value="<%= @spell2dr %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell2ap"
+                      value="<%= @spell2ap %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell2r"
+                      value="<%= @spell2r %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell2ct"
+                      value="<%= @spell2ct %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell2dur"
+                      value="<%= @spell2dur %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="3" name="spell2rng"
+                      value="<%= @spell2rng %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="4" name="spell2wt"
+                      value="<%= @spell2wt %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="8" name="spell2aoe"
+                      value="<%= @spell2aoe %>"</td>
+                    </tr>
+                    <% end %>
+                    <% if @sp3 %>
+                    <tr>
+                      <td width="165" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="spell3n"
+                      value="<%= @spell3n %>"</b></td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell3s"
+                      value="<%= @spell3s %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell3dr"
+                      value="<%= @spell3dr %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell3ap"
+                      value="<%= @spell3ap %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell3r"
+                      value="<%= @spell3r %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell3ct"
+                      value="<%= @spell3ct %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell3dur"
+                      value="<%= @spell3dur %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="3" name="spell3rng"
+                      value="<%= @spell3rng %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="4" name="spell3wt"
+                      value="<%= @spell3wt %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="8" name="spell3aoe"
+                      value="<%= @spell3aoe %>"</td>
+                    </tr>
+                    <% end %>
+                    <% if @sp4 %>
+                    <tr>
+                      <td width="165" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="spell4n"
+                      value="<%= @spell4n %>"</b></td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell4s"
+                      value="<%= @spell4s %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell4dr"
+                      value="<%= @spell4dr %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell4ap"
+                      value="<%= @spell4ap %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell4r"
+                      value="<%= @spell4r %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell4ct"
+                      value="<%= @spell4ct %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell4dur"
+                      value="<%= @spell4dur %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="3" name="spell4rng"
+                      value="<%= @spell4rng %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="4" name="spell4wt"
+                      value="<%= @spell4wt %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="8" name="spell4aoe"
+                      value="<%= @spell4aoe %>"</td>
+                    </tr>
+                    <% end %>
+                    <% if @sp5 %>
+                    <tr>
+                      <td width="165" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="spell5n"
+                      value="<%= @spell5n %>"</b></td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell5s"
+                      value="<%= @spell5s %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell5dr"
+                      value="<%= @spell5dr %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell5ap"
+                      value="<%= @spell5ap %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell5r"
+                      value="<%= @spell5r %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell5ct"
+                      value="<%= @spell5ct %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell5dur"
+                      value="<%= @spell5dur %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="3" name="spell5rng"
+                      value="<%= @spell5rng %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="4" name="spell5wt"
+                      value="<%= @spell5wt %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="8" name="spell5aoe"
+                      value="<%= @spell5aoe %>"</td>
+                    </tr>
+                    <% end %>
+                    <% if @sp6 %>
+                    <tr>
+                      <td width="165" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="spell6n"
+                      value="<%= @spell6n %>"</b></td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell6s"
+                      value="<%= @spell6s %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell6dr"
+                      value="<%= @spell6dr %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell6ap"
+                      value="<%= @spell6ap %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell6r"
+                      value="<%= @spell6r %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell6ct"
+                      value="<%= @spell6ct %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell6dur"
+                      value="<%= @spell6dur %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="3" name="spell6rng"
+                      value="<%= @spell6rng %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="4" name="spell6wt"
+                      value="<%= @spell6wt %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="8" name="spell6aoe"
+                      value="<%= @spell6aoe %>"</td>
+                    </tr>
+                    <% end %>
+                    <% if @sp7 %>
+                    <tr>
+                      <td width="165" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="spell7n"
+                      value="<%= @spell7n %>"</b></td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell7s"
+                      value="<%= @spell7s %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell7dr"
+                      value="<%= @spell7dr %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell7ap"
+                      value="<%= @spell7ap %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell7r"
+                      value="<%= @spell7r %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell7ct"
+                      value="<%= @spell7ct %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell7dur"
+                      value="<%= @spell7dur %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="3" name="spell7rng"
+                      value="<%= @spell7rng %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="4" name="spell7wt"
+                      value="<%= @spell7wt %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="8" name="spell7aoe"
+                      value="<%= @spell7aoe %>"</td>
+                    </tr>
+                    <% end %>
+                    <% if @sp8 %>
+                    <tr>
+                      <td width="165" bgcolor="#cccccc" align="center">
+                      <b><input type="text" size="15" name="spell8n"
+                      value="<%= @spell8n %>"</b></td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell8s"
+                      value="<%= @spell8s %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell8dr"
+                      value="<%= @spell8dr %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell8ap"
+                      value="<%= @spell8ap %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="1" name="spell8r"
+                      value="<%= @spell8r %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell8ct"
+                      value="<%= @spell8ct %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="2" name="spell8dur"
+                      value="<%= @spell8dur %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="3" name="spell8rng"
+                      value="<%= @spell8rng %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="4" name="spell8wt"
+                      value="<%= @spell8wt %>"</td>
+                      <td width="35" align="center">
+                      <input type="text" size="8" name="spell8aoe"
+                      value="<%= @spell8aoe %>"</td>
+                    </tr>
+                    <% end %>
+                  </tbody>         
+                </table>
+              </td>
+            </tr>
+	    <% end %>
+          </tbody>         
+        </table>
+      </td>
+    </tr> 
+  </tbody>   
+</table>
+<br>
+<table width="480" border="0" cellspacing="0" cellpadding="2" align="center">
+  <tbody>
+    <tr>
+      <td align="center">         
+        <form name="new" method="post" action="/cgi-bin/html_npc_input.rb">
+        <input type="submit" name="new" value=" New NPC ">
+        </form>
+      </td>
+    </tr>     
+  </tbody>   
+</table>
+<center><a href="/index.html">Back to front page</a></center>
+</body>
+</html>

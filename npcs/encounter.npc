@@ -1,0 +1,9 @@
+#################################<By NPCg 0.3>#################################
+Day:   City          (Level=0)                              Created: 2015-08-21
+
+ANTAGONISTIC:
+Large animal: Prey      (F, Lvl3) SIZ=4  STR=6  END=4  AWR=7  Dodge=5  MAG=0
+  Unarmed               Skill= 5, Ini: 5, Off: 3, Def: 2, Dam:-2   AP:1, BP:8
+
+###############################################################################
+
