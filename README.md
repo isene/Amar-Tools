@@ -18,6 +18,8 @@ Game Master.
 For more info on the Amar RPG, game rules, adventures and more, see
 http://isene.com.
 
+For an online version of this program, go to http://isene.org
+
 To set up the program, extract npcg.tar.gz:
 
     tar -xzvf npcg.tar.gz
