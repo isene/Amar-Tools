@@ -3869,9 +3869,9 @@ $Chartype = {
       "Missile2"  =>  ""
     },
     "magick" => {
-      "maglore"  =>  5,
-      "splore"   =>  5,
-      "magtype1"  =>  "black",
+      "maglore"  =>  -3,
+      "splore"   =>  -3,
+      "magtype1"  =>  "",
       "spells"    =>  ""
     }
   },
