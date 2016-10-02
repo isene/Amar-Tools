@@ -142,7 +142,7 @@ def npc_output(n)
   end
   if mag != 0
     f += "\n"
-    f += "Spell               Skill  DR  A?  R?  CT  Dur  Rng  Wt    AoE"
+    f += "Spell               Level  DR  A?  R?  CT  Dur  Rng  Wt    AoE"
   end
   if n.spell0(0) != 0
     f += "\n"

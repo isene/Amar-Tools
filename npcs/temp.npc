@@ -1,34 +1,43 @@
 #############################<By NPCg 0.3>#############################
-                                                    Created: 2015-08-26
-Name:     Bygnisy 
-Type:     Warrior (8)            Sex:   F            Height:   175
-Area:     Feronir                Age:   57           Weight:   93
+                                                    Created: 2016-06-19
+Name:     Joker
+Type:     Juba wizard            Sex:   M            Height:   169
+Area:     Merisir                Age:   23           Weight:   61
 ----------------------------------------------------------------------
 Description:  
 ----------------------------------------------------------------------
-SIZE:    3          Balance:         13       Dtraps:          9        
-STRNG:   10         Climb:           11       Tracking:        7        
-ENDUR:   13         Dodge:           18       *Sense danger:   8        
-COORD:   17         Hide:            12/12    
-LEARN:   5          Mvqt:            14/14    Medical lore:    5        
-AWARE:   7          Ride:            12       Read/write:      0        
-MAGAP:   0          Sleight:         5        Spoken:          6        
-                    Swim:            8        *Weapon lore:    8        
-DB:      2          Tumble:          17       *Cult lore:      6        
-BP:      8          *Weapon repair:  19       *Legend lore:    5        
-MD:      2          *Armour repair:  18       
-                    *Running:        15       
+SIZE:    3          Balance:         3        Dtraps:          0        
+STRNG:   1          Climb:           2        Tracking:        0        
+ENDUR:   2          Dodge:           5        *Sense mood:     3        
+COORD:   6          Hide:            4/4      
+LEARN:   6          Mvqt:            4/4      Medical lore:    2        
+AWARE:   1          Ride:            2        Read/write:      2        
+MAGAP:   6          Sleight:         3        Spoken:          4        
+                    Swim:            2        *Acting:         4        
+DB:      0          Tumble:          5        *Poetry:         3        
+BP:      6          *Dancing:        4        *Cooking:        4        
+MD:      3          *Singing:        5        
+                    *Play Luth:      3        
 ----------------------------------------------------------------------
-Cult:    Anashina, Protector/Priest (9)
+Cult:    Juba, Initiate (0)
 ----------------------------------------------------------------------
-ENC:     5          Armour:   None           Social status:  MC       
-Status:  0          AP:       0              Money:          60       
+ENC:     2          Armour:   None           Social status:  MC       
+Status:  -1         AP:       0              Money:          2      
 ----------------------------------------------------------------------
 Weapon          Skill    I/SR    Off    Def    Dam    HP    Range
-Unarmed           19      5       17     18     -2    0    
-Knife             17      4       15     17     0     8    
-Short sword       15      4       14     17     0     12   
-> Rock            16      2       14     -      -1    -     15/40
-> Th Knife        16      2       15     -      0     -     15/25
+Knife*2           5       4       5      5      -2    8    
+Unarmed           3       5       1      0      -4    0    
+> Rock            4       2       2      -      -3    -     15/40
+> Th Knife        4       2       3      -      -2    -     15/25
+----------------------------------------------------------------------
+Magick lore:  5     Magick type:  Juba          Spell lore: 5     
+
+SPELL               SKILL  DR  A?  R?  CT  DUR  RNG  WT    AOE
+Gobble		      5
+Crack Up	      5
+Colorize	      4
+Fumble		      4
+Minor illusion	      5
+Chicken Dance	      3
 
 #######################################################################

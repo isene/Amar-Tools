@@ -1,7 +1,7 @@
 # Magick tables
-# [ "Skill", "Spell", "+", "Resist", "CT", "DR", "Dur", "Rng", "Wt", "AoE" ]
-#referencegoes like $Magick["air"][9][5], which would be DR for "Fog" ( =9 )
-# The NPC's skill in the spell is entered into $Magick["air"][9][0]
+# [ "Level", "Spell", "+", "Resist", "CT", "DR", "Dur", "Rng", "Wt", "AoE" ]
+# referencegoes like $Magick["air"][9][5], which would be DR for "Fog" ( =9 )
+# The NPC's level in the spell is entered into $Magick["air"][9][0]
 
 $Magick = {
   "air" => [

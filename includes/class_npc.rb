@@ -24,7 +24,7 @@ class Npc
     @age = age.to_i
     @height = height.to_i
     @weight = weight.to_i
-    @description = description
+    @description = description.to_s
 
     @spamount = 0
 
@@ -551,7 +551,7 @@ class Npc
             "earth"     => 3,
             "fire"      => 2,
             "life"      => 3,
-            "magic"    => 1,
+            "magic"     => 1,
             "perception"=> 3,
             "protection"=> 3,
             "summoning" => 2,
@@ -574,7 +574,7 @@ class Npc
             spells.delete_at(tmp)
             if spell[5].to_i < self.splore + 7
               @npc["magick"]["spells"][i] = spell
-              @npc["magick"]["spells"][i][0] = rand(self.splore).to_i + 1
+              @npc["magick"]["spells"][i][0] = (rand(self.splore)/2).to_i + 1
               @spamount += 1
             else redo
             end
