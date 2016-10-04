@@ -1,43 +1,43 @@
 #############################<By NPCg 0.3>#############################
-                                                    Created: 2016-06-19
-Name:     Joker
-Type:     Juba wizard            Sex:   M            Height:   169
-Area:     Merisir                Age:   23           Weight:   61
+                                                    Created: 2016-10-03
+Name:     Xoteb 
+Type:     Wizard (air) (6)       Sex:   F            Height:   164
+Area:     Rauinir                Age:   49           Weight:   70
 ----------------------------------------------------------------------
 Description:  
 ----------------------------------------------------------------------
-SIZE:    3          Balance:         3        Dtraps:          0        
-STRNG:   1          Climb:           2        Tracking:        0        
-ENDUR:   2          Dodge:           5        *Sense mood:     3        
-COORD:   6          Hide:            4/4      
-LEARN:   6          Mvqt:            4/4      Medical lore:    2        
-AWARE:   1          Ride:            2        Read/write:      2        
-MAGAP:   6          Sleight:         3        Spoken:          4        
-                    Swim:            2        *Acting:         4        
-DB:      0          Tumble:          5        *Poetry:         3        
-BP:      6          *Dancing:        4        *Cooking:        4        
-MD:      3          *Singing:        5        
-                    *Play Luth:      3        
+SIZE:    3          Balance:         4        Dtraps:          2        
+STRNG:   2          Climb:           5        Tracking:        5        
+ENDUR:   1          Dodge:           5        *Sense magick:   8        
+COORD:   5          Hide:            3/3      
+LEARN:   9          Mvqt:            4/4      Medical lore:    5        
+AWARE:   4          Ride:            4        Read/write:      9        
+MAGAP:   15         Sleight:         6        Spoken:          9        
+                    Swim:            2        *Natural magick: 10       
+DB:      1          Tumble:          5        *Magick history: 10       
+BP:      6          *Drawing:        5        *Legend lore:    9        
+MD:      5          *Gardening:      4        
+                    *Tailoring:      0        
 ----------------------------------------------------------------------
-Cult:    Juba, Initiate (0)
+Cult:    Fal Munir, Initiated (4)
 ----------------------------------------------------------------------
-ENC:     2          Armour:   None           Social status:  MC       
-Status:  -1         AP:       0              Money:          2      
+ENC:     5          Armour:   None           Social status:  UC       
+Status:  -1         AP:       0              Money:          714      
 ----------------------------------------------------------------------
 Weapon          Skill    I/SR    Off    Def    Dam    HP    Range
-Knife*2           5       4       5      5      -2    8    
-Unarmed           3       5       1      0      -4    0    
-> Rock            4       2       2      -      -3    -     15/40
+Unarmed           1       5       -1     -2     -3    0    
+Rapier            4       3       4      4      -1    7    
 > Th Knife        4       2       3      -      -2    -     15/25
 ----------------------------------------------------------------------
-Magick lore:  5     Magick type:  Juba          Spell lore: 5     
+Magick lore:  10    Magick type:  air         Spell lore:   10    
 
-SPELL               SKILL  DR  A?  R?  CT  DUR  RNG  WT    AOE
-Gobble		      5
-Crack Up	      5
-Colorize	      4
-Fumble		      4
-Minor illusion	      5
-Chicken Dance	      3
+Spell               Level  DR  A?  R?  CT  Dur  Rng  Wt    AoE
+Lightningbolt         2    11  -   N   1r  I    10m        1T*
+Fly                   5    15  P   Y   1r  5r   T    50kg  1C*
+Levitation            5    11  A   Y   1r  2r   5m   50kg  1C*
+Breathe in Water      2    11  P   Y   1r  10m  T          1C*
+Silence               3    11  P   Y   1r  5r   T    100kg 1O*/1C*
+Enh. COORD            2    9   P   Y   10m 10m  T    100kg 1C*
+Wall of Force         4    13  P   N   1r  1r   5m         1/2mr
 
 #######################################################################

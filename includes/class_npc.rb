@@ -575,6 +575,9 @@ class Npc
             if spell[5].to_i < self.splore + 7
               @npc["magick"]["spells"][i] = spell
               @npc["magick"]["spells"][i][0] = (rand(self.splore)/2).to_i + 1
+	      if @npc["magick"]["spells"][i][0] + @npc["magick"]["spells"][i][5] > self.splore + 6
+		@npc["magick"]["spells"][i][0] =  self.splore + 6 - @npc["magick"]["spells"][i][5]
+	      end
               @spamount += 1
             else redo
             end

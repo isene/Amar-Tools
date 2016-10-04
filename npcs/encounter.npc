@@ -1,9 +1,14 @@
 #################################<By NPCg 0.3>#################################
-Day:   City          (Level=0)                              Created: 2015-08-21
+Day:   City          (Level=0)                              Created: 2016-10-03
 
-ANTAGONISTIC:
-Large animal: Prey      (F, Lvl3) SIZ=4  STR=6  END=4  AWR=7  Dodge=5  MAG=0
-  Unarmed               Skill= 5, Ini: 5, Off: 3, Def: 2, Dam:-2   AP:1, BP:8
+NEUTRAL:
+Human: Farmer           (M, Lvl2) SIZ=2  STR=4  END=3  AWR=4  Dodge=4  MAG=0
+  Spear 2H              Skill= 4, Ini: 2, Off: 4, Def: 6, Dam: 0   AP:1, BP:4
+  X-bow (heavy)         Skill= 2, Off: 4, Dam: 4, Rng:30
+
+Human: Builder          (M, Lvl3) SIZ=2  STR=5  END=2  AWR=2  Dodge=1  MAG=0
+  B. axe 2H             Skill= 5, Ini: 3, Off: 4, Def: 5, Dam: 3   AP:0, BP:4
+  X-bow (medium)        Skill= 4, Off: 6, Dam: 3, Rng:25
 
 ###############################################################################
 
