@@ -241,9 +241,9 @@ class Npc
 
 # Calculate Body Points, Damage Bonus and Magick Defense
 
-    @BP = 2 * @SIZE + (@npc["attr"]["ENDUR"] / 5).to_i
-    @DB = ((@SIZE + @npc["attr"]["STRNG"]) / 5).to_i
-    @MD = (@npc["attr"]["MAGAP"] / 3).to_i + (@npc["attr"]["ENDUR"] / 5).to_i
+    @BP = 2 * @SIZE + (@npc["attr"]["ENDUR"] / 3).to_i
+    @DB = ((@SIZE + @npc["attr"]["STRNG"]) / 3).to_i
+    @MD = ((@npc["attr"]["MAGAP"] + @npc["attr"]["ENDUR"]) / 3).to_i
 
 
 # Calculate modhide and modmvqt

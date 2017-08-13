@@ -95,7 +95,7 @@ class Enc
 				@encounter[i]["strength"] = ((@stats[2] * @level + 1) / 3 - 2 + aD6)
 				@encounter[i]["strength"] = 1 if @encounter[i]["strength"] < 1
 
-				@db = (@encounter[i]["strength"] + @encounter[i]["size"]) / 5
+				@db = (@encounter[i]["strength"] + @encounter[i]["size"]) / 3
 
 				@wpnmax = 0
 				case @encounter[i]["strength"]
@@ -136,7 +136,7 @@ class Enc
 				@encounter[i]["endurance"] = ((@stats[3] * @level + 1) / 3 - 2 + aD6)
 				@encounter[i]["endurance"] = 1 if @encounter[i]["endurance"] < 1
 
-				@encounter[i]["bp"] = 2 * @encounter[i]["size"] + (@encounter[i]["endurance"] / 5)
+				@encounter[i]["bp"] = 2 * @encounter[i]["size"] + (@encounter[i]["endurance"] / 3)
 
 				@encounter[i]["awareness"] = ((@stats[4] * @level + 1) / 3 - 2 + aD6)
 
