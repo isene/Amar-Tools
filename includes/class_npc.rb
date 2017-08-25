@@ -320,7 +320,7 @@ class Npc
 
 # Calculate Social status and money
 
-    tmp = @npc["specials"]["Status"]
+	tmp = @npc["specials"]["Status"].to_i
     tmp = (4 * tmp + @level + aD6) / 5
     tmp = 0 if tmp < 0
     @npc["specials"]["Status"] = tmp.to_i
@@ -575,9 +575,9 @@ class Npc
             if spell[5].to_i < self.splore + 7
               @npc["magick"]["spells"][i] = spell
               @npc["magick"]["spells"][i][0] = (rand(self.splore)/2).to_i + 1
-	      if @npc["magick"]["spells"][i][0] + @npc["magick"]["spells"][i][5] > self.splore + 6
-		@npc["magick"]["spells"][i][0] =  self.splore + 6 - @npc["magick"]["spells"][i][5]
-	      end
+			  if @npc["magick"]["spells"][i][0].to_i + @npc["magick"]["spells"][i][5].to_i > self.splore + 6
+				@npc["magick"]["spells"][i][0] =  self.splore + 6 - @npc["magick"]["spells"][i][5]
+			  end
               @spamount += 1
             else redo
             end
