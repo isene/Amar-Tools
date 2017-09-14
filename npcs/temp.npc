@@ -1,45 +1,34 @@
 #############################<By NPCg 0.3>#############################
-                                                    Created: 2017-08-25
-Name:     Saldus Taramostran
-Type:     Wizard (earth) (8)     Sex:   M            Height:   182
-Area:     Amaronir               Age:   89           Weight:   88
+                                                    Created: 2017-09-14
+Name:     Asafla Peibu 
+Type:     Witch (black) (1)      Sex:   M            Height:   174
+Area:     Amaronir               Age:   26           Weight:   56
 ----------------------------------------------------------------------
 Description:  
 ----------------------------------------------------------------------
-SIZE:    3          Balance:         5        Dtraps:          6        
-STRNG:   6          Climb:           7        Tracking:        6        
-ENDUR:   5          Dodge:           10       *Sense magick:   11       
-COORD:   9          Hide:            5/5      
-LEARN:   14         Mvqt:            6/6      Medical lore:    8        
-AWARE:   6          Ride:            6        Read/write:      13       
-MAGAP:   16         Sleight:         10       Spoken:          14       
-                    Swim:            9        *Natural magick: 16       
-DB:      3          Tumble:          7        *Magick history: 14       
-BP:      7          *Drawing:        4        *Legend lore:    8        
-MD:      7          *Gardening:      7        
+SIZE:    3          Balance:         4        Dtraps:          3        
+STRNG:   1          Climb:           4        Tracking:        3        
+ENDUR:   1          Dodge:           4        *Sense magick:   5        
+COORD:   3          Hide:            2/2      
+LEARN:   3          Mvqt:            5/5      Medical lore:    3        
+AWARE:   3          Ride:            3        Read/write:      4        
+MAGAP:   8          Sleight:         4        Spoken:          3        
+                    Swim:            4        *Natural magick: 4        
+DB:      1          Tumble:          4        *Creature lore:  4        
+BP:      6          *Animal handl:   4        *Legend lore:    0        
+MD:      3          *Drawing:        2        
                     *Tailoring:      3        
 ----------------------------------------------------------------------
-Cult:    Fal Munir, Protector/Priest (6)
+Cult:    i, Interested (0)
 ----------------------------------------------------------------------
-ENC:     5          Armour:   None           Social status:  UC       
-Status:  0          AP:       0              Money:          285      
+ENC:     5          Armour:   None           Social status:  S        
+Status:  -3         AP:       0              Money:          28       
 ----------------------------------------------------------------------
 Weapon          Skill    I/SR    Off    Def    Dam    HP    Range
-Unarmed           7       5       5      5      -1    0    
-Rapier            3       3       3      4      1     7    
-> Rock            5       2       3      -      -2    -     15/40
+Unarmed           3       5       1      -1     -3    0    
+> Rock            2       2       0      -      -3    -     15/40
 ----------------------------------------------------------------------
-Magick lore:  15    Magick type:  earth       Spell lore:   15    
+Magick lore:  3     Magick type:  black       Spell lore:   3     
 
-Spell               Level  DR  A?  R?  CT  Dur  Rng  Wt    AoE
-Summon Elemental      1    11  -   N   5m  2m   1m         1E*
-Banish                2    13  -   Y   1r  I    10m        1D*
-Extinguish            5    9   -   N   1r  I    5m         1mr
-Animal Sense          1    9   +   Y   5r  5m   100m       1A*
-Enh. Strength         3    9   P   Y   10m 10m  T    100kg 1C*
-Glue                  3    9   P   Y   1r  1r   5m         5 cmr
-Prot. f Fire          3    11  P   Y   1r  2r   1m         1O*/1C*
-Ctrl Elemental        6    9   A   Y   1r  2m   10m        1E*
-Freeze Solid          5    9   P   N   1r  2r   5m   20kg  1/2mr
 
 #######################################################################

@@ -372,7 +372,7 @@ class Npc
       nobility = true
     end
 
-    tmp = @npc["specials"]["Cultstat1"] + @level + (d6 + d6 + d6)/3
+	tmp = @npc["specials"]["Cultstat1"].to_i + @level + (d6 + d6 + d6)/3
     case tmp
     when 0...8
       @npc["specials"]["Cultstat1"] = "Interested"
@@ -576,7 +576,7 @@ class Npc
               @npc["magick"]["spells"][i] = spell
               @npc["magick"]["spells"][i][0] = (rand(self.splore)/2).to_i + 1
 			  if @npc["magick"]["spells"][i][0].to_i + @npc["magick"]["spells"][i][5].to_i > self.splore + 6
-				@npc["magick"]["spells"][i][0] =  self.splore + 6 - @npc["magick"]["spells"][i][5]
+				  @npc["magick"]["spells"][i][0] =  self.splore + 6 - @npc["magick"]["spells"][i][5].to_i
 			  end
               @spamount += 1
             else redo
