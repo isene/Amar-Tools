@@ -82,7 +82,7 @@ def npc_output(n)
   f += "Money:".ljust(16) + n.money.to_s.ljust(9)
   f += "\n"
   f += "----------------------------------------------------------------------\n"
-  f += "Weapon          Skill    I/SR    Off    Def    Dam    HP    Range\n"
+  f += "WEAPON          SKILL    I/SR    OFF    DEF    DAM    HP    RANGE\n"
   f += n.melee1.ljust(18)
   f += n.melee1s.to_s.ljust(8)
   f += n.melee1i.to_s.ljust(8)
@@ -142,7 +142,7 @@ def npc_output(n)
   end
   if mag != 0
     f += "\n"
-    f += "Spell               Level  DR  A?  R?  CT  Dur  Rng  Wt    AoE"
+    f += "SPELL               LEVEL  DR  A?  R?  CT  DUR  RNG  WT    AoE"
   end
   if n.spell0(0) != 0
     f += "\n"

@@ -39,14 +39,15 @@ def enc_output(anENC)
 				break
 			else
 				f += " (" + e[i]["sex"]
-				f += ", Lvl" + e[i]["level"].to_s + ")"
+				f += ", Lv" + e[i]["level"].to_s + ")"
 
 				f += " SIZ=" + e[i]["size"].to_s
 				f += "  STR=" + e[i]["strength"].to_s
 				f += "  END=" + e[i]["endurance"].to_s
 				f += "  AWR=" + e[i]["awareness"].to_s
-				f += "  Dodge=" + e[i]["dodge"].to_s
 				f += "  MAG=" + e[i]["mag"].to_s
+				f += "  Ddg=" + e[i]["dodge"].to_s
+				f += " (" + e[i]["status"].to_s + ")"
 				if e[i]["magic_lore"]
 					f += "\n".ljust(25) + e[i]["mag_type"] + "Lore=" + e[i]["mag_lore"].to_s
 					f += ", Spells=" + e[i]["spells"].to_s
@@ -55,7 +56,7 @@ def enc_output(anENC)
 
 				f += "  " + e[i]["wpn_name"].ljust(22) + "Skill=" + e[i]["wpn_skill"].to_s.rjust(2) + ", Ini: " + e[i]["wpn_ini"].to_s
 				f += ", Off:" + e[i]["wpn_off"].to_s.rjust(2) + ", Def:" + e[i]["wpn_def"].to_s.rjust(2) + ", Dam:" + e[i]["wpn_dam"].to_s.rjust(2)
-				f += "   AP:" + e[i]["ap"].to_s + ", BP:" + e[i]["bp"].to_s + "\n"
+				f += "    AP:" + e[i]["ap"].to_s + ", BP:" + e[i]["bp"].to_s + "\n"
 
 				if e[i]["msl_name"]
 					f += "  " + e[i]["msl_name"].ljust(22) + "Skill=" + e[i]["msl_skill"].to_s.rjust(2)

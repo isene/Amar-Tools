@@ -201,6 +201,17 @@ class Enc
 					@encounter[i]["ap"] = 0
 				end
 
+				@encumberance = 3 + @encounter[i]["ap"] * 7
+				if @encounter[i]["strength"] * 2 > @encumberance
+					@encounter[i]["status"] = 0
+				elsif @encounter[i]["strength"] * 5 > @encumberance
+					@encounter[i]["status"] = -1
+				elsif @encounter[i]["strength"] * 10 > @encumberance
+					@encounter[i]["status"] = -3
+				else 
+					@encounter[i]["status"] = -5
+				end
+
 				if @stats[7] != 0
 					@msl = $Missile[rand(@mslmax) + 1].dup
 					@encounter[i]["msl_name"] = @msl[0]

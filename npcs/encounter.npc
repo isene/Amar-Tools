@@ -1,14 +1,18 @@
 #################################<By NPCg 0.3>#################################
-Day:   City          (Level=0)                              Created: 2016-10-03
+Day:   City          (Level=0)                              Created: 2017-11-05
 
-NEUTRAL:
-Human: Farmer           (M, Lvl2) SIZ=2  STR=4  END=3  AWR=4  Dodge=4  MAG=0
-  Spear 2H              Skill= 4, Ini: 2, Off: 4, Def: 6, Dam: 0   AP:1, BP:4
-  X-bow (heavy)         Skill= 2, Off: 4, Dam: 4, Rng:30
+HOSTILE:
+Dwarf: Smith            (F, Lv6) SIZ=2  STR=12  END=9  AWR=1  MAG=0  Ddg=4 (-1)
+  B. axe 2H             Skill= 7, Ini: 3, Off: 6, Def: 7, Dam: 6    AP:6, BP:7
+  X-bow (light)         Skill= 6, Off: 8, Dam: 2, Rng:20
 
-Human: Builder          (M, Lvl3) SIZ=2  STR=5  END=2  AWR=2  Dodge=1  MAG=0
-  B. axe 2H             Skill= 5, Ini: 3, Off: 4, Def: 5, Dam: 3   AP:0, BP:4
-  X-bow (medium)        Skill= 4, Off: 6, Dam: 3, Rng:25
+Dwarf: Worker           (F, Lv6) SIZ=2  STR=10  END=12  AWR=2  MAG=0  Ddg=3 (-1)
+  Knife                 Skill= 4, Ini: 4, Off: 2, Def: 1, Dam: 2    AP:3, BP:8
+  Bow (heavy2)          Skill= 3, Off: 3, Dam: 6, Rng:45
+
+Dwarf: Smith            (M, Lv7) SIZ=4  STR=15  END=12  AWR=3  MAG=0  Ddg=3 (-1)
+  Light mace            Skill= 6, Ini: 3, Off: 5, Def: 4, Dam: 4    AP:5, BP:12
+  Bow (heavy3)          Skill= 4, Off: 4, Dam: 8, Rng:50
 
 ###############################################################################
 
