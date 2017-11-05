@@ -3,7 +3,7 @@ For AMAR RPG: Random encounters and NPC generator
 
 ---------------------------------------------------------------------------
 
-Welcome to the NPC Generation for the Amar Role-Playing Game.
+Welcome to the NPC Generation for the Amar Role-Playing Game (http://d6gaming.org).
 
 This program runs on any GNU/Linux system where the scripting language
 Ruby is installed. Ruby is available as tar.gz, rpm packages or
