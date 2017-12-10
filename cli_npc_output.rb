@@ -20,10 +20,10 @@ def npc_output(n)
   f += "Age:".ljust(7) + n.age.to_s.ljust(13)
   f += "Weight:".ljust(10) + n.weight.to_s
   f += "\n"
-  f += "----------------------------------------------------------------------\n"
+  f += "-----------------------------------------------------------------------\n"
   f += "Description:".ljust(14) + n.description
   f += "\n"
-  f += "----------------------------------------------------------------------\n"
+  f += "-----------------------------------------------------------------------\n"
   f += "SIZE:".ljust(9) + n.size.to_s.ljust(11)
   f += "Balance:".ljust(17) + n.balance.to_s.ljust(9)
   f += "Dtraps:".ljust(17) + n.dtraps.to_s.ljust(9)
@@ -69,10 +69,10 @@ def npc_output(n)
   f += " ".ljust(20)
   f += "*" + (n.physical3 + ":").ljust(16) + n.physical3s.to_s.ljust(9)
   f += "\n"
-  f += "----------------------------------------------------------------------\n"
+  f += "-----------------------------------------------------------------------\n"
   f += "Cult:".ljust(9) + n.cult + ", " + n.cultstat1 + " (" + n.cs.to_s + ")"
   f += "\n"
-  f += "----------------------------------------------------------------------\n"
+  f += "-----------------------------------------------------------------------\n"
   f += "ENC:".ljust(9) + n.enc.to_s.ljust(11)
   f += "Armour:".ljust(10) + n.armour.ljust(15)
   f += "Social status:".ljust(16) + n.socstatus.ljust(9)
@@ -81,7 +81,7 @@ def npc_output(n)
   f += "AP:".ljust(10) + n.ap.to_s.ljust(15)
   f += "Money:".ljust(16) + n.money.to_s.ljust(9)
   f += "\n"
-  f += "----------------------------------------------------------------------\n"
+  f += "-----------------------------------------------------------------------\n"
   f += "WEAPON          SKILL    I/SR    OFF    DEF    DAM    HP    RANGE\n"
   f += n.melee1.ljust(18)
   f += n.melee1s.to_s.ljust(8)
@@ -134,7 +134,7 @@ def npc_output(n)
   end
   if n.maglore != 0
     f += "\n"
-    f += "----------------------------------------------------------------------\n"
+    f += "-----------------------------------------------------------------------\n"
     f += "Magick lore:".ljust(14) + n.maglore.to_s.ljust(6)
     f += "Magick type:".ljust(14) + n.magtype1.ljust(12)
     f += "Spell lore:".ljust(14) + n.splore.to_s.ljust(6)

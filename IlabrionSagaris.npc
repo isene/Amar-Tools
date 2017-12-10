@@ -4,8 +4,7 @@ Name:     Ilabrion Sagaris
 Type:     Monk                   Sex:   M            Height:   176
 Area:     Amaronir               Age:   36           Weight:   76
 ----------------------------------------------------------------------
-Description: Lone wolf, introvert, anassumingly dressed, bald
-			 Blue eyes, fair skin
+Description:  
 ----------------------------------------------------------------------
 SIZE:    3,5        Balance:         5        Dtraps:          3        
 STRNG:   6          Climb:           7        Tracking:        2        
@@ -16,11 +15,11 @@ AWARE:   2          Ride:            5        Read/write:      2
 MAGAP:   3          Sleight:         5        Spoken:          6        
                     Swim:            5        *Legend lore:    6        
 DB:      2          Tumble:          6        *Plant lore:     4        
-BP:      9          *Acrobatics:     5        *History:        3        
+BP:      9          *Acrobatics:     5        *History:        2        
 MD:      3          *Gardening:      4        
                     *Hold breath:    5        
 ----------------------------------------------------------------------
-Cult:    Maleko, Initiated (6)
+Cult:    Maleko, Lay member (6)
 ----------------------------------------------------------------------
 ENC:     7          Armour:   None           Social status:  MC       
 Status:  0          AP:       0              Money:          1        
