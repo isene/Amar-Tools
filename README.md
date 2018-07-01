@@ -71,5 +71,8 @@ By running npcg with the -h option, this helpfile will be displayed:
       editor directly following the "-e", such as npcg -e vim. If no editor
       is given, the program outputs the NPC to "less".""
 
-Thank you for trying out NPC Generation. Feel free to visit my website
-at http://isene.com
+Thanks to Alan Skorkin
+(https://www.skorks.com/2009/07/how-to-write-a-name-generator-in-ruby/)
+for providing a basis for the random name generator.
+
+Thank you for trying out NPC Generation. Feel free to visit my website at http://isene.com
