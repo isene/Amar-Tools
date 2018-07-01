@@ -91,6 +91,9 @@ else
     load "cli_npc_output.rb"
     load "cli_enc_input.rb"
     load "cli_enc_output.rb"
+    load "cli_town_input.rb"
+    load "cli_town_output.rb"
+    load "cli_name_gen.rb"
 
     # Set initial global encounter default values
     $Day = 1
@@ -104,25 +107,26 @@ else
     puts "\nNPC Generation 0.5 - Rendom encounters and character generation for Amar RPG."
     
     loop do
-	puts "\nRandom encounter (ENTER)\nCreate a 'town' (t)\nSpecific NPC generation (n)\nQuit (q)?\n\n"
-	c = get_char
-	if c == "q"
-	    break
-	elsif c == "\r"
-	    ia = enc_input
-	    anENC = Enc.new(ia[0], ia[1])
-	    enc_output(anENC)
-	elsif c == "t"
-		puts "Not yet implemented"
-#	    ia = town_input
-#	    aTOWN = Town.new(ia[0], ia[1])
-#	    town_output(aTown)
-	elsif c == "n"
-	    ia = npc_input
-	    aNPC = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
-	    npc_output(aNPC)
-	end
-	system "clear"
+		puts "\nENTER = Random encounter\nt = Create a village/town/city\nn = Generate a detailed human NPC\nN = Generate names\nq = Quit npcg\n\n"
+		c = get_char
+		if c == "q"
+			break
+		elsif c == "\r"
+			ia = enc_input
+			anENC = Enc.new(ia[0], ia[1])
+			enc_output(anENC)
+		elsif c == "t"
+			puts "Not yet implemented"
+	#	    ia = town_input
+	#	    aTOWN = Town.new(ia[0], ia[1])
+	#	    town_output(aTown)
+		elsif c == "n"
+			ia = npc_input
+			aNPC = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
+			npc_output(aNPC)
+		elsif c == "N"
+			name_gen
+		end
     end
 end
 
