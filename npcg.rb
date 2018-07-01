@@ -102,11 +102,10 @@ else
     $Level = 0
 
     # The Npc enters via the inputform, is initialized and rendered by the outputform.
-
-    system "clear"
-    puts "\nNPC Generation 0.5 - Rendom encounters and character generation for Amar RPG."
     
     loop do
+		system "clear"
+		puts "\nNPC Generation 0.5 - Rendom encounters and character generation for Amar RPG."
 		puts "\nENTER = Random encounter\nt = Create a village/town/city\nn = Generate a detailed human NPC\nN = Generate names\nq = Quit npcg\n\n"
 		c = get_char
 		if c == "q"
@@ -126,6 +125,8 @@ else
 			npc_output(aNPC)
 		elsif c == "N"
 			name_gen
+			puts "\nPress any key"
+			c = get_char
 		end
     end
 end

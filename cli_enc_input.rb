@@ -14,7 +14,7 @@ def enc_input
 
   # Get the terrain
 	puts "\nEnter the tarrain type [Default = #{$Terrain}]:"
-	puts "0: City   1: Rural   2: Road   3:Plains   4: Hills   5: Mountains   6:Woods   7: Wilderness"
+	puts "0: City   1: Rural   2: Road   3: Plains   4: Hills   5: Mountains   6: Woods   7: Wilderness"
   print "> "
 	c = gets.chomp
 	if c == ""
