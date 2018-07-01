@@ -1,0 +1,53 @@
+<html>
+<head>
+<title>Generate random towns</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<form name="npc" method="post" action="/cgi-bin/html_enc_output.rb">
+  <table width="500" border="0" cellspacing="0" cellpadding="2" align="center">
+    <tr>
+      <td><center><b>Random town generator (any size from village to cities) - for the Amar RPG</b></center></td>
+    </tr>
+  </table>
+  <table width="500" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#333333">
+    <tr>
+      <td>
+        <table width="100%" border="0" cellspacing="1" cellpadding="4">
+          <tr> 
+            <td width="200" bgcolor="#CCCCCC"><b>Number of houses</b></td>
+            <td bgcolor="#FFFFFF">
+              <input type="text" name="town_size" size="4">
+            </td>
+          </tr>
+          <tr> 
+            <td width="200" bgcolor="#CCCCCC"><b>Variation</b></td>
+            <td bgcolor="#FFFFFF">
+              <select name="town_var">
+				<option><%= $town_var %>
+                <option>0: Only humans
+                <option>10: Very few non-humans
+                <option>20: Some non-humans
+                <option>30: Non-humans are normal
+                <option>40: Mixed place
+                <option>50: Variety
+                <option>60: Large variety
+                <option>70: Larger variety
+                <option>80: Great variety
+                <option>90: Wild variety
+                <option>100: Crazy place
+              </select>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <p align="center">
+    <input type="submit" name="submit" value=" Submit ">
+  </p>
+</form>
+<p><center><a href="/index.html">Back to front page</a></center></p>
+<p><center><img src="/images/amar_areas.jpg" /></center></p>
+</body>
+</html>

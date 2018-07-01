@@ -1,6 +1,6 @@
 #! /usr/bin/ruby
 
-# Welcome to the NPC generation version 0.3.
+# Welcome to the NPC generation version 0.5.
 # 
 # This file is the umbrella for NPC to work as CLI/terminal program.
 
@@ -25,6 +25,10 @@ else
 end
 
 Dir.chdir($pgmdir)
+
+system "touch npcs/temp.npc"
+system "touch npcs/town.npc"
+system "touch npcs/encounter.npc"
 
 # Help output
 if ARGV.include?("-h")
@@ -97,10 +101,10 @@ else
     # The Npc enters via the inputform, is initialized and rendered by the outputform.
 
     system "clear"
-    puts "\nNPC Generation 0.3 - Rendom encounters and character generation for Amar RPG."
+    puts "\nNPC Generation 0.5 - Rendom encounters and character generation for Amar RPG."
     
     loop do
-	puts "\nRandom encounter (ENTER)\nSpecific NPC generation (n)\nQuit (q)?\n\n"
+	puts "\nRandom encounter (ENTER)\nCreate a 'town' (t)\nSpecific NPC generation (n)\nQuit (q)?\n\n"
 	c = get_char
 	if c == "q"
 	    break
@@ -108,6 +112,11 @@ else
 	    ia = enc_input
 	    anENC = Enc.new(ia[0], ia[1])
 	    enc_output(anENC)
+	elsif c == "t"
+		puts "Not yet implemented"
+#	    ia = town_input
+#	    aTOWN = Town.new(ia[0], ia[1])
+#	    town_output(aTown)
 	elsif c == "n"
 	    ia = npc_input
 	    aNPC = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])

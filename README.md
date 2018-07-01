@@ -35,22 +35,22 @@ Then, as root, run the setup program:
 This makes it possible for you to run the program by just entering
 "npcg" on the command line.
 
-By running npcg03 with the -h option, this helpfile will be displayed:
+By running npcg with the -h option, this helpfile will be displayed:
 
   Notes on the usage of NPC Generation for the Amar RPG 
   
   This program will only make sense to you if you know what roleplaying 
   games (RPGs) are. It is a usefull asset to the Amar RPG.  
   
-  The program is used for random or specific encounters (basic details) or
-  detailed NPC generation.
+  The program is used for creating villages/towns/cities, random or
+  specific encounters (basic details) or detailed NPC generation.
 
   You may select or enter values in any of the NPC's characteristics. 
   Those you don't will be randomly generated. When you have selected/
   entered the values you want, press "submit", and the NPC will be generated.  
 	
-  Press "v" when encounters or an NPC is presented to edit the values in
-  your default editor.
+  Press "v" when a town, encounters or an NPC is presented to edit the
+  values in your default editor.
   
   Happy generation :) 
   

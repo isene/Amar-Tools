@@ -1,8 +1,8 @@
 def randomizer(params)
 	par = {}
 	par.merge!(params)
-  i = 1
-  par.each_key do |key|
+	i = 1
+	par.each_key do |key|
     par[key] += i
     i = par[key]
   end

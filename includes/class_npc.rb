@@ -30,71 +30,24 @@ class Npc
 
 # Randomize omitted values, starting with a (primitive) name generator
 
+  if @sex == ""
+    var = rand(2).to_i
+    case var
+      when 0
+        @sex = "F"
+      else
+        @sex = "M"
+    end
+  end
+
   if @name == ""
-    namecount = d6
-    case namecount
-      when 1..2
-        namecount = 1
-      when 3..5
-        namecount = 2
-      when 6
-        namecount = 3
-    end
-    namecount.times do
-      namelength = aD6 + 2
-      namelength = 2 if namelength < 2
-      c = 0
-      w = 0
-      namelength.times do |letternumber|
-        l = rand(2).to_i
-        if c == 2
-          l = 0
-          c = 0
-        end
-        if w == 2
-          l = 1
-          w = 0
-        end
-        case l
-          when 0
-            letter = randomizer(
-            "a" => 5,
-            "e" => 5,
-            "i" => 4,
-            "o" => 4,
-            "u" => 2,
-            "y" => 1)
-            w += 1
-            w += rand(2).to_i if w == 1
-          when 1
-            letter = randomizer(
-            "b" => 4,
-            "c" => 4,
-            "d" => 5,
-            "f" => 3,
-            "g" => 3,
-            "h" => 1,
-            "j" => 2,
-            "k" => 3,
-            "l" => 5,
-            "m" => 5,
-            "n" => 5,
-            "p" => 4,
-            "q" => 1,
-            "s" => 6,
-            "t" => 6,
-            "v" => 3,
-            "w" => 1,
-            "x" => 1,
-            "z" => 1)
-            c += 1
-            c += rand(2).to_i if c == 1
-        end
-        letter = letter.upcase if letternumber == 0
-        @name += letter
-      end
-      @name += " "
-    end
+	if @sex == "M"
+	  name1 = `name_generator/name_generator_main.rb -d human_male_first.txt`.chomp
+	else
+	  name1 = `name_generator/name_generator_main.rb -d human_female_first.txt`.chomp
+	end
+	name2 = `name_generator/name_generator_main.rb -d human_male_first.txt`.chomp
+	@name = name1 + " " + name2
   end
 
   unless $Chartype.has_key?(@type)
@@ -126,16 +79,6 @@ class Npc
       "Rauinir"   => 3,
       "Outskirts" => 1,
       "Other"     => 1)
-  end
-
-  if @sex == ""
-    var = rand(2).to_i
-    case var
-      when 0
-        @sex = "F"
-      else
-        @sex = "M"
-    end
   end
 
   @age = @level * 5 + oD6.abs * 3 + rand(10) if @age == 0
