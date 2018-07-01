@@ -1,32 +1,34 @@
 #############################<By NPCg 0.5>#############################
                                                     Created: 2018-07-01
-Name:     Grael Jas
-Type:     Messenger (3)          Sex:   M            Height:   172
-Area:     Feronir                Age:   31           Weight:   70
+Name:     Calebarre Rod
+Type:     Merchant (5)           Sex:   M            Height:   172
+Area:     Aleresir               Age:   48           Weight:   71
 -----------------------------------------------------------------------
 Description:  
 -----------------------------------------------------------------------
-SIZE:    3          Balance:         4        Dtraps:          5        
-STRNG:   2          Climb:           4        Tracking:        3        
-ENDUR:   7          Dodge:           5        *Night Vision:   5        
-COORD:   4          Hide:            6/6      
-LEARN:   2          Mvqt:            4/4      Medical lore:    2        
-AWARE:   4          Ride:            6        Read/write:      2        
-MAGAP:   0          Sleight:         2        Spoken:          5        
-                    Swim:            4        *Writing:        4        
-DB:      1          Tumble:          4        *Geography:      2        
-BP:      8          *Running:        5        *Social lore:    1        
-MD:      2          *Weapon repair:  0        
-                    *Hold breath:    2        
+SIZE:    3          Balance:         9        Dtraps:          4        
+STRNG:   7          Climb:           7        Tracking:        7        
+ENDUR:   4          Dodge:           8        *Empathy:        6        
+COORD:   9          Hide:            8/8      
+LEARN:   4          Mvqt:            9/9      Medical lore:    2        
+AWARE:   8          Ride:            9        Read/write:      3        
+MAGAP:   0          Sleight:         5        Spoken:          4        
+                    Swim:            7        *Trading:        8        
+DB:      3          Tumble:          10       *Social lore:    4        
+BP:      7          *Tailoring:      10       *Law:            4        
+MD:      1          *Tanning:        5        
+                    *Carpenting:     5        
 -----------------------------------------------------------------------
-Cult:    Shalissa, Lay member (0)
+Cult:    Mailatroz, Initiated (0)
 -----------------------------------------------------------------------
-ENC:     7          Armour:   None           Social status:  LMC      
-Status:  -1         AP:       0              Money:          17       
+ENC:     12         Armour:   Leather armour Social status:  MC       
+Status:  0          AP:       1              Money:          28       
 -----------------------------------------------------------------------
 WEAPON          SKILL    I/SR    OFF    DEF    DAM    HP    RANGE
-Rapier            6       3       6      6      -1    7    
-Short sword       6       4       5      6      -1    12   
-> X-bow (light)   5       1/3     7      -      2     -     20/100
+Short sword       11      4       10     11     1     12   
+Club              7       3       6      6      1     8    
+Staff             5       2       5      8      1     7    
+> Sling           7       1       4      -      0     -     40/120
+> X-bow (medium)  6       1/4     8      -      3     -     25/175
 
 #######################################################################
