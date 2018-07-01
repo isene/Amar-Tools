@@ -16,7 +16,7 @@ make real use of this program, you should be running an Amar game as the
 Game Master.
 
 For more info on the Amar RPG, game rules, adventures and more, see
-http://isene.com.
+http://www.d6gaming.org/.
 
 For an online version of this program, go to http://isene.org
 
@@ -35,7 +35,9 @@ Then, as root, run the setup program:
 This makes it possible for you to run the program by just entering
 "npcg" on the command line.
 
-By running npcg with the -h option, this helpfile will be displayed:
+When using the html version, amar.html is the starting page.
+
+By running npcg on the command line with the -h option, this helpfile will be displayed:
 
   Notes on the usage of NPC Generation for the Amar RPG 
   
