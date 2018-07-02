@@ -41,12 +41,13 @@ class Npc
   end
 
   if @name == ""
+	p = File.expand_path(File.dirname(__FILE__))
 	if @sex == "M"
-	  name1 = `../name_generator/name_generator_main.rb -d human_male_first.txt`.chomp
+	  name1 = `#{p}/../name_generator/name_generator_main.rb -d human_male_first.txt`.chomp
 	else
-	  name1 = `../name_generator/name_generator_main.rb -d human_female_first.txt`.chomp
+	  name1 = `#{p}/../name_generator/name_generator_main.rb -d human_female_first.txt`.chomp
 	end
-	name2 = `../name_generator/name_generator_main.rb -d human_male_first.txt`.chomp
+	name2 = `#{p}/../name_generator/name_generator_main.rb -d human_male_first.txt`.chomp
 	@name = name1 + " " + name2
   end
 
