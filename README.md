@@ -10,10 +10,11 @@ Ruby is installed. Ruby is available as tar.gz, rpm packages or
 deb-packages as needed for your specific Linux distribution. For more
 info on Ruby, see http://www.ruby-lang.org.
 
-NPC Generation is designed specifically for generating random or specific
-encounters and Non-Player Characters for the Amar RPG. So, in order to
-make real use of this program, you should be running an Amar game as the
-Game Master.
+This is a tool box for the Amar RPG. It is designed for generating random
+or specific encounters and Non-Player Characters for the Amar RPG, random
+names for various races and for making Open Ended Dice Rolls. So, in order
+to make real use of this program, you should be running an Amar game as
+the Game Master.
 
 For more info on the Amar RPG, game rules, adventures and more, see
 http://www.d6gaming.org/.
