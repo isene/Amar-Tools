@@ -8,9 +8,9 @@ load "/var/www/isene.org/html/includes/includes.rb"
 cgi = CGI.new
 tmpl = File.read("../enc_output.html")
 
-$Day				= cgi["day"].to_i
+$Day = cgi["day"].to_i
 $Day == 0 ? @day = "Night" : @day = "Day"
-$Terrain		= cgi["terrain"].to_i
+$Terrain = cgi["terrain"].to_i
 case $Terrain
 	when 0
 		@terrain ="City"
