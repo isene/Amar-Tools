@@ -19,8 +19,8 @@ print <<HTML2
   <tr>                                                                                                                                                       
     <td align="center">                                                                                                                                      
       <form name="new" method="post" action="/cgi-bin/O6.rb">                                                                                    
-      <input type="submit" name="new" value=" Make new rolls "></form>                                                                                 
-      <p><button onclick="location.href = '/amar.html';" > Front page </button></p>                                                                          
+      <input type="submit" style="width:300px" name="new" value=" Make new rolls "></form>
+      <p><button style="width:300px" onclick="location.href = '/amar.html';" > Front page </button></p>
     </td>                                                                                                                                                    
   </tr>                                                                                                                                                      
   <tr><td><center><br />See the <a href="http://d6gaming.org/index.php/The_Character#Open_Ended_Rolls">Amar RPG wiki</a> for details on what an open ended d6 roll is.</td></tr>
