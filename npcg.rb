@@ -120,6 +120,7 @@ else
 	#	    aTOWN = Town.new(ia[0], ia[1])
 	#	    town_output(aTown)
 		elsif c == "n"
+			load "includes/tables/chartype.rb"
 			ia = npc_input
 			aNPC = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
 			npc_output(aNPC)

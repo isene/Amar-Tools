@@ -1,4 +1,4 @@
-# The engine for NPC Generation 0.4
+# The engine for NPC Generation 0.5
 #
 # When the class is initialized, the npc is generated
 # using data from the imported tables (hashes and arrays)
@@ -42,11 +42,11 @@ class Npc
 
   if @name == ""
 	if @sex == "M"
-	  name1 = `name_generator/name_generator_main.rb -d human_male_first.txt`.chomp
+	  name1 = `../name_generator/name_generator_main.rb -d human_male_first.txt`.chomp
 	else
-	  name1 = `name_generator/name_generator_main.rb -d human_female_first.txt`.chomp
+	  name1 = `../name_generator/name_generator_main.rb -d human_female_first.txt`.chomp
 	end
-	name2 = `name_generator/name_generator_main.rb -d human_male_first.txt`.chomp
+	name2 = `../name_generator/name_generator_main.rb -d human_male_first.txt`.chomp
 	@name = name1 + " " + name2
   end
 
@@ -91,11 +91,9 @@ class Npc
 
   @weight = @height - 120 + aD6 * 4 + rand(10) if @weight == 0
 
-
 # Then start working with the type array
 
     @npc = $Chartype[@type].dup
-
 
 # Then generate the individual attributes
 
@@ -110,7 +108,6 @@ class Npc
 # Adjust the weight based on the STRNG
 
     @weight += @npc["attr"]["STRNG"] * 2 - 6
-
 
 # Adjust female strength
 
@@ -1354,6 +1351,5 @@ class Npc
   def spell8=(key, new)
     @npc["magick"]["spells"][8][key] = new
   end
-
 
 end

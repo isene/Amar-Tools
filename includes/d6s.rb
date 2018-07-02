@@ -1,4 +1,4 @@
-# Dice-rolling for NPC-generation X
+# Dice-rolling for NPCg
 
 def dX (x)
   result = rand(x) + 1

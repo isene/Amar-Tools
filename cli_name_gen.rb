@@ -1,4 +1,4 @@
-# The encounter input module for CLI NPCg
+# Random name generator input module for CLI NPCg
   
 def name_gen
 

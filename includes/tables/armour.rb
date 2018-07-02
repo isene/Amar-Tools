@@ -1,4 +1,4 @@
-# The armour table (see rules page 12)
+# The armour table
 
 $Armour = Array.new
 

@@ -1,4 +1,4 @@
-# The engine for NPC Generation 0.4
+# The engine for NPC Generation 0.5
 #
 # When the class is initialized, a random encounter is generated
 # using data from the imported tables (hashes and arrays)

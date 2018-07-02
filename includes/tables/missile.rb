@@ -1,4 +1,4 @@
-# Melle weapons table (see rules page 21)
+# Melle weapons table
 
 $Missile = Array.new
 
