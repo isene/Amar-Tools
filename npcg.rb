@@ -116,9 +116,9 @@ else
 			enc_output(anENC)
 		elsif c == "t"
 			puts "Not yet implemented"
-	#	    ia = town_input
-	#	    aTOWN = Town.new(ia[0], ia[1])
-	#	    town_output(aTown)
+		    ia = town_input
+				aTOWN = Town.new(ia[0], ia[1])
+		    town_output(aTOWN)
 		elsif c == "n"
 			load "includes/tables/chartype.rb"
 			ia = npc_input
