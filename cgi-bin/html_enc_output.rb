@@ -32,7 +32,7 @@ end
 
 $Terraintype = $Terrain + (8 * $Day)
 
-$Level			= cgi["level"].to_s.to_i
+$Level = cgi["level"].to_s.to_i
 
 @type = cgi["type"].to_s
 @type = "" if @type == "(Type)"
