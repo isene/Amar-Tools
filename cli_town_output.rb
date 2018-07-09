@@ -5,7 +5,7 @@ def town_output(aTOWN)
 	f = "#################################<By NPCg 0.5>#################################\n\n"
 
 	t.length.times do |house|
-		f += "##{house}: #{t[house][0]}\n"
+		f += "##{house + 1}: #{t[house][0]}\n"
 		t[house][1..-1].each do |r|
 			f += "   #{r}\n"
 		end

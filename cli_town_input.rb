@@ -3,15 +3,14 @@
 def town_input
 
   # Get Town size
-	town_size = 10
-
-  	puts "\nEnter number of houses:"
-    print "> "
+	town_size = 1
+ 	puts "\nEnter number of houses (default=1):"
+  print "> "
 	town_size = gets.chomp.to_i
 
   # Get Town variations
 	town_var = 0
-  	puts "\nEnter race variation: 0 = Only humans   1 = Few non-humans   2 = Several non-humans   3 = Crazy place"
+  	puts "\nEnter race variation (default=0): 0 = Only humans   1 = Few non-humans   2 = Several non-humans   3 = Crazy place"
     print "> "
 	town_var = gets.chomp.to_i
 	town_var = 0 if town_var < 0 

@@ -11,7 +11,7 @@ class Town
 	def name(race)
 		p = File.expand_path(File.dirname(__FILE__))
 		case race
-			when "Human", "Other", "Half giant"
+			when "Human", "Other", "Half-giant"
 				file = "human_male_first.txt"
 				file = "human_female_first.txt" if @r_sex == "F"
 			when "Dwarf"
@@ -28,7 +28,7 @@ class Town
 				file = "araxi.txt"
 		end
     result = `#{p}/../name_generator/name_generator_main.rb -d #{file}`.chomp + " "
-		if $Last_name == ""
+		if $Last_name == "" or /Soldier/ =~ @town[@h_index][0]
 	    if /human/ =~ file
 				$Last_name = `#{p}/../name_generator/name_generator_main.rb -d human_last.txt`.chomp
 			else
@@ -128,7 +128,9 @@ class Town
 		# Get personality
 		@r_pers = randomizer($Personality)
 		# Get skill
-		@r_skill = (rand(6) + rand(6) + age/20).to_i
+		@r_skill = (rand(6) + rand(6) + @r_age/20).to_i
+		@r_skill += (@r_age/15).to_i if /Stronghold/ =~ @town[@h_index][0]
+		@r_skill += (@r_age/20).to_i if /Noble/ =~ @town[@h_index][0]
 		@town[@h_index][@r] = "#{@r_name} (#{@r_sex} #{@r_age}) #{@r_race} [#{@r_skill}] #{@r_pers}"
 		@r += 1
 	end
@@ -162,13 +164,18 @@ class Town
 
 		$Town[1..-1].each do | h_type |
 			#Iterate over the whole $Town array picking houses as we go and populating @town
-			h_number = (rand(h_type[2]) + rand(h_type[2])).to_i
+			h_number = ((rand(h_type[2]) + rand(h_type[2])) * town_size / 100).to_i
 			h_number = h_type[3] if h_number < h_type[3]
+			h_number = h_number.to_i
 			# create that house types h_number of times
+			next if h_number == 0
 			h_number.times do
 				@town[@h_index] = []
 				@town[@h_index][0] = h_type[0]
 				#Pick opening hours if shop
+				if /Inn/ =~ h_type[0]
+					@town[@h_index][0] += ": Open 7/7 06-00"
+				end
 				if h_type[1] == 1
 					@town[@h_index][0] += ": Open "
 					@town[@h_index][0] += randomizer(
@@ -196,17 +203,13 @@ class Town
 				$Last_name = ""
 				@r = 1
 				add_resident(0)
-				(rand(h_type[4]) + rand(h_type[4])).to_i.times do
-					add_resident(3)
-				end
-				(rand(h_type[5]) + rand(h_type[5])).to_i.times do
-					add_resident(2)
-				end
-				(rand(h_type[6]) + rand(h_type[6])).to_i.times do
-					add_resident(1)
-				end
+				(rand(h_type[4]) + rand(h_type[4])).to_i.times {add_resident(1)}
+				(rand(h_type[5]) + rand(h_type[5])).to_i.times {add_resident(2)}
+				((town_size / 30) + 1).to_i.times {add_resident(2)} if /Stronghold/ =~ @town[@h_index][0] 
+				(rand(h_type[6]) + rand(h_type[6])).to_i.times {add_resident(3)}
 				@h_index += 1
-				break if @h_index > town_size
+				puts "Progress: House ##{@h_index}"
+				break if @h_index == town_size
 			end
 		end
 		return @town
