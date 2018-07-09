@@ -4,7 +4,7 @@
 </head>
 
 <body bgcolor="#FFFFFF" text="#000000">
-<form name="npc" method="post" action="/cgi-bin/html_enc_output.rb">
+<form name="npc" method="post" action="/cgi-bin/html_town.rb">
   <table width="500" border="0" cellspacing="0" cellpadding="2" align="center">
     <tr>
       <td><center><b>Random town generator (any size from village to cities) - for the Amar RPG</b></center></td>
@@ -26,16 +26,9 @@
               <select name="town_var">
 				<option><%= $town_var %>
                 <option>0: Only humans
-                <option>10: Very few non-humans
-                <option>20: Some non-humans
-                <option>30: Non-humans are normal
-                <option>40: Mixed place
-                <option>50: Variety
-                <option>60: Large variety
-                <option>70: Larger variety
-                <option>80: Great variety
-                <option>90: Wild variety
-                <option>100: Crazy place
+                <option>1: Few non-humans
+                <option>2: Several non-humans
+                <option>3: Crazy place
               </select>
             </td>
           </tr>
