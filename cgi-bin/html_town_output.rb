@@ -28,13 +28,13 @@ end
 	
 f += "###############################################################################\n\n"
 
-#begin
-#	File.delete("/npcs/town.npc")
-#	File.open("/npcs/town.npc", File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
-#		fl.write f
-#	end
-#rescue
-#end
+begin
+	File.delete("/npcs/town.npc")
+	File.open("/npcs/town.npc", File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
+		fl.write f
+	end
+rescue
+end
 # End: From the CLI module
 
 out = ERB.new(tmpl)
