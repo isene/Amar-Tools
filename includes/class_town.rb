@@ -104,6 +104,7 @@ class Town
 		elsif $Sex == "F"
 			@r_sex = randomizer( "M" => 3, "F" => 1 )
 		end
+		$Sex = @r_sex
 		# Get age
 		case age
 			when 0
