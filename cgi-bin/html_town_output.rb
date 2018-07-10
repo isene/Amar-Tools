@@ -29,8 +29,8 @@ end
 f += "###############################################################################\n\n"
 
 begin
-	File.delete("/npcs/town.npc")
-	File.open("/npcs/town.npc", File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
+	File.delete("../npcs/town.npc")
+	File.open("../npcs/town.npc", File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
 		fl.write f
 	end
 rescue
