@@ -18,9 +18,9 @@ aTOWN = Town.new(@town_size, @town_var)
 # Start: From the CLI module
 f = "#################################<By NPCg 0.5>#################################\n\n"
 
-t.length.times do |house|
-	f += "##{house + 1}: #{t[house][0]}\n"
-	t[house][1..-1].each do |r|
+@t.length.times do |house|
+	f += "##{house + 1}: #{@t[house][0]}\n"
+	@t[house][1..-1].each do |r|
 		f += "   #{r}\n"
 	end
 	f += "\n"
