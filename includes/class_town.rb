@@ -206,7 +206,7 @@ class Town
 				add_resident(0)
 				(rand(h_type[4]) + rand(h_type[4])).to_i.times {add_resident(1)}
 				(rand(h_type[5]) + rand(h_type[5])).to_i.times {add_resident(2)}
-				((town_size / 30) + 1).to_i.times {add_resident(2)} if /Stronghold/ =~ @town[@h_index][0] 
+				((town_size / 40) + 1).to_i.times {add_resident(2)} if /Stronghold/ =~ @town[@h_index][0] 
 				(rand(h_type[6]) + rand(h_type[6])).to_i.times {add_resident(3)}
 				@h_index += 1
 				puts "Progress: House ##{@h_index}"
