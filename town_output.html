@@ -10,7 +10,7 @@
   <tbody>
     <tr>
       <td>         
-        <center><b>Random towns (from villages to cities) - for the Amar RPG</b></center>
+        <center><b>Random town - for the Amar RPG</b></center>
       </td>
     </tr>     
   </tbody>   
@@ -26,6 +26,9 @@
             <tr><td colspan="16" bgcolor="#666666">
             <table width="100%" border="0" cellspacing="1" cellpadding="2">
               <tbody>
+                <tr>
+				  <td width="150" bgcolor="#dddddd"><input type="text" style="font-weight: bold; background-color: #dddddd;" size="40" name="house" value="(TOWN NAME)"</td>
+                </tr>
                 <% @t.each_with_index do |h,i| %>
                 <tr>
 				  <td width="150" bgcolor="#dddddd"><input type="text" style="font-weight: bold; background-color: #dddddd;" size="40" name="house" value="#<%= i+1 %>: <%= h[0] %>"</td>
