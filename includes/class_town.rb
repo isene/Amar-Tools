@@ -174,14 +174,14 @@ class Town
 				@town[@h_index][0] = h_type[0]
 				#Pick opening hours if shop
 				if /Inn/ =~ h_type[0]
-					@town[@h_index][0] += ": Open 7/7 06-00"
+					@town[@h_index][0] += ": Open 7/7, 06-00"
 				end
 				if h_type[1] == 1
 					@town[@h_index][0] += ": Open "
 					@town[@h_index][0] += randomizer(
-						"5/7 "  => 1,
-						"6/7 "  => 2,
-						"7/7 "  => 1)
+						"5/7, "  => 1,
+						"6/7, "  => 2,
+						"7/7, "  => 1)
 					@town[@h_index][0] += randomizer(
 						"07-" => 1,
 						"08-" => 2,
