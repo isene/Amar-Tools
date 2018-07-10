@@ -23,7 +23,7 @@ print <<HTML2
       <p><button style="width:300px" onclick="location.href = '/amar.html';" > Front page </button></p>
     </td>                                                                                                                                                    
   </tr>                                                                                                                                                      
-	<tr><td><center><br /><image src="/images/dice.png ></td></tr>
+	<tr><td><center><br /><image src="/images/dice.png" /></td></tr>
   <tr><td><center><br />See the <a href="http://d6gaming.org/index.php/The_Character#Open_Ended_Rolls">Amar RPG wiki</a> for details on what an open ended d6 roll is.</td></tr>
   <tr><td><center><small>This <a href="http://isene.org/x/O6.f95">program</a> is written in Fortran by Geir Isene.</small></center></td></tr>
 </table>
