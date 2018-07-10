@@ -165,7 +165,7 @@ class Town
 
 		$Town[1..-1].each do | h_type |
 			#Iterate over the whole $Town array picking houses as we go and populating @town
-			h_number = ((rand(h_type[2]) + rand(h_type[2])) * town_size / 100).to_i
+			h_number = ((rand(h_type[2]) + rand(h_type[2]) + rand(1)) * town_size / 100).to_i
 			h_number = h_type[3] if h_number < h_type[3]
 			h_number = h_number.to_i
 			# create that house types h_number of times
