@@ -26,9 +26,9 @@
             <tr><td colspan="16" bgcolor="#666666">
             <table width="100%" border="0" cellspacing="1" cellpadding="2">
               <tbody>
-                <% @t.each do |h| %>
+                <% @t.each_with_index do |h,i| %>
                 <tr>
-                  <td width="150" bgcolor="#cccccc"><b><input type="text" style="font-weight: bold;" size="40" name="house" value="<%= h[0] %>"</b></td>
+				  <td width="150" bgcolor="#cccccc"><input type="text" style="font-weight: bold;" size="40" name="house" value="#<% i %>: <%= h[0] %>"</td>
                 </tr>
                 <% h[1..-1].each do |r| %>
                 <tr>
