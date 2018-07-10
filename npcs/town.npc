@@ -1,599 +1,386 @@
 #################################<By NPCg 0.5>#################################
 
 #1: Stronghold
-   Amile Wincheen (F 33) Human [8] Generous, empathetic
-   Roy Wincheen (M 53) Human [10] Conservative, structured
-   Jahir Wincheen (M 62) Human [16] Conservative, structured
-   Trever Wincheen (M 77) Human [13] Conservative, structured
-   Trionzece Wincheen (M 24) Human [10] Friendly, service minded
-   Njatmun Wincheen (M 29) Dwarf [2] Greedy, self-centered
-   Jachamust Wincheen (M 29) Human [7] Generous, empathetic
-   Tric Wincheen (M 20) Human [5] Indifferent, unstructured
-   Quan Wincheen (M 44) Human [10] Greedy, self-centered
-   Anda Wincheen (F 25) Human [10] Conservative, structured
-   Laz Wincheen (M 38) Human [4] Indifferent, unstructured
-   Kamson Wincheen (M 3) Human [1] Cautious, fearful
-   Den Norman (M 16) Human [6] Indifferent, unstructured
-   Den Wincheen (M 12) Human [6] Conservative, structured
-   Denzo Wincheen (M 6) Human [1] Generous, empathetic
+   Shand Nigg (M 49) Human [9] Indifferent, unstructured
+   Valey Nigg (F 68) Human [12] Friendly, service minded
+   Deubry Nigg (M 78) Human [15] Antagonistic, combattive
+   Paxten Nigg (M 44) Human [10] Conservative, structured
+   Blailydel Nigg (F 25) Human [7] Greedy, self-centered
+   Quis Nigg (M 32) Human [7] Generous, empathetic
+   Homaxim Nigg (M 45) Human [13] Friendly, service minded
+   Janabriel Fory (F 20) Human [12] Generous, empathetic
+   Emy Nigg (M 42) Human [12] Indifferent, unstructured
+   Wyernatha Nigg (M 37) Human [7] Antagonistic, combattive
+   Harlorins Nigg (F 20) Human [5] Friendly, service minded
+   Abarton Belane (M 5) Human [6] Conservative, structured
 
 #2: Soldier/Guards
-   Jahawren Pargall (M 39) Human [6] Generous, empathetic
-   Oppy Gilkel (F 73) Human [11] Cautious, fearful
-   Tatine Roweastan (F 28) Human [6] Greedy, self-centered
-   Lammaximm Whitt (M 46) Human [3] Friendly, service minded
-   Elina Hagh (F 32) Human [4] Indifferent, unstructured
-
-#3: Stable: Open 6/7 08-16
-   Zala Herin (F 50) Dwarf [5] Conservative, structured
-   Revia Herin (F 102) Dwarf [8] Antagonistic, combattive
-   Galkyl Herin (M 56) Dwarf [10] Conservative, structured
-   Kela Herin (F 34) Dwarf [7] Sad, gloomy
-
-#4: Stable: Open 5/7 07-17
-   Bofar Patri (M 94) Dwarf [8] Friendly, service minded
-   Ra'pet Patri (M 162) Lizardfolk [14] Generous, empathetic
-   Fjohilvia Patri (F 74) Dwarf [7] Generous, empathetic
-   Dahrardal Patri (M 30) Dwarf [5] Cautious, fearful
-
-#5: Inn: Open 7/7 06-00
-   Mitrey Dall (M 42) Human [5] Friendly, service minded
-   Kob Dall (M 47) Human [8] Conservative, structured
-
-#6: Inn: Open 7/7 06-00
-   Jallailei Blanish (F 51) Human [8] Generous, empathetic
-   Yanorevor Blanish (M 74) Human [7] Conservative, structured
-   Jontiamic Blanish (M 25) Human [4] Greedy, self-centered
-   Haniankia Blanish (F 36) Human [10] Friendly, service minded
-
-#7: Inn: Open 7/7 06-00
-   Winaber Grez (F 78) Human [6] Conservative, structured
-   Mikaisyle Grez (F 74) Human [9] Friendly, service minded
-   Joycey Grez (F 32) Human [6] Sad, gloomy
-   Jon Grez (M 26) Human [1] Friendly, service minded
-   Kriger Grez (M 5) Human [9] Generous, empathetic
-
-#8: Farm/Fishery: Open 6/7 09-18
-   Raeri Fundur (M 154) Dwarf [12] Generous, empathetic
-   Thrarthru Bryl (M 64) Dwarf [4] Antagonistic, combattive
-   Lija Ririsi (F 60) Dwarf [9] Indifferent, unstructured
-
-#9: Farm/Fishery: Open 5/7 08-18
-   Ker Dalde (M 54) Human [11] Conservative, structured
-   Kevan Dalde (M 74) Human [10] Friendly, service minded
-   Ger Mcin (M 71) Human [5] Greedy, self-centered
-   Bry Dalde (M 24) Human [4] Conservative, structured
-   Abraiandr Dalde (M 11) Human [6] Indifferent, unstructured
-
-#10: Farm/Fishery: Open 5/7 08-16
-   Fjova Divia (F 102) Dwarf [8] Friendly, service minded
-   Maluci Divia (F 164) Human [9] Indifferent, unstructured
-   Dindna Divia (F 60) Dwarf [8] Generous, empathetic
-   Kela Esigdiris (F 34) Dwarf [4] Antagonistic, combattive
-
-#11: Farm/Fishery: Open 5/7 07-17
-   Bar Graur (M 84) Dwarf [10] Indifferent, unstructured
-   Dagna Graur (F 136) Dwarf [10] Greedy, self-centered
-   Bhelnur Graur (M 150) Dwarf [11] Sad, gloomy
-   Jodigdigg Sardy (F 96) Dwarf [10] Greedy, self-centered
-   Gor Graur (M 64) Dwarf [9] Conservative, structured
-   Micha Graur (F 32) Dwarf [9] Conservative, structured
-
-#12: Farm/Fishery: Open 5/7 07-18
-   Phynduill Dalaegela (F 121) Half-elf [6] Friendly, service minded
-   Aelwinelr Dalaegela (M 117) Half-elf [10] Antagonistic, combattive
-   Jhaen Dalaegela (M 51) Half-elf [7] Friendly, service minded
-   Sudr Dalaegela (M 3) Half-elf [8] Indifferent, unstructured
-
-#13: General store: Open 5/7 08-17
-   Marshar Jen (M 55) Human [5] Antagonistic, combattive
-   Evera Jen (F 56) Human [3] Conservative, structured
-   Karquel Jen (M 62) Human [8] Conservative, structured
-
-#14: General store: Open 6/7 08-17
-   Dorakur Garum (M 82) Dwarf [7] Cautious, fearful
-   Grus Svein (M 142) Dwarf [11] Cautious, fearful
-   Morvar Garum (M 112) Dwarf [10] Greedy, self-centered
-   Dor Garum (F 74) Lizardfolk [11] Friendly, service minded
-   Aidera Zerertrag (F 86) Dwarf [14] Friendly, service minded
-   Katarath Rev (F 22) Dwarf [5] Indifferent, unstructured
-   Grom Garum (M 16) Dwarf [9] Indifferent, unstructured
-
-#15: Blacksmith: Open 6/7 07-16
-   Vinatte Fro (M 75) Human [11] Cautious, fearful
-   Broy Ros (M 78) Human [4] Friendly, service minded
-   Joaquiste Fro (M 39) Human [11] Greedy, self-centered
-
-#16: Blacksmith: Open 5/7 09-17
-   Krumgragi Lonur (M 102) Dwarf [8] Greedy, self-centered
-   Ura Lonur (F 128) Dwarf [11] Generous, empathetic
-   Noi Lonur (M 130) Dwarf [14] Conservative, structured
-   Fjodra Lonur (F 88) Dwarf [7] Greedy, self-centered
-   Fili Lonur (M 34) Dwarf [6] Friendly, service minded
-   Jar Lonur (M 26) Half-elf [7] Conservative, structured
-
-#17: Blacksmith: Open 5/7 09-16
-   Jakollame Cobe (M 15) Human [5] Friendly, service minded
-   Giahim Cobe (M 68) Human [13] Greedy, self-centered
-   Prisolana Cobe (M 60) Human [6] Sad, gloomy
-   Keand Cobe (M 48) Human [8] Generous, empathetic
-   Fer Cobe (F 4) Human [7] Indifferent, unstructured
-
-#18: Butcher: Open 6/7 08-18
-   Kror Gimmyl (M 142) Dwarf [9] Conservative, structured
-   Braitur Gimmyl (M 102) Dwarf [11] Antagonistic, combattive
-   Gora Gimmyl (F 86) Dwarf [8] Cautious, fearful
-   Elizah Gimmyl (F 18) Human [9] Conservative, structured
-   Ken Gimmyl (M 24) Human [6] Conservative, structured
-
-#19: Butcher: Open 6/7 08-16
-   Jimuhame Mon (M 58) Human [4] Indifferent, unstructured
-   Marren Mon (M 78) Human [8] Sad, gloomy
-   Rad Ducarpers (M 29) Other [2] Conservative, structured
-   Howentorb Mon (M 11) Human [3] Friendly, service minded
-   Maden Mon (M 15) Human [0] Friendly, service minded
-
-#20: Butcher: Open 5/7 08-16
-   Amariann Howle (F 78) Human [10] Indifferent, unstructured
-   Wall Howle (M 76) Human [9] Conservative, structured
-   Ber Howle (F 32) Human [6] Friendly, service minded
-
-#21: Temple: Fal Munir
-   Kam Gan (M 41) Other [10] Greedy, self-centered
-   Jadevon Gan (M 81) Other [5] Greedy, self-centered
-   Jalbenick Gan (M 42) Other [6] Generous, empathetic
-
-#22: Horse trader: Open 5/7 07-17
-   Wise Mch (M 62) Other [10] Greedy, self-centered
-   Don Mch (M 83) Other [8] Indifferent, unstructured
-   Kendrina Mch (F 46) Other [7] Antagonistic, combattive
-   Ley Mch (M 10) Other [8] Antagonistic, combattive
-
-#23: Horse trader: Open 7/7 08-17
-   Salber Meillaws (M 24) Other [4] Friendly, service minded
-   Dalipe Meillaws (M 69) Other [8] Generous, empathetic
-   Briseff Meillaws (M 38) Other [5] Generous, empathetic
-   Alip Meillaws (M 9) Other [6] Generous, empathetic
-
-#24: Mill
-   Bhagusy Tyrainn (M 116) Dwarf [9] Generous, empathetic
-   Tor Tyrainn (M 134) Dwarf [11] Conservative, structured
-   Ervarvar Tyrainn (M 96) Dwarf [5] Antagonistic, combattive
-   Vigvar Sveivur (M 50) Dwarf [6] Generous, empathetic
-
-#25: Baker: Open 5/7 07-17
-   Chaese Mora (F 24) Half-elf [2] Generous, empathetic
-   Sana Mora (F 93) Dwarf [4] Generous, empathetic
-   Ineldamai Mora (M 46) Half-elf [6] Generous, empathetic
-   Alaeleali Mora (F 67) Half-elf [9] Friendly, service minded
-
-#26: Baker: Open 6/7 08-17
-   Anna Warr (F 51) Human [8] Conservative, structured
-   Gory Warr (M 80) Human [12] Conservative, structured
-   Rani Warr (F 26) Human [1] Friendly, service minded
-   Sin Patt (M 40) Human [7] Greedy, self-centered
-
-#27: Merchant: Open 6/7 08-16
-   Jendiarac Fordavin (F 18) Other [2] Generous, empathetic
-   Tober Fordavin (M 82) Other [8] Friendly, service minded
-   Brett Bair (M 73) Other [12] Indifferent, unstructured
-   Jaylacken Fordavin (M 34) Other [8] Greedy, self-centered
-   Jer Fordavin (M 5) Other [7] Generous, empathetic
-   Istevyne Fordavin (M 19) Other [7] Conservative, structured
-
-#28: Barber: Open 6/7 07-16
-   Makena Owe (F 33) Human [4] Greedy, self-centered
-   Devin Owe (M 73) Human [8] Conservative, structured
-   Mard Owe (M 5) Human [3] Friendly, service minded
-
-#29: Barber: Open 5/7 07-16
-   Haelilana Holennon (F 62) Human [10] Generous, empathetic
-   Lot Holennon (F 54) Human [7] Friendly, service minded
-   Queliella Holennon (M 47) Human [6] Conservative, structured
-   Caydo Holennon (M 40) Human [3] Greedy, self-centered
-
-#30: Barber: Open 6/7 07-16
-   Loki Floftin (M 50) Dwarf [5] Antagonistic, combattive
-   Fronir Floftin (M 132) Dwarf [10] Conservative, structured
-
-#31: Barber: Open 5/7 08-17
-   Torrom Bryl (M 154) Dwarf [13] Generous, empathetic
-   Tafa Bryl (M 122) Human [14] Friendly, service minded
-
-#32: Leatherworker: Open 5/7 09-18
-   All Buchell (M 31) Human [6] Friendly, service minded
-   Skjald Buchell (M 52) Dwarf [5] Cautious, fearful
-   Leyton Buchell (F 33) Human [7] Generous, empathetic
-   Karry Ren (M 14) Human [6] Conservative, structured
-
-#33: Leatherworker: Open 5/7 08-16
-   Euber O'coydels (M 41) Human [9] Indifferent, unstructured
-   Gel Andersone (M 42) Human [8] Indifferent, unstructured
-
-#34: Grocery store: Open 6/7 08-17
-   Edgabdill Smilt (M 56) Human [6] Greedy, self-centered
-   Lana Smilt (F 69) Human [9] Indifferent, unstructured
-   Jartus Smilt (M 31) Human [2] Indifferent, unstructured
-   Son Charreemp (M 8) Human [3] Antagonistic, combattive
-
-#35: Dyer/Tanner: Open 6/7 09-17
-   Xiovalah Spernell (F 74) Human [9] Greedy, self-centered
-   Bry Ston (M 83) Human [10] Generous, empathetic
-   Jas Spernell (M 41) Human [7] Antagonistic, combattive
-   Halskilla Spernell (M 13) Dwarf [3] Greedy, self-centered
-
-#36: Dyer/Tanner: Open 7/7 09-16
-   Barthymun Thek (M 122) Dwarf [8] Generous, empathetic
-   Rel Bra (M 140) Other [11] Greedy, self-centered
-   Ratythoth Thek (F 148) Dwarf [10] Friendly, service minded
-   Brasir Thek (M 78) Dwarf [5] Conservative, structured
-   Hereloa Viggagrol (F 34) Dwarf [6] Conservative, structured
-
-#37: Tailor: Open 5/7 07-18
-   Grammart Gor (M 80) Human [8] Conservative, structured
-   Ned Gor (M 34) Human [5] Cautious, fearful
-
-#38: Weapon smith: Open 5/7 09-16
-   Tha Roix (M 84) Human [4] Antagonistic, combattive
-   Dwalucaro O'gradd (M 63) Human [5] Indifferent, unstructured
-   Gan Roix (F 53) Dwarf [6] Conservative, structured
-   Kuorwyn Roix (M 29) Half-elf [7] Generous, empathetic
-   Ton Roix (M 35) Human [6] Greedy, self-centered
-   Tyrevande Ree (M 11) Human [7] Friendly, service minded
-
-#39: Carpenter: Open 7/7 08-17
-   Kendaklyn Stelsoner (F 45) Human [7] Indifferent, unstructured
-   Imbelee Dinnolant (F 50) Human [7] Greedy, self-centered
-   Caste Stelsoner (F 62) Human [5] Greedy, self-centered
-
-#40: Carpenter: Open 5/7 07-16
-   Oscoln Ges (M 37) Human [9] Sad, gloomy
-   Gandricks Ges (M 35) Human [7] Generous, empathetic
-
-#41: Carpenter: Open 7/7 08-16
-   Arragnur Ofar (M 36) Dwarf [5] Greedy, self-centered
-   Gulgram Ofar (M 72) Dwarf [10] Indifferent, unstructured
-   Allakase Ofar (M 0) Human [6] Friendly, service minded
-
-#42: Cartwright: Open 6/7 08-17
-   Bervir Flokin (M 46) Dwarf [8] Indifferent, unstructured
-   Toran Flokin (M 124) Dwarf [11] Greedy, self-centered
-   Airisia Flokin (F 76) Dwarf [7] Friendly, service minded
-   Myagloira Myagris (F 20) Dwarf [5] Indifferent, unstructured
-
-#43: Cartwright: Open 5/7 08-16
-   Thi Thulvurum (M 40) Dwarf [6] Generous, empathetic
-   Anmalronv Thulvurum (M 118) Dwarf [8] Friendly, service minded
-   Timora Thulvurum (F 50) Human [9] Generous, empathetic
-   Balthrum Thulvurum (M 30) Dwarf [3] Friendly, service minded
-
-#44: Cartwright: Open 5/7 08-17
-   Hor Taan (M 70) Half-elf [10] Greedy, self-centered
-   Orthassae Taan (M 76) Half-elf [4] Cautious, fearful
-   Saakarl Taan (M 19) Human [7] Indifferent, unstructured
-
-#45: Potter: Open 6/7 09-16
-   Tyren Van (M 52) Human [12] Friendly, service minded
-   Cargienev Van (F 53) Human [7] Indifferent, unstructured
-   Hon Doney (M 51) Human [7] Antagonistic, combattive
-   Loh Van (F 49) Human [11] Sad, gloomy
-
-#46: Potter: Open 5/7 07-17
-   Sky Grison (M 74) Human [6] Greedy, self-centered
-   Lariya Grison (F 72) Human [7] Sad, gloomy
-   Sin Grison (M 74) Half-elf [12] Indifferent, unstructured
-   Edesterea Grison (M 5) Human [5] Friendly, service minded
-
-#47: Potter: Open 6/7 08-16
-   Viggav Bra (F 94) Dwarf [5] Cautious, fearful
-   Ghedeelah Bra (F 22) Dwarf [11] Cautious, fearful
-   Nervis Bra (F 28) Dwarf [7] Indifferent, unstructured
-
-#48: Potter: Open 5/7 09-17
-   Regvigmur Aupin (M 134) Dwarf [7] Friendly, service minded
-   Mor Aupin (M 130) Dwarf [10] Antagonistic, combattive
-   Thelthur Aupin (M 54) Dwarf [7] Friendly, service minded
-
-#49: Worker
-   Leeryn Lina (F 86) Dwarf [7] Conservative, structured
-   Theld Lina (M 160) Dwarf [11] Greedy, self-centered
-   Javo Lina (M 64) Other [12] Greedy, self-centered
-   Oddfilbur Lina (M 30) Dwarf [7] Conservative, structured
-
-#50: Worker
-   Dirra Sepithana (F 88) Dwarf [12] Generous, empathetic
-   Lythymund Sepithana (M 108) Dwarf [11] Friendly, service minded
-   Svjasirfi Sepithana (M 100) Dwarf [12] Friendly, service minded
-   Kafitur Geikkirfi (M 42) Dwarf [6] Sad, gloomy
-
-#51: Worker
-   Brack Wart (M 47) Human [7] Generous, empathetic
-   Madra Wart (F 7) Human [6] Indifferent, unstructured
-
-#52: Worker
-   Tren Doheregom (M 76) Human [6] Cautious, fearful
-   Aun Doheregom (M 72) Human [8] Antagonistic, combattive
-   Julizabel Con (F 44) Human [9] Conservative, structured
-   Braill Ser (M 18) Human [4] Antagonistic, combattive
-   Liah Doheregom (F 16) Human [4] Cautious, fearful
-
-#53: Worker
-   Lia Risaerela (F 32) Dwarf [5] Greedy, self-centered
-   Pain Risaerela (M 112) Dwarf [10] Sad, gloomy
-   Nari Risaerela (M 114) Dwarf [10] Conservative, structured
-   Kelora Risaerela (F 6) Dwarf [1] Cautious, fearful
-   Gin Risaerela (M 18) Human [5] Friendly, service minded
-
-#54: Boatwright: Open 6/7 07-17
-   Ton Velly (F 15) Other [4] Friendly, service minded
-   Vie Velly (F 63) Other [4] Cautious, fearful
-   Orey Landenn (M 32) Other [4] Generous, empathetic
-   Haylee Velly (F 31) Human [2] Conservative, structured
-   Darshade Velly (M 3) Other [8] Conservative, structured
-
-#55: Noble
-   Scamardom Lan (M 65) Human [10] Cautious, fearful
-   Nichamilt Colstorty (M 16) Human [1] Indifferent, unstructured
-
-#56: Noble
-   Dena Pordnerle (F 35) Human [3] Indifferent, unstructured
-   Jovan Pordnerle (M 51) Human [10] Indifferent, unstructured
-   Cliseball Pordnerle (M 35) Human [10] Generous, empathetic
-   Fraelid Pordnerle (M 17) Human [7] Greedy, self-centered
-   Elian Pordnerle (M 8) Human [6] Generous, empathetic
-
-#57: Noble
-   Stink Serala (M 13) Lizardfolk [9] Generous, empathetic
-   Narkinur Serala (M 16) Dwarf [5] Indifferent, unstructured
-   Aden Serala (F 0) Human [7] Conservative, structured
-
-#58: Storage: Open 5/7 09-16
-   Samarvial Myan (F 58) Dwarf [6] Indifferent, unstructured
-   Dur Myan (M 66) Dwarf [6] Friendly, service minded
-
-#59: Storage: Open 5/7 08-17
-   Kammy Willinn (M 51) Human [7] Indifferent, unstructured
-   Pherisaar Willinn (M 46) Human [8] Generous, empathetic
-   Nathel Willinn (M 5) Human [8] Greedy, self-centered
-
-#60: Storage: Open 6/7 09-17
-   Hubyrettr Cysan (M 60) Half-elf [8] Conservative, structured
-   Izaenwena Cysan (F 118) Half-elf [11] Greedy, self-centered
-   Halyn Biandak (M 31) Half-elf [6] Friendly, service minded
-   Oth Cysan (M 15) Half-elf [2] Conservative, structured
-
-#61: Slum
-   Mavi Burcinglo (M 38) Human [2] Greedy, self-centered
-   Ran Burcinglo (M 77) Human [7] Antagonistic, combattive
-   Maxwes Holsons (M 75) Human [8] Greedy, self-centered
-   Jairvin Burcinglo (M 34) Human [7] Generous, empathetic
-   Dexan Burcinglo (M 27) Human [4] Conservative, structured
-
-#62: Slum
-   Talihn Homylenth (F 121) Half-elf [10] Conservative, structured
-   Nelenos Homylenth (M 48) Half-elf [11] Greedy, self-centered
-
-#63: Slum
-   Hepthleik Hulvur (M 110) Dwarf [7] Greedy, self-centered
-   Ala Hulvur (F 142) Human [11] Conservative, structured
-   Embeliyah Hulvur (F 106) Other [6] Generous, empathetic
-   Svein Balivur (M 78) Dwarf [12] Greedy, self-centered
-   Milarvira Hulvur (F 34) Dwarf [5] Friendly, service minded
-
-#64: Carpet maker: Open 7/7 07-16
-   Via Mcgilvan (F 25) Human [8] Conservative, structured
-   Natavo Mcgilvan (M 47) Human [8] Friendly, service minded
-   Kence Mcgilvan (F 9) Human [5] Friendly, service minded
-
-#65: Carpet maker: Open 5/7 08-16
-   Avaldoris Lokin (M 46) Dwarf [9] Generous, empathetic
-   Freytonal Hum (M 118) Human [15] Friendly, service minded
-   Gur Sti (M 124) Dwarf [6] Friendly, service minded
-   Thek Lokin (M 10) Dwarf [3] Antagonistic, combattive
-
-#66: Rope-/Netmaker: Open 7/7 09-16
-   Kevendor Elaestril (M 33) Half-elf [3] Generous, empathetic
-   Haer Elaestril (M 84) Half-elf [11] Sad, gloomy
-   Uth Elaestril (M 87) Half-elf [9] Greedy, self-centered
-   Dith Elaestril (M 13) Half-elf [6] Generous, empathetic
-
-#67: Doctor: Open 5/7 07-18
-   Ynna Vael (F 34) Half-elf [8] Generous, empathetic
-   Giladhaer Vael (F 99) Half-elf [10] Friendly, service minded
-   Leandra Vael (F 117) Half-elf [12] Conservative, structured
-   Koladar Vael (M 54) Half-elf [8] Conservative, structured
-   Ala Vael (F 64) Half-elf [9] Greedy, self-centered
-   Talys Vael (F 6) Half-elf [8] Antagonistic, combattive
-
-#68: Brothel: Open 7/7 07-16
-   Kobendreu Huberson (M 64) Human [4] Indifferent, unstructured
-   Bilancyre Huberson (M 49) Human [3] Friendly, service minded
-   Tian Huberson (M 3) Human [4] Friendly, service minded
-
-#69: Sailmaker: Open 6/7 08-16
-   Aiah Lair (M 45) Human [7] Generous, empathetic
-   Tranestia Lair (M 76) Human [8] Sad, gloomy
-   Sesleyon Mcing (M 19) Human [3] Friendly, service minded
-
-#70: Bowyer/Fletcher: Open 6/7 08-16
-   Chery Shomaneir (F 25) Human [7] Greedy, self-centered
-   Den Shomaneir (M 67) Human [6] Greedy, self-centered
-   Lie Shomaneir (F 15) Human [6] Generous, empathetic
-
-#71: Veterinarian: Open 7/7 07-18
-   Jhar Cohnaerna (M 42) Half-elf [8] Generous, empathetic
-   Her Cohnaerna (M 96) Half-elf [12] Friendly, service minded
-   Keirila Izaera (F 1) Half-elf [4] Friendly, service minded
-
-#72: Furrier: Open 7/7 08-16
-   Kestitust Blarty (M 70) Other [4] Conservative, structured
-   Hadilyley Blarty (F 83) Other [5] Indifferent, unstructured
-   Darcon Blarty (M 22) Other [8] Friendly, service minded
-
-#73: Brewer: Open 5/7 08-18
-   Non San (M 28) Other [3] Indifferent, unstructured
-   Palakleig San (F 76) Other [5] Conservative, structured
-   Lomarnest San (M 29) Human [9] Friendly, service minded
-   Raid San (M 11) Other [7] Friendly, service minded
-
-#74: Brewer: Open 5/7 07-16
-   Neheitriv Sch (M 44) Human [5] Sad, gloomy
-   Sah Sch (F 62) Human [13] Indifferent, unstructured
-   Marcurt Sch (M 60) Human [12] Indifferent, unstructured
-   Maela Sch (F 29) Human [5] Friendly, service minded
-   Chlenlee Sch (F 19) Human [7] Friendly, service minded
-
-#75: Builder
-   Domekhami Curpelero (M 37) Human [11] Conservative, structured
-   Brellandl Curpelero (M 50) Human [6] Cautious, fearful
-   Alexton Curpelero (M 42) Human [5] Conservative, structured
-   Wistus Curpelero (M 6) Human [6] Antagonistic, combattive
-
-#76: Builder
-   Jon Bownerric (M 83) Human [9] Friendly, service minded
-   Joy Bownerric (F 73) Human [7] Friendly, service minded
-   Rogen Bownerric (M 18) Human [3] Friendly, service minded
-
-#77: Farm worker
-   Marebelia Gillis (F 58) Human [7] Generous, empathetic
-   Marl Gillis (M 23) Human [6] Greedy, self-centered
-   Fraphimos Gillis (M 12) Human [8] Generous, empathetic
-
-#78: Shoe maker: Open 6/7 07-16
-   Rosla Warne (F 74) Human [12] Greedy, self-centered
-   Jos Warne (M 74) Human [7] Greedy, self-centered
-   Jaxon Warne (M 73) Human [3] Generous, empathetic
-   Ston Warne (M 12) Human [9] Conservative, structured
-
-#79: Shoe maker: Open 5/7 08-17
-   Lald Huffought (M 45) Human [4] Indifferent, unstructured
-   Rosab Huffought (F 62) Human [8] Generous, empathetic
-   Ance Huffought (M 11) Human [4] Cautious, fearful
-   Esme Powley (F 16) Human [6] Indifferent, unstructured
-
-#80: Outfitter: Open 5/7 09-18
-   Oseff Don (M 81) Human [9] Indifferent, unstructured
-   Aile Don (F 65) Human [8] Indifferent, unstructured
-   Sel Don (M 73) Human [8] Generous, empathetic
-   Tesie Don (F 41) Human [10] Indifferent, unstructured
-   Lonelikev Arez (M 16) Human [3] Antagonistic, combattive
-
-#81: Public bath: Open 6/7 07-17
-   Non Kirbyre (M 38) Human [7] Greedy, self-centered
-   Triguis Kirbyre (M 74) Human [6] Cautious, fearful
-   Rannoltep Ker (M 30) Human [11] Conservative, structured
-   Johawn Kirbyre (M 13) Human [7] Conservative, structured
-
-#82: Artist: Open 6/7 08-17
-   Vira Barey (F 84) Human [9] Conservative, structured
-   Gianna Barey (F 31) Human [5] Friendly, service minded
-   Raelliken Barey (M 13) Human [3] Conservative, structured
-
-#83: Artist: Open 5/7 08-17
-   Saridy Lart (F 30) Human [4] Greedy, self-centered
-   Alise Lart (F 62) Human [13] Conservative, structured
-   Kaiahmath Willoyd (M 27) Human [3] Conservative, structured
-   Brisa Lart (F 13) Human [6] Friendly, service minded
-
-#84: Diplomat
-   Alacenwen Alain (F 54) Half-elf [6] Conservative, structured
-   Eson Alain (M 78) Half-elf [7] Generous, empathetic
-   Klarmerod Alain (M 67) Half-elf [6] Sad, gloomy
-   Orwyn Alain (M 4) Half-elf [6] Cautious, fearful
-
-#85: Silver/goldsmith: Open 6/7 07-17
-   Suthur Geithur (M 110) Dwarf [12] Indifferent, unstructured
-   Neralden Geithur (M 134) Other [12] Generous, empathetic
-   Revalexan Geithur (M 96) Human [7] Greedy, self-centered
-
-#86: Silver/goldsmith: Open 6/7 07-17
-   Ruce Ster (M 59) Other [9] Antagonistic, combattive
-   Macia Ster (F 80) Human [10] Greedy, self-centered
-   Holina Ster (F 68) Human [10] Conservative, structured
-   Phemathet Rish (M 22) Other [7] Greedy, self-centered
-
-#87: Jeweller: Open 7/7 07-17
-   Baviggare Saerynn (F 154) Dwarf [10] Friendly, service minded
-   Gim Saerynn (M 144) Dwarf [8] Conservative, structured
-   Strid Saerynn (M 158) Lizardfolk [11] Greedy, self-centered
-   Aupinnspo Saerynn (M 2) Dwarf [7] Sad, gloomy
-
-#88: Winery: Open 5/7 07-16
-   Quamaeara Ynnaena (F 117) Half-elf [7] Generous, empathetic
-   Taradia Ynnaena (F 90) Half-elf [12] Indifferent, unstructured
-
-#89: Destiller: Open 6/7 09-17
-   Rak Bas (M 15) Lizardfolk [4] Conservative, structured
-   Ven Bas (M 31) Lizardfolk [4] Generous, empathetic
-   Sakarik Bas (M 4) Lizardfolk [1] Indifferent, unstructured
-
-#90: Teacher: Open 7/7 09-16
-   Dagrolas Kora (F 38) Dwarf [9] Sad, gloomy
-   Dira Leemareri (F 124) Dwarf [11] Antagonistic, combattive
-   Hleikiliv Kora (M 126) Dwarf [10] Friendly, service minded
-   Thila Kora (F 88) Dwarf [10] Friendly, service minded
-   Skjalroni Justaugim (M 28) Dwarf [4] Indifferent, unstructured
-   Tein Kora (M 36) Dwarf [5] Friendly, service minded
-
-#91: Teacher: Open 7/7 09-18
-   Ziott Rick (M 26) Human [9] Friendly, service minded
-   Dardon Rick (M 53) Human [5] Conservative, structured
-   Wald Rick (M 43) Human [8] Generous, empathetic
-   Chill Rick (M 16) Human [3] Conservative, structured
-   Aleenna Wallan (F 14) Human [0] Generous, empathetic
-
-#92: Scribe: Open 6/7 09-17
-   Etch Trimbiilt (M 52) Half-elf [3] Indifferent, unstructured
-   Eleondame Trimbiilt (M 106) Half-elf [9] Antagonistic, combattive
-   Dith Myth (M 42) Half-elf [5] Indifferent, unstructured
-   Zeana Trimbiilt (F 19) Half-elf [4] Friendly, service minded
-   Agolos Trimbiilt (M 4) Half-elf [7] Indifferent, unstructured
-
-#93: Scribe: Open 5/7 08-16
-   Jila Hage (F 56) Human [7] Cautious, fearful
-   Hatimbeka Graton (F 83) Human [13] Friendly, service minded
-   Marethams Hage (M 44) Human [5] Greedy, self-centered
-   Eughnatha Hage (M 15) Human [7] Sad, gloomy
-
-#94: Tinker: Open 6/7 08-18
-   Dola Myagnarvi (F 154) Dwarf [12] Friendly, service minded
-   Mila Feryn (F 130) Dwarf [13] Greedy, self-centered
-   Randagni Myagnarvi (M 166) Dwarf [15] Friendly, service minded
-   Danna Schay (F 78) Human [10] Friendly, service minded
-   Dal Krumgrost (M 14) Dwarf [1] Friendly, service minded
-
-#95: Illuminator: Open 6/7 07-17
-   Ariandomi Murkparks (M 74) Human [5] Cautious, fearful
-   Zack Murkparks (M 4) Human [6] Friendly, service minded
-
-#96: Glassblower: Open 6/7 07-17
-   Brynjolmu Oddfithru (M 54) Dwarf [5] Cautious, fearful
-   Bjaskilja Oddfithru (M 128) Dwarf [11] Friendly, service minded
-   Digoranna Oddfithru (F 94) Dwarf [8] Friendly, service minded
-   Edmun Hek (M 26) Dwarf [3] Conservative, structured
-
-#97: Farm: Open 5/7 07-18
-   Lofflofti Bhalkyl (M 32) Dwarf [10] Friendly, service minded
-   Myaleeman Bhalkyl (F 150) Dwarf [16] Greedy, self-centered
-   Dur Bhalkyl (M 56) Dwarf [9] Friendly, service minded
-   Tovlireve Bhalkyl (F 12) Dwarf [10] Generous, empathetic
-
-#98: Farm: Open 5/7 07-16
-   Brinslie Woon (F 22) Human [7] Conservative, structured
-   Jare Woon (M 63) Human [9] Friendly, service minded
-
-#99: Farm: Open 6/7 09-17
-   Manna Rossimson (F 55) Human [12] Friendly, service minded
-   Raylinsly Rossimson (F 71) Human [10] Greedy, self-centered
-   Emirey Rossimson (F 62) Human [7] Conservative, structured
-   Cober Rossimson (M 21) Human [6] Conservative, structured
-   Maxim Rossimson (M 4) Human [5] Generous, empathetic
-   Aliangel Rossimson (M 15) Human [7] Friendly, service minded
-
-#100: Farm: Open 5/7 07-17
-   Trin Whelliami (M 34) Human [5] Conservative, structured
-   Ezelvanei Whelliami (M 62) Human [10] Generous, empathetic
-   Iscarlord Whelliami (M 72) Human [12] Greedy, self-centered
+   Criverey Dugher (M 70) Human [7] Friendly, service minded
+   Koln Houng (M 33) Human [9] Friendly, service minded
+   Skyl Fie (M 41) Human [4] Friendly, service minded
+   Prine Con (F 38) Human [11] Friendly, service minded
+   Rarresmon Man (M 22) Human [6] Greedy, self-centered
+   Blayde Free (F 9) Human [8] Sad, gloomy
+
+#3: Soldier/Guards
+   Ulisavin Hitt (M 37) Human [11] Conservative, structured
+   Rodromard Coler (M 24) Human [3] Cautious, fearful
+   Hulisam Ganseass (M 41) Human [9] Conservative, structured
+   Mant Sence (M 45) Human [12] Indifferent, unstructured
+   Rustor Mill (M 4) Human [3] Friendly, service minded
+
+#4: Stable: Open 7/7, 07-16
+   Faya Naga (F 38) Human [6] Cautious, fearful
+   Ben Naga (M 34) Human [7] Friendly, service minded
+   Alisavia Naga (F 11) Human [8] Conservative, structured
+   Darcustin Naga (M 16) Human [5] Generous, empathetic
+
+#5: Inn: Open 7/7, 06-00
+   Jeanicton Brad (M 60) Other [6] Indifferent, unstructured
+   Shlyn Brad (F 21) Other [4] Greedy, self-centered
+   Ellerturo Brad (M 5) Other [0] Generous, empathetic
+
+#6: Farm/Fishery: Open 5/7, 07-17
+   Huardon Can (M 83) Human [11] Greedy, self-centered
+   Darigh Can (M 54) Human [2] Indifferent, unstructured
+   Emillivie Can (F 49) Human [4] Conservative, structured
+   Ance Can (M 19) Human [7] Indifferent, unstructured
+   Bria Dixones (F 1) Human [3] Cautious, fearful
+
+#7: Farm/Fishery: Open 6/7, 08-17
+   Aliper Mcbriffos (M 71) Other [7] Greedy, self-centered
+   Miashawso Mcbriffos (M 56) Human [7] Generous, empathetic
+   Shlana Mcbriffos (F 45) Human [9] Generous, empathetic
+   Chra Mcbriffos (F 34) Human [5] Greedy, self-centered
+
+#8: Farm/Fishery: Open 7/7, 08-18
+   Sheemield Maldweric (M 28) Human [7] Conservative, structured
+   Avaelissa Van (F 78) Human [10] Conservative, structured
+   Barl Warselsen (F 39) Human [6] Friendly, service minded
+   Ron Maldweric (M 29) Human [11] Greedy, self-centered
+   Tucias Maldweric (M 19) Human [9] Indifferent, unstructured
+   Zurna Maldweric (F 1) Human [9] Friendly, service minded
+
+#9: Farm/Fishery: Open 7/7, 07-17
+   Brie O'ke (F 58) Human [8] Greedy, self-centered
+   Liane O'ke (M 81) Human [14] Greedy, self-centered
+   Bryan O'ke (M 68) Human [10] Sad, gloomy
+   Son O'ke (F 19) Human [7] Friendly, service minded
+   Amicola O'ke (F 18) Human [4] Friendly, service minded
+
+#10: General store: Open 6/7, 07-16
+   Sanceduan Mcmahalli (M 66) Human [6] Conservative, structured
+   Malie Mcmahalli (F 39) Human [4] Sad, gloomy
+   Vando Mcmahalli (M 22) Human [7] Conservative, structured
+   Treth O'nez (M 13) Human [6] Friendly, service minded
+
+#11: Blacksmith: Open 6/7, 09-16
+   Orylather Gane (M 53) Human [4] Friendly, service minded
+   Sias Gane (M 62) Human [7] Indifferent, unstructured
+   Lersy Gane (F 51) Human [8] Friendly, service minded
+   Annie Gane (F 25) Human [3] Greedy, self-centered
+   Skylangri Gane (F 4) Human [8] Indifferent, unstructured
+   Cham Smil (M 6) Human [9] Conservative, structured
+
+#12: Butcher: Open 7/7, 07-16
+   Crubraleo Dougharse (M 76) Human [7] Conservative, structured
+   Dimun Whis (M 51) Human [5] Greedy, self-centered
+
+#13: Temple: Shalissa
+   Reyshawso Wellie (M 41) Human [8] Greedy, self-centered
+   Stuar Wellie (M 1) Human [7] Friendly, service minded
+   Phadarius Wellie (M 1) Human [8] Friendly, service minded
+
+#14: Horse trader: Open 6/7, 07-16
+   Robenney Mcklaza (M 20) Human [6] Indifferent, unstructured
+   Abalon Farsent (M 67) Human [12] Generous, empathetic
+   Carleoria Mcklaza (F 39) Human [9] Conservative, structured
+   Ashard Hubb (M 38) Human [3] Conservative, structured
+   Julilauli Mcklaza (F 17) Human [4] Sad, gloomy
+   Jadenton Mcklaza (M 17) Human [3] Sad, gloomy
+
+#15: Baker: Open 6/7, 09-18
+   Brichawso Kannoll (M 38) Human [6] Cautious, fearful
+   Zai Kannoll (M 69) Human [9] Generous, empathetic
+   Maddy Kannoll (F 27) Human [4] Cautious, fearful
+   Dandrie Kannoll (M 9) Human [7] Indifferent, unstructured
+
+#16: Merchant: Open 6/7, 07-16
+   Susa Chen (F 56) Other [4] Indifferent, unstructured
+   Giane Chen (F 51) Other [6] Sad, gloomy
+   Tis Crastonam (M 32) Other [3] Friendly, service minded
+
+#17: Leatherworker: Open 6/7, 08-16
+   Rosarle Sonan (F 54) Human [8] Conservative, structured
+   Alexzack Her (M 43) Human [4] Conservative, structured
+   Graloakle Sonan (F 38) Human [7] Sad, gloomy
+
+#18: Carpenter: Open 7/7, 09-17
+   Judrileyl O'kell (F 20) Human [9] Friendly, service minded
+   Nox O'kell (F 71) Human [7] Conservative, structured
+   Daroy O'kell (M 41) Human [5] Friendly, service minded
+   Allamalon O'kell (M 18) Human [2] Indifferent, unstructured
+
+#19: Cartwright: Open 5/7, 07-17
+   Carick Roixonams (M 71) Human [7] Cautious, fearful
+   Evine Roixonams (F 72) Human [4] Indifferent, unstructured
+   Houssesta Roixonams (M 28) Human [8] Indifferent, unstructured
+   Josa Roixonams (F 27) Human [7] Conservative, structured
+   Denriley Roixonams (M 4) Human [5] Conservative, structured
+
+#20: Worker
+   Karicathe Wrig (F 18) Human [3] Conservative, structured
+   Kolan Wrig (M 77) Human [8] Generous, empathetic
+   Karleessa Wrig (F 25) Human [3] Generous, empathetic
+   Ren Wrig (M 3) Human [7] Friendly, service minded
+
+#21: Worker
+   Kyla Dant (F 49) Human [4] Generous, empathetic
+   Arin Lins (M 68) Human [5] Conservative, structured
+   Gina Ril (F 75) Human [9] Indifferent, unstructured
+   Chri Mond (M 34) Human [7] Indifferent, unstructured
+   Amatt Dant (M 0) Human [6] Conservative, structured
+
+#22: Worker
+   Karikargi Mcges (F 63) Human [9] Friendly, service minded
+   Karvien Mcges (M 27) Human [8] Generous, empathetic
+   Guadellee Mcges (F 37) Human [7] Conservative, structured
+   Prad Mcges (M 15) Human [5] Conservative, structured
+
+#23: Noble
+   Gonnestop Mackelloo (M 47) Human [12] Generous, empathetic
+   Rick Mackelloo (M 79) Human [15] Conservative, structured
+   Colis Mackelloo (F 10) Human [9] Generous, empathetic
+
+#24: Slum
+   Tonas Houck (M 82) Human [12] Cautious, fearful
+   Seon Houck (M 58) Human [8] Conservative, structured
+   Ersylody Houck (F 32) Human [6] Generous, empathetic
+   Charcenta Houck (M 8) Human [0] Conservative, structured
+
+#25: Slum
+   Jagaidere Shenrams (M 47) Human [5] Greedy, self-centered
+   Kadred Shenrams (M 64) Human [7] Friendly, service minded
+   Mar Shenrams (M 83) Human [11] Greedy, self-centered
+   Hadhy Shenrams (F 21) Human [3] Generous, empathetic
+   And Shenrams (M 39) Human [7] Cautious, fearful
+   Joses Shenrams (M 11) Human [4] Conservative, structured
+
+#26: Animal trainer: Open 5/7, 07-17
+   Kanuellom Holle (M 77) Human [7] Greedy, self-centered
+   Viana Dre (F 68) Human [7] Antagonistic, combattive
+   Elyn Holle (F 43) Human [6] Friendly, service minded
+   Jai Holle (M 23) Human [3] Conservative, structured
+
+#27: Furrier: Open 6/7, 07-17
+   Fral Gos (M 43) Human [8] Friendly, service minded
+   Alia Gos (F 69) Human [9] Friendly, service minded
+   Darmax Gos (M 30) Human [8] Conservative, structured
+   Jayn Gos (F 9) Human [6] Friendly, service minded
+
+#28: Brewer: Open 5/7, 09-17
+   Marrant Smid (M 30) Human [5] Friendly, service minded
+   Brees Smid (M 71) Human [7] Generous, empathetic
+   Kelo Cock (M 19) Human [5] Friendly, service minded
+
+#29: Woodcarver/Engraver: Open 7/7, 08-18
+   Brando Don (M 76) Human [11] Friendly, service minded
+   Ryl Don (M 68) Human [9] Friendly, service minded
+   Jorica Don (F 22) Human [6] Indifferent, unstructured
+   Charigo Pormillew (M 23) Human [1] Friendly, service minded
+   Semon Don (F 5) Human [4] Antagonistic, combattive
+   Jamman Don (M 18) Human [8] Generous, empathetic
+
+#30: Alchemist: Open 7/7, 07-16
+   Miren Don (F 43) Human [9] Sad, gloomy
+   Ston Don (M 54) Human [7] Conservative, structured
+   Jespera Don (F 11) Human [3] Friendly, service minded
+
+#31: Artist: Open 5/7, 08-17
+   Der Ard (M 17) Human [6] Greedy, self-centered
+   Shancamer Ard (M 41) Human [4] Sad, gloomy
+   Maria Ard (F 8) Human [3] Friendly, service minded
+
+#32: Scribe: Open 6/7, 09-16
+   Adendrah Mez (F 57) Human [7] Conservative, structured
+   Istucarto Mez (M 84) Human [6] Friendly, service minded
+   Adeliliam Mez (F 61) Human [10] Friendly, service minded
+   Zakaliaga Mez (M 25) Human [2] Conservative, structured
+   Zang Mez (M 21) Human [4] Generous, empathetic
+
+#33: Glassblower: Open 6/7, 08-16
+   Lyn Wriffintl (F 63) Human [8] Conservative, structured
+   Jairon Wriffintl (M 0) Human [8] Conservative, structured
+   Ren Wriffintl (F 0) Human [1] Greedy, self-centered
+
+#34: Farm: Open 6/7, 08-17
+   Die Mcgan (M 72) Human [10] Greedy, self-centered
+   Peria Donaugh (F 2) Human [6] Conservative, structured
+
+#35: Farm: Open 6/7, 08-18
+   Davin Mack (M 23) Human [4] Antagonistic, combattive
+   Zariana Mack (F 77) Human [11] Conservative, structured
+   Davio Praynne (M 52) Human [9] Greedy, self-centered
+   Abran Uptonam (M 32) Human [6] Generous, empathetic
+   Treya Mack (F 13) Human [5] Friendly, service minded
+
+#36: Farm: Open 6/7, 07-16
+   Jachamili Mcginne (M 83) Human [8] Indifferent, unstructured
+   Pain Mcginne (F 71) Human [8] Conservative, structured
+   Gunce Mcginne (M 30) Human [1] Friendly, service minded
+   Aley Loyceld (F 40) Human [6] Indifferent, unstructured
+   Gus Mcginne (M 14) Human [5] Antagonistic, combattive
+
+#37: Farm: Open 7/7, 08-18
+   Jayden Hount (M 41) Human [7] Indifferent, unstructured
+   Omin Hount (M 51) Human [8] Greedy, self-centered
+   Zellie Hount (F 70) Human [12] Friendly, service minded
+   Blor Han (M 15) Human [9] Indifferent, unstructured
+
+#38: Farm: Open 6/7, 07-17
+   Rooroliar Rahenez (F 69) Human [9] Indifferent, unstructured
+   Giashanic Rahenez (M 11) Human [3] Greedy, self-centered
+
+#39: Farm: Open 5/7, 08-17
+   Emeremeni Alles (F 70) Human [4] Greedy, self-centered
+   Jaylanayl Alles (F 80) Human [5] Greedy, self-centered
+   Alten Alles (M 47) Human [6] Cautious, fearful
+   Zachawson Alles (M 1) Human [9] Conservative, structured
+
+#40: Farm: Open 6/7, 08-17
+   Quisarnal Hurce (M 22) Human [6] Greedy, self-centered
+   Kora Hurce (F 81) Human [8] Antagonistic, combattive
+   Nedexto Hurce (M 35) Human [8] Conservative, structured
+   Andria Hurce (F 9) Human [1] Friendly, service minded
+   Serselia Hurce (F 12) Human [6] Indifferent, unstructured
+
+#41: Farm: Open 6/7, 07-16
+   Alayley Kird (F 50) Human [7] Greedy, self-centered
+   Dassef Kird (M 62) Human [5] Conservative, structured
+   Avandayle Kird (F 7) Human [6] Generous, empathetic
+
+#42: Farm: Open 6/7, 09-16
+   Vanne Pay (F 20) Human [4] Indifferent, unstructured
+   Gabraphou Pay (M 56) Human [9] Friendly, service minded
+   Pen Pay (F 42) Human [12] Conservative, structured
+
+#43: Farm: Open 5/7, 07-16
+   Skylerenz Pittemple (F 84) Human [14] Sad, gloomy
+   Zain Pittemple (M 61) Human [11] Antagonistic, combattive
+   Anitheati Pittemple (F 52) Human [4] Conservative, structured
+   Ada Pittemple (F 34) Human [2] Indifferent, unstructured
+
+#44: Farm: Open 6/7, 08-16
+   Amzac Gankin (M 70) Human [9] Cautious, fearful
+   Emeleena Herdon (F 57) Human [7] Cautious, fearful
+   Kyleo Gankin (M 34) Human [7] Generous, empathetic
+   Gres Gankin (M 16) Human [0] Conservative, structured
+
+#45: Farm: Open 6/7, 08-17
+   Fre Grawfower (M 53) Human [8] Generous, empathetic
+   Kayena Grawfower (F 73) Human [10] Greedy, self-centered
+   Kammarric Grawfower (M 62) Human [6] Indifferent, unstructured
+   Madassaga Pown (F 44) Human [7] Indifferent, unstructured
+   Kata Grawfower (F 39) Human [7] Generous, empathetic
+
+#46: Farm: Open 5/7, 09-18
+   Dalontiah Mon (M 18) Human [3] Greedy, self-centered
+   Ellina Mon (F 74) Human [9] Antagonistic, combattive
+   Tren Mon (M 29) Human [7] Conservative, structured
+   Arlogany Mon (F 48) Human [5] Greedy, self-centered
+   Gundam Bing (M 18) Human [6] Friendly, service minded
+
+#47: Farm: Open 6/7, 08-17
+   Gandy Mccurt (M 58) Human [4] Greedy, self-centered
+   Jenny Mccurt (F 53) Human [7] Friendly, service minded
+   Kaston Mccurt (M 31) Human [6] Friendly, service minded
+   Del Mccurt (F 6) Human [9] Antagonistic, combattive
+
+#48: Farm: Open 6/7, 08-18
+   Myline Johnston (F 34) Human [7] Antagonistic, combattive
+   Checton Johnston (M 53) Human [2] Generous, empathetic
+   Lielynna Johnston (F 58) Human [8] Friendly, service minded
+
+#49: Farm: Open 5/7, 07-17
+   Ziondrian Hayer (F 59) Human [6] Generous, empathetic
+   Jana Hayer (F 62) Other [8] Conservative, structured
+   Crie Hayer (M 25) Human [3] Indifferent, unstructured
+   Ree Hayer (F 18) Human [6] Indifferent, unstructured
+
+#50: Farm: Open 7/7, 07-16
+   Ris Colsener (M 33) Human [4] Indifferent, unstructured
+   Almaliell Colsener (F 69) Human [9] Antagonistic, combattive
+   Slona Colsener (F 34) Human [5] Greedy, self-centered
+
+#51: Farm: Open 5/7, 09-18
+   Avaden Chord (F 84) Human [5] Greedy, self-centered
+   Macia Chord (F 62) Human [9] Indifferent, unstructured
+   Cher Driggalds (M 6) Human [4] Antagonistic, combattive
+
+#52: Farm: Open 7/7, 09-16
+   Gram Shan (M 81) Other [7] Generous, empathetic
+   Mil Lumpsono (M 57) Human [7] Greedy, self-centered
+   Lorene Shan (F 8) Other [7] Conservative, structured
+   Gagell Shan (M 14) Human [5] Cautious, fearful
+
+#53: Farm: Open 5/7, 07-18
+   Ker Harnton (M 76) Other [8] Generous, empathetic
+   Frandon Harnton (M 51) Other [4] Generous, empathetic
+   Checton Harnton (M 33) Other [4] Generous, empathetic
+   Colle Dallis (F 16) Other [2] Generous, empathetic
+   Karoby Harnton (M 6) Human [5] Greedy, self-centered
+
+#54: Farm: Open 5/7, 07-17
+   Esonoredo Gra (M 51) Other [11] Greedy, self-centered
+   Alon Chilbrowe (M 68) Other [7] Cautious, fearful
+   Meira Gra (F 84) Human [12] Friendly, service minded
+
+#55: Farm: Open 6/7, 07-18
+   Tatriya Stevies (F 51) Human [11] Greedy, self-centered
+   Avini Stevies (M 60) Human [10] Cautious, fearful
+   Emmaria Stevies (F 19) Human [1] Indifferent, unstructured
+
+#56: Farm: Open 7/7, 08-17
+   Lillina Yoner (F 33) Human [5] Conservative, structured
+   Aulio Yoner (M 74) Human [10] Cautious, fearful
+   Auby Yoner (F 32) Human [7] Cautious, fearful
+   Kaylicass Yoner (F 12) Human [4] Friendly, service minded
+
+#57: Farm: Open 6/7, 07-16
+   Chadroy Blan (M 44) Human [8] Greedy, self-centered
+   Kareth Blan (F 57) Human [8] Antagonistic, combattive
+   Than Blan (M 62) Human [10] Conservative, structured
+   Stinerney Blan (M 20) Human [10] Generous, empathetic
+   Morie Blan (F 33) Human [4] Generous, empathetic
+   Jor Blan (M 4) Human [6] Generous, empathetic
+   Clivanord Blan (M 1) Human [8] Indifferent, unstructured
+
+#58: Farm: Open 5/7, 07-16
+   Natt Win (M 57) Human [4] Generous, empathetic
+   Migustavi Win (M 60) Human [10] Greedy, self-centered
+   Ana Win (F 31) Human [4] Conservative, structured
+   Lainn Win (F 21) Human [4] Indifferent, unstructured
+
+#59: Farm: Open 6/7, 09-16
+   Fersoland Mahayeroi (M 44) Human [5] Friendly, service minded
+   Helia Mahayeroi (F 37) Human [8] Friendly, service minded
+   Helleylin Holley (F 35) Human [5] Antagonistic, combattive
+   Danny Mahayeroi (M 19) Human [3] Friendly, service minded
+   Ally Mahayeroi (F 0) Human [1] Conservative, structured
+
+#60: Farm: Open 7/7, 07-16
+   Rutt Mon (F 62) Human [13] Friendly, service minded
+   Den Card (M 21) Human [6] Greedy, self-centered
+
+#61: Farm: Open 6/7, 07-16
+   Dammalvin Mcclivell (M 36) Human [11] Conservative, structured
+   Mer Mcclivell (F 9) Human [5] Friendly, service minded
+
+#62: Farm: Open 5/7, 07-16
+   Karie Inlerry (F 58) Human [6] Friendly, service minded
+   Kamir Inlerry (M 48) Human [7] Greedy, self-centered
+   Jagor Inlerry (M 14) Human [6] Generous, empathetic
+   Ell Inlerry (M 2) Human [1] Generous, empathetic
 
 ###############################################################################
 
