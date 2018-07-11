@@ -194,7 +194,7 @@ class Town
 				end
 				if @town[@h_index][0] == "Temple"
 					t_type =  randomizer(t)
-					unless t.empty? @town[@h_index][0] += ": " + t_type
+					@town[@h_index][0] += ": " + t_type unless t.empty?
 					t.delete(t_type)
 				end
 				r = 1 #residents counter
