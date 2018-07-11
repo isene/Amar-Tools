@@ -194,7 +194,7 @@ class Town
 				end
 				if @town[@h_index][0] == "Temple"
 					t_type =  randomizer(t)
-					@town[@h_index][0] += ": " + t_type
+					unless t.empty? @town[@h_index][0] += ": " + t_type
 					t.delete(t_type)
 				end
 				r = 1 #residents counter
@@ -212,6 +212,7 @@ class Town
 				puts "Progress: House ##{@h_index}"
 				break if @h_index == town_size
 			end
+			break if @h_index == town_size
 		end
 		return @town
 	end

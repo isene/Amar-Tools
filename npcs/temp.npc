@@ -1,33 +1,43 @@
 #############################<By NPCg 0.5>#############################
-                                                    Created: 2018-07-06
-Name:     Lewill Aur
-Type:     Prostitute (3)         Sex:   M            Height:   171
-Area:     Calaronir              Age:   34           Weight:   80
+                                                    Created: 2018-07-11
+Name:     Aleonic Ald
+Type:     Summoner (4)           Sex:   M            Height:   172
+Area:     Merisir                Age:   31           Weight:   73
 -----------------------------------------------------------------------
 Description:  
 -----------------------------------------------------------------------
-SIZE:    3          Balance:         5        Dtraps:          1        
-STRNG:   4          Climb:           4        Tracking:        2        
-ENDUR:   5          Dodge:           6        *Empathy:        2        
-COORD:   6          Hide:            4/4      
-LEARN:   4          Mvqt:            4/4      Medical lore:    2        
-AWARE:   2          Ride:            5        Read/write:      1        
-MAGAP:   0          Sleight:         6        Spoken:          2        
-                    Swim:            3        *Social lore:    1        
-DB:      2          Tumble:          6        *Law:            1        
-BP:      7          *Love making:    8        *Security:       2        
-MD:      1          *Tailoring:      3        
-                    *Knitting:       5        
+SIZE:    3          Balance:         1        Dtraps:          5        
+STRNG:   3          Climb:           3        Tracking:        5        
+ENDUR:   3          Dodge:           2        *Sense magick:   8        
+COORD:   5          Hide:            4/4      
+LEARN:   8          Mvqt:            4/4      Medical lore:    5        
+AWARE:   7          Ride:            4        Read/write:      6        
+MAGAP:   8          Sleight:         5        Spoken:          8        
+                    Swim:            3        *Natural magick: 10       
+DB:      2          Tumble:          4        *Creature lore:  8        
+BP:      7          *Drawing:        6        *Legend lore:    6        
+MD:      3          *Animal handl:   4        
+                    *Tailoring:      4        
 -----------------------------------------------------------------------
-Cult:    Shalissa, Interested (3)
+Cult:    Fal Munir, Lay member (0)
 -----------------------------------------------------------------------
-ENC:     5          Armour:   None           Social status:  LC       
-Status:  0          AP:       0              Money:          2        
+ENC:     5          Armour:   None           Social status:  MC       
+Status:  0          AP:       0              Money:          514      
 -----------------------------------------------------------------------
 WEAPON          SKILL    I/SR    OFF    DEF    DAM    HP    RANGE
-Rapier            7       3       7      7      0     7    
-Knife             6       4       4      4      0     8    
-Knife*2           5       4       4      4      0     8    
-> Th Knife        6       2       5      -      -2    -     15/25
+Rapier            5       3       5      4      0     7    
+Short sword       3       4       2      2      0     12   
+> Th Knife        3       2       2      -      -2    -     15/25
+-----------------------------------------------------------------------
+Magick lore:  8     Magick type:  summoning   Spell lore:   8     
+
+SPELL               LEVEL  DR  A?  R?  CT  DUR  RNG  WT    AoE
+Command Demon         2    11  P   Y   1r  Spc  5m         1D*
+Ctrl Elemental        2    9   A   Y   1r  2m   10m        1E*
+Summon Elemental      1    11  -   N   5m  2m   1m         1E*
+Summoning             3    11  -   N   5m  2m   1m         1D*
+Call                  3    11  -   Y   5m  2m   1m         1D*
+Banish                1    13  -   Y   1r  I    10m        1D*
+Prot. f Demons        3    11  +   N   1r  1m   T          1C*
 
 #######################################################################
