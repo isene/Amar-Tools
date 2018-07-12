@@ -4,6 +4,7 @@ require_relative "d6s.rb"
 require_relative "class_npc.rb"
 require_relative "class_enc.rb"
 require_relative "class_town.rb"
+require_relative "town_relations.rb"
 
 require_relative "tables/enc_type.rb"
 require_relative "tables/enc_specific.rb"

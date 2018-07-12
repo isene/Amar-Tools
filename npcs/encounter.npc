@@ -1,30 +1,9 @@
 #################################<By NPCg 0.5>#################################
-Day:   City          (Level=0)                              Created: 2018-07-01
+Day:   City          (Level=0)                              Created: 2018-07-13
 
-HOSTILE:
-Arax: Worker            (F, Lv3) SIZ=3  STR=3  END=5  AWR=4  MAG=0  Ddg=3 (0)
-  Rapier/Knife          Skill= 3, Ini: 3, Off: 4, Def: 3, Dam: 0    AP:0, BP:7
-  Rock                  Skill= 1, Off:-1, Dam:-3, Rng:15
-
-Arax: Hunter            (M, Lv3) SIZ=3  STR=5  END=6  AWR=5  MAG=0  Ddg=3 (0)
-  Rapier/Knife          Skill= 7, Ini: 3, Off: 8, Def: 7, Dam: 0    AP:0, BP:8
-  Sling                 Skill= 9, Off: 6, Dam: 0, Rng:40
-
-Arax: Warrior           (M, Lv3) SIZ=2  STR=3  END=5  AWR=4  MAG=0  Ddg=5 (-3)
-  Hatchet/Knife         Skill= 5, Ini: 4, Off: 4, Def: 4, Dam: 0    AP:3, BP:5
-  X-bow (medium)        Skill= 3, Off: 5, Dam: 3, Rng:25
-
-Arax: Hunter            (F, Lv3) SIZ=3  STR=4  END=4  AWR=4  MAG=0  Ddg=4 (-1)
-  Club                  Skill= 3, Ini: 3, Off: 2, Def: 1, Dam: 0    AP:2, BP:7
-  Bow (light)           Skill= 3, Off: 3, Dam: 1, Rng:30
-
-Arax: Worker            (F, Lv3) SIZ=2  STR=3  END=4  AWR=5  MAG=0  Ddg=4 (-1)
-  Staff                 Skill= 3, Ini: 2, Off: 3, Def: 5, Dam:-1    AP:1, BP:5
-  X-bow (medium)        Skill= 1, Off: 3, Dam: 3, Rng:25
-
-Arax: Warrior           (M, Lv1) SIZ=3  STR=2  END=1  AWR=1  MAG=0  Ddg=3 (-3)
-  Short sword           Skill= 3, Ini: 4, Off: 2, Def: 2, Dam:-1    AP:2, BP:6
-  Sling                 Skill= 2, Off:-1, Dam:-1, Rng:40
+FRIENDLY:
+Large animal: Prey      (M, Lv2) SIZ=6  STR=4  END=6  AWR=2  MAG=0  Ddg=1 (-1)
+  Unarmed               Skill= 3, Ini: 5, Off: 1, Def:-1, Dam:-1    AP:1, BP:14
 
 ###############################################################################
 

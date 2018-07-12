@@ -105,12 +105,12 @@ else
     
     loop do
 		system "clear"
-		puts "\nNPC Generation 0.5 - Rendom encounters and character generation for Amar RPG."
-		puts "\nENTER = Random encounter\nt = Create a village/town/city\nn = Generate a detailed human NPC\nN = Generate names\nq = Quit npcg\n\n"
+		puts "\nNPC Generation 0.5 - Tools for the Amar RPG."
+		puts "\ne = Random encounter\nt = Create a village/town/city\nr = Make town relations\nn = Generate a detailed human NPC\nN = Generate names\nq = Quit npcg\n\n"
 		c = get_char
 		if c == "q"
 			break
-		elsif c == "\r"
+		elsif c == "e"
 			ia = enc_input
 			anENC = Enc.new(ia[0], ia[1])
 			enc_output(anENC)
@@ -118,6 +118,17 @@ else
 			ia = town_input
 			aTOWN = Town.new(ia[0], ia[1])
 			town_output(aTOWN)
+		elsif c == "r"
+			town_file = "npcs/town.npc"
+			#Get town file name
+			puts "\nEnter town file name (default=npcs/town.npc):"
+			print "> "
+			fl = gets.chomp.to_s
+			town_file = fl unless fl == ""
+			town_relations(town_file)
+			puts "DOT file created: town.dot"
+			puts "PNG file created: town.png"
+			c = get_char
 		elsif c == "n"
 			load "includes/tables/chartype.rb"
 			ia = npc_input
