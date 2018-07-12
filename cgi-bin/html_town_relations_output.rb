@@ -4,6 +4,8 @@
 require "cgi"
 require "erb"
 
+load "../includes/includes.rb"
+
 cgi = CGI.new
 @town = cgi.params["upfile"][0].read
 File.write("town.txt", @town)

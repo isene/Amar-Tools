@@ -2,7 +2,7 @@
 
 require "erb"
 
-load "/var/www/isene.org/html/includes/includes.rb"
+load "../includes/includes.rb"
 
 tmpl = File.read("../npc_input.html")
 

@@ -3,7 +3,7 @@
 require "cgi"
 require "erb"
 
-load "/var/www/isene.org/html/includes/includes.rb"
+load "../includes/includes.rb"
 
 cgi = CGI.new
 tmpl = File.read("../town_output.html")

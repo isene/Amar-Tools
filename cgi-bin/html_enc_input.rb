@@ -7,7 +7,7 @@ $Day = 1 if $Day == nil
 $Terrain = 0 if $Terraintype == nil
 $Terraintype = 8 if $Terraintype == nil
 
-load "/var/www/isene.org/html/includes/includes.rb"
+load "../includes/includes.rb"
 
 tmpl = File.read("../enc_input.html")
 

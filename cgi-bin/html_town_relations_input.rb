@@ -2,12 +2,9 @@
 
 require "erb"
 
-$Town_size = 10 if $Town_size == nil
-$Town_var = 0 if $Town_var == nil
-
 load "../includes/includes.rb"
 
-tmpl = File.read("../town_input.html")
+tmpl = File.read("../town_relations_input.html")
 
 out = ERB.new(tmpl)
 
