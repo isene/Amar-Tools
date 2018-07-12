@@ -4,7 +4,6 @@
 </head>
 
 <body bgcolor="#FFFFFF" text="#000000">
-<form  name="requestForm" enctype="multipart/form-data" action="cgi-bin/html_town_relations.rb" method="POST">
   <table width="600" border="0" cellspacing="0" cellpadding="2" align="center">
 	<tr>
 	  <td><center><h2>Town relations</h2></center></td>
@@ -19,18 +18,19 @@
 	<tr><td> </td></tr>
   </table>
   <table width="600" border="1" cellspacing="0" cellpadding="1" align="center" bgcolor="#cccccc">
+	<form  name="requestForm" enctype="multipart/form-data" action="cgi-bin/html_town_relations_output.rb" method="POST">
     <tr>
       <td>
         <table width="100%" border="0" cellspacing="1" cellpadding="4">
 		  <tr>
 		    <td width="300" border="1" align="right"><input type="FILE" name="upfile" value="browse"></td>
-		    <td width="300" border="1"><input type="SUBMIT" name="submit" value="Upload"></td>
+		    <td width="300" border="1"><input type="SUBMIT" name="submit" value="Submit"></td>
 		  </tr>
         </table>
       </td>
     </tr>
+	</form>
   </table>
-</form>
 <p><center><button style="width:300px" onclick="location.href = '/amar.html';" > Front page </button></center></p>
 <p><center><img src="/images/townrel.png" /></center></p>
 
