@@ -1,20 +1,21 @@
-# npcg
-For AMAR RPG: Random encounters and NPC generator
+# Tools for the Amar Role-Playing Game
 
 ---------------------------------------------------------------------------
 
-Welcome to the NPC Generation for the Amar Role-Playing Game (http://d6gaming.org).
+Welcome to the swiss army knife for the Amar Role-Playing Game (http://d6gaming.org).
 
-This program runs on any GNU/Linux system where the scripting language
-Ruby is installed. Ruby is available as tar.gz, rpm packages or
-deb-packages as needed for your specific Linux distribution. For more
-info on Ruby, see http://www.ruby-lang.org.
+This program suite runs on any GNU/Linux system where the scripting
+language Ruby is installed. Ruby is available as tar.gz, rpm packages or
+deb-packages as needed for your specific Linux distribution. For more info
+on Ruby, see http://www.ruby-lang.org.
 
-This is a tool box for the Amar RPG. It is designed for generating random
+This tool box for the Amar RPG is designed for generating random
 or specific encounters and Non-Player Characters for the Amar RPG, random
-names for various races and for making Open Ended Dice Rolls. So, in order
-to make real use of this program, you should be running an Amar game as
-the Game Master.
+settlements and relationship maps for inhabitants of villages/towns/cities
+as well as random names for various races and for making Open Ended Dice Rolls. 
+
+In order to make real use of this program, you should be running an Amar
+game as the Game Master.
 
 For more info on the Amar RPG, game rules, adventures and more, see
 http://www.d6gaming.org/.
@@ -35,6 +36,17 @@ Then, as root, run the setup program:
 
 This makes it possible for you to run the program by just entering
 "npcg" on the command line.
+
+Running npcg on the command line will give you a set of options:
+
+	e = Random encounter
+	t = Create a village/town/city
+	r = Make town relations
+	n = Generate a detailed human NPC
+	N = Generate names
+	q = Quit npcg
+
+Simply pick the tools you want and follow the instructions.
 
 When using the html version, amar.html is the starting page.
 
