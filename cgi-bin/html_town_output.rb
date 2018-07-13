@@ -37,6 +37,9 @@ rescue
 end
 # End: From the CLI module
 
+# Generate a relationship map
+town_relations("town.txt")
+
 out = ERB.new(tmpl)
 
 print "Content-type: text/html\n\n"
