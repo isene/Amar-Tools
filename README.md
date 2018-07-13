@@ -46,7 +46,7 @@ Running npcg on the command line will give you a set of options:
 	N = Generate names
 	q = Quit npcg
 
-Simply pick the tools you want and follow the instructions.
+Simply pick the tool you want and follow the instructions.
 
 When using the html version, amar.html is the starting page.
 
