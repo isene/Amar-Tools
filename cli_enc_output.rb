@@ -71,13 +71,13 @@ def enc_output(anENC)
 		
 	f += "###############################################################################\n\n"
 
+	tfile = "npcs/encounter.npc"
 	begin
-		File.delete("npcs/encounter.npc")
-		File.open("npcs/encounter.npc", File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
-			fl.write f
-		end
+		File.delete(tfile) if File.exists?(tfile)
+		File.write(tfile, f, perm: 0644)
 	rescue
-		puts "Error writing file \"npcs/encounter.npc\""
+		puts "Error writing file #{tfile}"
+		gets
 	end
-	system("#{$editor} npcs/encounter.npc")
+	system("#{$editor} #{tfile}")
 end

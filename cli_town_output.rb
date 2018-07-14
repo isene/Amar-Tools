@@ -14,13 +14,13 @@ def town_output(aTOWN)
 		
 	f += "###############################################################################\n\n"
 
+	tfile = "npcs/town.npc"
 	begin
-		File.delete("npcs/town.npc")
-		File.open("npcs/town.npc", File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
-			fl.write f
-		end
+		File.delete(tfile) if File.exists?(tfile)
+		File.write(tfile, f, perm: 0644)
 	rescue
-		puts "Error writing file \"npcs/town.npc\""
+		puts "Error writing file #{tfile}"
+		gets
 	end
-	system("#{$editor} npcs/town.npc")
+	system("#{$editor} #{tfile}")
 end

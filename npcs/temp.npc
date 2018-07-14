@@ -1,43 +1,38 @@
 #############################<By NPCg 0.5>#############################
-                                                    Created: 2018-07-11
-Name:     Aleonic Ald
-Type:     Summoner (4)           Sex:   M            Height:   172
-Area:     Merisir                Age:   31           Weight:   73
+                                                    Created: 2018-07-14
+Name:     Malise Mas
+Type:     Monk (2)               Sex:   F            Height:   169
+Area:     Other                  Age:   35           Weight:   73
 -----------------------------------------------------------------------
 Description:  
 -----------------------------------------------------------------------
-SIZE:    3          Balance:         1        Dtraps:          5        
-STRNG:   3          Climb:           3        Tracking:        5        
-ENDUR:   3          Dodge:           2        *Sense magick:   8        
-COORD:   5          Hide:            4/4      
-LEARN:   8          Mvqt:            4/4      Medical lore:    5        
-AWARE:   7          Ride:            4        Read/write:      6        
-MAGAP:   8          Sleight:         5        Spoken:          8        
-                    Swim:            3        *Natural magick: 10       
-DB:      2          Tumble:          4        *Creature lore:  8        
-BP:      7          *Drawing:        6        *Legend lore:    6        
-MD:      3          *Animal handl:   4        
-                    *Tailoring:      4        
+SIZE:    3          Balance:         5        Dtraps:          3        
+STRNG:   6          Climb:           7        Tracking:        5        
+ENDUR:   5          Dodge:           6        *Sense danger:   1        
+COORD:   6          Hide:            5/5      
+LEARN:   5          Mvqt:            5/5      Medical lore:    2        
+AWARE:   5          Ride:            5        Read/write:      1        
+MAGAP:   3          Sleight:         6        Spoken:          3        
+                    Swim:            6        *Cult lore:      3        
+DB:      3          Tumble:          6        *Plant lore:     0        
+BP:      7          *Acrobatics:     7        *History:        4        
+MD:      2          *Gardening:      6        
+                    *Hold breath:    3        
 -----------------------------------------------------------------------
-Cult:    Fal Munir, Lay member (0)
+Cult:    Gwendyll, Initiated (1)
 -----------------------------------------------------------------------
-ENC:     5          Armour:   None           Social status:  MC       
-Status:  0          AP:       0              Money:          514      
+ENC:     7          Armour:   None           Social status:  UC       
+Status:  0          AP:       0              Money:          8        
 -----------------------------------------------------------------------
 WEAPON          SKILL    I/SR    OFF    DEF    DAM    HP    RANGE
-Rapier            5       3       5      4      0     7    
-Short sword       3       4       2      2      0     12   
-> Th Knife        3       2       2      -      -2    -     15/25
+Knife             8       4       6      6      1     8    
+Unarmed           6       5       4      3      -1    0    
+Rapier            6       3       6      6      1     7    
+> Bow (medium)    7       1       7      -      2     -     35/160
 -----------------------------------------------------------------------
-Magick lore:  8     Magick type:  summoning   Spell lore:   8     
+Magick lore:  3     Magick type:  life        Spell lore:   3     
 
 SPELL               LEVEL  DR  A?  R?  CT  DUR  RNG  WT    AoE
-Command Demon         2    11  P   Y   1r  Spc  5m         1D*
-Ctrl Elemental        2    9   A   Y   1r  2m   10m        1E*
-Summon Elemental      1    11  -   N   5m  2m   1m         1E*
-Summoning             3    11  -   N   5m  2m   1m         1D*
-Call                  3    11  -   Y   5m  2m   1m         1D*
-Banish                1    13  -   Y   1r  I    10m        1D*
-Prot. f Demons        3    11  +   N   1r  1m   T          1C*
+Det. Disemb. Spirit   1    8   A   N   1r  1r   S          10mr
 
 #######################################################################

@@ -265,38 +265,14 @@ def npc_output(n)
   f += "\n"
   f += "#######################################################################"
 
-if $editor == ""
-  puts f
-  fname = "npcs/" + n.name + ".npc"
-  if test(?e, fname)
-    print "NPC with that name already exists. Overwrite? (y/n) "
-    while i = gets.chomp
-      if i == "y"
-        File.delete(fname)
-        break
-      elsif i == "n"
-        return
-      end
-    end
-  end
-  begin
-    File.open(fname, File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
-      fl.write f
-    end
-  rescue
-    puts "Error writing file \"#{fname}}\""
-  end
-  puts "Npc saved to \"" + fname + "\"\n\n"
-else
-  begin
-    File.delete("npcs/temp.npc")
-    File.open("npcs/temp.npc", File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
-      fl.write f
-    end
-  rescue
-    puts "Error writing file \"#{fname}}\""
-  end
-  system("#{$editor} npcs/temp.npc")
-end
+	tfile = "npcs/temp.npc"
+	begin
+		File.delete(tfile) if File.exists?(tfile)
+		File.write(tfile, f, perm: 0644)
+	rescue
+		puts "Error writing file #{tfile}"
+		gets
+	end
+	system("#{$editor} #{tfile}")
 
 end

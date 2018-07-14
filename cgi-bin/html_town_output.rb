@@ -28,11 +28,10 @@ end
 	
 f += "###############################################################################\n\n"
 
+tfile = "town.txt"
 begin
-	File.delete("town.txt")
-	File.open("town.txt", File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
-		fl.write f
-	end
+	File.delete(tfile) if File.exists?(tfile)
+	File.write(tfile, f, perm: 0644)
 rescue
 end
 # End: From the CLI module

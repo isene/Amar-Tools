@@ -126,9 +126,8 @@ else
 			fl = gets.chomp.to_s
 			town_file = fl unless fl == ""
 			town_relations(town_file)
-			puts "DOT file created: town.dot"
-			puts "PNG file created: town.png"
 			town_dot2txt
+			puts "\nPress any key..."
 			c = get_char
 		elsif c == "n"
 			load "includes/tables/chartype.rb"

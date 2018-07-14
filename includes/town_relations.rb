@@ -1,10 +1,7 @@
 def town_relations(town_file)
 	abort("No such Town file!") unless File.exist?(town_file)
 
-	town = ""
-	File.open(town_file) do |fl|
-		town = fl.read
-	end
+	town = File.read(town_file)
 	t = town.gsub(/ \[.*/, '')
 	t.sub!(/^.*\n\n/, '')
 	t.sub!(/\n\n###.*$/, '')
@@ -55,17 +52,15 @@ DOTSTART
 	end
 	dot_text += "}"
 
+	tfile = "town.dot"
 	begin
-		begin
-			File.delete("town.dot")
-		rescue
-		end
-		File.open("town.dot", File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
-			fl.write dot_text
-		end
+		File.delete(tfile) if File.exists?(tfile)
+		File.write(tfile, dot_text, perm: 0644)
 		`dot -Tpng town.dot -o town.png`
+		puts "DOT file created: town.dot"
+		puts "PNG file created: town.png"
 	rescue
-		 puts "Error! No graph file written."
+		puts "Error! No graph file written."
 	end
 end
 
