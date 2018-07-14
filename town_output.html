@@ -68,13 +68,18 @@
 		where they live.</p>
 		<p>Right-click on the image and choose to download to save your town
 		relations. If you are not satisfied with the generated relations,
-		simply go back an upload the same file again.</small></p>
+		simply download the town file, go to the front page and use the
+		tool to upload the town file to generate a new relationship map.</p>
+		<p> For large settlements, the map becomes chaotic, and then it is more 
+		helpful to read the relations in a plain text file. To do so, simply 
+		click the biutton "Download town relations".</small></p>
 		<br />
       </td>
     </tr>     
     <tr>
       <td align="center">         
 	    <p><button style="width:300px" onclick="location.href = 'town.txt';" > Download generated town </button></p>
+	    <p><button style="width:300px" onclick="location.href = 'townrel.txt';" > Download town relations </button></p>
         <form name="new" method="post" action="/cgi-bin/html_town_input.rb">
         <input type="submit" style="width:300px" name="new" value=" New random town "></form>
 	    <p><button style="width:300px" onClick="history.go(0);"> Reload with same values </button></p>

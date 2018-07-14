@@ -64,8 +64,44 @@ DOTSTART
 			fl.write dot_text
 		end
 		`dot -Tpng town.dot -o town.png`
-		puts "Graph file written."
 	rescue
 		 puts "Error! No graph file written."
 	end
 end
+
+def town_dot2txt(town_dot_file = "town.dot")
+	townrel = ""
+
+	File.open(town_dot_file) do |fl|
+		townrel = fl.read
+	end
+
+	townrel.sub!(/^.*true\n/m, '')
+	townrel.gsub!(/\\n/, ', ')
+	t = townrel
+	t.each_line do |line|
+		if / \[color=\"red\"\]/ =~ line
+			new_line = line.sub(/ \[color=\"red\"\]/, '')
+		else
+			new_line = line.sub(/->/, '+>')
+		end
+		townrel.sub!(line, new_line)
+	end
+	townrel.gsub!(/\"/, '')
+	townrel.gsub!(/\n}/, '')
+
+	begin
+		begin
+			File.delete("townrel.txt")
+		rescue
+		end
+		File.open("townrel.txt", File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
+			fl.write townrel
+		end
+		puts "Town relationship file written."
+	rescue
+		 puts "Error! No town relationship file written."
+	end
+end
+
+

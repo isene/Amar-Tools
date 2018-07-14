@@ -128,6 +128,7 @@ else
 			town_relations(town_file)
 			puts "DOT file created: town.dot"
 			puts "PNG file created: town.png"
+			town_dot2txt
 			c = get_char
 		elsif c == "n"
 			load "includes/tables/chartype.rb"
