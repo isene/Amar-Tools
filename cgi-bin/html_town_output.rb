@@ -39,6 +39,7 @@ end
 
 # Generate a relationship map
 town_relations("town.txt")
+town_dot2txt
 
 out = ERB.new(tmpl)
 
