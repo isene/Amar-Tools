@@ -69,7 +69,8 @@ DOTSTART
 	end
 end
 
-def town_dot2txt(town_dot_file = "town.dot")
+def town_dot2txt()
+  town_dot_file = "town.dot"
 	townrel = ""
 
 	File.open(town_dot_file) do |fl|
