@@ -90,6 +90,8 @@ def town_dot2txt(town_dot_file = "town.dot")
 	townrel.gsub!(/\"/, '')
 	townrel.gsub!(/\n}/, '')
 
+	`touch t.txt`
+
 	begin
 		begin
 			File.delete("townrel.txt")

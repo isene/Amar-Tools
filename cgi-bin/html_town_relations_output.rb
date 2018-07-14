@@ -11,7 +11,7 @@ cgi = CGI.new
 File.write("town.txt", @town) unless @town.to_s == ""
 
 town_relations("town.txt")
-town_dot2txt()
+town_dot2txt
 
 tmpl = File.read("../town_relations_output.html")
 
