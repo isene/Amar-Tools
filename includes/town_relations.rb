@@ -71,6 +71,8 @@ end
 
 def town_dot2txt(town_dot_file = "town.dot")
 
+	`touch t.txt`
+
 	townrel = ""
 
 	File.open(town_dot_file) do |fl|
