@@ -4,6 +4,7 @@ require "cgi"
 require "erb"
 
 load "../includes/includes.rb"
+load "../cli_enc_output.rb"
 
 cgi = CGI.new
 tmpl = File.read("../enc_output.html")
@@ -45,7 +46,7 @@ anENC = Enc.new(@type, @enc_number)
 @no_encounter = true if @e[0]["string"] =~ /NO ENCOUNTER/
 @event = true if @e[0]["string"] =~ /Event:/
 
-enc_output(anENC, "web")
+#enc_output(anENC, "web")
 
 out = ERB.new(tmpl)
 
