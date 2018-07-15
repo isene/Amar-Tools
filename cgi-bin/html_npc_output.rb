@@ -4,7 +4,7 @@ require "cgi"
 require "erb"
 
 load "../includes/includes.rb"
-load "../cli_npc_output.rb"
+#load "../cli_npc_output.rb"
 
 cgi = CGI.new
 tmpl = File.read("../npc_output.html")
