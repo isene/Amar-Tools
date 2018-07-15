@@ -2,6 +2,7 @@
 
 require "cgi"
 require "erb"
+require "date"
 
 load "../includes/includes.rb"
 load "../cli_npc_output.rb"
