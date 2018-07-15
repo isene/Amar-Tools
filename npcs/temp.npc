@@ -1,33 +1,34 @@
 #############################<By NPCg 0.5>#############################
                                                     Created: 2018-07-15
-Name:     Felisayah Guellix
-Type:     Soldier (1)            Sex:   F            Height:   171
-Area:     Feronir                Age:   17           Weight:   64
+Name:     Azly Aley
+Type:     Assassin (3)           Sex:   F            Height:   174
+Area:     Rauinir                Age:   26           Weight:   71
 -----------------------------------------------------------------------
 Description:  
 -----------------------------------------------------------------------
-SIZE:    3          Balance:         3        Dtraps:          2        
-STRNG:   2          Climb:           4        Tracking:        3        
-ENDUR:   1          Dodge:           4        *Sense danger:   1        
-COORD:   3          Hide:            3/3      
-LEARN:   3          Mvqt:            2/2      Medical lore:    3        
-AWARE:   2          Ride:            3        Read/write:      1        
-MAGAP:   0          Sleight:         1        Spoken:          3        
-                    Swim:            0        *Weapon lore:    1        
-DB:      1          Tumble:          3        *Cult lore:      3        
-BP:      6          *Weapon repair:  4        *Social lore:    0        
-MD:      0          *Armour repair:  3        
-                    *Fletchery:      3        
+SIZE:    3          Balance:         4        Dtraps:          7        
+STRNG:   3          Climb:           6        Tracking:        6        
+ENDUR:   3          Dodge:           4        *Sense life:     5        
+COORD:   5          Hide:            5/5      
+LEARN:   7          Mvqt:            6/6      Medical lore:    6        
+AWARE:   6          Ride:            3        Read/write:      2        
+MAGAP:   4          Sleight:         5        Spoken:          2        
+                    Swim:            6        *Anatomy:        7        
+DB:      2          Tumble:          5        *Security:       3        
+BP:      7          *Set ambush:     5        *Social lore:    3        
+MD:      2          *Trapping:       5        
+                    *Hold breath:    5        
 -----------------------------------------------------------------------
-Cult:    Taroc, Interested (0)
+Cult:    Kraagh, Lay member (0)
 -----------------------------------------------------------------------
-ENC:     7          Armour:   None           Social status:  LMC      
-Status:  -1         AP:       0              Money:          11       
+ENC:     7          Armour:   None           Social status:  LC       
+Status:  -1         AP:       0              Money:          28       
 -----------------------------------------------------------------------
 WEAPON          SKILL    I/SR    OFF    DEF    DAM    HP    RANGE
-Rapier            3       3       3      2      -1    7    
-Short sword       3       4       2      2      -1    12   
-> Bow (light)     4       1       4      -      1     -     30/130
-> Th Knife        5       2       4      -      -2    -     15/25
+Rapier/Knife      8       3       9      8      0     7    
+Short sword       5       4       4      4      0     12   
+Unarmed           3       5       1      -1     -2    0    
+> X-bow (light)   6       1/3     8      -      2     -     20/100
+> Bow (light)     7       1       7      -      1     -     30/130
 
 #######################################################################

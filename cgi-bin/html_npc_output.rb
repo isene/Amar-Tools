@@ -4,7 +4,7 @@ require "cgi"
 require "erb"
 
 load "../includes/includes.rb"
-#load "../cli_npc_output.rb"
+load "../cli_npc_output.rb"
 
 cgi = CGI.new
 tmpl = File.read("../npc_output.html")
@@ -24,7 +24,7 @@ end
 @description = cgi["description"].to_s
 
 @type = "" if @type == "(Type)"
-@area = "" if @area == "(Area)" #level is taken care of by .to_i
+@area = "" if @area == "(Area)"
 
 n = Npc.new(@name, @type, @level, @area, @sex, @age, @height, @weight, @description)
 
