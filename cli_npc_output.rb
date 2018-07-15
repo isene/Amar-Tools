@@ -9,7 +9,7 @@ def npc_output(n, cli)
  mag += n.spell5(0) + n.spell6(0) + n.spell7(0) + n.spell8(0)
  
  f =  "#############################<By NPCg 0.5>#############################\n"
- f += "Created: #{Date.today.to_s}".rjust(71) + "\n"
+ #f += "Created: #{Date.today.to_s}".rjust(71) + "\n"
  f += "Name:".ljust(10) + n.name 
  f += "\n"
  f += "Type:".ljust(10) + (n.type + " (" + n.level.to_s + ")").ljust(23)
