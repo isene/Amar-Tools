@@ -113,7 +113,7 @@ else
 		elsif c == "e"
 			ia = enc_input
 			anENC = Enc.new(ia[0], ia[1])
-			enc_output(anENC)
+			enc_output(anENC, "cli")
 		elsif c == "t"
 			ia = town_input
 			aTOWN = Town.new(ia[0], ia[1])
@@ -133,7 +133,7 @@ else
 			load "includes/tables/chartype.rb"
 			ia = npc_input
 			aNPC = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
-			npc_output(aNPC)
+			npc_output(aNPC, "cli")
 		elsif c == "N"
 			name_gen
 			puts "\nPress any key"

@@ -1,14 +1,8 @@
 #################################<By NPCg 0.5>#################################
-Day:   City          (Level=0)                              Created: 2018-07-14
+Day:   City          (Level=0)                              Created: 2018-07-15
 
 ANTAGONISTIC:
-Human: High class       (M, Lv4) SIZ=3  STR=4  END=7  AWR=4  MAG=0  Ddg=4 (-3)
-  Spear 2H              Skill= 3, Ini: 2, Off: 3, Def: 5, Dam: 1    AP:3, BP:8
-  X-bow (light)         Skill= 5, Off: 7, Dam: 2, Rng:20
-
-Human: Archer           (F, Lv5) SIZ=2  STR=7  END=6  AWR=6  MAG=0  Ddg=10 (0)
-  B. sword 2H           Skill=10, Ini: 3, Off:10, Def:13, Dam: 3    AP:0, BP:6
-  Bow (medium)          Skill= 9, Off: 9, Dam: 3, Rng:35
+Event: Roll again. Encounter is seeking treasure (if applicable)
 
 ###############################################################################
 

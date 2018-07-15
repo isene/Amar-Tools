@@ -4,6 +4,7 @@ require "cgi"
 require "erb"
 
 load "../includes/includes.rb"
+load "../cli_npc_output.rb"
 
 cgi = CGI.new
 tmpl = File.read("../npc_output.html")
@@ -285,6 +286,9 @@ if n.spell8(0) != 0
 else
 	@sp8 = false
 end
+
+# Create text file
+npc_output(n, "web")
 
 out = ERB.new(tmpl)
 

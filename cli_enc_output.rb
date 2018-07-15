@@ -1,4 +1,4 @@
-def enc_output(anENC)
+def enc_output(anENC, cli)
 
 	e = anENC.encounter
 
@@ -71,7 +71,7 @@ def enc_output(anENC)
 		
 	f += "###############################################################################\n\n"
 
-	tfile = "npcs/encounter.npc"
+	cli == "cli"? tfile = "npcs/encounter.npc" : tfile = "encounter.txt"
 	begin
 		File.delete(tfile) if File.exists?(tfile)
 		File.write(tfile, f, perm: 0644)
@@ -79,5 +79,5 @@ def enc_output(anENC)
 		puts "Error writing file #{tfile}"
 		gets
 	end
-	system("#{$editor} #{tfile}")
+	system("#{$editor} #{tfile}") if cli == "cli"
 end

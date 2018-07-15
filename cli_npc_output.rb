@@ -3,7 +3,7 @@
 # This function outputs the character n to screen, 
 # then to a file named $name + ".npc"
 
-def npc_output(n) 
+def npc_output(n, cli) 
 
   mag = n.spell0(0) + n.spell1(0) + n.spell2(0) + n.spell3(0) + n.spell4(0)
   mag += n.spell5(0) + n.spell6(0) + n.spell7(0) + n.spell8(0)
@@ -265,7 +265,7 @@ def npc_output(n)
   f += "\n"
   f += "#######################################################################"
 
-	tfile = "npcs/temp.npc"
+	cli == "cli" ? tfile = "npcs/temp.npc" : tfile = "temp.txt"
 	begin
 		File.delete(tfile) if File.exists?(tfile)
 		File.write(tfile, f, perm: 0644)
@@ -273,6 +273,6 @@ def npc_output(n)
 		puts "Error writing file #{tfile}"
 		gets
 	end
-	system("#{$editor} #{tfile}")
+	system("#{$editor} #{tfile}") if cli == "cli"
 
 end

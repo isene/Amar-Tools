@@ -1,38 +1,33 @@
 #############################<By NPCg 0.5>#############################
-                                                    Created: 2018-07-14
-Name:     Malise Mas
-Type:     Monk (2)               Sex:   F            Height:   169
-Area:     Other                  Age:   35           Weight:   73
+                                                    Created: 2018-07-15
+Name:     Felisayah Guellix
+Type:     Soldier (1)            Sex:   F            Height:   171
+Area:     Feronir                Age:   17           Weight:   64
 -----------------------------------------------------------------------
 Description:  
 -----------------------------------------------------------------------
-SIZE:    3          Balance:         5        Dtraps:          3        
-STRNG:   6          Climb:           7        Tracking:        5        
-ENDUR:   5          Dodge:           6        *Sense danger:   1        
-COORD:   6          Hide:            5/5      
-LEARN:   5          Mvqt:            5/5      Medical lore:    2        
-AWARE:   5          Ride:            5        Read/write:      1        
-MAGAP:   3          Sleight:         6        Spoken:          3        
-                    Swim:            6        *Cult lore:      3        
-DB:      3          Tumble:          6        *Plant lore:     0        
-BP:      7          *Acrobatics:     7        *History:        4        
-MD:      2          *Gardening:      6        
-                    *Hold breath:    3        
+SIZE:    3          Balance:         3        Dtraps:          2        
+STRNG:   2          Climb:           4        Tracking:        3        
+ENDUR:   1          Dodge:           4        *Sense danger:   1        
+COORD:   3          Hide:            3/3      
+LEARN:   3          Mvqt:            2/2      Medical lore:    3        
+AWARE:   2          Ride:            3        Read/write:      1        
+MAGAP:   0          Sleight:         1        Spoken:          3        
+                    Swim:            0        *Weapon lore:    1        
+DB:      1          Tumble:          3        *Cult lore:      3        
+BP:      6          *Weapon repair:  4        *Social lore:    0        
+MD:      0          *Armour repair:  3        
+                    *Fletchery:      3        
 -----------------------------------------------------------------------
-Cult:    Gwendyll, Initiated (1)
+Cult:    Taroc, Interested (0)
 -----------------------------------------------------------------------
-ENC:     7          Armour:   None           Social status:  UC       
-Status:  0          AP:       0              Money:          8        
+ENC:     7          Armour:   None           Social status:  LMC      
+Status:  -1         AP:       0              Money:          11       
 -----------------------------------------------------------------------
 WEAPON          SKILL    I/SR    OFF    DEF    DAM    HP    RANGE
-Knife             8       4       6      6      1     8    
-Unarmed           6       5       4      3      -1    0    
-Rapier            6       3       6      6      1     7    
-> Bow (medium)    7       1       7      -      2     -     35/160
------------------------------------------------------------------------
-Magick lore:  3     Magick type:  life        Spell lore:   3     
-
-SPELL               LEVEL  DR  A?  R?  CT  DUR  RNG  WT    AoE
-Det. Disemb. Spirit   1    8   A   N   1r  1r   S          10mr
+Rapier            3       3       3      2      -1    7    
+Short sword       3       4       2      2      -1    12   
+> Bow (light)     4       1       4      -      1     -     30/130
+> Th Knife        5       2       4      -      -2    -     15/25
 
 #######################################################################
