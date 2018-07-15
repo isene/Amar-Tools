@@ -71,7 +71,7 @@ def enc_output(anENC, cli)
 		
 	f += "###############################################################################\n\n"
 
-  cli == "cli"? tfile = "npcs/encounter.npc" : tfile = "encounter.txt"
+  cli == "cli" ? tfile = "npcs/encounter.npc" : tfile = "encounter.txt"
   begin
   	File.delete(tfile) if File.exists?(tfile)
   	File.write(tfile, f, perm: 0644)
@@ -80,4 +80,5 @@ def enc_output(anENC, cli)
   	gets if cli == "cli"
   end
   system("#{$editor} #{tfile}") if cli == "cli"
+
 end

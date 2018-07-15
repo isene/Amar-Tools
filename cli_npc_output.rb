@@ -265,7 +265,7 @@ def npc_output(n, cli)
   f += "\n"
   f += "#######################################################################"
 
-	cli == "cli" ? tfile = "npcs/temp.npc" : tfile = "temp.txt"
+	cli == "cli" ? tfile = "npcs/temp.npc" : tfile = "npc.txt"
 	begin
 		File.delete(tfile) if File.exists?(tfile)
 		File.write(tfile, f, perm: 0644)
@@ -273,6 +273,6 @@ def npc_output(n, cli)
 		puts "Error writing file #{tfile}"
 		gets if cli == "cli"
 	end
-	system("#{$editor} #{tfile}") if cli == "cli"
+	#system("#{$editor} #{tfile}") if cli == "cli"
 
 end
