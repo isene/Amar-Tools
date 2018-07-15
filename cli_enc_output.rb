@@ -73,7 +73,7 @@ def enc_output(anENC, cli)
 
 	cli == "cli"? tfile = "npcs/encounter.npc" : tfile = "encounter.txt"
 	begin
-		File.delete(tfile) if File.exists?(tfile)
+		#File.delete(tfile) if File.exists?(tfile)
 		#File.write(tfile, f, perm: 0644)
 	rescue
 		puts "Error writing file #{tfile}"
