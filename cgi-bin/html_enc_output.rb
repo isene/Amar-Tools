@@ -46,7 +46,7 @@ anENC = Enc.new(@type, @enc_number)
 @no_encounter = true if @e[0]["string"] =~ /NO ENCOUNTER/
 @event = true if @e[0]["string"] =~ /Event:/
 
-enc_output(anENC, "web")
+#enc_output(anENC, "web")
 
 out = ERB.new(tmpl)
 
