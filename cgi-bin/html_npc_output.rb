@@ -288,7 +288,7 @@ else
 end
 
 # Create text file
-npc_output(n, "web")
+#npc_output(n, "web")
 
 out = ERB.new(tmpl)
 
