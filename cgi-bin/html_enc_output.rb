@@ -5,7 +5,6 @@ require "erb"
 
 load "../includes/includes.rb"
 load "../cli_enc_output.rb"
-load "../xcli_enc_output.rb"
 
 cgi = CGI.new
 tmpl = File.read("../enc_output.html")
