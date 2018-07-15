@@ -271,7 +271,7 @@ def npc_output(n, cli)
 		File.write(tfile, f, perm: 0644)
 	rescue
 		puts "Error writing file #{tfile}"
-		gets
+		gets if cli == "cli"
 	end
 	system("#{$editor} #{tfile}") if cli == "cli"
 
