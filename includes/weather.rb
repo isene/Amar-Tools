@@ -1,11 +1,3 @@
-require_relative "d6s.rb"
-
-$weather = 10
-$wind_dir = 2
-$wind_str = 1
-
-#$day[m]
-
 class Weather_day
 
 	attr_reader :weather, :wind, :wind_dir, :wind_str, :special, :moon
@@ -13,20 +5,20 @@ class Weather_day
 
 	def initialize
 		if rand(3) != 0
-			$weather = ($weather + oD6 + oD6 - 8).abs % 41
-			$weather = 40 - $weather if $weather > 20
-			$weather = 1 if $weather == 0
+			$weather_n = ($weather_n + oD6 + oD6 - 7).abs % 41
+			$weather_n = 40 - $weather_n if $weather_n > 20
 		end
 		if rand(2) != 0
-			$wind_dir = ($wind_dir + (oD6 + oD6 - 7)/3) % 8
+			$wind_dir_n = ($wind_dir_n + (oD6 + oD6 - 7)/3) % 8
 		end
 		if rand(3) != 0
-			$wind_str = ($wind_str + (oD6 + oD6 - 6)/6).abs % 4
+			$wind_str_n = ($wind_str_n + (oD6 + oD6 - 6)/6).abs % 4
 		end
 		
-		@weather  = $weather
-		@wind_dir = $wind_dir
-		@wind_str = $wind_str
+		$weather_n = 1 if $weather_n == 0
+		@weather  = $weather_n
+		@wind_dir = $wind_dir_n
+		@wind_str = $wind_str_n
 		@wind     = (@wind_dir + 1) + ((@wind_str - 1) * 8)
 		@wind     = 0 if @wind_str == 0
 
@@ -42,11 +34,12 @@ class Weather_month
 
 	def initialize(month, weather, wind)
 
-		@name = month
+		$month_n = $Month.index(month)
+		@name    = month
 		
-		$weather  = weather.to_i
-		$wind_str = ((wind.to_i) / 8).ceil
-		$wind_dir = (wind.to_i) % 8
+		$weather_n  = weather.to_i
+		$wind_str_n = ((wind.to_i) / 8).ceil
+		$wind_dir_n = (wind.to_i) % 8
 		
 		@day = []
 		28.times do |d|

@@ -143,8 +143,20 @@ else
 			puts "\nPress any key"
 			c = get_char
 		elsif c == "w"
+			$weather_n = 0 if $weather_n == nil
+			$wind_dir_n = 0 if $wind_dir_n == nil
+			$wind_str_n = 0 if $wind_str_n == nil
+			$mn = 0 if $mn == nil
+			if $mn != 0
+				$mn = (($mn + 1) % 14)
+				$mn = 1 if $mn == 0
+			end
 			ia = weather_input
+			$mn = ia[0]
 			aWEATHER = Weather_month.new(ia[0], ia[1], ia[2])
+			$weather_n  = aWEATHER.day[27].weather
+			$wind_dir_n = aWEATHER.day[27].wind_dir
+			$wind_str_n = aWEATHER.day[27].wind_str
 			weather_output(aWEATHER)
 		end
     end

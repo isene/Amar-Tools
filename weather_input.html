@@ -1,0 +1,50 @@
+<html>
+<head>
+<title>Generate random weather</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<form name="npc" method="post" action="/cgi-bin/html_enc_output.rb">
+  <table width="600" border="0" cellspacing="0" cellpadding="2" align="center">
+    <tr>
+      <td><center><h2>Random weather - for Amar RPG</h2></center></td>
+    </tr>
+  </table>
+  <table width="600" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#333333">
+    <tr>
+      <td>
+        <table width="100%" border="0" cellspacing="1" cellpadding="4">
+          <tr> 
+            <td width="300" bgcolor="#CCCCCC"><b>Month</b></td>
+            <td bgcolor="#FFFFFF">
+              <select name="month">
+				<option><%= $Month[$mn] %>
+				<% $Month.each_with_index do |item,index| %>
+				<option><%= "#{index}: #{item}" %> 
+				<% end %>
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <td width="300" bgcolor="#CCCCCC"><b>Previous weather</b></td>
+            <td bgcolor="#FFFFFF">
+              <select name="weather">
+				<option><%= $Weather[$weather_n] %>
+				<% $Weather[1..-1].each_with_index do |item,index| %>
+				<option><%= "#{index}: #{item}" %> 
+				<% end %>
+              </select>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <p align="center">
+    <input type="submit" style="width:300px" name="submit" value=" Submit ">
+  </p>
+</form>
+<p><center><button style="width:300px" onclick="location.href = '/amar.html';" > Front page </button></center></p>
+<p><center><img src="/images/castle.jpg" /></center></p>
+</body>
+</html>
