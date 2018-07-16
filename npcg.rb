@@ -26,10 +26,6 @@ end
 
 Dir.chdir($pgmdir)
 
-system "touch npcs/temp.npc"
-system "touch npcs/town.npc"
-system "touch npcs/encounter.npc"
-
 # Help output
 if ARGV.include?("-h")
   
@@ -94,6 +90,8 @@ else
     load "cli_town_input.rb"
     load "cli_town_output.rb"
     load "cli_name_gen.rb"
+    load "cli_weather_input.rb"
+    load "cli_weather_output.rb"
 
     # Set initial global encounter default values
     $Day = 1
@@ -105,8 +103,14 @@ else
     
     loop do
 		system "clear"
-		puts "\nNPC Generation 0.5 - Tools for the Amar RPG."
-		puts "\ne = Random encounter\nt = Create a village/town/city\nr = Make town relations\nn = Generate a detailed human NPC\nN = Generate names\nq = Quit npcg\n\n"
+		puts "\nTools for the Amar RPG.\n"
+		puts "e = Random encounter"
+		puts "t = Create a village/town/city"
+		puts "r = Make town relations"
+		puts "n = Generate a detailed human NPC"
+		puts "N = Generate names"
+		puts "w = Generate a month of weather"
+		puts "q = Quit npcg\n\n"
 		c = get_char
 		if c == "q"
 			break
@@ -138,6 +142,10 @@ else
 			name_gen
 			puts "\nPress any key"
 			c = get_char
+		elsif c == "w"
+			ia = weather_input
+			aWEATHER = Weather_month.new(ia[0], ia[1], ia[2])
+			weather_output(aWEATHER)
 		end
     end
 end
