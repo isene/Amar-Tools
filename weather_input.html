@@ -28,8 +28,8 @@
             <td width="300" bgcolor="#CCCCCC"><b>Previous weather</b></td>
             <td bgcolor="#FFFFFF">
               <select name="weather">
-				<% $Weather[1..-1].each_with_index do |item,index| %>
-				<option><%= "#{index+1}: #{item}" %> 
+				<% $Weather[1..-1].each do |item| %>
+				<option><%= item %> 
 				<% end %>
               </select>
             </td>
