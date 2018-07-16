@@ -72,36 +72,36 @@ HELP
 
 else
   
-    if ARGV.include?("-e")
-	$editor = ARGV[ARGV.index("-e") + 1].to_s
-	ARGV.clear
-    end
+  if ARGV.include?("-e")
+		$editor = ARGV[ARGV.index("-e") + 1].to_s
+		ARGV.clear
+  end
     
-    $editor = "less" if $editor == "" or $editor == nil
-  
-    require "date"
+	$editor = "less" if $editor == "" or $editor == nil
 
-    load "includes/includes.rb"
+	require "date"
 
-    load "cli_npc_input.rb"
-    load "cli_npc_output.rb"
-    load "cli_enc_input.rb"
-    load "cli_enc_output.rb"
-    load "cli_town_input.rb"
-    load "cli_town_output.rb"
-    load "cli_name_gen.rb"
-    load "cli_weather_input.rb"
-    load "cli_weather_output.rb"
+	load "includes/includes.rb"
 
-    # Set initial global encounter default values
-    $Day = 1
-    $Terrain = 0
-    $Terraintype = 8
-    $Level = 0
+	load "cli_npc_input.rb"
+	load "cli_npc_output.rb"
+	load "cli_enc_input.rb"
+	load "cli_enc_output.rb"
+	load "cli_town_input.rb"
+	load "cli_town_output.rb"
+	load "cli_name_gen.rb"
+	load "cli_weather_input.rb"
+	load "cli_weather_output.rb"
 
-    # The Npc enters via the inputform, is initialized and rendered by the outputform.
-    
-    loop do
+	# Set initial global encounter default values
+	$Day = 1
+	$Terrain = 0
+	$Terraintype = 8
+	$Level = 0
+
+	# The Npc enters via the inputform, is initialized and rendered by the outputform.
+	
+	loop do
 		system "clear"
 		puts "\nTools for the Amar RPG.\n"
 		puts "e = Random encounter"
@@ -159,7 +159,7 @@ else
 			$wind_str_n = aWEATHER.day[27].wind_str
 			weather_output(aWEATHER)
 		end
-    end
+  end
 end
 
 # And that's all folks. G'day.

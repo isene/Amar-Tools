@@ -47,45 +47,45 @@ class Weather_month
 		end
 
 		case @name
-		when "Cal Amae"
-			@day[0].special = "Walmaer"
-			@day[8].special = "Cal Amae"
-		when "Elesi"
-			@day[1].special = "Elesi"
-		when "Anashina"
-			@day[3].special = "Anashina"
-			@day[14].special = "Ish Nakil"
-			@day[17].special = "Fenimaal"
-			@day[20].special = "Fionella"
-		when "Gwendyll"
-			@day[7].special = "Alesia"
-			@day[11].special = "Gwendyll"
-		when "MacGillan"
-			@day[12].special = "MacGillan"
-		when "Juba"
-			@day[9].special = "Juba"
-		when "Taroc"
-			@day[10].special = "Taroc"
-			@day[14].special = "Ikalio"
-		when "ManPeggon"
-			@day[3].special = "Man Peggon"
-		when "Maleko"
-			@day[0].special = "Maleko"
-		when "Fal Munir"
-			@day[6].special = "Fal Munir"
-			@day[20].special = "Shalissa"
-		when "Moltan"
-			@day[2].special = "Moltan"
-		when "Kraagh"
-			@day[7].special = "Kraagh"
-		when "Mestronorpha"
-			@day[5].special = "Mestronorpha"
-			@day[27].special = "Ielina"
+			when 1
+				@day[0].special = "Walmaer"
+				@day[8].special = "Cal Amae"
+			when 2
+				@day[1].special = "Elesi"
+			when 3
+				@day[3].special = "Anashina"
+				@day[14].special = "Ish Nakil"
+				@day[17].special = "Fenimaal"
+				@day[20].special = "Fionella"
+			when 4
+				@day[7].special = "Alesia"
+				@day[11].special = "Gwendyll"
+			when 5
+				@day[12].special = "MacGillan"
+			when 6
+				@day[9].special = "Juba"
+			when 7
+				@day[10].special = "Taroc"
+				@day[14].special = "Ikalio"
+			when 8
+				@day[3].special = "Man Peggon"
+			when 9
+				@day[0].special = "Maleko"
+			when 10
+				@day[6].special = "Fal Munir"
+				@day[20].special = "Shalissa"
+			when 11
+				@day[2].special = "Moltan"
+			when 12
+				@day[7].special = "Kraagh"
+			when 13
+				@day[5].special = "Mestronorpha"
+				@day[27].special = "Ielina"
 		end
 
 		if @name != ""
-			@day[0].moon = 0
-			@day[7].moon = 1
+			@day[0].moon  = 0
+			@day[7].moon  = 1
 			@day[14].moon = 2
 			@day[21].moon = 3
 		end
