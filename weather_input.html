@@ -27,7 +27,16 @@
           <tr> 
             <td width="300" bgcolor="#CCCCCC"><b>Previous weather</b></td>
             <td bgcolor="#FFFFFF">
-              <select name="weather">
+			  <fieldset id="group1">
+				<input type="radio" value="1" name="group1"><img src="/images/weather/weather1.gif" />
+				<input type="radio" value="2" name="group1"><img src="/images/weather/weather2.gif" />
+			  </fieldset>
+            </td>
+          </tr>
+          <tr> 
+            <td width="300" bgcolor="#CCCCCC"><b>Previous weather</b></td>
+            <td bgcolor="#FFFFFF">
+              <select name="weather2">
 				<% $Weather[1..-1].each do |item| %>
 				<option><%= item %> 
 				<% end %>
