@@ -143,7 +143,7 @@ else
 			puts "\nPress any key"
 			c = get_char
 		elsif c == "w"
-			$weather_n = 0 if $weather_n == nil
+			$weather_n = 1 if $weather_n == nil
 			$wind_dir_n = 0 if $wind_dir_n == nil
 			$wind_str_n = 0 if $wind_str_n == nil
 			$mn = 0 if $mn == nil
