@@ -46,14 +46,14 @@ w = Weather_month.new($month_n, $weather_n, $wind_n)
 @c = []
 w.day.each_with_index do |d,i|
 	@c[i] = "<p style=\"text-align:left\"><b>#{i+1}</b>"
-	if d.special != ""
-		g = d.special.delete(' ').downcase
-		@c[i] += "<img src=\"/images/gods/#{g}.png\" alt=\"#{d.special}\" align=\"right\" style=\"vertical-align:top;\"/>"
-	end
 	@c[i] += "<img src=\"/images/moon/0.png\" alt=\"New moon\" align=\"right\" style=\"vertical-align:top;\"/>" if i == 0
 	@c[i] += "<img src=\"/images/moon/1.png\" alt=\"Half moon vaxing\" align=\"right\" style=\"vertical-align:top;\"/>" if i == 7
 	@c[i] += "<img src=\"/images/moon/2.png\" alt=\"Full moon\" align=\"right\" style=\"vertical-align:top;\"/>" if i == 14
 	@c[i] += "<img src=\"/images/moon/3.png\" alt=\"Half moon waning\" align=\"right\" style=\"vertical-align:top;\"/>" if i == 21
+	if d.special != ""
+		g = d.special.delete(' ').downcase
+		@c[i] += "<img src=\"/images/gods/#{g}.png\" alt=\"#{d.special}\" align=\"right\" style=\"vertical-align:top;\"/>"
+	end
 	@c[i] += "</p>"
 	@c[i] += "<img src=\"/images/weather/weather#{d.weather}.gif\" alt=\"#{$Weather[d.weather]}\" />"
 	@c[i] += "<img src=\"/images/weather/wind#{d.wind}.gif\" alt=\"#{$Wind_str[d.wind_str]} (#{$Wind_dir[d.wind_dir]})\" />"
