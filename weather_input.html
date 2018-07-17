@@ -29,8 +29,9 @@
             <td bgcolor="#FFFFFF">
 		    <fieldset id="weather">
 			  <table><tr>
-				<% $Weather[1..-1].length.times do |i| %>
-				<td><input type="radio" value="<%= i+1 %>" name="weather" <% puts "checked=\"checked\" " if i == $weather_n %>><img src="/images/weather/weather<%= i+1 %>.gif" /></td>
+				<td><input type="radio" value="1" name="weather" checked="checked"><img src="/images/weather/weather.gif" /></td>
+				<% 2.upto(20) do |i| %>
+				<td><input type="radio" value="<%= i+1 %>" name="weather"><img src="/images/weather/weather<%= i+1 %>.gif" /></td>
 				<% if i%6 == 5 %>
 				</tr><tr><td colspan="6"><hr /></td></tr><tr>
 				<% end %>
@@ -44,7 +45,8 @@
             <td bgcolor="#FFFFFF">
 		    <fieldset id="wind">
 			<table><tr>
-				<% 25.times do |i| %>
+				<td><input type="radio" value="1" name="wind" checked="checked"><img src="/images/weather/wind1.gif" /></td>
+				<% 2.upto(24) do |i| %>
 				<td><input type="radio" value="<%= i %>" name="wind"><img src="/images/weather/wind<%= i %>.gif" /></td>
 				<% if i%6 == 5 %>
 				</tr><tr><td colspan="6"><hr /></td></tr><tr>
