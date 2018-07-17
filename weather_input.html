@@ -40,6 +40,21 @@
             </td>
           </tr>
           <tr> 
+            <td width="150" bgcolor="#CCCCCC"><b>Previous wind</b></td>
+            <td bgcolor="#FFFFFF">
+		    <fieldset id="wind">
+			<table><tr>
+				<% $Wind.length.times do |i| %>
+				<td><input type="radio" value="<%= i %>" name="wind"><img src="/images/weather/wind<%= i %>.gif" /></td>
+				<% if i%6 == 5 %>
+				</tr><tr><td colspan="6"><hr /></td></tr><tr>
+				<% end %>
+				<% end %>
+			</tr></table>
+			</fieldset>
+            </td>
+          </tr>
+          <tr> 
           </tr>
         </table>
       </td>
