@@ -45,10 +45,10 @@ w = Weather_month.new($month_n, $weather_n, $wind_n)
 
 @c = []
 w.day.each_with_index do |d,i|
-	@c[i] = "#{i+1} "
+	@c[i] = "<b>#{i+1}</b>"
 	if d.special != ""
 		g = d.special.delete(' ').downcase
-		@c[i] += "<img src=\"/images/gods/#{g}.png\" alt=\"#{d.special}\" />"
+		@c[i] += "<right><img src=\"/images/gods/#{g}.png\" alt=\"#{d.special}\" /></right>"
 	end
 	@c[i] += "<br />"
 	@c[i] += "<img src=\"/images/weather/weather#{d.weather}.gif\" alt=\"#{$Weather[d.weather]}\" />"
