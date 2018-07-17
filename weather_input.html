@@ -29,7 +29,7 @@
             <td bgcolor="#FFFFFF">
 			  <fieldset id="weather">
 				<% $Weather[1..-1].length.times do |i| %>
-				<input type="radio" value="<%= i %>" name="weather"><img src="/images/weather/weather<%= i %>.gif" />
+				<input type="radio" value="<%= i+1 %>" name="weather"><img src="/images/weather/weather<%= i+1 %>.gif" />
 				<% end %>
 			  </fieldset>
             </td>
