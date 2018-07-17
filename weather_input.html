@@ -27,7 +27,7 @@
           <tr> 
             <td width="150" bgcolor="#CCCCCC"><b>Previous weather</b></td>
             <td bgcolor="#FFFFFF">
-			  <table><tr>
+			<table><tr><td>
 			  <fieldset id="weather">
 				<% $Weather[1..-1].length.times do |i| %>
 				<td><input type="radio" value="<%= i+1 %>" name="weather"><img src="/images/weather/weather<%= i+1 %>.gif" /></td>
@@ -36,7 +36,7 @@
 				<% end %>
 				<% end %>
 			  </fieldset>
-			  </table></tr>
+			</td></tr></table>
             </td>
           </tr>
           <tr> 
@@ -50,6 +50,5 @@
   </p>
 </form>
 <p><center><button style="width:300px" onclick="location.href = '/amar.html';" > Front page </button></center></p>
-<p><center><img src="/images/castle.jpg" /></center></p>
 </body>
 </html>
