@@ -27,16 +27,16 @@
           <tr> 
             <td width="150" bgcolor="#CCCCCC"><b>Previous weather</b></td>
             <td bgcolor="#FFFFFF">
-			<table><tr><td>
 			  <fieldset id="weather">
+			<table><tr><td>
 				<% $Weather[1..-1].length.times do |i| %>
 				<td><input type="radio" value="<%= i+1 %>" name="weather"><img src="/images/weather/weather<%= i+1 %>.gif" /></td>
 				<% if i%6 == 5 %>
 				</tr><tr>
 				<% end %>
 				<% end %>
-			  </fieldset>
 			</td></tr></table>
+			  </fieldset>
             </td>
           </tr>
           <tr> 
