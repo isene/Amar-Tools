@@ -29,20 +29,12 @@
             <td bgcolor="#FFFFFF">
 			  <fieldset id="weather">
 				<% $Weather[1..-1].length.times do |i| %>
-				<input type="radio" value="<%= i+1 %>" name="weather"><img src="/images/weather/weather<%= i+1 %>.gif" />
+				<td><input type="radio" value="<%= i+1 %>" name="weather"><img src="/images/weather/weather<%= i+1 %>.gif" /></td>
 				<% end %>
 			  </fieldset>
             </td>
           </tr>
           <tr> 
-            <td width="150" bgcolor="#CCCCCC"><b>Previous weather</b></td>
-            <td bgcolor="#FFFFFF">
-              <select name="weather2">
-				<% $Weather[1..-1].each do |item| %>
-				<option><%= item %> 
-				<% end %>
-              </select>
-            </td>
           </tr>
         </table>
       </td>
