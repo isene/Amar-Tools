@@ -29,7 +29,7 @@
             <td bgcolor="#FFFFFF">
 			  <fieldset id="weather">
 				<% $Weather.each_with_index do |item,index| %>
-				<input type="radio" value="<%= index+1 %>" name="weather"><img src="/images/weather/weather<%= #{index+1} %>.gif" />
+				<input type="radio" value="<%= index+1 %>" name="weather"><img src="/images/weather/weather<%= #{(index+1).to_s} %>.gif" />
 				<% if index%7 == 0 %>
 				<br />
 				<% end %>
