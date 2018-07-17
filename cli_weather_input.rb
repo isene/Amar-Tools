@@ -5,8 +5,8 @@ def weather_input
   # Get Month
 	mstring = ""
 	7.times do |i|
-		mstring += "#{i}: #{$Month[i]}".ljust(20)
-		mstring += "#{i+7}: #{$Month[i+7]}".ljust(20)
+		mstring += "#{i.to_s.rjust(2)}: #{$Month[i]}".ljust(20)
+		mstring += "#{(i+7).to_s.rjust(2)}: #{$Month[i+7]}".ljust(20)
 		mstring += "\n"
 	end
  	puts "\nEnter month (default=#{$mn}):"
