@@ -48,7 +48,7 @@ w.day.each_with_index do |d,i|
 	@c[i] = "<p style=\"text-align:left\"><b>#{i+1}</b>"
 	if d.special != ""
 		g = d.special.delete(' ').downcase
-		@c[i] += "<img src=\"/images/gods/#{g}.png\" alt=\"#{d.special}\" style=\"text-align:right;vertical-align:top;\"/>"
+		@c[i] += "<img src=\"/images/gods/#{g}.png\" alt=\"#{d.special}\" align=\"right\" style=\"vertical-align:top;\"/>"
 	end
 	@c[i] += "</p>"
 	@c[i] += "<img src=\"/images/weather/weather#{d.weather}.gif\" alt=\"#{$Weather[d.weather]}\" />"
