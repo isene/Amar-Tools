@@ -30,7 +30,7 @@
 		    <fieldset id="weather">
 			  <table><tr>
 				<% $Weather[1..-1].length.times do |i| %>
-				<td><input type="radio" value="<%= i+1 %>" name="weather"><img src="/images/weather/weather<%= i+1 %>.gif" /></td>
+				<td><input type="radio" value="<%= i+1 %>" name="weather" <% puts "checked=\"checked\" " if i == $weather_n %>><img src="/images/weather/weather<%= i+1 %>.gif" /></td>
 				<% if i%6 == 5 %>
 				</tr><tr><td colspan="6"><hr /></td></tr><tr>
 				<% end %>
