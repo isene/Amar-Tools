@@ -35,9 +35,9 @@
             <td bgcolor="#FFFFFF">
 		    <fieldset id="weather">
 			  <table><tr>
-				<td><input type="radio" value="1" name="weather" checked="checked"><img src="/images/weather/weather1.gif" /></td>
+				<td><input type="radio" value="1" name="weather" checked="checked"><img src="/images/weather/weather1.gif" alt="<%= $Weather[1] %>" /></td>
 				<% 2.upto(20) do |i| %>
-				<td><input type="radio" value="<%= i %>" name="weather"><img src="/images/weather/weather<%= i %>.gif" /></td>
+				<td><input type="radio" value="<%= i %>" name="weather"><img src="/images/weather/weather<%= i %>.gif" alt="<%= $Weather[i] %>"/></td>
 				<% if i%6 == 5 %>
 				</tr><tr><td colspan="6"><hr /></td></tr><tr>
 				<% end %>
