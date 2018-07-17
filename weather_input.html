@@ -28,14 +28,14 @@
             <td width="150" bgcolor="#CCCCCC"><b>Previous weather</b></td>
             <td bgcolor="#FFFFFF">
 		    <fieldset id="weather">
-			<table><tr>
+			  <table><tr>
 				<% $Weather[1..-1].length.times do |i| %>
 				<td><input type="radio" value="<%= i+1 %>" name="weather"><img src="/images/weather/weather<%= i+1 %>.gif" /></td>
 				<% if i%6 == 5 %>
 				</tr><tr><td colspan="6"><hr /></td></tr><tr>
 				<% end %>
 				<% end %>
-			</tr></table>
+			  </tr></table>
 			</fieldset>
             </td>
           </tr>
@@ -44,7 +44,7 @@
             <td bgcolor="#FFFFFF">
 		    <fieldset id="wind">
 			<table><tr>
-				<% $Wind.length.times do |i| %>
+				<% 25.times do |i| %>
 				<td><input type="radio" value="<%= i %>" name="wind"><img src="/images/weather/wind<%= i %>.gif" /></td>
 				<% if i%6 == 5 %>
 				</tr><tr><td colspan="6"><hr /></td></tr><tr>
