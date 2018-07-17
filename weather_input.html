@@ -32,7 +32,7 @@
 				<% $Weather[1..-1].length.times do |i| %>
 				<td><input type="radio" value="<%= i+1 %>" name="weather"><img src="/images/weather/weather<%= i+1 %>.gif" /></td>
 				<% if i%6 == 5 %>
-				</tr><tr>
+				</tr><tr border="1">
 				<% end %>
 				<% end %>
 			</tr></table>
