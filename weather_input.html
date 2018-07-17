@@ -15,7 +15,7 @@
       <td>
         <table width="100%" border="0" cellspacing="1" cellpadding="4">
           <tr> 
-            <td width="200" bgcolor="#CCCCCC"><b>Month</b></td>
+            <td width="150" bgcolor="#CCCCCC"><b>Month</b></td>
             <td bgcolor="#FFFFFF">
               <select name="month">
 				<% $Month.each_with_index do |item,index| %>
@@ -25,12 +25,12 @@
             </td>
           </tr>
           <tr> 
-            <td width="200" bgcolor="#CCCCCC"><b>Previous weather</b></td>
+            <td width="150" bgcolor="#CCCCCC"><b>Previous weather</b></td>
             <td bgcolor="#FFFFFF">
 			  <fieldset id="weather">
 				<% $Weather.each_with_index do |item,index| %>
 				<input type="radio" value="<%= index+1 %>" name="weather"><img src="/images/weather/weather<%= index+1 %>.gif" />
-				<% if index%7 == 0 %>
+				<% if index%7 == 6 %>
 				<br />
 				<% end %>
 				<% end %>
@@ -38,7 +38,7 @@
             </td>
           </tr>
           <tr> 
-            <td width="200" bgcolor="#CCCCCC"><b>Previous weather</b></td>
+            <td width="150" bgcolor="#CCCCCC"><b>Previous weather</b></td>
             <td bgcolor="#FFFFFF">
               <select name="weather2">
 				<% $Weather[1..-1].each do |item| %>
