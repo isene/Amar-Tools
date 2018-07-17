@@ -43,6 +43,18 @@ end
 
 w = Weather_month.new($month_n, $weather_n, $wind_n)
 
+@c = []
+w.day.each_with_index do |d,i|
+	@c[i] = "#{i+1} "
+	if d.special != ""
+		g = d.special.delete(' ').downcase
+		@c[i] += "<img src=\"/images/gods/#{g}.png\" alt=\"#{d.special}\" />"
+	end
+	@c[i] += "<br />"
+	@c[i] += "<img src=\"/images/weather#{d.weather}.gif\" alt=\"#{$Weather[d.weather]}\" />"
+	@c[i] += "<img src=\"/images/wind#{d.wind}.gif\" alt=\"#{$Wind_str[d.wind_str]} (#{$Wind_dir[d.wind_dir]})\" />"
+end
+
 out = ERB.new(tmpl)
 
 print "Content-type: text/html\n\n"
