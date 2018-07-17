@@ -27,9 +27,13 @@
           <tr> 
             <td width="200" bgcolor="#CCCCCC"><b>Previous weather</b></td>
             <td bgcolor="#FFFFFF">
-			  <fieldset id="group1">
-				<input type="radio" value="1" name="group1"><img src="/images/weather/weather1.gif" />
-				<input type="radio" value="2" name="group1"><img src="/images/weather/weather2.gif" />
+			  <fieldset id="weather">
+				<% $Month.each_with_index do |item,index| %>
+				<input type="radio" value="<%= index+1 %>" name="weather"><img src="/images/weather/weather1.gif" />
+				<% if index%7 == 0 %>
+				<br />
+				<% end %>
+				<% end %>
 			  </fieldset>
             </td>
           </tr>
