@@ -59,7 +59,7 @@ DOTSTART
 
 	tfile = "town.dot"
 	begin
-		File.delete(town.png) if File.exists?(town.png)
+		File.delete("town.png") if File.exists?("town.png")
 		File.delete(tfile) if File.exists?(tfile)
 		File.write(tfile, dot_text, perm: 0644)
 		`dot -Tpng town.dot -o town.png`
