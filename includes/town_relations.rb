@@ -57,16 +57,20 @@ DOTSTART
 	end
 	dot_text += "}"
 
-	tfile = "town.dot"
+	File.delete("town.png") if File.exists?("town.png")
+	File.delete("town.dot") if File.exists?("town.dot")
+
 	begin
-		File.delete("town.png") if File.exists?("town.png")
-		File.delete(tfile) if File.exists?(tfile)
-		File.write(tfile, dot_text, perm: 0644)
-		`dot -Tpng town.dot -o town.png`
+		File.write("town.dot", dot_text, perm: 0644)
 		puts "DOT file created: town.dot"
+	rescue
+		puts "Error! No DOT file written."
+	end
+	begin
+		`dot -Tpng town.dot -o town.png`
 		puts "PNG file created: town.png"
 	rescue
-		puts "Error! No graph file written."
+		puts "Error! No PNG file written."
 	end
 end
 
