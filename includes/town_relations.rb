@@ -2,27 +2,32 @@ def town_relations(town_file)
 	abort("No such Town file!") unless File.exist?(town_file)
 
 	town = File.read(town_file)
-	t = town.gsub(/ \[.*/, '')
-	t.sub!(/^.*\n\n/, '')
-	t.sub!(/\n\n###.*$/, '')
-	t.gsub!(/#\d+:.*\n/, '')
-	t.gsub!(/  +/, '')
-	h = t.split("\n\n")
-	house = []
-	h.each_with_index do |item, index|
-		house[index] = item.split("\n")
-	end
-	persons = []
-	i = 0
-	house.each_with_index do |item, index|
-		item.each do |p|
-			persons[i] = p + "\n##{index+1}"
-			i += 1
+
+	if town.match(/#\d:/)
+		t = town.gsub(/ \[.*/, '')
+		t.sub!(/^.*\n\n/, '')
+		t.sub!(/\n\n###.*$/, '')
+		t.gsub!(/#\d+:.*\n/, '')
+		t.gsub!(/  +/, '')
+		h = t.split("\n\n")
+		house = []
+		h.each_with_index do |item, index|
+			house[index] = item.split("\n")
 		end
+		persons = []
+		i = 0
+		house.each_with_index do |item, index|
+			item.each do |p|
+				persons[i] = p + "\n##{index+1}"
+				i += 1
+			end
+		end
+		persons.map! { |p| p.sub!(/ \(/, "\n(") }
+		persons.map! { |p| p.gsub!(/\n/, '\\n') }
+		persons.map! { |p| "\"" + p + "\"" }
+	else
+		persons = town.split("\n")
 	end
-	persons.map! { |p| p.sub!(/ \(/, "\n(") }
-	persons.map! { |p| p.gsub!(/\n/, '\\n') }
-	persons.map! { |p| "\"" + p + "\"" }
 
 	dot_text =  <<DOTSTART
 	digraph town {

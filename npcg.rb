@@ -33,18 +33,41 @@ puts <<HELP
   
   Notes on the usage of NPC Generation for the Amar RPG 
   
-  This program will only make sense to you if you know what roleplaying 
-  games (RPGs) are. It is a usefull asset to the Amar RPG.  
+  This program will only make sense to you if you know what role-playing 
+  games (RPGs) are. It is a useful asset to the Amar RPG.  
   
-	The program is used for random or specific encounters (basic details) or
-	detailed NPC generation.
+  The program is used for creating villages/towns/cities, random or
+  specific encounters (basic details) or detailed NPC generation as well
+  as random weather for a month. It can also generate relationship maps
+  for inhabitants of a town or for a list of NPCs (with a graphical map
+  showing the various positive and negative relations between them.
+  
+  There is also an Open Ended Dice roller for the Amar RPG (see the rules
+  for what that is and how it is used in the game). That program is
+  written in the nim programming language and compiled as a stand-alone
+  executable called "O6". Simply put this in your path and you can throw
+  an Open Ended Dice roll simply by running O6 on the command line..
 
   You may select or enter values in any of the NPC's characteristics. 
   Those you don't will be randomly generated. When you have selected/
   entered the values you want, press "submit", and the NPC will be generated.  
-	
-	Press "v" when encounters or an NPC is presented to edit the values in
-	your default editor.
+
+  When generating a town relationship map, you can upload a file with the
+  same format as the one generated when creating a random town. The map
+  will then have the name, basic info and the house number in an ellipse
+  for each person that has a special relationship with others in the town.
+  Or you can simply upload a list of characters, one per line and every
+  line with a special relationship will be paired with other lines in the
+  file. A black line indicates a special positive relation, while a red
+  line signifies a special negative relation. A double black line shows a
+  strong alliance, while a double red shows deep hate. A black and a red
+  line indicates a complex relationship. A graphical map is created as a
+  .png file in the npcg directory.
+
+  Press "v" when a town, encounters or an NPC is presented to edit the
+  values in your default editor. The files for a detailed NPC (temp.npc),
+  random encounter (encounter.npc), random town (town.npc) or random
+  weather (weather.npc) is generated in the "npcs" directory under "npcg".
   
   Happy generation :) 
   
