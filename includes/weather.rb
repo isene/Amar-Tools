@@ -8,11 +8,11 @@ class Weather_day
 			weather = (weather + oD6 + oD6 - 7).abs % 41
 			weather += 4 if month == 1 and rand(3) == 0			# Walmaer
 			weather -= 4 if month == 6 and rand(3) == 0			# Juba
+			weather -= 1 if month == 7											# Taroc
 			weather -= 4 if month == 8 and rand(3) == 0			# Man Peggon
 			weather += 6 if month == 13 and rand(3) == 0		# Mestronorpha
 			weather = 40 - weather if weather > 20
 		end
-		weather -= 1 if month == 7												# Taroc
 		weather = 1 if month == 7 and day == 14						# Ikalio day
 		weather = 1 if month == 13 and day == 27					# Ielina day
 		if rand(2) == 0
@@ -21,7 +21,7 @@ class Weather_day
 		if rand(2) == 0
 			wind_str = (wind_str + (oD6 + oD6 - 7)/6).abs
 			wind_str += 1 if month == 1 and rand(3) == 0		# Walmaer
-			wind_str += 1 if month == 10										# Fal Munir
+			wind_str += 1 if month == 10 and rand(2) == 0		# Fal Munir
 			wind_str = 0 if wind_str < 0
 			wind_str = 3 if wind_str > 3
 		end
