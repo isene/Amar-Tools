@@ -1,30 +1,38 @@
 class Weather_day
 
-	attr_reader :weather, :wind, :wind_dir, :wind_str, :special, :moon
-	attr_writer :weather, :wind, :wind_dir, :wind_str, :special, :moon
+	attr_reader :weather, :wind_dir, :wind_str, :wind, :special
+	attr_writer :weather, :wind_dir, :wind_str, :wind, :special
 
-	def initialize
-		if rand(3) != 0
-			$weather_n = ($weather_n + oD6 + oD6 - 7).abs % 41
-			$weather_n = 40 - $weather_n if $weather_n > 20
+	def initialize(weather, wind_dir, wind_str, month, day)
+		if rand(2) == 0
+			weather = (weather + oD6 + oD6 - 7).abs % 41
+			weather += 4 if month == 1 and rand(3) == 0			# Walmaer
+			weather -= 4 if month == 6 and rand(3) == 0			# Juba
+			weather -= 4 if month == 8 and rand(3) == 0			# Man Peggon
+			weather += 6 if month == 13 and rand(3) == 0		# Mestronorpha
+			weather = 40 - weather if weather > 20
 		end
-		if rand(2) != 0
-			$wind_dir_n = ($wind_dir_n + (oD6 + oD6 - 7)/3) % 8
+		weather -= 1 if month == 7												# Taroc
+		weather = 1 if month == 7 and day == 14						# Ikalio day
+		weather = 1 if month == 13 and day == 27					# Ielina day
+		if rand(2) == 0
+			wind_dir = (wind_dir + (oD6 + oD6 - 7)/3) % 8
 		end
-		if rand(3) != 0
-			$wind_str_n = ($wind_str_n + (oD6 + oD6 - 7)/6).abs
-			$wind_str_n = 3 if $wind_str_n > 3
+		if rand(2) == 0
+			wind_str = (wind_str + (oD6 + oD6 - 7)/6).abs
+			wind_str += 1 if month == 1 and rand(3) == 0		# Walmaer
+			wind_str += 1 if month == 10										# Fal Munir
+			wind_str = 3 if wind_str > 3
 		end
-		
-		$weather_n = 1 if $weather_n == 0
-		@weather   = $weather_n
-		@wind_dir  = $wind_dir_n
-		@wind_str  = $wind_str_n
-		@wind      = (@wind_dir + 1) + ((@wind_str - 1) * 8)
-		@wind      = 0 if @wind_str == 0
+		wind_str = 3 if month == 10 and day == 20					# Shalissa day
 
+		weather = 1 if weather == 0
+		@weather   = weather
+		@wind_dir  = wind_dir
+		@wind_str  = wind_str
+		@wind      = (wind_dir + 1) + ((wind_str - 1) * 8)
+		@wind      = 0 if wind_str == 0
 		@special   = ""
-		@moon      = ""
 	end
 end
 
@@ -37,20 +45,16 @@ class Weather_month
 
 		@month_n    = month
 		
-		$weather_n  = weather.to_i
-		$wind_str_n = ((wind.to_i) / 8).ceil
-		$wind_dir_n = (wind.to_i) % 8
+		@weather_n  = weather.to_i
+		@wind_str_n = ((wind.to_i) / 8).ceil
+		@wind_dir_n = (wind.to_i) % 8
 		
 		@day = []
 		28.times do |d|
-			@day[d] = Weather_day.new
-			if @month_n == 10
-				@day[d].wind_str += 1 unless @day[d].wind_str == 3
-				@day[d].wind += 8 unless @day[d].wind > 16
-			end
-			if @month_n == 1 or @month_n == 13 and rand(3) == 0
-				@day[d].weather += 4 unless @day[d].wind_str > 16
-			end
+			@day[d] = Weather_day.new(@weather_n, @wind_dir_n, @wind_str_n, @month_n, d)
+			@weather_n = @day[d].weather
+			@wind_dir_n = @day[d].wind_dir
+			@wind_str_n = @day[d].wind_str
 		end
 
 		case @month_n
@@ -89,13 +93,5 @@ class Weather_month
 				@day[5].special  = "Mestronorpha"
 				@day[27].special = "Ielina"
 		end
-
-		if @month_n != 0
-			@day[0].moon  = 0
-			@day[7].moon  = 1
-			@day[14].moon = 2
-			@day[21].moon = 3
-		end
-
 	end
 end

@@ -176,11 +176,11 @@ else
 			end
 			ia = weather_input
 			$mn = ia[0]
-			aWEATHER = Weather_month.new(ia[0], ia[1], ia[2])
-			$weather_n  = aWEATHER.day[27].weather
-			$wind_dir_n = aWEATHER.day[27].wind_dir
-			$wind_str_n = aWEATHER.day[27].wind_str
-			weather_output(aWEATHER)
+			w = Weather_month.new(ia[0], ia[1], ia[2])
+			$weather_n  = w.day[27].weather
+			$wind_dir_n = w.day[27].wind_dir
+			$wind_str_n = w.day[27].wind_str
+			weather_output(w)
 		end
   end
 end
