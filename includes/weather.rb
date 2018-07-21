@@ -6,11 +6,11 @@ class Weather_day
 	def initialize(weather, wind_dir, wind_str, month, day)
 		if rand(2) == 0
 			weather = (weather + oD6 + oD6 - 7).abs % 41
-			weather += 4 if month == 1 and rand(3) == 0			# Walmaer
+			weather += 4 if month == 1 and rand(4) == 0			# Walmaer
 			weather -= 4 if month == 6 and rand(3) == 0			# Juba
 			weather -= 1 if month == 7											# Taroc
 			weather -= 4 if month == 8 and rand(3) == 0			# Man Peggon
-			weather += 6 if month == 13 and rand(3) == 0		# Mestronorpha
+			weather += 4 if month == 13 and rand(2) == 0		# Mestronorpha
 			weather = 40 - weather if weather > 20
 		end
 		weather = 11 if month == 1 and day == 0						# Walmaer day
