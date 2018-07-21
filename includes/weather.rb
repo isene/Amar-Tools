@@ -13,6 +13,7 @@ class Weather_day
 			weather += 6 if month == 13 and rand(3) == 0		# Mestronorpha
 			weather = 40 - weather if weather > 20
 		end
+		weather = 11 if month == 1 and day == 1						# Walmaer day
 		weather = 1 if month == 7 and day == 14						# Ikalio day
 		weather = 1 if month == 13 and day == 27					# Ielina day
 		if rand(2) == 0
