@@ -22,11 +22,12 @@ class Weather_day
 			wind_str = (wind_str + (oD6 + oD6 - 7)/6).abs
 			wind_str += 1 if month == 1 and rand(3) == 0		# Walmaer
 			wind_str += 1 if month == 10										# Fal Munir
+			wind_str = 0 if wind_str < 0
 			wind_str = 3 if wind_str > 3
 		end
 		wind_str = 3 if month == 10 and day == 20					# Shalissa day
 
-		weather = 1 if weather == 0
+		weather = 1 if weather < 1
 		@weather   = weather
 		@wind_dir  = wind_dir
 		@wind_str  = wind_str
