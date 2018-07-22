@@ -19,14 +19,15 @@ LATEXSTART
 l += <<LATEXTABLESTART
 \\begin{table}[h!]
 \\begin{center}
-\\caption{#{$Month[w.month_n]}}
+\\caption{#{$a}}
 \\label{tab:table1}
 \\begin{tabular}{l|l|l|l|l|l|l|}
 LATEXTABLESTART
 
-i=0
+c = []
+i = 0
 4.times do
-	6.times do %>
+	6.times do
     l += "#{@c[i]} & "
 		i += 1
 	end
