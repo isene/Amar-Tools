@@ -38,9 +38,9 @@
             <td bgcolor="#FFFFFF">
 		    <fieldset id="weather">
 			  <table><tr>
-				<td><input type="radio" value="1" name="weather" checked="checked"><img src="/images/weather/weather1.gif" alt="<%= $Weather[1] %>" /></td>
+				<td><input type="radio" value="1" name="weather" checked="checked"><img src="/images/weather/weather1.png" alt="<%= $Weather[1] %>" /></td>
 				<% 2.upto(20) do |i| %>
-				<td><input type="radio" value="<%= i %>" name="weather"><img src="/images/weather/weather<%= i %>.gif" alt="<%= $Weather[i] %>"/></td>
+				<td><input type="radio" value="<%= i %>" name="weather"><img src="/images/weather/weather<%= i %>.png" alt="<%= $Weather[i] %>"/></td>
 				<% if i%6 == 5 %>
 				</tr><tr><td colspan="6"><hr /></td></tr><tr>
 				<% end %>
@@ -54,9 +54,9 @@
             <td bgcolor="#FFFFFF">
 		    <fieldset id="wind">
 			<table><tr>
-				<td><input type="radio" value="1" name="wind" checked="checked"><img src="/images/weather/wind0.gif" /></td>
+				<td><input type="radio" value="1" name="wind" checked="checked"><img src="/images/weather/wind0.png" /></td>
 				<% 1.upto(24) do |i| %>
-				<td><input type="radio" value="<%= i %>" name="wind"><img src="/images/weather/wind<%= i %>.gif" /></td>
+				<td><input type="radio" value="<%= i %>" name="wind"><img src="/images/weather/wind<%= i %>.png" /></td>
 				<% if i%6 == 5 %>
 				</tr><tr><td colspan="6"><hr /></td></tr><tr>
 				<% end %>
