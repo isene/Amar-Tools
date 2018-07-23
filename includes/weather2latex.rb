@@ -1,7 +1,7 @@
 # Weather to Latex function
 def weather_out_latex(w,type)
 
-type == "web" ? t = "/" : t = ""
+type == "web" ? t = "../" : t = ""
 
 bgc = ["ffffff", "ffffff", "ffffff", "80d55b", "eab8f5", "bd98f3", "98e3f3", "afafaf", "dcb796", "ad9d8f", "e9e4b0", "ffc37d", "6f6f6f", "525252"]
 
