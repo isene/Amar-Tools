@@ -181,6 +181,7 @@ else
 			$wind_dir_n = w.day[27].wind_dir
 			$wind_str_n = w.day[27].wind_str
 			weather_output(w)
+			weather_out_latex(w,"cli")
 		end
   end
 end

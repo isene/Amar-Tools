@@ -57,8 +57,8 @@ w.day.each_with_index do |d,i|
 		@c[i] += "<img src=\"/images/gods/#{g}.png\" alt=\"#{d.special}\" align=\"right\" style=\"vertical-align:top;\"/>"
 	end
 	@c[i] += "</p>"
-	@c[i] += "<img src=\"/images/weather/weather#{d.weather}.gif\" alt=\"#{$Weather[d.weather]}\" />"
-	@c[i] += "<img src=\"/images/weather/wind#{d.wind}.gif\" alt=\"#{$Wind_str[d.wind_str]} (#{$Wind_dir[d.wind_dir]})\" />"
+	@c[i] += "<img src=\"/images/weather/weather#{d.weather}.png\" alt=\"#{$Weather[d.weather]}\" />"
+	@c[i] += "<img src=\"/images/weather/wind#{d.wind}.png\" alt=\"#{$Wind_str[d.wind_str]} (#{$Wind_dir[d.wind_dir]})\" />"
 end
 
 out = ERB.new(tmpl)
