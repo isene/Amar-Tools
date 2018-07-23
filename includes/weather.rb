@@ -4,10 +4,10 @@ class Weather_day
 	attr_writer :weather, :wind_dir, :wind_str, :wind, :special
 
 	def initialize(weather, wind_dir, wind_str, month, day)
+		weather += (oD6 - 4) if month == 6							# Juba
 		if rand(2) == 0
 			weather = (weather + oD6 + oD6 - 7).abs % 41
 			weather += 4 if month == 1 and rand(4) == 0			# Walmaer
-			weather -= 4 if month == 6 and rand(3) == 0			# Juba
 			weather -= 1 if month == 7											# Taroc
 			weather -= 4 if month == 8 and rand(3) == 0			# Man Peggon
 			weather += 4 if month == 13 and rand(2) == 0		# Mestronorpha
@@ -16,16 +16,20 @@ class Weather_day
 		weather = 11 if month == 1 and day == 0						# Walmaer day
 		weather = 1 if month == 7 and day == 14						# Ikalio day
 		weather = 1 if month == 13 and day == 27					# Ielina day
+		weather = rand(1..5) if month == 6 and day == 9		# Ielina day
+		
+		wind_dir = (wind_dir + (oD6 + oD6 - 7)/3) % 8 if month == 6	# Juba
 		if rand(2) == 0
 			wind_dir = (wind_dir + (oD6 + oD6 - 7)/3) % 8
 		end
+		
+		wind_str = (wind_str + (oD6 + oD6 - 5)/6).abs if month == 6	# Juba
 		if rand(2) == 0
-			wind_str = (wind_str + (oD6 + oD6 - 7)/6).abs
 			wind_str += 1 if month == 1 and rand(3) == 0		# Walmaer
 			wind_str += 1 if month == 10 and rand(2) == 0		# Fal Munir
-			wind_str = 0 if wind_str < 0
-			wind_str = 3 if wind_str > 3
 		end
+		wind_str = 0 if wind_str < 0
+		wind_str = 3 if wind_str > 3
 		wind_str = 3 if month == 10 and day == 20					# Shalissa day
 
 		weather = 1 if weather < 1

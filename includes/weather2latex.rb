@@ -13,6 +13,7 @@ l = <<LATEXSTART
 \\usepackage[dvipsnames]{xcolor}
 \\definecolor{#{w.month_n}}{HTML}{#{bgc[w.month_n]}}
 \\usepackage{pdfpages}
+\\pagenumbering{gobble}
 LATEXSTART
 
 l += <<LATEXTABLESTART
@@ -76,6 +77,12 @@ l += <<LATEXTABLEEND
 \\end{center}
 \\end{table}
 LATEXTABLEEND
+
+l += "\\noindent\\textbf{{\\large Events this month:}}\n"
+10.times do
+	l += "\\vspace{1.2cm}\n"
+	l += "\\hline\n"
+end
 
 l += "\\end{document}"
 

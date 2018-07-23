@@ -61,7 +61,7 @@ w.day.each_with_index do |d,i|
 	@c[i] += "<img src=\"/images/weather/wind#{d.wind}.png\" alt=\"#{$Wind_str[d.wind_str]} (#{$Wind_dir[d.wind_dir]})\" />"
 end
 
-#weather_out_latex(w,"web")
+weather_out_latex(w,"web")
 out = ERB.new(tmpl)
 
 print "Content-type: text/html\n\n"

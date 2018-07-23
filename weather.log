@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.5.2)  23 JUL 2018 05:11
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.5.2)  23 JUL 2018 07:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -143,18 +143,18 @@ LaTeX Warning: Unused global option(s):
 (./weather.aux)
 \openout1 = `weather.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -260,388 +260,495 @@ Package: lscape 2000/10/22 v3.01 Landscape Pages (DPC)
 Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 )
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 14.
+(Font)              <7> on input line 15.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 14.
+(Font)              <5> on input line 15.
 
-Overfull \hbox (6.79999pt too wide) in paragraph at lines 14--14
+Overfull \hbox (6.79999pt too wide) in paragraph at lines 15--15
  [][][] 
  []
 
 <images/moon/0.png, id=1, 32.12pt x 32.12pt>
 File: images/moon/0.png Graphic file (type png)
 <use images/moon/0.png>
-Package pdftex.def Info: images/moon/0.png  used on input line 26.
+Package pdftex.def Info: images/moon/0.png  used on input line 27.
 (pdftex.def)             Requested size: 13.37282pt x 13.37267pt.
-<images/weather/weather1.png, id=3, 55.20625pt x 55.20625pt>
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
+<images/weather/weather10.png, id=3, 55.20625pt x 55.20625pt>
+File: images/weather/weather10.png Graphic file (type png)
+<use images/weather/weather10.png>
+Package pdftex.def Info: images/weather/weather10.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-<images/weather/wind0.png, id=4, 40.15pt x 40.15pt>
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+<images/weather/wind8.png, id=4, 40.15pt x 40.15pt>
+File: images/weather/wind8.png Graphic file (type png)
+<use images/weather/wind8.png>
+Package pdftex.def Info: images/weather/wind8.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 <images/weather/blank.png, id=5, 55.20625pt x 55.20625pt>
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
+<images/weather/weather6.png, id=6, 55.20625pt x 55.20625pt>
+File: images/weather/weather6.png Graphic file (type png)
+<use images/weather/weather6.png>
+Package pdftex.def Info: images/weather/weather6.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+File: images/weather/wind8.png Graphic file (type png)
+<use images/weather/wind8.png>
+Package pdftex.def Info: images/weather/wind8.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
+<images/weather/weather7.png, id=7, 55.20625pt x 55.20625pt>
+File: images/weather/weather7.png Graphic file (type png)
+<use images/weather/weather7.png>
+Package pdftex.def Info: images/weather/weather7.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
-<images/gods/manpeggon.png, id=6, 32.12pt x 32.12pt>
-File: images/gods/manpeggon.png Graphic file (type png)
-<use images/gods/manpeggon.png>
-Package pdftex.def Info: images/gods/manpeggon.png  used on input line 26.
-(pdftex.def)             Requested size: 14.22636pt x 14.22644pt.
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+<images/weather/wind1.png, id=8, 40.15pt x 40.15pt>
+File: images/weather/wind1.png Graphic file (type png)
+<use images/weather/wind1.png>
+Package pdftex.def Info: images/weather/wind1.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
+File: images/weather/weather7.png Graphic file (type png)
+<use images/weather/weather7.png>
+Package pdftex.def Info: images/weather/weather7.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
+<images/weather/wind0.png, id=9, 40.15pt x 40.15pt>
 File: images/weather/wind0.png Graphic file (type png)
 <use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+Package pdftex.def Info: images/weather/wind0.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
-File: images/weather/blank.png Graphic file (type png)
-<use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
-(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-<images/weather/weather4.png, id=7, 55.20625pt x 55.20625pt>
+<images/weather/weather4.png, id=10, 55.20625pt x 55.20625pt>
 File: images/weather/weather4.png Graphic file (type png)
 <use images/weather/weather4.png>
-Package pdftex.def Info: images/weather/weather4.png  used on input line 26.
+Package pdftex.def Info: images/weather/weather4.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
 File: images/weather/wind0.png Graphic file (type png)
 <use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+Package pdftex.def Info: images/weather/wind0.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
-<images/moon/1.png, id=8, 32.12pt x 32.12pt>
+File: images/weather/blank.png Graphic file (type png)
+<use images/weather/blank.png>
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
+(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
+<images/weather/weather5.png, id=11, 55.20625pt x 55.20625pt>
+File: images/weather/weather5.png Graphic file (type png)
+<use images/weather/weather5.png>
+Package pdftex.def Info: images/weather/weather5.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
+File: images/weather/wind0.png Graphic file (type png)
+<use images/weather/wind0.png>
+Package pdftex.def Info: images/weather/wind0.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
+File: images/weather/blank.png Graphic file (type png)
+<use images/weather/blank.png>
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
+(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
+File: images/weather/weather4.png Graphic file (type png)
+<use images/weather/weather4.png>
+Package pdftex.def Info: images/weather/weather4.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
+File: images/weather/wind8.png Graphic file (type png)
+<use images/weather/wind8.png>
+Package pdftex.def Info: images/weather/wind8.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
+<images/moon/1.png, id=12, 32.12pt x 32.12pt>
 File: images/moon/1.png Graphic file (type png)
 <use images/moon/1.png>
-Package pdftex.def Info: images/moon/1.png  used on input line 26.
+Package pdftex.def Info: images/moon/1.png  used on input line 27.
 (pdftex.def)             Requested size: 13.37282pt x 13.37267pt.
-<images/weather/weather2.png, id=9, 55.20625pt x 55.20625pt>
+File: images/weather/weather6.png Graphic file (type png)
+<use images/weather/weather6.png>
+Package pdftex.def Info: images/weather/weather6.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
+<images/weather/wind5.png, id=13, 40.15pt x 40.15pt>
+File: images/weather/wind5.png Graphic file (type png)
+<use images/weather/wind5.png>
+Package pdftex.def Info: images/weather/wind5.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
+File: images/weather/blank.png Graphic file (type png)
+<use images/weather/blank.png>
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
+(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
+File: images/weather/weather4.png Graphic file (type png)
+<use images/weather/weather4.png>
+Package pdftex.def Info: images/weather/weather4.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
+File: images/weather/wind0.png Graphic file (type png)
+<use images/weather/wind0.png>
+Package pdftex.def Info: images/weather/wind0.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
+<images/gods/juba.png, id=14, 32.12pt x 32.12pt>
+File: images/gods/juba.png Graphic file (type png)
+<use images/gods/juba.png>
+Package pdftex.def Info: images/gods/juba.png  used on input line 27.
+(pdftex.def)             Requested size: 14.22636pt x 14.22644pt.
+File: images/weather/weather4.png Graphic file (type png)
+<use images/weather/weather4.png>
+Package pdftex.def Info: images/weather/weather4.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
+File: images/weather/wind0.png Graphic file (type png)
+<use images/weather/wind0.png>
+Package pdftex.def Info: images/weather/wind0.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
+File: images/weather/blank.png Graphic file (type png)
+<use images/weather/blank.png>
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
+(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
+<images/weather/weather2.png, id=15, 55.20625pt x 55.20625pt>
 File: images/weather/weather2.png Graphic file (type png)
 <use images/weather/weather2.png>
-Package pdftex.def Info: images/weather/weather2.png  used on input line 26.
+Package pdftex.def Info: images/weather/weather2.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
 File: images/weather/wind0.png Graphic file (type png)
 <use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+Package pdftex.def Info: images/weather/wind0.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather2.png Graphic file (type png)
-<use images/weather/weather2.png>
-Package pdftex.def Info: images/weather/weather2.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
-File: images/weather/blank.png Graphic file (type png)
-<use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
-(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather2.png Graphic file (type png)
-<use images/weather/weather2.png>
-Package pdftex.def Info: images/weather/weather2.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
-File: images/weather/blank.png Graphic file (type png)
-<use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
-(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
+<images/weather/weather1.png, id=16, 55.20625pt x 55.20625pt>
 File: images/weather/weather1.png Graphic file (type png)
 <use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
+Package pdftex.def Info: images/weather/weather1.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
 File: images/weather/wind0.png Graphic file (type png)
 <use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+Package pdftex.def Info: images/weather/wind0.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
+File: images/weather/weather4.png Graphic file (type png)
+<use images/weather/weather4.png>
+Package pdftex.def Info: images/weather/weather4.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
 File: images/weather/wind0.png Graphic file (type png)
 <use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+Package pdftex.def Info: images/weather/wind0.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
+File: images/weather/weather5.png Graphic file (type png)
+<use images/weather/weather5.png>
+Package pdftex.def Info: images/weather/weather5.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+<images/weather/wind3.png, id=17, 40.15pt x 40.15pt>
+File: images/weather/wind3.png Graphic file (type png)
+<use images/weather/wind3.png>
+Package pdftex.def Info: images/weather/wind3.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
-File: images/weather/blank.png Graphic file (type png)
-<use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
-(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
-<images/moon/2.png, id=10, 32.12pt x 32.12pt>
+<images/moon/2.png, id=18, 32.12pt x 32.12pt>
 File: images/moon/2.png Graphic file (type png)
 <use images/moon/2.png>
-Package pdftex.def Info: images/moon/2.png  used on input line 26.
+Package pdftex.def Info: images/moon/2.png  used on input line 27.
 (pdftex.def)             Requested size: 13.37282pt x 13.37267pt.
+<images/weather/weather9.png, id=19, 55.20625pt x 55.20625pt>
+File: images/weather/weather9.png Graphic file (type png)
+<use images/weather/weather9.png>
+Package pdftex.def Info: images/weather/weather9.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
+File: images/weather/wind8.png Graphic file (type png)
+<use images/weather/wind8.png>
+Package pdftex.def Info: images/weather/wind8.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
+File: images/weather/blank.png Graphic file (type png)
+<use images/weather/blank.png>
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
+(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
 File: images/weather/weather1.png Graphic file (type png)
 <use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
+Package pdftex.def Info: images/weather/weather1.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
+File: images/weather/wind8.png Graphic file (type png)
+<use images/weather/wind8.png>
+Package pdftex.def Info: images/weather/wind8.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
+File: images/weather/blank.png Graphic file (type png)
+<use images/weather/blank.png>
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
+(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
+File: images/weather/weather1.png Graphic file (type png)
+<use images/weather/weather1.png>
+Package pdftex.def Info: images/weather/weather1.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
 File: images/weather/wind0.png Graphic file (type png)
 <use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+Package pdftex.def Info: images/weather/wind0.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather2.png Graphic file (type png)
-<use images/weather/weather2.png>
-Package pdftex.def Info: images/weather/weather2.png  used on input line 26.
+<images/weather/weather3.png, id=20, 55.20625pt x 55.20625pt>
+File: images/weather/weather3.png Graphic file (type png)
+<use images/weather/weather3.png>
+Package pdftex.def Info: images/weather/weather3.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
 File: images/weather/wind0.png Graphic file (type png)
 <use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+Package pdftex.def Info: images/weather/wind0.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather2.png Graphic file (type png)
-<use images/weather/weather2.png>
-Package pdftex.def Info: images/weather/weather2.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-<images/weather/wind5.png, id=11, 40.15pt x 40.15pt>
-File: images/weather/wind5.png Graphic file (type png)
-<use images/weather/wind5.png>
-Package pdftex.def Info: images/weather/wind5.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
-File: images/weather/blank.png Graphic file (type png)
-<use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
-(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather2.png Graphic file (type png)
-<use images/weather/weather2.png>
-Package pdftex.def Info: images/weather/weather2.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind5.png Graphic file (type png)
-<use images/weather/wind5.png>
-Package pdftex.def Info: images/weather/wind5.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
-File: images/weather/blank.png Graphic file (type png)
-<use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
-(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather2.png Graphic file (type png)
-<use images/weather/weather2.png>
-Package pdftex.def Info: images/weather/weather2.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind5.png Graphic file (type png)
-<use images/weather/wind5.png>
-Package pdftex.def Info: images/weather/wind5.png  used on input line 26.
-(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
-File: images/weather/blank.png Graphic file (type png)
-<use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
-(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather2.png Graphic file (type png)
-<use images/weather/weather2.png>
-Package pdftex.def Info: images/weather/weather2.png  used on input line 26.
+File: images/weather/weather5.png Graphic file (type png)
+<use images/weather/weather5.png>
+Package pdftex.def Info: images/weather/weather5.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
 File: images/weather/wind0.png Graphic file (type png)
 <use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+Package pdftex.def Info: images/weather/wind0.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather2.png Graphic file (type png)
-<use images/weather/weather2.png>
-Package pdftex.def Info: images/weather/weather2.png  used on input line 26.
+File: images/weather/weather5.png Graphic file (type png)
+<use images/weather/weather5.png>
+Package pdftex.def Info: images/weather/weather5.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+<images/weather/wind4.png, id=21, 40.15pt x 40.15pt>
+File: images/weather/wind4.png Graphic file (type png)
+<use images/weather/wind4.png>
+Package pdftex.def Info: images/weather/wind4.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
-<images/moon/3.png, id=12, 32.12pt x 32.12pt>
+File: images/weather/blank.png Graphic file (type png)
+<use images/weather/blank.png>
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
+(pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
+File: images/weather/weather4.png Graphic file (type png)
+<use images/weather/weather4.png>
+Package pdftex.def Info: images/weather/weather4.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
+File: images/weather/wind3.png Graphic file (type png)
+<use images/weather/wind3.png>
+Package pdftex.def Info: images/weather/wind3.png  used on input line 27.
+(pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
+<images/moon/3.png, id=22, 32.12pt x 32.12pt>
 File: images/moon/3.png Graphic file (type png)
 <use images/moon/3.png>
-Package pdftex.def Info: images/moon/3.png  used on input line 26.
+Package pdftex.def Info: images/moon/3.png  used on input line 27.
 (pdftex.def)             Requested size: 13.37282pt x 13.37267pt.
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
+<images/weather/weather8.png, id=23, 55.20625pt x 55.20625pt>
+File: images/weather/weather8.png Graphic file (type png)
+<use images/weather/weather8.png>
+Package pdftex.def Info: images/weather/weather8.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind5.png Graphic file (type png)
-<use images/weather/wind5.png>
-Package pdftex.def Info: images/weather/wind5.png  used on input line 26.
+File: images/weather/wind4.png Graphic file (type png)
+<use images/weather/wind4.png>
+Package pdftex.def Info: images/weather/wind4.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
+<images/weather/weather16.png, id=24, 55.20625pt x 55.20625pt>
+File: images/weather/weather16.png Graphic file (type png)
+<use images/weather/weather16.png>
+Package pdftex.def Info: images/weather/weather16.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+<images/weather/wind13.png, id=25, 40.15pt x 40.15pt>
+File: images/weather/wind13.png Graphic file (type png)
+<use images/weather/wind13.png>
+Package pdftex.def Info: images/weather/wind13.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
+<images/weather/weather17.png, id=26, 55.20625pt x 55.20625pt>
+File: images/weather/weather17.png Graphic file (type png)
+<use images/weather/weather17.png>
+Package pdftex.def Info: images/weather/weather17.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+<images/weather/wind18.png, id=27, 40.15pt x 40.15pt>
+File: images/weather/wind18.png Graphic file (type png)
+<use images/weather/wind18.png>
+Package pdftex.def Info: images/weather/wind18.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
+<images/weather/weather18.png, id=28, 55.20625pt x 55.20625pt>
+File: images/weather/weather18.png Graphic file (type png)
+<use images/weather/weather18.png>
+Package pdftex.def Info: images/weather/weather18.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+<images/weather/wind17.png, id=29, 40.15pt x 40.15pt>
+File: images/weather/wind17.png Graphic file (type png)
+<use images/weather/wind17.png>
+Package pdftex.def Info: images/weather/wind17.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather1.png Graphic file (type png)
-<use images/weather/weather1.png>
-Package pdftex.def Info: images/weather/weather1.png  used on input line 26.
+File: images/weather/weather17.png Graphic file (type png)
+<use images/weather/weather17.png>
+Package pdftex.def Info: images/weather/weather17.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+File: images/weather/wind18.png Graphic file (type png)
+<use images/weather/wind18.png>
+Package pdftex.def Info: images/weather/wind18.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-<images/weather/weather9.png, id=13, 55.20625pt x 55.20625pt>
-File: images/weather/weather9.png Graphic file (type png)
-<use images/weather/weather9.png>
-Package pdftex.def Info: images/weather/weather9.png  used on input line 26.
+<images/weather/weather19.png, id=30, 55.20625pt x 55.20625pt>
+File: images/weather/weather19.png Graphic file (type png)
+<use images/weather/weather19.png>
+Package pdftex.def Info: images/weather/weather19.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+<images/weather/wind24.png, id=31, 40.15pt x 40.15pt>
+File: images/weather/wind24.png Graphic file (type png)
+<use images/weather/wind24.png>
+Package pdftex.def Info: images/weather/wind24.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 File: images/weather/blank.png Graphic file (type png)
 <use images/weather/blank.png>
-Package pdftex.def Info: images/weather/blank.png  used on input line 26.
+Package pdftex.def Info: images/weather/blank.png  used on input line 27.
 (pdftex.def)             Requested size: 14.22636pt x 14.22607pt.
-File: images/weather/weather9.png Graphic file (type png)
-<use images/weather/weather9.png>
-Package pdftex.def Info: images/weather/weather9.png  used on input line 26.
+<images/weather/weather15.png, id=32, 55.20625pt x 55.20625pt>
+File: images/weather/weather15.png Graphic file (type png)
+<use images/weather/weather15.png>
+Package pdftex.def Info: images/weather/weather15.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60745pt.
-File: images/weather/wind0.png Graphic file (type png)
-<use images/weather/wind0.png>
-Package pdftex.def Info: images/weather/wind0.png  used on input line 26.
+File: images/weather/wind24.png Graphic file (type png)
+<use images/weather/wind24.png>
+Package pdftex.def Info: images/weather/wind24.png  used on input line 27.
 (pdftex.def)             Requested size: 25.6073pt x 25.60768pt.
 
-Overfull \hbox (5.44164pt too wide) in paragraph at lines 26--27
+Overfull \hbox (5.44164pt too wide) in paragraph at lines 27--28
  [][] 
  []
 
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./images/moon/0.png> <./
-images/weather/weather1.png> <./images/weather/wind0.png> <./images/weather/bla
-nk.png> <./images/gods/manpeggon.png> <./images/weather/weather4.png> <./images
-/moon/1.png> <./images/weather/weather2.png> <./images/moon/2.png> <./images/we
-ather/wind5.png> <./images/moon/3.png> <./images/weather/weather9.png>]
-(./weather.aux) ) 
+! Misplaced \noalign.
+\hline ->\noalign 
+                  {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
+l.32 \hline
+           
+I expect to see \noalign only after the \cr of
+an alignment. Proceed, and I'll ignore this case.
+
+! Misplaced \noalign.
+\hline ->\noalign 
+                  {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
+l.34 \hline
+           
+I expect to see \noalign only after the \cr of
+an alignment. Proceed, and I'll ignore this case.
+
+! Misplaced \noalign.
+\hline ->\noalign 
+                  {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
+l.36 \hline
+           
+I expect to see \noalign only after the \cr of
+an alignment. Proceed, and I'll ignore this case.
+
+! Misplaced \noalign.
+\hline ->\noalign 
+                  {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
+l.38 \hline
+           
+I expect to see \noalign only after the \cr of
+an alignment. Proceed, and I'll ignore this case.
+
+! Misplaced \noalign.
+\hline ->\noalign 
+                  {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
+l.40 \hline
+           
+I expect to see \noalign only after the \cr of
+an alignment. Proceed, and I'll ignore this case.
+
+! Misplaced \noalign.
+\hline ->\noalign 
+                  {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
+l.42 \hline
+           
+I expect to see \noalign only after the \cr of
+an alignment. Proceed, and I'll ignore this case.
+
+! Misplaced \noalign.
+\hline ->\noalign 
+                  {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
+l.44 \hline
+           
+I expect to see \noalign only after the \cr of
+an alignment. Proceed, and I'll ignore this case.
+
+! Misplaced \noalign.
+\hline ->\noalign 
+                  {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
+l.46 \hline
+           
+I expect to see \noalign only after the \cr of
+an alignment. Proceed, and I'll ignore this case.
+
+! Misplaced \noalign.
+\hline ->\noalign 
+                  {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
+l.48 \hline
+           
+I expect to see \noalign only after the \cr of
+an alignment. Proceed, and I'll ignore this case.
+
+! Misplaced \noalign.
+\hline ->\noalign 
+                  {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
+l.50 \hline
+           
+I expect to see \noalign only after the \cr of
+an alignment. Proceed, and I'll ignore this case.
+
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+
+ <./images/moon/0.png> <./images/weather/weather10.png> <./images/weather/wind8
+.png> <./images/weather/blank.png> <./images/weather/weather6.png> <./images/we
+ather/weather7.png> <./images/weather/wind1.png> <./images/weather/wind0.png> <
+./images/weather/weather4.png> <./images/weather/weather5.png> <./images/moon/1
+.png> <./images/weather/wind5.png> <./images/gods/juba.png (PNG copy)> <./image
+s/weather/weather2.png> <./images/weather/weather1.png> <./images/weather/wind3
+.png> <./images/moon/2.png> <./images/weather/weather9.png> <./images/weather/w
+eather3.png> <./images/weather/wind4.png> <./images/moon/3.png> <./images/weath
+er/weather8.png> <./images/weather/weather16.png> <./images/weather/wind13.png>
+ <./images/weather/weather17.png> <./images/weather/wind18.png> <./images/weath
+er/weather18.png> <./images/weather/wind17.png> <./images/weather/weather19.png
+> <./images/weather/wind24.png> <./images/weather/weather15.png>] (./weather.au
+x) ) 
 Here is how much of TeX's memory you used:
- 3334 strings out of 494340
- 48668 string characters out of 6164411
- 129234 words of memory out of 5000000
- 6638 multiletter control sequences out of 15000+600000
+ 3429 strings out of 494340
+ 51214 string characters out of 6164411
+ 129231 words of memory out of 5000000
+ 6714 multiletter control sequences out of 15000+600000
  4860 words of font info for 18 fonts, out of 8000000 for 9000
  350 hyphenation exceptions out of 8191
- 41i,15n,35p,1815b,394s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.
-pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb>
-Output written on weather.pdf (1 page, 40560 bytes).
+ 41i,15n,35p,1827b,394s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb>
+Output written on weather.pdf (1 page, 45354 bytes).
 PDF statistics:
- 45 PDF objects out of 1000 (max. 8388607)
- 14 compressed objects within 1 object stream
+ 78 PDF objects out of 1000 (max. 8388607)
+ 11 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 61 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 156 words of extra memory for PDF output out of 10000 (max. 10000000)
 

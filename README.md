@@ -2,6 +2,7 @@
 
 ---------------------------------------------------------------------------
 
+## Intorduction
 Welcome to the swiss army knife for the Amar Role-Playing Game (http://d6gaming.org).
 
 This program suite runs on any GNU/Linux system where the scripting
@@ -22,6 +23,14 @@ http://www.d6gaming.org/.
 
 For an online version of this program, go to http://isene.org
 
+## Requirements
+GraphViz is a requirement for generating relationship maps for towns and
+between NPCs ('apt install graphviz' on Ubuntu).
+
+LaTeX is needed for random weather generation ('apt install
+texlive-latex-recommended' on Ubuntu).
+
+## Setup
 To set up the program, extract npcg.tar.gz:
 
     tar -xzvf npcg.tar.gz
@@ -37,6 +46,7 @@ Then, as root, run the setup program:
 This makes it possible for you to run the program by just entering
 "npcg" on the command line.
 
+## Running the command line version (CLI)
 Running npcg on the command line will give you a set of options:
 
 	e = Random encounter
@@ -109,8 +119,10 @@ By running npcg on the command line with the -h option, this help file will be d
       editor directly following the "-e", such as npcg -e vim. If no editor
       is given, the program outputs the NPC to "less".""
 
+## Credits
 Thanks to Alan Skorkin
 (https://www.skorks.com/2009/07/how-to-write-a-name-generator-in-ruby/)
 for providing a basis for the random name generator.
 
+## Final note
 Thank you for trying out NPC Generation. Feel free to visit my website at http://isene.com
