@@ -2,7 +2,7 @@
 
 ---------------------------------------------------------------------------
 
-## Intorduction
+## Introduction
 Welcome to the swiss army knife for the Amar Role-Playing Game (http://d6gaming.org).
 
 This program suite runs on any GNU/Linux system where the scripting
