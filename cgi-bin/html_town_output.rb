@@ -52,8 +52,8 @@ end
 # End: From the CLI module
 
 # Generate a relationship map
-town_relations("town.txt")
-town_dot2txt
+#town_relations("town.txt")
+#town_dot2txt
 
 out = ERB.new(tmpl)
 
