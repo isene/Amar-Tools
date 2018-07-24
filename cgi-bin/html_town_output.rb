@@ -20,7 +20,7 @@ aTOWN = Town.new(@town_name, @town_size, @town_var)
 # Start: From the CLI module
 f = "#################################<By NPCg 0.5>#################################\n\n"
 
-case @town_size
+case aTOWN.town_size
 when 1
   @tn = "Castle"
 when 2..25
@@ -30,7 +30,7 @@ when 26..99
 else
   @tn = "City"
 end
-@tn = " of #{aTOWN.town_name} - Houses: #{aTOWN.town_size} - Residents: #{aTOWN.town_residents}\n\n"
+@tn += " of #{aTOWN.town_name} - Houses: #{aTOWN.town_size} - Residents: #{aTOWN.town_residents}\n\n"
 f += @tn
 
 @t.length.times do |house|
