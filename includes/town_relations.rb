@@ -3,9 +3,9 @@ def town_relations(town_file)
 
 	town = File.read(town_file)
 
-	if town.match(/#\d:/)
+	if town.match(/#1:/)
 		t = town.gsub(/ \[.*/, '')
-		t.sub!(/^.*\n\n/, '')
+		t.sub!(/^.*#1:/m, '#1:')
 		t.sub!(/\n\n###.*$/, '')
 		t.gsub!(/#\d+:.*\n/, '')
 		t.gsub!(/  +/, '')

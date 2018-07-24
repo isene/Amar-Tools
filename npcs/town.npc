@@ -1,165 +1,82 @@
 #################################<By NPCg 0.5>#################################
 
-Town of Blaza - Houses: 26 - Residents: 107
+Village of Peek - Houses: 10 - Residents: 56
 
 #1: Stronghold
-   Brod Maher (M 54) Human [9] Sad, gloomy
-   Ock Can (M 75) Human [12] Conservative, structured
-   Blanna Maher (F 36) Human [6] Generous, empathetic
-   Maxter Maher (M 41) Human [9] Conservative, structured
-   Addiam Maher (F 45) Human [12] Friendly, service minded
-   Arrey Spike (M 43) Human [8] Conservative, structured
-   Tyrey Dell (M 43) Human [13] Conservative, structured
-   Jolina Maher (F 46) Human [6] Indifferent, unstructured
-   Kricistia Maher (M 45) Human [14] Friendly, service minded
-   Malyn Hoperrobe (F 32) Human [5] Conservative, structured
-   Tavion Ker (M 30) Human [10] Friendly, service minded
-   Ley Stackwe (F 34) Human [6] Generous, empathetic
-   Jaellaken Maher (F 1) Human [1] Friendly, service minded
-   Radrevist Maher (M 0) Human [1] Antagonistic, combattive
+   Asharl Dallon (F 65) Human [9] Antagonistic, combattive
+   Crigenrar Dallon (M 45) Human [9] Antagonistic, combattive
+   Amry Dallon (F 41) Human [8] Sad, gloomy
+   Kay Dallon (M 21) Human [4] Conservative, structured
+   Jada Dallon (F 27) Human [4] Greedy, self-centered
+   Jastezech Dallon (M 41) Human [9] Conservative, structured
+   Ald Dallon (M 34) Human [8] Generous, empathetic
+   Mielynni Dallon (F 21) Human [7] Friendly, service minded
+   Clannolte Dallon (M 43) Human [11] Generous, empathetic
+   Blan Dallon (M 33) Human [4] Cautious, fearful
+   Alia Dallon (F 32) Human [7] Friendly, service minded
+   Marde Egalvarri (M 21) Human [12] Indifferent, unstructured
+   Elibellay Dallon (F 2) Human [5] Conservative, structured
 
 #2: Soldier/Guards
-   Barrylon Popeadall (M 81) Human [7] Conservative, structured
-   Kiero Reng (M 64) Human [8] Antagonistic, combattive
-   Saoli Mahice (F 33) Human [5] Cautious, fearful
-   Mas Jor (M 40) Human [7] Greedy, self-centered
-   Aleena Moods (F 22) Human [3] Generous, empathetic
-   Change Ter (M 40) Human [7] Friendly, service minded
+   Jesmelee Crady (F 23) Human [3] Generous, empathetic
+   Carede Cles (M 59) Human [9] Friendly, service minded
+   Brylviann Holl (F 47) Human [7] Friendly, service minded
+   Must Lams (M 24) Human [7] Conservative, structured
+   Valla Dowels (F 41) Human [6] Antagonistic, combattive
+   Kari Keennis (M 6) Human [5] Antagonistic, combattive
 
-#3: Stable: Open 5/7, 08-17
-   Mon Myes (M 28) Human [4] Greedy, self-centered
-   Dam Mitt (M 73) Human [5] Conservative, structured
-   Malessa Myes (F 27) Human [1] Antagonistic, combattive
-   Cald Myes (M 17) Human [4] Generous, empathetic
+#3: Stable: Open 7/7, 07-17
+   Dris Tuchubeck (M 54) Human [9] Conservative, structured
+   Tafaelon Wyers (M 84) Human [7] Greedy, self-centered
+   Adammy Tuchubeck (M 23) Human [7] Indifferent, unstructured
+   Son Cards (F 23) Human [7] Indifferent, unstructured
+   Bresalion Tuchubeck (M 10) Human [4] Antagonistic, combattive
+   Aadakotan Tuchubeck (F 16) Human [5] Antagonistic, combattive
 
 #4: Inn: Open 7/7, 06-00
-   Jary Care (M 84) Human [9] Indifferent, unstructured
-   Tine Care (F 57) Human [7] Conservative, structured
-   Landredga Care (M 38) Human [6] Conservative, structured
-   Brena Care (F 3) Human [1] Greedy, self-centered
+   Tyney Raffmasen (M 49) Human [5] Conservative, structured
+   Desimaria Raffmasen (F 49) Human [6] Conservative, structured
+   Chride Raffmasen (F 24) Human [8] Conservative, structured
+   Jon Raffmasen (M 2) Human [3] Generous, empathetic
 
-#5: Farm/Fishery: Open 6/7, 08-17
-   Cadal Blemadon (F 20) Human [5] Generous, empathetic
-   Siandon Blemadon (M 72) Human [10] Greedy, self-centered
-   Leian Blemadon (F 37) Human [8] Antagonistic, combattive
+#5: Farm/Fishery: Open 5/7, 07-17
+   Dalenn Rey (F 34) Human [10] Antagonistic, combattive
+   Geoffin Matt (M 59) Human [7] Friendly, service minded
+   Deamin Arrewilli (M 60) Human [12] Indifferent, unstructured
+   Kai Rey (F 22) Human [4] Indifferent, unstructured
+   Ronderich Rey (M 16) Human [9] Generous, empathetic
+   Camaildal Rey (F 6) Human [9] Greedy, self-centered
 
-#6: Farm/Fishery: Open 7/7, 07-17
-   Aim Reen (M 61) Human [8] Conservative, structured
-   Alannylea Reen (F 67) Human [9] Greedy, self-centered
-   Kriquel Reen (M 29) Human [7] Antagonistic, combattive
-   Casainica Reen (M 22) Human [8] Friendly, service minded
+#6: Farm/Fishery: Open 6/7, 08-18
+   Jaquin Brier (M 23) Human [3] Sad, gloomy
+   Alarson Murney (M 42) Human [5] Greedy, self-centered
+   Colam Brier (M 16) Human [5] Antagonistic, combattive
 
-#7: Farm/Fishery: Open 6/7, 09-17
-   Ver Bollis (F 34) Human [7] Friendly, service minded
-   Novanaric Bollis (M 33) Human [9] Greedy, self-centered
-   Kimber Bollis (F 33) Human [11] Friendly, service minded
+#7: Farm/Fishery: Open 5/7, 08-17
+   Alery Mcnett (M 60) Human [10] Generous, empathetic
+   Ziovan Mcnett (M 50) Human [7] Generous, empathetic
+   Drio Lonwad (M 47) Human [10] Friendly, service minded
 
-#8: General store: Open 5/7, 08-16
-   Jaegiandr Dand (F 30) Human [2] Friendly, service minded
-   Mun Dand (M 53) Human [6] Conservative, structured
-   Lairel Dand (F 10) Human [2] Generous, empathetic
+#8: General store: Open 5/7, 08-17
+   Aminah Bertiazie (F 69) Human [4] Conservative, structured
+   Roliameki Mon (M 77) Human [11] Greedy, self-centered
+   Erthon Bertiazie (M 55) Human [9] Greedy, self-centered
+   Aley Bertiazie (F 22) Human [6] Generous, empathetic
+   Ellyson Fox (M 10) Human [3] Greedy, self-centered
+   Rian Bertiazie (M 12) Human [4] Cautious, fearful
 
-#9: Blacksmith: Open 6/7, 07-18
-   Mailey Grerney (F 15) Human [8] Friendly, service minded
-   Cellacera Ros (F 23) Human [6] Friendly, service minded
-   Ramiren Lawyes (M 1) Human [3] Greedy, self-centered
+#9: Blacksmith: Open 5/7, 09-18
+   Maleylee Braghnson (F 21) Human [5] Indifferent, unstructured
+   Hankliere Braghnson (M 82) Human [10] Cautious, fearful
+   Cher Braghnson (F 40) Human [7] Friendly, service minded
 
-#10: Butcher: Open 5/7, 07-17
-   Chalorowe Rowellapi (F 62) Human [4] Greedy, self-centered
-   Ese Fred (M 61) Human [8] Indifferent, unstructured
-   Elile Rowellapi (F 76) Human [7] Conservative, structured
-   Arkurt Rowellapi (M 40) Human [6] Cautious, fearful
-
-#11: Temple: Taroc
-   Caseageof Cos (M 45) Human [7] Greedy, self-centered
-   Holeyarla Cos (F 50) Human [6] Conservative, structured
-   Boben Cos (M 84) Human [6] Cautious, fearful
-   Jadlee Cos (F 31) Human [7] Friendly, service minded
-   Jas Cos (M 19) Human [3] Generous, empathetic
-
-#12: Grocery store: Open 6/7, 07-18
-   Eilynn Medichick (F 47) Human [7] Indifferent, unstructured
-   Kelillext Medichick (M 58) Human [10] Indifferent, unstructured
-
-#13: Worker
-   Jaymoin Gilly (M 49) Human [6] Conservative, structured
-   Blon Gilly (M 62) Human [10] Greedy, self-centered
-   Nola Gilly (F 68) Human [8] Sad, gloomy
-   Bran Rolletton (M 42) Human [5] Conservative, structured
-   Aylakena Gilly (F 4) Human [8] Generous, empathetic
-
-#14: Worker
-   Key Vantgordn (F 55) Human [3] Generous, empathetic
-   Ases Patkir (M 26) Human [8] Antagonistic, combattive
-
-#15: Storage: Open 7/7, 09-18
-   Arlen Kel (F 47) Human [11] Conservative, structured
-   Remy Kel (M 55) Human [7] Cautious, fearful
-   Vie Kel (F 38) Human [7] Antagonistic, combattive
-   Jayto Kel (M 5) Human [2] Cautious, fearful
-
-#16: Slum
-   Katinn John (F 29) Human [8] Friendly, service minded
-   Naelmer John (M 79) Human [6] Sad, gloomy
-   Adlee John (F 12) Human [5] Sad, gloomy
-
-#17: Farm: Open 7/7, 07-17
-   Carid Parke (F 70) Human [5] Cautious, fearful
-   Tuadomin Parke (M 65) Human [4] Friendly, service minded
-   Zoemma Parke (F 11) Human [4] Friendly, service minded
-
-#18: Farm: Open 5/7, 09-18
-   Jet Der (M 22) Human [4] Indifferent, unstructured
-   Rorilla Der (F 74) Human [8] Generous, empathetic
-   Shazer Der (M 39) Human [3] Generous, empathetic
-   Zion Der (F 42) Other [4] Friendly, service minded
-   Daliordec Der (M 7) Human [1] Antagonistic, combattive
-
-#19: Farm: Open 6/7, 09-18
-   Sheo Hewton (M 47) Human [10] Sad, gloomy
-   Johadilia Hewton (F 23) Human [7] Greedy, self-centered
-   Janelvin Hewton (M 14) Human [7] Friendly, service minded
-
-#20: Farm: Open 5/7, 09-18
-   Nacolte Davis (M 67) Human [6] Conservative, structured
-   Dando Davis (M 50) Human [6] Friendly, service minded
-   Blashand Davis (M 37) Human [6] Friendly, service minded
-   Aspen Davis (M 15) Human [6] Cautious, fearful
-
-#21: Farm: Open 5/7, 07-16
-   Roy O'ney (M 51) Human [5] Greedy, self-centered
-   Maxis Jen (M 69) Human [11] Friendly, service minded
-   Yanny O'ney (M 41) Human [3] Indifferent, unstructured
-   Madiana O'ney (F 44) Human [7] Greedy, self-centered
-
-#22: Farm: Open 6/7, 09-17
-   Lucariand Cralynorr (M 17) Human [6] Friendly, service minded
-   Kaile Cralynorr (M 26) Human [2] Conservative, structured
-
-#23: Farm: Open 6/7, 09-17
-   Gaver Mck (M 16) Human [8] Friendly, service minded
-   Jah Mck (M 68) Human [7] Greedy, self-centered
-   Abreleenl Mck (F 53) Human [12] Friendly, service minded
-   Nathen Mck (M 33) Human [9] Antagonistic, combattive
-   Alen Mck (M 13) Human [8] Cautious, fearful
-
-#24: Farm: Open 5/7, 08-17
-   Tredgagan Dillivan (M 63) Human [8] Cautious, fearful
-   Joharle Dillivan (M 81) Human [7] Friendly, service minded
-   Istiahie Con (M 47) Human [7] Sad, gloomy
-   Joley Dillivan (F 4) Human [2] Conservative, structured
-
-#25: Farm: Open 7/7, 07-16
-   Brac Rod (M 19) Human [0] Generous, empathetic
-   Pailanna Rod (F 31) Human [5] Generous, empathetic
-   Gar Rod (M 8) Human [8] Friendly, service minded
-
-#26: Farm: Open 7/7, 09-16
-   Jal Man (M 77) Human [11] Friendly, service minded
-   Oakayamal Man (F 61) Human [11] Antagonistic, combattive
-   Key Man (M 37) Human [8] Sad, gloomy
-   Aron Man (M 39) Human [2] Generous, empathetic
-   Kael Man (F 19) Human [6] Indifferent, unstructured
+#10: Butcher: Open 6/7, 09-16
+   Aylee Will (F 28) Human [1] Conservative, structured
+   Rett Will (M 81) Human [14] Antagonistic, combattive
+   Arina Will (F 34) Human [4] Friendly, service minded
+   Del Will (M 29) Human [5] Indifferent, unstructured
+   Malla Will (F 16) Human [4] Conservative, structured
+   Liott Will (M 12) Human [2] Conservative, structured
 
 ###############################################################################
 
