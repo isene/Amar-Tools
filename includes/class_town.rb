@@ -82,6 +82,19 @@ class Town
 					"Troll"					=> 1,
 					"Arax"					=> 1,
 					"Other"					=> 2)
+			when 4
+				@race = randomizer(
+					"Dwarf"					=> 10,
+					"Other"					=> 1)
+			when 5
+				@race = randomizer(
+					"Elf"						=> 10,
+					"Half-elf"			=> 3,
+					"Other"					=> 1)
+			when 6
+				@race = randomizer(
+					"Lizardfolk"		=> 10,
+					"Other"					=> 1)
 			end
 		return @race
 	end
