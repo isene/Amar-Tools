@@ -15,6 +15,7 @@ tmpl = File.read("../town_output.html")
 @town_name = cgi["town_name"].to_s
 aTOWN = Town.new(@town_name, @town_size, @town_var)
 @t = aTOWN.town
+@tn = ""
 
 # Start: From the CLI module
 f = "#################################<By NPCg 0.5>#################################\n\n"
