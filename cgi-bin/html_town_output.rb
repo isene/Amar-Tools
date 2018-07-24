@@ -20,7 +20,7 @@ aTOWN = Town.new(@town_name, @town_size, @town_var)
 # Start: From the CLI module
 f = "#################################<By NPCg 0.5>#################################\n\n"
 
-case aTOWN.town_size
+case @town_size
 when 1
   @tn = "Castle"
 when 2..25
