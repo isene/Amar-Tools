@@ -4,7 +4,7 @@
 
 class Town
 
-	attr_reader :town
+	attr_reader :town, :town_name, :town_size, :town_residents
 
 	Inf = 1.0/0
 
@@ -100,6 +100,7 @@ class Town
 	end
 
 	def add_resident(age)
+		@town_residents += 1
 		# Get race
 		if $Race == ""
 			@r_race = race(@town_var)
@@ -149,10 +150,17 @@ class Town
 		@r += 1
 	end
 
-	def initialize(town_size, town_var)
+	def initialize(town_name, town_size, town_var)
 
 		@town_size = town_size.to_i
 		@town_var  = town_var.to_i
+		@town_name = town_name.to_s
+		if @town_name == ""
+			tn = File.expand_path(File.dirname(__FILE__)) + "/../name_generator/name_generator_main.rb -d "
+			@town_name = `#{tn} city.txt`.chomp if @town_size > 99
+			@town_name = `#{tn} town.txt`.chomp if @town_size < 100
+		end
+		@town_residents = 0
 
 		$Temple_types = {
 			"Walmaer"							=> 4,
@@ -227,6 +235,5 @@ class Town
 			end
 			break if @h_index == town_size
 		end
-		return @town
 	end
 end

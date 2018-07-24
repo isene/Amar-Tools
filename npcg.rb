@@ -143,7 +143,7 @@ else
 			enc_output(anENC, "cli")
 		elsif c == "t"
 			ia = town_input
-			aTOWN = Town.new(ia[0], ia[1])
+			aTOWN = Town.new(ia[0], ia[1], ia[2])
 			town_output(aTOWN)
 		elsif c == "r"
 			town_file = "npcs/town.npc"

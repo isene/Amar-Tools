@@ -10,13 +10,27 @@ tmpl = File.read("../town_output.html")
 
 @town_size = cgi["town_size"].to_i
 @town_size = 1 if @town_size < 1
-@town_size = 100 if @town_size > 100
+@town_size = 200 if @town_size > 200
 @town_var  = cgi["town_var"].to_i
-aTOWN = Town.new(@town_size, @town_var)
+@town_name = cgi["town_name"].to_s
+aTOWN = Town.new(@town_name, @town_size, @town_var)
 @t = aTOWN.town
 
 # Start: From the CLI module
 f = "#################################<By NPCg 0.5>#################################\n\n"
+
+case aTOWN.town_size
+when 1
+  @tn = "Castle"
+when 2..25
+  @tn = "Village"
+when 26..99
+  @tn = "Town"
+else
+  @tn = "City"
+end
+@tn = " of #{aTOWN.town_name} - Houses: #{aTOWN.town_size} - Residents: #{aTOWN.town_residents}\n\n"
+f += @tn
 
 @t.length.times do |house|
 	f += "##{house + 1}: #{@t[house][0]}\n"
