@@ -157,8 +157,14 @@ class Town
 		@town_name = town_name.to_s
 		if @town_name == ""
 			tn = File.expand_path(File.dirname(__FILE__)) + "/../name_generator/name_generator_main.rb -d "
-			@town_name = `#{tn} city.txt`.chomp if @town_size > 99
-			@town_name = `#{tn} town.txt`.chomp if @town_size < 100
+			case @town_size
+			when 1..4
+				@town_name = `#{tn} castle_names.txt`.chomp
+			when 5..99
+				@town_name = `#{tn} town_names.txt`.chomp
+			else
+				@town_name = `#{tn} city_names.txt`.chomp
+			end
 		end
 		@town_residents = 0
 

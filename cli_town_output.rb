@@ -5,9 +5,9 @@ def town_output(aTOWN)
 	f = "#################################<By NPCg 0.5>#################################\n\n"
 
 	case aTOWN.town_size
-	when 1
+	when 1..4
 		f += "Castle"
-	when 2..25
+	when 5..25
 		f += "Village"
 	when 26..99
 		f += "Town"

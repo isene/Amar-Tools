@@ -21,9 +21,9 @@ aTOWN = Town.new(@town_name, @town_size, @town_var)
 f = "#################################<By NPCg 0.5>#################################\n\n"
 
 case aTOWN.town_size
-when 1
+when 1..4
   @tn = "Castle"
-when 2..25
+when 5..25
   @tn = "Village"
 when 26..99
   @tn = "Town"
