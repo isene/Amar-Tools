@@ -25,6 +25,7 @@ class Weather_day
 		
 		wind_str = (wind_str + (oD6 + oD6 - 5)/6).abs if month == 6	# Juba
 		if rand(2) == 0
+			wind_str = (wind_str + (oD6 + oD6 - 7)/6).abs
 			wind_str += 1 if month == 1 and rand(3) == 0		# Walmaer
 			wind_str += 1 if month == 10 and rand(2) == 0		# Fal Munir
 		end
