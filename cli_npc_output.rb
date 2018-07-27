@@ -289,6 +289,6 @@ def npc_output(n, cli)
   	gets if cli == "cli"
   end
 
-  system("#{$editor} #{tfile}") if cli == "cli"
+  system("#{$editor} #{$nfile}") if cli == "cli"
 
 end
