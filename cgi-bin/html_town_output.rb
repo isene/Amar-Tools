@@ -45,16 +45,16 @@ end
 	
 f += "#######################################################################\n\n"
 
-File.delete("town.txt") if File.exists?("town.txt")
-File.delete("town.png") if File.exists?("town.png")
+File.delete("saved/town.txt") if File.exists?("saved/town.txt")
+File.delete("saved/town.png") if File.exists?("saved/town.png")
 begin
-	File.write("town.txt", f, perm: 0644)
+	File.write("saved/town.txt", f, perm: 0644)
 rescue
 end
 # End: From the CLI module
 
 # Generate a relationship map
-town_relations("town.txt")
+town_relations("saved/town.txt")
 town_dot2txt
 
 out = ERB.new(tmpl)
