@@ -1,0 +1,26 @@
+	digraph town {
+	rankdir="LR"
+	splines=true
+	overlap=false
+	edge [ fontsize=8 len=1 arrowhead="none"]
+	fixedsize=true
+"Ade Coyner\n(M 67) Human\n#1" -> "Zara Coyner\n(F 40) Human\n#1" [color="red"]
+"Ade Coyner\n(M 67) Human\n#1" -> "Raphen Coyner\n(M 54) Human\n#1"
+"Ade Coyner\n(M 67) Human\n#1" -> "Ken Coyner\n(M 34) Human\n#1" [color="red"]
+"Nett Coyner\n(M 42) Human\n#1" -> "Jah Cor\n(M 27) Human\n#1"
+"Mala Coyner\n(F 49) Human\n#1" -> "Zara Coyner\n(F 40) Human\n#1"
+"Mala Coyner\n(F 49) Human\n#1" -> "Den Wars\n(M 59) Human\n#1"
+"Mala Coyner\n(F 49) Human\n#1" -> "Quisand Coyner\n(M 4) Human\n#1"
+"Mando Coyner\n(M 21) Other\n#1" -> "Alliyaliy Coyner\n(F 31) Human\n#1" [color="red"]
+"Zara Coyner\n(F 40) Human\n#1" -> "Mala Coyner\n(F 49) Human\n#1" [color="red"]
+"Jah Cor\n(M 27) Human\n#1" -> "Rhelion Coyner\n(M 4) Human\n#1"
+"Jah Cor\n(M 27) Human\n#1" -> "Ade Coyner\n(M 67) Human\n#1" [color="red"]
+"Jah Cor\n(M 27) Human\n#1" -> "Alliyaliy Coyner\n(F 31) Human\n#1" [color="red"]
+"Ken Coyner\n(M 34) Human\n#1" -> "Den Wars\n(M 59) Human\n#1" [color="red"]
+"Ken Coyner\n(M 34) Human\n#1" -> "Rhelion Coyner\n(M 4) Human\n#1"
+"Randrontw Per\n(M 29) Human\n#1" -> "Jah Cor\n(M 27) Human\n#1" [color="red"]
+"Randrontw Per\n(M 29) Human\n#1" -> "Nett Coyner\n(M 42) Human\n#1"
+"Rhelion Coyner\n(M 4) Human\n#1" -> "Alliyaliy Coyner\n(F 31) Human\n#1"
+"Rhelion Coyner\n(M 4) Human\n#1" -> "Quisand Coyner\n(M 4) Human\n#1"
+"Quisand Coyner\n(M 4) Human\n#1" -> "Rhelion Coyner\n(M 4) Human\n#1"
+}
