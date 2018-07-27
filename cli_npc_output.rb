@@ -8,7 +8,8 @@ def npc_output(n, cli)
   mag = n.spell0(0) + n.spell1(0) + n.spell2(0) + n.spell3(0) + n.spell4(0)
   mag += n.spell5(0) + n.spell6(0) + n.spell7(0) + n.spell8(0)
  
-  f =  "#############################<By NPCg 0.5>#############################\n"
+	f  = "(You may want to bookmark this URL for future reference to this NPC)\n\n" unless cli == "cli"
+  f += "############################<By Amar Tools>############################\n"
   f += "Created: #{Date.today.to_s}".rjust(71) + "\n"
   f += "Name:".ljust(10) + n.name 
   f += "\n"
@@ -263,15 +264,11 @@ def npc_output(n, cli)
   end
   f += "\n"
   f += "\n"
-  f += "#######################################################################\n\n"
-	f += "(You may want to bookmark this URL for future reference to this NPC)" unless cli == "cli"
+  f += "#######################################################################"
 
 	cli == "cli" ? file_ext = ".npc" : file_ext = ".txt"
-	$nfile = "saved/" + n.name.delete(' ') + file_ext
+
 	tfile = "saved/temp" + file_ext
-  while File.exists?("saved/" + $nfile)
-		$nfile = "saved/" + n.name.delete(' ') + "1" + file_ext
-	end
 	File.delete(tfile) if File.exists?(tfile)
   begin
   	File.write(tfile, f, perm: 0644)
@@ -279,12 +276,18 @@ def npc_output(n, cli)
   	puts "Error writing file #{tfile}"
   	gets if cli == "cli"
   end
+
+	$nfile = "saved/" + n.name.delete(' ') + file_ext
+  while File.exists?($nfile)
+		$nfile =  File.dirname($nfile) + "/" + File.basename($nfile) + "1" + file_ext
+	end
   begin
   	File.write($nfile, f, perm: 0644)
   rescue
   	puts "Error writing file #{$nfile}"
   	gets if cli == "cli"
   end
+
   system("#{$editor} #{tfile}") if cli == "cli"
 
 end
