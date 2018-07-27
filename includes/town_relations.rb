@@ -57,24 +57,24 @@ DOTSTART
 	end
 	dot_text += "}"
 
-	File.delete("town.png") if File.exists?("town.png")
-	File.delete("town.dot") if File.exists?("town.dot")
+	File.delete("saved/town.png") if File.exists?("saved/town.png")
+	File.delete("saved/town.dot") if File.exists?("saved/town.dot")
 
 	begin
-		File.write("town.dot", dot_text, perm: 0644)
-		puts "DOT file created: town.dot"
+		File.write("saved/town.dot", dot_text, perm: 0644)
+		puts "DOT file created: saved/town.dot"
 	rescue
 		puts "Error! No DOT file written."
 	end
 	begin
-		`dot -Tpng town.dot -o town.png`
-		puts "PNG file created: town.png"
+		`dot -Tpng saved/town.dot -o saved/town.png`
+		puts "PNG file created: saved/town.png"
 	rescue
 		puts "Error! No PNG file written."
 	end
 end
 
-def town_dot2txt(town_dot_file = "town.dot")
+def town_dot2txt(town_dot_file = "saved/town.dot")
 
 	townrel = ""
 
@@ -98,13 +98,13 @@ def town_dot2txt(town_dot_file = "town.dot")
 
 	begin
 		begin
-			File.delete("townrel.txt")
+			File.delete("saved/townrel.txt")
 		rescue
 		end
-		File.open("townrel.txt", File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
+		File.open("saved/townrel.txt", File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
 			fl.write townrel
 		end
-		puts "Town relationship file written."
+		puts "Town relationship file written: saved/townrel.txt"
 	rescue
 		 puts "Error! No town relationship file written."
 	end

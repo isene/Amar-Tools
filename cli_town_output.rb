@@ -26,7 +26,7 @@ def town_output(aTOWN)
 		
 	f += "###############################################################################\n\n"
 
-	tfile = "npcs/town.npc"
+	tfile = "saved/town.npc"
 	begin
 		File.delete(tfile) if File.exists?(tfile)
 		File.write(tfile, f, perm: 0644)

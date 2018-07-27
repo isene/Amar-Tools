@@ -71,7 +71,7 @@ def enc_output(anENC, cli)
 		
 	f += "###############################################################################\n\n"
 
-  cli == "cli" ? tfile = "npcs/encounter.npc" : tfile = "encounter.txt"
+  cli == "cli" ? tfile = "saved/encounter.npc" : tfile = "saved/encounter.txt"
   begin
   	File.delete(tfile) if File.exists?(tfile)
   	File.write(tfile, f, perm: 0644)

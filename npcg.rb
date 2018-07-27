@@ -146,9 +146,9 @@ else
 			aTOWN = Town.new(ia[0], ia[1], ia[2])
 			town_output(aTOWN)
 		elsif c == "r"
-			town_file = "npcs/town.npc"
+			town_file = "saved/town.npc"
 			#Get town file name
-			puts "\nEnter town file name (default=npcs/town.npc):"
+			puts "\nEnter town file name (default=saved/town.npc):"
 			print "> "
 			fl = gets.chomp.to_s
 			town_file = fl unless fl == ""

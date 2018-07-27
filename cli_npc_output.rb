@@ -263,14 +263,26 @@ def npc_output(n, cli)
   end
   f += "\n"
   f += "\n"
-  f += "#######################################################################"
+  f += "#######################################################################\n\n"
+	f += "(You may want to bookmark this URL for future reference to this NPC)" unless cli == "cli"
 
-  cli == "cli" ? tfile = "npcs/temp.npc" : tfile = "npc.txt"
+	cli == "cli" ? file_ext = ".npc" : file_ext = ".txt"
+	$nfile = "saved/" + n.name.delete(' ') + file_ext
+	tfile = "saved/temp" + file_ext
+  while File.exists?("saved/" + $nfile)
+		$nfile = "saved/" + n.name.delete(' ') + "1" + file_ext
+	end
+	File.delete(tfile) if File.exists?(tfile)
   begin
-  	File.delete(tfile) if File.exists?(tfile)
   	File.write(tfile, f, perm: 0644)
   rescue
   	puts "Error writing file #{tfile}"
+  	gets if cli == "cli"
+  end
+  begin
+  	File.write($nfile, f, perm: 0644)
+  rescue
+  	puts "Error writing file #{$nfile}"
   	gets if cli == "cli"
   end
   system("#{$editor} #{tfile}") if cli == "cli"

@@ -26,7 +26,7 @@ def weather_output(aWEATHER)
 
 	f += "\n###############################################################################\n\n"
 
-	wfile = "npcs/weather.npc"
+	wfile = "saved/weather.npc"
 	begin
 		File.delete(wfile) if File.exists?(wfile)
 		File.write(wfile, f, perm: 0644)
