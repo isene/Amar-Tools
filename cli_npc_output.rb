@@ -8,8 +8,9 @@ def npc_output(n, cli)
   mag = n.spell0(0) + n.spell1(0) + n.spell2(0) + n.spell3(0) + n.spell4(0)
   mag += n.spell5(0) + n.spell6(0) + n.spell7(0) + n.spell8(0)
  
-	f  = "(You may want to bookmark this URL for future reference to this NPC)\n\n" unless cli == "cli"
-  f += "############################<By Amar Tools>############################\n"
+	f  = ""
+	f += " (You may want to bookmark this URL for future references to this NPC)\n\n" unless cli == "cli"
+  f += "############################<By Amar Tools>############################\n\n"
   f += "Created: #{Date.today.to_s}".rjust(71) + "\n"
   f += "Name:".ljust(10) + n.name 
   f += "\n"

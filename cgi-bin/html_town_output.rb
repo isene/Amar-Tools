@@ -18,7 +18,9 @@ aTOWN = Town.new(@town_name, @town_size, @town_var)
 @tn = ""
 
 # Start: From the CLI module
-f = "#################################<By NPCg 0.5>#################################\n\n"
+f  = ""
+#f += " (You may want to bookmark this URL for future references to this NPC)\n\n"
+f += "############################<By Amar Tools>############################\n\n"
 
 case aTOWN.town_size
 when 1..4
@@ -41,7 +43,7 @@ f += @tn
 	f += "\n"
 end
 	
-f += "###############################################################################\n\n"
+f += "#######################################################################\n\n"
 
 File.delete("town.txt") if File.exists?("town.txt")
 File.delete("town.png") if File.exists?("town.png")
