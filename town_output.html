@@ -80,7 +80,7 @@
     </tr>     
     <tr>
       <td align="center">         
-	    <p><button style="width:300px" onclick="location.href = '<%= $nfile %>' target='_blank';" > Download generated town </button></p>
+	    <p><button style="width:300px" target="_blank" onclick="location.href = '<%= $nfile %>';" > Download generated town </button></p>
 	    <p><button style="width:300px" onclick="location.href = '<%= $townrel_file %>';" > Download town relations </button></p>
         <form name="new" method="post" action="/cgi-bin/html_town_input.rb">
         <input type="submit" style="width:300px" name="new" value=" New random town "></form>
