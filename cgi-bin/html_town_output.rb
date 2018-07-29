@@ -14,11 +14,9 @@ tmpl = File.read("../town_output.html")
 @town_var  = cgi["town_var"].to_i
 @town_name = cgi["town_name"].to_s
 aTOWN = Town.new(@town_name, @town_size, @town_var)
-@t = aTOWN.town
-@tn= ""
 
 # Use cli output function to write the town text file
-#town_output(aTOWN, "web")
+town_output(aTOWN, "web")
 
 # Generate a relationship map
 #town_relations($nfile)
