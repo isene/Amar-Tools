@@ -18,7 +18,7 @@ def town_output(aTOWN, cli)
 		@tn += "City"
 	end
 	@tn += " Of #{aTOWN.town_name}"
-	town_name = @tn
+	town_name = @tn.delete(' ')
 	@tn += " - Houses: #{aTOWN.town_size} - Residents: #{aTOWN.town_residents}\n\n"
 	f   += @tn
 
@@ -33,6 +33,6 @@ def town_output(aTOWN, cli)
 	f += "\n#######################################################################"
 
 save_temp_file(f, "town", cli)
-save_named_file(f, town_name.delete(' '), cli)
+save_named_file(f, town_name, cli)
 
 end
