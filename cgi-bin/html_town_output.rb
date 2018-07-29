@@ -19,8 +19,8 @@ aTOWN = Town.new(@town_name, @town_size, @town_var)
 town_output(aTOWN, "web")
 
 # Generate a relationship map
-#town_relations($nfile)
-#town_dot2txt($nfile)
+town_relations($nfile)
+town_dot2txt($nfile)
 
 out = ERB.new(tmpl)
 
