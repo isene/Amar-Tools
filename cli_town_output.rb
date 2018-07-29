@@ -32,8 +32,8 @@ def town_output(aTOWN, cli)
 		
 	f += "\n#######################################################################"
 
-# from functions.rb
-save_temp_file(f, "town", cli)
-save_named_file(f, town_name, cli)
+	# from functions.rb
+	save_temp_file(f, "town", cli)
+	save_named_file(f, town_name, cli)
 
 end
