@@ -2,7 +2,7 @@ def enc_output(anENC, cli)
 
 	e = anENC.encounter
 
-	f = "#################################<By NPCg 0.5>#################################\n"
+	f = "################################<By Amar Tools>################################\n"
 
 	$Day == 1 ? f += "Day:   " : f += "Night: "
 	case $Terrain
