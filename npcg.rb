@@ -144,7 +144,7 @@ else
 		elsif c == "t"
 			ia = town_input
 			aTOWN = Town.new(ia[0], ia[1], ia[2])
-			town_output(aTOWN)
+			town_output(aTOWN, "cli")
 		elsif c == "r"
 			town_file = "saved/town.npc"
 			#Get town file name
@@ -153,10 +153,11 @@ else
 			fl = gets.chomp.to_s
 			town_file = fl unless fl == ""
 			town_relations(town_file)
-			town_dot2txt
+			town_dot2txt(town_file)
 			puts "\nPress any key..."
 			c = get_char
 		elsif c == "n"
+			# Reload chartypes as it gets reworked every time
 			load "includes/tables/chartype.rb"
 			ia = npc_input
 			aNPC = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])

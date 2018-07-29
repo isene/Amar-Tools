@@ -1,5 +1,5 @@
 def town_relations(town_file)
-	abort("No such Town file!") unless File.exist?(town_file)
+	town_file = fix_town_file(town_file)
 
 	town = File.read(town_file)
 
@@ -57,25 +57,30 @@ DOTSTART
 	end
 	dot_text += "}"
 
-	File.delete("saved/town.png") if File.exists?("saved/town.png")
-	File.delete("saved/town.dot") if File.exists?("saved/town.dot")
+	$town_png = File.dirname(town_file) + "/" + File.basename(town_file, ".*") + ".png"
+	town_dot  = File.dirname(town_file) + "/" + File.basename(town_file, ".*") + ".dot"
+	File.delete(town_png) if File.exists?(town_png)
+	File.delete(town_dot) if File.exists?(town_dot)
 
 	begin
-		File.write("saved/town.dot", dot_text, perm: 0644)
-		puts "DOT file created: saved/town.dot"
+		File.write(town_dot, dot_text, perm: 0644)
+		puts "DOT file created: #{town_dot}"
 	rescue
 		puts "Error! No DOT file written."
 	end
 	begin
-		`dot -Tpng saved/town.dot -o saved/town.png`
-		puts "PNG file created: saved/town.png"
+		`dot -Tpng #{town_dot} -o #{$town_png}`
+		puts "PNG file created: #{town_png}"
 	rescue
 		puts "Error! No PNG file written."
 	end
 end
 
-def town_dot2txt(town_dot_file = "saved/town.dot")
+def town_dot2txt(town_file)
+	town_file = fix_town_file(town_file)
 
+	town_dot_file = File.dirname(town_file) + "/" + File.basename(town_file, ".*") + ".dot"
+	$townrel_file = File.dirname(town_file) + "/" + File.basename(town_file, ".*") + "_relations.txt"
 	townrel = ""
 
 	File.open(town_dot_file) do |fl|
@@ -96,18 +101,20 @@ def town_dot2txt(town_dot_file = "saved/town.dot")
 	townrel.gsub!(/\"/, '')
 	townrel.gsub!(/\n}/, '')
 
+	File.delete($townrel_file) if File.exists?($townrel_file)
 	begin
-		begin
-			File.delete("saved/townrel.txt")
-		rescue
-		end
-		File.open("saved/townrel.txt", File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
+		File.open($townrel_file, File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
 			fl.write townrel
 		end
-		puts "Town relationship file written: saved/townrel.txt"
+		puts "Town relationship file written: #{$townrel_file}"
 	rescue
 		 puts "Error! No town relationship file written."
 	end
 end
 
-
+def fix_town_file(town_file)
+	town_file = "saved/" + town_file if File.dirname(town_file) == "."
+	town_file = File.basename(town_file) + ".npc" if File.basename(town_file, ".*") == File.basename(town_file)
+	abort("No such Town file!") unless File.exist?(town_file)
+	return town_file
+end

@@ -51,7 +51,7 @@
   </tbody>   
 </table>
 <br />
-<center><p><img src="/cgi-bin/saved/town.png" width="600"/></p></center>
+<center><p><img src="<%= $town_png %>" width="600"/></p></center>
 <table width="800" border="0" cellspacing="0" cellpadding="2" align="center">
   <tbody>
     <tr>
@@ -80,8 +80,8 @@
     </tr>     
     <tr>
       <td align="center">         
-	    <p><button style="width:300px" onclick="location.href = 'saved/town.txt';" > Download generated town </button></p>
-	    <p><button style="width:300px" onclick="location.href = 'saved/townrel.txt';" > Download town relations </button></p>
+	    <p><button style="width:300px" onclick="location.href = '<%= $nfile %>';" > Download generated town </button></p>
+	    <p><button style="width:300px" onclick="location.href = '<%= $townrel_file %>';" > Download town relations </button></p>
         <form name="new" method="post" action="/cgi-bin/html_town_input.rb">
         <input type="submit" style="width:300px" name="new" value=" New random town "></form>
 	    <p><button style="width:300px" onClick="history.go(0);"> Reload with same values </button></p>

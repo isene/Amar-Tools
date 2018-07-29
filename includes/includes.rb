@@ -1,3 +1,4 @@
+require_relative "functions.rb"
 require_relative "randomizer.rb"
 require_relative "d6s.rb"
 

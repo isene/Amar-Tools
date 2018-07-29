@@ -263,32 +263,9 @@ def npc_output(n, cli)
     f += n.spell8(8).ljust(6)
     f += n.spell8(9)
   end
-  f += "\n"
-  f += "\n"
-  f += "#######################################################################"
+  f += "\n\n#######################################################################"
 
-	cli == "cli" ? file_ext = ".npc" : file_ext = ".txt"
-
-	tfile = "saved/temp" + file_ext
-	File.delete(tfile) if File.exists?(tfile)
-  begin
-  	File.write(tfile, f, perm: 0644)
-  rescue
-  	puts "Error writing file #{tfile}"
-  	gets if cli == "cli"
-  end
-
-	$nfile = "saved/" + n.name.delete(' ') + file_ext
-  while File.exists?($nfile)
-		$nfile =  File.dirname($nfile) + "/" + File.basename($nfile) + "1" + file_ext
-	end
-  begin
-  	File.write($nfile, f, perm: 0644)
-  rescue
-  	puts "Error writing file #{$nfile}"
-  	gets if cli == "cli"
-  end
-
-  system("#{$editor} #{$nfile}") if cli == "cli"
+	save_temp_file(f, "temp", cli)
+	save_named_file(f, n.name.delete(' '), cli)
 
 end

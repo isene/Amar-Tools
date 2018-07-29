@@ -5,7 +5,7 @@ def town_input
 	# Get Town name
 	town_name = ""
  	puts "\nEnter Village/Town/City name:"
-  print "> "
+	print "> "
 	town_name = gets.chomp.to_s
 
   # Get Town size
