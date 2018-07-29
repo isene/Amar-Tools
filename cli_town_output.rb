@@ -3,9 +3,9 @@ def town_output(aTOWN, cli)
 	@t = aTOWN.town
 
 	@tn= ""
-	f  = ""
-	f += "(You may want to bookmark this URL for future references to this Town)\n\n" unless cli == "cli"
-	f += "############################<By Amar Tools>############################\n\n"
+#	f  = ""
+#	f += "(You may want to bookmark this URL for future references to this Town)\n\n" unless cli == "cli"
+#	f += "############################<By Amar Tools>############################\n\n"
 
 #	case aTOWN.town_size
 #	when 1..4
