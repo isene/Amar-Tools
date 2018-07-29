@@ -59,7 +59,7 @@ DOTSTART
 
 	$town_png = File.dirname(town_file) + "/" + File.basename(town_file, ".*") + ".png"
 	town_dot  = File.dirname(town_file) + "/" + File.basename(town_file, ".*") + ".dot"
-	File.delete(town_png) if File.exists?(town_png)
+	File.delete($town_png) if File.exists?($town_png)
 	File.delete(town_dot) if File.exists?(town_dot)
 
 	begin
@@ -70,7 +70,7 @@ DOTSTART
 	end
 	begin
 		`dot -Tpng #{town_dot} -o #{$town_png}`
-		puts "PNG file created: #{town_png}"
+		puts "PNG file created: #{$town_png}"
 	rescue
 		puts "Error! No PNG file written."
 	end
