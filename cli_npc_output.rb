@@ -265,6 +265,7 @@ def npc_output(n, cli)
   end
   f += "\n\n#######################################################################"
 
+	# from functions.rb
 	save_temp_file(f, "temp", cli)
 	save_named_file(f, n.name.delete(' '), cli)
 
