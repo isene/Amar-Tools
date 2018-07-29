@@ -15,6 +15,7 @@ tmpl = File.read("../town_output.html")
 @town_name = cgi["town_name"].to_s
 aTOWN = Town.new(@town_name, @town_size, @town_var)
 # Use cli output function to write the town text file
+$nfile = "town.npc"
 town_output(aTOWN, "web")
 
 # Generate a relationship map
