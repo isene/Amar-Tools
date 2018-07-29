@@ -78,13 +78,14 @@ end
 
 def town_dot2txt(town_file)
 	town_file = fix_town_file(town_file)
+	town_name = File.basename(town_file, ".*").gsub(/([[:upper:]])/, ' \1').sub(/ /, '')
 
 	town_dot_file = File.dirname(town_file) + "/" + File.basename(town_file, ".*") + ".dot"
 	$townrel_file = File.dirname(town_file) + "/" + File.basename(town_file, ".*") + "_relations.txt"
-	townrel = ""
 
+	townrel = ""
 	File.open(town_dot_file) do |fl|
-		townrel = fl.read
+		townrel += fl.read
 	end
 
 	townrel.sub!(/^.*true\n/m, '')
@@ -100,7 +101,8 @@ def town_dot2txt(town_file)
 	end
 	townrel.gsub!(/\"/, '')
 	townrel.gsub!(/\n}/, '')
-
+	townrel =	"#{town_name} relationships:\n\n" + townrel
+	
 	File.delete($townrel_file) if File.exists?($townrel_file)
 	begin
 		File.open($townrel_file, File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
