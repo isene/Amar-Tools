@@ -27,17 +27,17 @@
             <table width="100%" border="0" cellspacing="1" cellpadding="2">
               <tbody>
                 <tr>
-				  <td colspan="16" width="118" bgcolor="#cccccc"><b><%= @day %>: <%= @terrain %></b> (Level= <%= $Level %>)</td>
+				  <td colspan="16" width="200" bgcolor="#cccccc"><b><%= @day %>: <%= @terrain %></b> (Level= <%= $Level %>)</td>
                 </tr>
 				  <% if @no_encounter %>
                 <tr>
-				  <td colspan="16" width="118" bgcolor="#ffffff"><b>NO ENCOUNTER</td>
+				  <td colspan="16" width="200" bgcolor="#ffffff"><b>NO ENCOUNTER</td>
                 </tr>
 				<% end %>
 				<% if not @no_encounter %>
                 <tr>
 				  <% if @event %>
-				  <td colspan="16" bgcolor="#ffffff"><b><input type="text" size="80" name="string" value="<%= @e[0]["string"] %>"</b></td>
+				  <td colspan="16" bgcolor="#ffffff"><b><input type="text" size="200" name="string" value="<%= @e[0]["string"] %>"</b></td>
 				  <% else %>
                   <td colspan="16" bgcolor="#cccccc"><input type="text" size="20" name="enc_attitude" value="<%= @enc_attitude %>"</td>
 				  <% end %>
@@ -45,7 +45,11 @@
 				<% if not @event %>
 				<% @enc_number.times do |i| %>
                 <tr>
-				  <td width="150" bgcolor="#ffffff"><b><input type="text" size="20" name="string" value="<%= @e[i]["string"] %>"</b></td>
+				  <% if @e[i]["string"] =~ /animal/ %>
+					<td width="200" bgcolor="#ffffff"><b><input type="text" size="20" name="string" value="<%= @e[i]["string"] %>"</b></td>
+				  <% else %>
+					<td width="200" bgcolor="#ffffff"><b><input type="text" size="20" name="string" value="<%= "#{@e[i]["string"]} (#{@e[i]["sex"]}, #{@e[i]["name"]}) %>"</b></td>
+				  <% end %>
                   <td width="40" bgcolor="#cccccc"><b>Lvl</b></td>
 				  <td width="40" bgcolor="#ffffff"><input type="text" size="2" name="level" value="<%= @e[i]["level"] %>"</td>
                   <td width="40" bgcolor="#cccccc"><b>SIZ</b></td>

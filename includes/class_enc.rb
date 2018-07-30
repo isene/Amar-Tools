@@ -66,9 +66,10 @@ class Enc
 					@enc_number = d6
 				when 6..7
 					@enc_number = 2*d6
-				when 8..Inf
+				else
 					@enc_number = 3*d6
 			end
+			@enc_number = 5 if @enc_number > 5 and @enc_type =~ /onster/
 		end
 		
 		@enc_number.times do |i|
@@ -77,6 +78,7 @@ class Enc
 			if @encounter[i]["string"] =~ /Event:/
 				break
 			else
+			begin
 				@stats = $Encounters[@encounter[i]["string"]].dup
 				
 				@encounter[i]["level"] = dX(@stats[0]) + $Level
@@ -88,6 +90,26 @@ class Enc
 					else
 						@encounter[i]["sex"] = "M"
 				end
+
+				@encounter[i]["race"] = ""
+				case @encounter[i]["string"]
+				when /Human/
+					@encounter[i]["race"] = "Human"
+				when /Dwarf/
+					@encounter[i]["race"] = "Dwarf"
+				when /Elf/, /Faerie/
+					@encounter[i]["race"] = "Elf"
+				when /Troll/
+					@encounter[i]["race"] = "Troll"
+				when /Arax/
+					@encounter[i]["race"] = "Arax"
+				when /Lizardman/
+					@encounter[i]["race"] = "Lizardfolk"
+				else
+					@encounter[i]["race"] = "Other"
+				end
+
+				@encounter[i]["name"] = name(@encounter[i]["race"], @encounter[i]["sex"])
 
 				@encounter[i]["size"] = @stats[1] + (rand(10 * @stats[1]+1) + rand(10 * @stats[1]+1) - 10 * @stats[1])/20
 				@encounter[i]["size"] = 1 if @encounter[i]["size"] < 1
@@ -223,6 +245,11 @@ class Enc
 					if @msl[1] !~ /bow/
 						@encounter[i]["msl_dam"] += @encounter[i]["strength"] / 5
 					end
+				end
+				rescue # Result for corner cases
+					@encounter[0] = {}
+					@encounter[0]["string"] = "NO ENCOUNTER"
+					return
 				end
 			end
 			@enc_terrain2[@encounter[i]["string"]] += 20 if @encounter[i]["string"] =~ /Human/ and @enc == false

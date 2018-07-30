@@ -137,9 +137,9 @@ $Enc_specific = {
 			[ 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5],
 		"Event: Music event/consert" =>  
 			[ 2, 1, 0, 0, 0, 0, 0, 0, 5, 4, 2, 1, 1, 1, 1, 1],
-		"Event: Hero. Roll again with +2 level until a humanoid is rolled (use only the first one)" =>  
+		"Event: Hero. Roll again with +4 level until \na humanoid is rolled (use only the first one)" =>  
 			[ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-		"Event: Demi-God. Roll again with +4 level until a humanoid is rolled (use only the first one)" =>  
+		"Event: Demi-God. Roll again with +8 level until \na humanoid is rolled (use only the first one)" =>  
 			[ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 		"Event: Quarrel/fight between two encounters. Roll two times" =>  
 			[ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
@@ -159,7 +159,7 @@ $Enc_specific = {
 			[ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
 		"Event: Encounter is seeking help. Roll again" =>  
 			[ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-		"Event: Cave/cavern/dungeon/building discovered with Awareness roll of 9 (12 at night)" =>  
+		"Event: Cave/cavern/dungeon/building discovered with\n Awareness roll of 9 (12 at night)" =>  
 			[ 1, 1, 1, 2, 3, 3, 3, 4, 1, 1, 1, 3, 3, 3, 3, 4]
 	}
 }
