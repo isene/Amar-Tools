@@ -39,13 +39,13 @@
 				  <% if @event %>
 				  <td colspan="16" bgcolor="#ffffff"><b><input type="text" size="180" name="string" value="<%= @e[0]["string"] %>"</b></td>
 				  <% else %>
-                  <td colspan="16" bgcolor="#cccccc"><input type="text" size="20" name="enc_attitude" value="<%= @enc_attitude %>"</td>
+                  <td colspan="16" bgcolor="#cccccc"><input type="text" size="30" name="enc_attitude" value="<%= @enc_attitude %>"</td>
 				  <% end %>
                 </tr>
 				<% if not @event %>
 				<% @enc_number.times do |i| %>
                 <tr>
-				  <td width="180" bgcolor="#ffffff"><b><input type="text" size="20" name="string" value="<%= @e[i]["string"] %> (<%= @e[i]["sex"] %>)"</b></td>
+				  <td width="180" bgcolor="#ffffff"><b><input type="text" size="30" name="string" value="<%= @e[i]["string"] %> (<%= @e[i]["sex"] %>)"</b></td>
                   <td width="40" bgcolor="#cccccc"><b>Lvl</b></td>
 				  <td width="40" bgcolor="#ffffff"><input type="text" size="2" name="level" value="<%= @e[i]["level"] %>"</td>
                   <td width="40" bgcolor="#cccccc"><b>SIZ</b></td>
@@ -74,7 +74,7 @@
                 </tr>
 				<% end %>
                 <tr>
-                  <td width="130" bgcolor="#ffffff"><input type="text" style="text-align: right" size="20" name="wpn_name" value="<%= @e[i]["wpn_name"] %>"</td>
+                  <td width="180" bgcolor="#ffffff"><input type="text" style="text-align: right" size="30" name="wpn_name" value="<%= @e[i]["wpn_name"] %>"</td>
                   <td width="40" bgcolor="#cccccc"><b>Skill</b></td>
                   <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="wpn_skill" value="<%= @e[i]["wpn_skill"] %>"</td>
                   <td width="40" bgcolor="#cccccc"><b>Ini</b></td>
@@ -92,7 +92,7 @@
                 </tr>
 				<% if @e[i]["msl_name"] %>
                 <tr>
-                  <td width="130" bgcolor="#ffffff"><input type="text" style="text-align: right" size="20" name="msl_name" value="<%= @e[i]["msl_name"] %>"</td>
+                  <td width="180" bgcolor="#ffffff"><input type="text" style="text-align: right" size="30" name="msl_name" value="<%= @e[i]["msl_name"] %>"</td>
                   <td width="40" bgcolor="#cccccc"><b>Skill</b></td>
                   <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="msl_skill" value="<%= @e[i]["msl_skill"] %>"</td>
                   <td width="40" bgcolor="#cccccc"><b>Off</b></td>
