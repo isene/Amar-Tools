@@ -28,7 +28,7 @@ def enc_output(anENC, cli)
 	f += "Created: #{Date.today.to_s}".rjust(38) + "\n\n"
 
   if e[0]["string"] == "NO ENCOUNTER"
-		f += "\n  NO ENCOUNTER\n\n"
+		f += "\nNO ENCOUNTER\n\n"
 	else
 		f += anENC.enc_attitude
 		f += ":\n"

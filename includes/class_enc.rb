@@ -90,6 +90,10 @@ class Enc
 					else
 						@encounter[i]["sex"] = "M"
 				end
+				@encounter[i]["sex"] = "M" if @encounter[i]["string"] =~ /officer/ and rand(6) != 0
+				@encounter[i]["sex"] = "F" if @encounter[i]["string"] =~ /Prostitute/ and rand(10) != 0
+				@encounter[i]["sex"] = "F" if @encounter[i]["string"] =~ /Nanny/ and rand(10) != 0
+				@encounter[i]["sex"] = "F" if @encounter[i]["string"] =~ /wife/
 
 				@encounter[i]["race"] = ""
 				case @encounter[i]["string"]
