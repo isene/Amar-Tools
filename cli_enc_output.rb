@@ -50,7 +50,7 @@ def enc_output(anENC, cli)
 				f += "  MAG=" + e[i]["mag"].to_s
 				f += "  Ddg=" + e[i]["dodge"].to_s
 				f += " (Status: " + e[i]["status"].to_s + ")"
-				if e[i]["magic_lore"]
+				if e[i]["mag_lore"]
 					f += "\n".ljust(17) + e[i]["mag_type"] + "Lore=" + e[i]["mag_lore"].to_s
 					f += ", Spells=" + e[i]["spells"].to_s
 				end
