@@ -58,8 +58,6 @@ Running npcg on the command line will give you a set of options:
 
 Simply pick the tool you want and follow the instructions.
 
-When using the html version, amar.html is the starting page.
-
 By running npcg on the command line with the -h option, this help file will be displayed:
 
   Notes on the usage of NPC Generation for the Amar RPG 
@@ -119,10 +117,24 @@ By running npcg on the command line with the -h option, this help file will be d
       editor directly following the "-e", such as npcg -e vim. If no editor
       is given, the program outputs the NPC to "less".""
 
+## Running the web version
+When using the html version, amar.html is the starting page.
+
+Git clone this directory in the html root directory. Ensure the directories 
+"cgi-bin" and "cgi-bin/saved" are owned by the user "www-data".
+
+Install Graphviz and LaTeX as noted under "Requirements" above.
+
 ## Credits
 Thanks to Alan Skorkin
 (https://www.skorks.com/2009/07/how-to-write-a-name-generator-in-ruby/)
 for providing a basis for the random name generator.
+
+Thanks to Jonatan Isene for a multitude of tips. Thanks to the hundred or
+so players in my campaign that has tested, played, fine-tuned and suggested
+improvements to the game mechanics. Some have also suggested improvements
+to these Amar Tools. Thanks to Egil Möller for his suggestions on relationship
+maps for town residents and for saving unique URLS for NPCs and Towns.
 
 ## Final note
 Thank you for trying out NPC Generation. Feel free to visit my website at http://isene.com
