@@ -28,20 +28,23 @@ def enc_output(anENC, cli)
 	f += "Created: #{Date.today.to_s}".rjust(38) + "\n\n"
 
   if e[0]["string"] == "NO ENCOUNTER"
-		f += "\nNO ENCOUNTER\n\n"
+		f += "\n  NO ENCOUNTER\n\n"
 	else
 		f += anENC.enc_attitude
 		f += ":\n"
 		anENC.enc_number.times do |i|
 			f += "  "
-			e[i]["string"] += " (#{e[i]["name"]})" unless e[i]["string"] =~ /animal/ or e[i]["string"] =~ /Event/
+			if e[i]["string"] =~ /animal/
+				e[i]["string"] += " (" + e[i]["sex"] + ")"
+			else
+				e[i]["string"] += " (#{e[i]["sex"]}, #{e[i]["name"]})" unless e[i]["string"] =~ /Event/
+			end
 			f += e[i]["string"]
 			if e[i]["string"] =~ /Event:/
 				f += "\n\n"
 				break
 			else
-				f += " (" + e[i]["sex"]
-				f += ", Level " + e[i]["level"].to_s + ")\n"
+				f += " [Lvl " + e[i]["level"].to_s + "]\n"
 				f += "".ljust(15)
 				f += " SIZ=" + e[i]["size"].to_s
 				f += "  STR=" + e[i]["strength"].to_s
@@ -51,8 +54,8 @@ def enc_output(anENC, cli)
 				f += "  Ddg=" + e[i]["dodge"].to_s
 				f += " (Status: " + e[i]["status"].to_s + ")"
 				if e[i]["mag_lore"]
-					f += "\n".ljust(17) + e[i]["mag_type"] + "Lore=" + e[i]["mag_lore"].to_s
-					f += ", Spells=" + e[i]["spells"].to_s
+					f += "\n".ljust(17) + e[i]["mag_type"] + " Lore=" + e[i]["mag_lore"].to_s
+					f += ", # of spells: " + e[i]["spells"].to_s
 				end
 				f += "\n"
 
