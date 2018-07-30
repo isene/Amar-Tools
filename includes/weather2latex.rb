@@ -3,7 +3,7 @@ def weather_out_latex(w,type)
 
 type == "web" ? t = "../" : t = ""
 
-bgc = ["ffffff", "ffffff", "ffffff", "80d55b", "eab8f5", "bd98f3", "98e3f3", "afafaf", "dcb796", "ad9d8f", "e9e4b0", "ffc37d", "6f6f6f", "525252"]
+bgc = ["FFFFFF", "FFFFFF", "FFFFFF", "80D55B", "EAB8F5", "BD98F3", "98E3F3", "AFAFAF", "DCB796", "AD9D8F", "E9E4B0", "FFC37D", "6F6F6F", "525252"]
 
 l = <<LATEXSTART 
 %Created by npcg, see: https://github.com/isene/npcg
