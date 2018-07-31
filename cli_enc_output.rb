@@ -76,14 +76,7 @@ def enc_output(anENC, cli)
 		
 	f += "#######################################################################\n\n"
 
-  cli == "cli" ? tfile = "saved/encounter.npc" : tfile = "saved/encounter.txt"
-  begin
-  	File.delete(tfile) if File.exists?(tfile)
-  	File.write(tfile, f, perm: 0644)
-  rescue
-  	puts "Error writing file #{tfile}"
-  	gets if cli == "cli"
-  end
-  system("#{$editor} #{tfile}") if cli == "cli"
+	save_temp_file(f, "encounter", cli)
+	system("#{$editor} saved/encounter.npc") if cli == "cli"
 
 end
