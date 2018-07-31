@@ -4,5 +4,5 @@
 # It must be run as root. After running it, you 
 # can start Amar Tools via the command "npcg"
 
-File.symlink(File.expand_path(__FILE__), /usr/bin/npcg)
+File.symlink(File.expand_path(__FILE__), /usr/bin/amar)
 
