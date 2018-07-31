@@ -1,15 +1,19 @@
 #!/usr/bin/env ruby
+#encoding: utf-8
 
 require "cgi"
 require "erb"
 require "date"
 
+# Include all core files via includes.rb
 load "../includes/includes.rb"
+# ...and load this cli module to write the downloadable NPC file
 load "../cli_npc_output.rb"
 
 cgi = CGI.new
 tmpl = File.read("../npc_output.html")
 
+# Get all variables from cgi as input for NPC creation
 @name   = cgi["name"].to_s
 @type   = cgi["type"].to_s
 @level  = cgi["level"].to_s.to_i
@@ -27,8 +31,10 @@ end
 @type = "" if @type == "(Type)"
 @area = "" if @area == "(Area)"
 
+# Create NPC
 n = Npc.new(@name, @type, @level, @area, @sex, @age, @height, @weight, @description)
 
+# Set web variables
 @name = n.name
 @type = n.type
 @level = n.level
@@ -288,7 +294,7 @@ else
 	@sp8 = false
 end
 
-# Create text file
+# Use cli output function to write the NPC text file
 npc_output(n, "web")
 
 out = ERB.new(tmpl)

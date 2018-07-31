@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+#encoding: utf-8
 
 print "Content-type: text/html\n\n"
 print <<HTML1

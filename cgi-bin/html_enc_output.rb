@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+#encoding: utf-8
 
 require "cgi"
 require "erb"
@@ -51,6 +52,7 @@ anENC = Enc.new(@type, @enc_number)
 @no_encounter = true if @e[0]["string"] =~ /NO ENCOUNTER/
 @event = true if @e[0]["string"] =~ /Event:/
 
+# Use cli output function to write the encounter text file
 enc_output(anENC, "web")
 
 out = ERB.new(tmpl)
