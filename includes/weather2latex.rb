@@ -106,7 +106,9 @@ if File.exists?("saved/weather.tex")
 	end
 end
 
-puts "\nPress ENTER to continue"
-gets if t == ""
+if t == ""
+	puts "\nPress ENTER to continue"
+	gets
+end
 
 end
