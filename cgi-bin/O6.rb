@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 #encoding: utf-8
 
+# This is the simple frontend for O6 - generating 10 open ended d6 rolls
 print "Content-type: text/html\n\n"
 print <<HTML1
 <html>
