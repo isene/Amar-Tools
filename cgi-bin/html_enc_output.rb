@@ -4,12 +4,15 @@ require "cgi"
 require "erb"
 require "date"
 
+# Include all core files via includes.rb
 load "../includes/includes.rb"
+# ...and include the cli output file to write the downloadable encounter file
 load "../cli_enc_output.rb"
 
 cgi = CGI.new
 tmpl = File.read("../enc_output.html")
 
+# Set global variables to the inputted values from cgi
 $Day = cgi["day"].to_i
 $Day == 0 ? @day = "Night" : @day = "Day"
 $Terrain = cgi["terrain"].to_i
@@ -40,6 +43,7 @@ $Level = cgi["level"].to_s.to_i
 @type = "" if @type == "(Type)"
 @enc_number = cgi["enc_number"].to_i
 
+# Create encounter for output
 anENC = Enc.new(@type, @enc_number)
 @e = anENC.encounter
 @enc_number = anENC.enc_number

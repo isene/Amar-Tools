@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+# The simplest of input files
 require "erb"
 
 tmpl = File.read("../name_input.html")
