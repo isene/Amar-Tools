@@ -1,7 +1,10 @@
+# The CLI encounter output module for Amar Tools
+
 def enc_output(anENC, cli)
 
 	e = anENC.encounter
 
+	# Start creating the output text
 	f = "############################<By Amar Tools>############################\n"
 
 	$Day == 1 ? f += "Day:   " : f += "Night: "
@@ -76,6 +79,7 @@ def enc_output(anENC, cli)
 		
 	f += "#######################################################################\n\n"
 
+	# Save text in file
 	save_temp_file(f, "encounter", cli)
 	system("#{$editor} saved/encounter.npc") if cli == "cli"
 

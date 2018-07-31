@@ -1,4 +1,4 @@
-# Melle weapons table
+# Missile weapons table
 
 $Missile = Array.new
 

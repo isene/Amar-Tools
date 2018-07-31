@@ -1,4 +1,4 @@
-# The armour table
+# The table of the Amar months
 
 $Month = Array.new
 

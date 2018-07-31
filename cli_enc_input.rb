@@ -1,4 +1,4 @@
-# The encounter input module for CLI NPCg
+# The CLI encounter input module for Amar Tools
   
 def enc_input
 

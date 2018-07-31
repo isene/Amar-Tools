@@ -1,10 +1,13 @@
+# The class that generates arandom weather
+
+# Generate random weather for a day 
 class Weather_day
 
 	attr_reader :weather, :wind_dir, :wind_str, :wind, :special
 	attr_writer :weather, :wind_dir, :wind_str, :wind, :special
 
 	def initialize(weather, wind_dir, wind_str, month, day)
-		weather += (oD6 - 4) if month == 6							# Juba
+		weather += (oD6 - 4) if month == 6								# Juba
 		if rand(2) == 0
 			weather = (weather + oD6 + oD6 - 7).abs % 41
 			weather += 4 if month == 1 and rand(4) == 0			# Walmaer
@@ -44,6 +47,7 @@ class Weather_day
 end
 
 
+# Generate random weather for a whole month
 class Weather_month
 
 	attr_reader :day, :month_n

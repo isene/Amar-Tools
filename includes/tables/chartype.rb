@@ -1,3 +1,5 @@
+# The main data for generating random NPCs
+
 $Chartype = {
   
   "Animal trainer" => {

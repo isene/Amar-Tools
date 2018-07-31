@@ -1,8 +1,9 @@
 #! /usr/bin/ruby
+#encoding: utf-8
 
-# Welcome to the NPC generation version 0.5.
+# Welcome to Amar Tools (https://github.com/isene/npcg)
 # 
-# This file is the umbrella for NPC to work as CLI/terminal program.
+# This file is the umbrella for Amar Tools to work as CLI/terminal program.
 
 # First define a function to get single character input
 def get_char
@@ -104,8 +105,10 @@ else
 
 	require "date"
 
+	# Include all core files via includes.rb
 	load "includes/includes.rb"
 
+	# Include all CLI modules
 	load "cli_npc_input.rb"
 	load "cli_npc_output.rb"
 	load "cli_enc_input.rb"
@@ -122,7 +125,7 @@ else
 	$Terraintype = 8
 	$Level = 0
 
-	# The Npc enters via the inputform, is initialized and rendered by the outputform.
+	# Data enters via an input module, is initialized and rendered by an output module.
 	
 	loop do
 		system "clear"
@@ -135,16 +138,20 @@ else
 		puts "w = Generate a month of weather"
 		puts "q = Quit npcg\n\n"
 		c = get_char
+		# q = Quit
 		if c == "q"
 			break
+		# e = Random Encounter
 		elsif c == "e"
 			ia = enc_input
 			anENC = Enc.new(ia[0], ia[1])
 			enc_output(anENC, "cli")
+		# t = Random Town (castle/village/town/city)
 		elsif c == "t"
 			ia = town_input
 			aTOWN = Town.new(ia[0], ia[1], ia[2])
 			town_output(aTOWN, "cli")
+		# r = Random relationship map
 		elsif c == "r"
 			town_file = "saved/town.npc"
 			#Get town file name
@@ -156,16 +163,19 @@ else
 			town_dot2txt(town_file)
 			puts "\nPress any key..."
 			c = get_char
+		# n = Random NPC
 		elsif c == "n"
 			# Reload chartypes as it gets reworked every time
 			load "includes/tables/chartype.rb"
 			ia = npc_input
 			aNPC = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
 			npc_output(aNPC, "cli")
+		# N = Random names
 		elsif c == "N"
 			name_gen
 			puts "\nPress any key"
 			c = get_char
+		# w = Random weather
 		elsif c == "w"
 			$weather_n = 1 if $weather_n == nil
 			$wind_dir_n = 0 if $wind_dir_n == nil

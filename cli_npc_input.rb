@@ -1,5 +1,4 @@
-# The input module for CLI NPCg
-  
+# The CLI input module for Amar Tools
 
 def npc_input
 
@@ -9,7 +8,6 @@ def npc_input
   name = gets.chomp.to_s
 
   # Get the type
-  #load "tables/chartype.rb"
   puts "\nEnter the NPC's type (enter the number):"
   i = 1
   tmp = Array.new

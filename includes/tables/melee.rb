@@ -1,4 +1,4 @@
-# Melle weapons table
+# Melee weapons table
 
 $Melee = Array.new
 

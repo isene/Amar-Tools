@@ -1,3 +1,5 @@
+# Stats for each encounter
+#
 # Encounter format = [ MaxLVL, SIZE, STR, END, AWR, Dodge, Melee-skill, Missile-skill, AP, MAG, MagicLore ] 
 #                         0     1     2    3    4     5          6              7        8   9      10
 

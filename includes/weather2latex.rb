@@ -1,7 +1,8 @@
-# Weather to Latex function
-def weather_out_latex(w,type)
+# Weather to Latex function - generates a pdf for a month worth of weather
 
-type == "web" ? t = "../" : t = ""
+def weather_out_latex(w,cli)
+
+cli == "web" ? t = "../" : t = ""
 
 bgc = ["FFFFFF", "FFFFFF", "FFFFFF", "80D55B", "EAB8F5", "BD98F3", "98E3F3", "AFAFAF", "DCB796", "AD9D8F", "E9E4B0", "FFC37D", "6F6F6F", "525252"]
 
@@ -105,6 +106,7 @@ if File.exists?("saved/weather.tex")
 	end
 end
 
+puts "\nPress ENTER to continue"
 gets if t == ""
 
 end

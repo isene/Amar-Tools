@@ -4,7 +4,7 @@
 require "erb"
 
 # Initialize global variables
-$Town_size = 10 if $Town_size == nil
+$Town_size = 1 if $Town_size == nil
 $Town_var = 0 if $Town_var == nil
 
 # Include all core files via includes.rb

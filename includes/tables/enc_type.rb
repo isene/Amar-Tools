@@ -1,4 +1,5 @@
-# Terrain randomizer
+# Terrain randomizer - what type of encounter is most likely in each terrain
+#
 # Tarraintype#=Night#(0)/Day#(1),Terrain#: Terrain, Night/Day
 # 0: City   1: Rural   2: Road   3: Plains   4: Hills   5: Mountain   6: Woods   7: Wilderness
 # $Terraintype = $Terrain + (8 * $Day)

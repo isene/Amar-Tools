@@ -1,5 +1,10 @@
 #!/usr/bin/ruby
+#encoding: utf-8
 
+# This is the name generator created by Alan Skorkin
+# (https://www.skorks.com/2009/07/how-to-write-a-name-generator-in-ruby/)
+
+# Ensure correct path
 if File::symlink?($0)
     $pgmdir = File::dirname(File::expand_path(File::readlink($0), \
     File::dirname(File::expand_path($0))))

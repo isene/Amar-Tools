@@ -1,3 +1,5 @@
+# Randomize a value from a hash with weighted variables
+
 def randomizer(params)
 	par = {}
 	par.merge!(params)

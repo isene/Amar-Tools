@@ -1,4 +1,4 @@
-# The town input module for CLI NPCg
+# The CLI weather input module for Amar Tools
   
 def weather_input
 

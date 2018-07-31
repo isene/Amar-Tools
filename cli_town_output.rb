@@ -1,7 +1,10 @@
+# The CLI town output module for Amar Tools
+
 def town_output(aTOWN, cli)
 
 	@t = aTOWN.town
 
+	# Start creating the output text
 	@tn= ""
 	f  = ""
 	f += "(You may want to bookmark this URL for future references to this Town)\n\n" unless cli == "cli"
@@ -32,7 +35,7 @@ def town_output(aTOWN, cli)
 		
 	f += "\n#######################################################################"
 
-	# from functions.rb
+	# from functions.rb - save to temp file and named file
 	save_temp_file(f, "town", cli)
 	save_named_file(f, town_name, cli)
 

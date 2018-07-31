@@ -1,4 +1,4 @@
-# The town table
+# The town table - all the various house types
 
 $Town = Array.new
 

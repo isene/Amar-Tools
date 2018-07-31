@@ -1,3 +1,5 @@
+# Including all needed modules/functions from this one file
+
 require_relative "functions.rb"
 require_relative "randomizer.rb"
 require_relative "d6s.rb"

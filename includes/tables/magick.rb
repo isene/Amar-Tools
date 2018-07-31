@@ -1,4 +1,5 @@
 # Magick tables
+#
 # [ "Level", "Spell", "+", "Resist", "CT", "DR", "Dur", "Rng", "Wt", "AoE" ]
 # referencegoes like $Magick["air"][5][5], which would be DR for "Fog" (=9)
 # The NPC's level in the spell is entered into $Magick["air"][5][0]

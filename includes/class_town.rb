@@ -1,6 +1,8 @@
-# The engine for NPC Generation 0.5
+# The Amar Tool class for generating random castles/villages/towns/cities.
 #
 # When the class is initialized, a random settlement (village/town/city) is generated.
+#
+# A pretty straight forward class, not in need of much comments
 
 class Town
 
@@ -8,6 +10,8 @@ class Town
 
 	Inf = 1.0/0
 
+	# Although there is a generic name function, the town creator needs its
+	# own to cater for a high chance of a household having the same surname
 	def name(race)
 		p = File.expand_path(File.dirname(__FILE__))
 		case race
@@ -48,6 +52,7 @@ class Town
 		return result
 	end
 
+	# Using the generic randomizer function to get random races based on weighted input
 	def race(var)
 		case var
 			when 0
@@ -99,6 +104,7 @@ class Town
 		return @race
 	end
 
+	# The function to add residents to houses
 	def add_resident(age)
 		@town_residents += 1
 		# Get race
@@ -150,6 +156,7 @@ class Town
 		@r += 1
 	end
 
+	# The initializing method - generates houses
 	def initialize(town_name, town_size, town_var)
 
 		@town_size = town_size.to_i
@@ -168,6 +175,7 @@ class Town
 		end
 		@town_residents = 0
 
+		# Temple types (Amar Gods) used for randomizing temples
 		$Temple_types = {
 			"Walmaer"							=> 4,
 			"Alesia"							=> 4,

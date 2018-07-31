@@ -1,7 +1,9 @@
-# This is the module where the characters are saved to a file
+# This is the CLI module for Amar Tools
+# where the characters are saved to a file
 #
 # This function outputs the character n to screen, 
-# then to a file named "temp.npc"
+# then to a file named "temp.npc",
+# and a file named after the NPC, "<FirstLast>.npc
 
 def npc_output(n, cli) 
 
@@ -265,7 +267,7 @@ def npc_output(n, cli)
   end
   f += "\n\n#######################################################################"
 
-	# from functions.rb
+	# from functions.rb - save to temp file and named file
 	save_temp_file(f, "temp", cli)
 	save_named_file(f, n.name.delete(' '), cli)
 

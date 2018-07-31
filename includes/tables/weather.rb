@@ -1,4 +1,4 @@
-# The armour table
+# The weather tables - for weather type, wind strength and wind direction
 
 $Weather = Array.new
 $Weather[0]  = "Weird weather"

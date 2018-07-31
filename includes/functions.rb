@@ -1,4 +1,4 @@
-# GET NAMES FROM NAME GENERATOR
+# Get names from name generator
 def name(race, sex)
 	sex = sex.to_s.upcase
 	race = race.to_s
@@ -35,7 +35,7 @@ def name(race, sex)
 	return result.strip
 end
 
-# SAVE TEMPORARY FILES
+# Save temporary files
 def save_temp_file(content, file_base, cli)
 	cli == "cli" ? file_ext = ".npc" : file_ext = ".txt"
 
@@ -51,7 +51,7 @@ def save_temp_file(content, file_base, cli)
 	end
 end
 
-# SAVE NAMED (SPECIFIC) FILES
+# Save named (specific) files
 def save_named_file(content, file_base, cli)
 	cli == "cli" ? file_ext = ".npc" : file_ext = ".txt"
 

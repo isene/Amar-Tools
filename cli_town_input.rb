@@ -1,4 +1,4 @@
-# The town input module for CLI NPCg
+# The CLI town input module for Amar Tools
   
 def town_input
 

@@ -1,3 +1,6 @@
+# The function for generating relationship maps for inhabitants
+# of a castle/village/town/city
+
 def town_relations(town_file)
 	town_file = fix_town_file(town_file)
 
@@ -76,6 +79,7 @@ DOTSTART
 	end
 end
 
+# Function to generate a text file of the relationships
 def town_dot2txt(town_file)
 	town_file = fix_town_file(town_file)
 	town_name = File.basename(town_file, ".*").gsub(/([[:upper:]])/, ' \1').sub(/ /, '')
@@ -114,6 +118,7 @@ def town_dot2txt(town_file)
 	end
 end
 
+# Simple function to ensure proper path and extension of a town input file
 def fix_town_file(town_file)
 	town_file = "saved/" + town_file if File.dirname(town_file) == "."
 	town_file = File.basename(town_file) + ".npc" if File.basename(town_file, ".*") == File.basename(town_file)

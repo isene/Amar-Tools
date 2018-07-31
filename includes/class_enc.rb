@@ -1,7 +1,9 @@
-# The engine for NPC Generation 0.5
+# The Amar Tool class for generating random encounters
 #
 # When the class is initialized, a random encounter is generated
 # using data from the imported tables (hashes and arrays)
+#
+# Theis class is pretty straight forward and should need much comments
 
 class Enc
 

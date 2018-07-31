@@ -1,4 +1,4 @@
-# The engine for NPC Generation 0.5
+# The Amar Tool class for generating random NPCs
 #
 # When the class is initialized, the npc is generated
 # using data from the imported tables (hashes and arrays)

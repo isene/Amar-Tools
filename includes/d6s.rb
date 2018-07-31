@@ -1,17 +1,16 @@
 # Dice-rolling for NPCg
 
+# Simple multisided dice
 def dX (x)
-  result = rand(x) + 1
-  result = result.to_i
-  return result
+	return rand(1..x)
 end
 
+# The normal d6
 def d6
-  result = rand(6) + 1
-  result = result.to_i
-  return result
+	return rand(1..6)
 end
 
+# The open-ended d6
 def oD6
   result = d6
   return result if result === (2..5)
@@ -31,6 +30,7 @@ def oD6
   return result
 end
 
+# An average of two d6's
 def aD6
   result = ( d6 + oD6 ) / 2
   result = result.to_i

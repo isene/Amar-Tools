@@ -1,8 +1,11 @@
+# The CLI weather output module for Amar Tools
+
 def weather_output(aWEATHER)
 
 	w = aWEATHER
 
-	f = "#################################<By NPCg 0.5>#################################\n\n"
+	# Start creating output text
+	f = "################################<By Amar Tools>################################\n\n"
 
 	f += "Month: #{$Month[w.month_n]}\n"
 	
@@ -26,13 +29,8 @@ def weather_output(aWEATHER)
 
 	f += "\n###############################################################################\n\n"
 
-	wfile = "saved/weather.npc"
-	begin
-		File.delete(wfile) if File.exists?(wfile)
-		File.write(wfile, f, perm: 0644)
-	rescue
-		puts "Error writing file #{wfile}"
-		gets
-	end
-	system("#{$editor} #{wfile}")
+	# Save weather file
+	save_temp_file(f, "weather", "cli")
+	system("#{$editor} saved/weather.npc")
+
 end
