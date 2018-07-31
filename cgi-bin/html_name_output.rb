@@ -20,7 +20,7 @@ f = ["human_male_first.txt", "human_female_first.txt", "dwarven_male.txt", "dwar
   @names +=  `../name_generator/name_generator_main.rb -d #{f[c]}`.chomp + " "
   if /human/ =~ f[c]
 	@names += `../name_generator/name_generator_main.rb -d human_last.txt`.chomp
-	elsif /generic/ =~ f[c]
+	elsif /fantasy/ =~ f[c]
   else
 	@names += `../name_generator/name_generator_main.rb -d #{f[c]}`.chomp
   end
