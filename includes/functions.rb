@@ -2,6 +2,7 @@
 def name(race, sex="M")
 	sex = sex.to_s.upcase
 	race = race.to_s.downcase
+	sex = "F" if race =~ /female/
 	ln = true
 	case race
 		when /dwarf/, /dwarven/, /gnome/
@@ -42,7 +43,6 @@ def name(race, sex="M")
 	end
 	
 	return result.strip
-
 end
 
 # Save temporary files

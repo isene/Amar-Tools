@@ -13,15 +13,5 @@ def name_gen
 
 	puts $Names.keys[c] + " names:"
 	# Output 10 names of the selected type
-	name_gen = "name_generator/name_generator_main.rb -d"
-	10.times do
-		print `#{name_gen} #{$Names.values[c]}`.chomp + " "
-	  if /human/ =~ $Names.values[c]
-			print `#{name_gen} human_last.txt`.chomp
-	  elsif /fantasy/ =~ $Names.values[c]
-	  else
-			print `#{name_gen} #{$Names.values[c]}`.chomp
-	  end
-	  print "\n"
-	end
+	10.times { puts name($Names.keys[c]) }
 end
