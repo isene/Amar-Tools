@@ -2,8 +2,28 @@
   
 def name_gen
 
-	n = ["Human male", "Human female", "Dwarven male", "Dwarven female", "Elven male", "Elven female", "Lizardfolk", "Troll", "Araxi", "Generic male", "Generic female"]
-	f = ["human_male_first.txt", "human_female_first.txt", "dwarven_male.txt", "dwarven_female.txt", "elven_male.txt", "elven_female.txt", "lizardfolk.txt", "troll.txt", "araxi.txt", "fantasy_male.txt", "fantasy_female.txt"]
+	n = ["Human male", 
+			"Human female", 
+			"Dwarven male", 
+			"Dwarven female", 
+			"Elven male", 
+			"Elven female", 
+			"Lizardfolk", 
+			"Troll", 
+			"Araxi", 
+			"Generic male", 
+			"Generic female"]
+	f = ["human_male_first.txt", 
+			"human_female_first.txt", 
+			"dwarven_male.txt", 
+			"dwarven_female.txt", 
+			"elven_male.txt", 
+			"elven_female.txt", 
+			"lizardfolk.txt", 
+			"troll.txt", 
+			"araxi.txt", 
+			"fantasy_male.txt", 
+			"fantasy_female.txt"]
 
   # Get name type
 	puts "\nEnter name type:"

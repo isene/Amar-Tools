@@ -1,38 +1,48 @@
 # Get names from name generator
-def name(race, sex)
+def name(race, sex="M")
 	sex = sex.to_s.upcase
-	race = race.to_s
-	p = File.expand_path(File.dirname(__FILE__))
+	race = race.to_s.downcase
+	ln = true
 	case race
-		when "Human", "Half-giant"
-			file = "human_male_first.txt"
-			file = "human_female_first.txt" if sex == "F"
-		when "Dwarf"
-			file = "dwarven_male.txt"
-			file = "dwarven_female.txt" if sex == "F"
-		when "Elf", "Half-elf"
-			file = "elven_male.txt"
-			file = "elven_female.txt" if sex == "F"
-		when "Lizardfolk"
-			file = "lizardfolk.txt"
-		when "Troll", "Lesser troll"
-			file = "troll.txt"
-		when "Arax"
-			file = "araxi.txt"
+		when /dwarf/, /dwarven/, /gnome/
+			race = "Dwarf-"
+		when /elf/, /elven/, /faerie/, /faery/, /pixie/, /brownie/
+			race = "Dwarf-"
+		when /lizard/
+			race = "Lizard-"
+			sex = "M"
+		when /troll/, /ogre/
+			race = "Troll-"
+			sex = "M"
+		when /arax/
+			race = "Arax-"
+			sex = "M"
+		when /fantasy/, /generic/
+			race = "Generic-"
+			ln = false
 		else
-			file = "fantasy_male.txt"
-			file = "fantasy_female.txt" if sex == "F"
+			race = "Human-"
 	end
-	result = `#{p}/../name_generator/name_generator_main.rb -d #{file}`.chomp + " "
-	if /human/ =~ file
-		lastname = `#{p}/../name_generator/name_generator_main.rb -d human_last.txt`.chomp
-	elsif /fantasy/ =~ file
-		lastname = ""
-	else
-		lastname = `#{p}/../name_generator/name_generator_main.rb -d #{file}`.chomp
+
+	race += sex
+	file = $Names[race]
+
+	p = File.expand_path(File.dirname(__FILE__))
+	n = "/../name_generator/name_generator_main.rb -d"
+	
+	result = `#{p}#{n} #{file}`.chomp + " "
+	
+	if ln
+		if /Human/ =~ race
+			lastname = `#{p}#{n} Human_last.txt`.chomp
+		else
+			lastname = `#{p}#{n} #{file}`.chomp
+		end
+		result += lastname
 	end
-	result += lastname
+	
 	return result.strip
+
 end
 
 # Save temporary files

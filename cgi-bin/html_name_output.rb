@@ -11,8 +11,28 @@ c = cgi["name_type"].to_i
 @names = "<br />"
 
 # Set arrays for races and corresponding name files
-n = ["Human male", "Human female", "Dwarven male", "Dwarven female", "Elven male", "Elven female", "Lizardfolk", "Troll", "Araxi", "Generic male", "Generic female"]
-f = ["human_male_first.txt", "human_female_first.txt", "dwarven_male.txt", "dwarven_female.txt", "elven_male.txt", "elven_female.txt", "lizardfolk.txt", "troll.txt", "araxi.txt", "fantasy_male.txt", "fantasy_female.txt" ]
+n = ["Human male",
+		 "Human female", 
+		 "Dwarven male", 
+		 "Dwarven female", 
+		 "Elven male", 
+		 "Elven female", 
+		 "Lizardfolk", 
+		 "Troll", 
+		 "Araxi", 
+		 "Generic male", 
+		 "Generic female"]
+f = ["human_male_first.txt", 
+		 "human_female_first.txt", 
+		 "dwarven_male.txt", 
+		 "dwarven_female.txt", 
+		 "elven_male.txt", 
+		 "elven_female.txt", 
+		 "lizardfolk.txt", 
+		 "troll.txt", 
+		 "araxi.txt", 
+		 "fantasy_male.txt", 
+		 "fantasy_female.txt" ]
 
 @header = "<b>#{n[c]} names:</b>"
 

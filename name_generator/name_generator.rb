@@ -1,5 +1,5 @@
 class NameGenerator
-  def initialize(follower_letters, min_length = 3, max_length = 9)
+  def initialize(follower_letters, min_length = 3, max_length = 12)
     @min_word_length = min_length
     @max_word_length = max_length
     @follower_letters = follower_letters

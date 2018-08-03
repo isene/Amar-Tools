@@ -1,23 +1,16 @@
-As'syrik
 Addir
 Ak Rilik
 Akro
-Ambuur Fangiss
-Ambuur Kalaw
-Ambuur Predat
-Ambuur T'ayil
+Ambuur
 Angura
 Anol
+As'syrik
 Bacha Lisk
 Bas Silisk
 Bas'keen
 Basak
 Ber Zerik
-Blud Fangiss
-Blud Jowah
-Blud Kalaw
-Blud Predat
-Blud T'ayil
+Blud
 Bramak
 Chi'karik
 Chi'tin
@@ -27,6 +20,8 @@ Drakkon
 Du Lap
 Ekto Thirim
 Eldar
+Fangiss
+Fangiss
 Fangiss Ferat
 Fas'ol
 Fik'rik
@@ -51,12 +46,15 @@ Huuk Fangiss
 Huuk Kalaw
 Huuk T'ayil
 Hwa'ral
+Jowah
 Jowah Ferat
 Ka'lard
 Ka'lyme
 Ka'mil'yan
 Ka'mo'tor
 Ka'rapis
+Kalaw
+Kalaw
 Kalaw Ferat
 Karok Adyl
 Keel
@@ -71,26 +69,22 @@ Kri'kit
 Kri'silith
 Krikta
 Krill'acha
-Laan Fangiss
-Laan Kalaw
-Laan Predat
-Laan T'ayil
+Laan
 Lim'mib
 Liss Zarid
 Lor
 Mange
 Monit Tor
 Mult
+Predat
+Predat
 Predat Tor
 Prehen S'ayil
 Prelen Seek
 Ra'kaka
 Ra'kirin
 Ra'kuur
-Ra'pet Fangiss
-Ra'pet Kalaw
-Ra'pet Predat
-Ra'pet Tor
+Ra'pet
 Ra'tok
 Ra'tul
 Ri'kit
@@ -105,19 +99,14 @@ Sal'bas
 Salow
 Samak
 Sang
-Scarl Fangiss
-Scarl Kalaw
-Scarl Predat
-Scarl T'ayil
+Scarl
 Sensiss
 Serat Fangiss
 Serat Kalaw
 Serat T'ayil
 Serepent
 Shad Duur
-Sharip Fangiss
-Sharip Kalaw
-Sharip T'ayil
+Sharip
 Si'kink
 Si'lith
 Si'lyde
@@ -129,12 +118,12 @@ Su'kwala
 Su'pine
 T'aleen
 T'ayil
+T'ayil
+T'ayil
 Ta'hong
 Tak'sin
 Takal
-Tal Fangiss
-Tal Kalaw
-Tal Predat
+Tal
 Tarsik
 To'kay
 Tor Pir
