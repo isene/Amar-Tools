@@ -35,7 +35,7 @@ def name(race, sex="M")
 	
 	if ln
 		if /Human/ =~ race
-			lastname = `#{p}#{n} Human_last.txt`.chomp
+			lastname = `#{p}#{n} human_last.txt`.chomp
 		else
 			lastname = `#{p}#{n} #{file}`.chomp
 		end
