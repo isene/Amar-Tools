@@ -19,7 +19,7 @@
             <td bgcolor="#FFFFFF">
               <select name="name_type">
 				<% $Names.each do |item| %>
-				<% o = index.to_s.rjust(2) + ": " + item[0] %>
+				<% o = item[0] %>
 				<option><%= o %>
 				<% end %>
               </select>
