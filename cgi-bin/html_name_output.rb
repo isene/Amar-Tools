@@ -4,6 +4,9 @@
 require "cgi"
 require "erb"
 
+# Include all core files via includes.rb
+load "../includes/includes.rb"
+
 cgi = CGI.new
 tmpl = File.read("../name_output.html")
 
