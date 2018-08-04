@@ -4,6 +4,9 @@
 # The simplest of input files
 require "erb"
 
+# Include all core files via includes.rb
+load "../includes/includes.rb"
+
 tmpl = File.read("../name_input.html")
 
 $Name_type = 0 if $Name_type == nil
