@@ -28,7 +28,7 @@ class Npc
 
     @spamount = 0
 
-# Randomize omitted values, starting with a (primitive) name generator
+# Randomize omitted values, starting with sex and name
 
   if @sex == ""
     var = rand(2).to_i
@@ -40,16 +40,7 @@ class Npc
     end
   end
 
-  if @name == ""
-	p = File.expand_path(File.dirname(__FILE__))
-	if @sex == "M"
-	  name1 = `#{p}/../name_generator/name_generator_main.rb -d human_male_first.txt`.chomp
-	else
-	  name1 = `#{p}/../name_generator/name_generator_main.rb -d human_female_first.txt`.chomp
-	end
-	name2 = `#{p}/../name_generator/name_generator_main.rb -d human_male_first.txt`.chomp
-	@name = name1 + " " + name2
-  end
+	@name = naming("Human", @sex) if @name == ""
 
   unless $Chartype.has_key?(@type)
     @type = ""

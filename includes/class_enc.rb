@@ -115,7 +115,7 @@ class Enc
 					@encounter[i]["race"] = "Other"
 				end
 
-				@encounter[i]["name"] = name(@encounter[i]["race"], @encounter[i]["sex"])
+				@encounter[i]["name"] = naming(@encounter[i]["race"], @encounter[i]["sex"])
 
 				@encounter[i]["size"] = @stats[1] + (rand(10 * @stats[1]+1) + rand(10 * @stats[1]+1) - 10 * @stats[1])/20
 				@encounter[i]["size"] = 1 if @encounter[i]["size"] < 1

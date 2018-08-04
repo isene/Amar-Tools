@@ -8,48 +8,15 @@ class Town
 
 	attr_reader :town, :town_name, :town_size, :town_residents
 
-	Inf = 1.0/0
-
-	# Although there is a generic name function, the town creator needs its
-	# own to cater for a high chance of a household having the same surname
+	# Although there is a generic name function, the town creator needs to
+	# modify it to cater for a high chance of a household having the same surname
 	def name(race)
-		p = File.expand_path(File.dirname(__FILE__))
-		case race
-			when "Human", "Other", "Half-giant"
-				file = "human_male_first.txt"
-				file = "human_female_first.txt" if @r_sex == "F"
-			when "Dwarf"
-				file = "dwarven_male.txt"
-				file = "dwarven_female.txt" if @r_sex == "F"
-			when "Elf", "Half-elf"
-				file = "elven_male.txt"
-				file = "elven_female.txt" if @r_sex == "F"
-			when "Lizardfolk"
-				file = "lizardfolk.txt"
-			when "Troll", "Lesser troll"
-				file = "troll.txt"
-			when "Arax"
-				file = "araxi.txt"
-		end
-    result = `#{p}/../name_generator/name_generator_main.rb -d #{file}`.chomp + " "
-		if $Last_name == "" or /Soldier/ =~ @town[@h_index][0]
-	    if /human/ =~ file
-				$Last_name = `#{p}/../name_generator/name_generator_main.rb -d human_last.txt`.chomp
-			else
-				$Last_name = `#{p}/../name_generator/name_generator_main.rb -d #{file}`.chomp
-			end
-			lastname = $Last_name
-		elsif rand(5).to_i == 0
-	    if /human/ =~ file
-				lastname = `#{p}/../name_generator/name_generator_main.rb -d human_last.txt`.chomp
-			else
-				lastname = `#{p}/../name_generator/name_generator_main.rb -d #{file}`.chomp
-			end
-		else
-			lastname = $Last_name
-		end
-		result += lastname
-		return result
+		new_name = naming(race, @r_sex)
+		name_split = new_name.split
+		$Last_name = name_split[1].to_s if $Last_name == "" or /Soldier/ =~ @town[@h_index][0]
+		name_split[1] = $Last_name if rand(1..4) > 1
+		new_name = name_split.join(" ").strip
+		return new_name
 	end
 
 	# Using the generic randomizer function to get random races based on weighted input
@@ -163,14 +130,15 @@ class Town
 		@town_var  = town_var.to_i
 		@town_name = town_name.to_s
 		if @town_name == ""
-			tn = File.expand_path(File.dirname(__FILE__)) + "/../name_generator/name_generator_main.rb -d "
 			case @town_size
 			when 1..4
-				@town_name = `#{tn} castle_names.txt`.chomp
-			when 5..99
-				@town_name = `#{tn} town_names.txt`.chomp
+				@town_name = naming("castle")
+			when 5..25
+				@town_name = naming("village")
+			when 26..99
+				@town_name = naming("town")
 			else
-				@town_name = `#{tn} city_names.txt`.chomp
+				@town_name = naming("city")
 			end
 		end
 		@town_residents = 0

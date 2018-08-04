@@ -1,47 +1,27 @@
 # Get names from name generator
-def name(race, sex="M")
+def naming(intype, sex="")
 	sex = sex.to_s.upcase
-	race = race.to_s.downcase
-	sex = "F" if race =~ /female/
-	ln = true
-	case race
-		when /dwarf/, /dwarven/, /gnome/
-			race = "Dwarf-"
-		when /elf/, /elven/, /faerie/, /faery/, /pixie/, /brownie/
-			race = "Dwarf-"
-		when /lizard/
-			race = "Lizard-"
-			sex = "M"
-		when /troll/, /ogre/
-			race = "Troll-"
-			sex = "M"
-		when /arax/
-			race = "Arax-"
-			sex = "M"
-		when /fantasy/, /generic/
-			race = "Generic-"
-			ln = false
-		else
-			race = "Human-"
-	end
+	type = intype.sub(/(:| ).*/, '').to_s.downcase
 
-	race += sex
-	file = $Names[race]
+	# Get for race/sex filename for first name and last name (if any)
+	file1 = ""
+	file2 = ""
+	$Names.each do |m| 
+		if m[4].include?(type) and m[3].include?(sex)
+			file1 = m[1]
+			file2 = m[2]
+			break
+		end
+	end
 
 	p = File.expand_path(File.dirname(__FILE__))
 	n = "/../name_generator/name_generator_main.rb -d"
 	
-	result = `#{p}#{n} #{file}`.chomp + " "
-	
-	if ln
-		if /Human/ =~ race
-			lastname = `#{p}#{n} human_last.txt`.chomp
-		else
-			lastname = `#{p}#{n} #{file}`.chomp
-		end
-		result += lastname
-	end
-	
+	result  = ""
+	result += intype + " of " if ["Castle", "Village", "Town", "City"].include?(intype)
+	result += `#{p}#{n} #{file1}`.chomp
+	result += " " + `#{p}#{n} #{file2}`.chomp if file2 != ""
+	result  = "" if result == "No such data file"
 	return result.strip
 end
 

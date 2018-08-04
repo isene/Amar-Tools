@@ -18,18 +18,9 @@
             <td width="200" bgcolor="#CCCCCC"><b>Race:</b></td>
             <td bgcolor="#FFFFFF">
               <select name="name_type">
-				<option><%= $Name_type %>
-				<option>0: Human male
-				<option>1: Human female
-				<option>2: Dwarven male
-				<option>3: Dwarven female
-				<option>4: Elven male
-				<option>5: Elven female
-				<option>6: Lizardfolk
-				<option>7: Troll
-				<option>8: Araxi
-				<option>9: Generic male
-				<option>10: Generic female
+				<% $Names.each_with_index do |value,index| %>
+				<option><% puts index.to_s.rjust(2) + ": " + value[0] %>
+				<% end %>
               </select>
             </td>
           </tr>
