@@ -84,6 +84,8 @@ class Enc
 				@stats = $Encounters[@encounter[i]["string"]].dup
 				
 				@encounter[i]["level"] = dX(@stats[0]) + $Level
+				@encounter[i]["level"] += 2 if @encounter[i]["string"] =~ /Elf/
+				@encounter[i]["level"] += 1 if @encounter[i]["string"] =~ /Dwarf/
 				@level = @encounter[i]["level"]
 				
 				case rand(2).to_i
@@ -167,6 +169,7 @@ class Enc
 				@encounter[i]["bp"] = 2 * @encounter[i]["size"] + (@encounter[i]["endurance"] / 3)
 
 				@encounter[i]["awareness"] = ((@stats[4] * @level + 1) / 3 - 2 + aD6)
+				@encounter[i]["awareness"] = 1 if @encounter[i]["awareness"] < 1
 
 				@encounter[i]["dodge"] = ((@stats[5] * @level + 1) / 3 - 2 + aD6)
 				@encounter[i]["dodge"] = 0 if @encounter[i]["dodge"] < 0
