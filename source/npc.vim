@@ -3,7 +3,11 @@
 " Maintainer:	Geir Isene
 " Last change:	2018-08-21
 " Filenames:	*.npc
-" URL:		http://www.geir.isene.com/
+" URL:		https://isene.org/
+"
+" Copy this file into your vim/syntax folder
+" to have nice highlighting of all *.npc, add this to your vimrc:
+" autocmd BufRead,BufNewFile *.npc :set ft=npc
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
