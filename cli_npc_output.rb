@@ -14,15 +14,15 @@ def npc_output(n, cli)
 	f += " (You may want to bookmark this URL for future references to this NPC)\n\n" unless cli == "cli"
   f += "############################<By Amar Tools>############################\n\n"
   f += "Created: #{Date.today.to_s}".rjust(71) + "\n"
-  f += "Name:".ljust(10) + n.name 
+  f += "Name:".ljust(9) + n.name 
   f += "\n"
-  f += "Type:".ljust(10) + (n.type + " (" + n.level.to_s + ")").ljust(23)
-  f += "Sex:".ljust(7) + n.sex.ljust(13)
-  f += "Height:".ljust(10) + n.height.to_s
+  f += "Type:".ljust(9) + (n.type + " (" + n.level.to_s + ")").ljust(23)
+  f += "Sex:".ljust(5) + n.sex.ljust(18)
+  f += "Height:".ljust(8) + n.height.to_s
   f += "\n"
-  f += "Area:".ljust(10) + n.area.ljust(23)
-  f += "Age:".ljust(7) + n.age.to_s.ljust(13)
-  f += "Weight:".ljust(10) + n.weight.to_s
+  f += "Area:".ljust(9) + n.area.ljust(23)
+  f += "Age:".ljust(5) + n.age.to_s.ljust(18)
+  f += "Weight:".ljust(8) + n.weight.to_s
   f += "\n"
   f += "-----------------------------------------------------------------------\n"
   f += "Description:".ljust(14) + n.description
