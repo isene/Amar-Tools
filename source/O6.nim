@@ -1,3 +1,6 @@
+# This is the NIM version of the Open Ended D6 rolls used in the Amar RPG
+# See http://d6gaming.org for details about the Amar Role-Playing Game system
+
 import random
 randomize()
 
