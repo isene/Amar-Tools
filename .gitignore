@@ -1,0 +1,3 @@
+*.swp
+saved/*
+cgi-bin/saved/*

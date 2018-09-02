@@ -1,0 +1,92 @@
+; This is the HP-41CX version of the Open Ended D6 rolls used in the Amar RPG
+; See http://d6gaming.org for details about the Amar Role-Playing Game system
+
+001 LBL "D6"
+002 LBL 00 
+003 SF 25
+004 DATE
+005 FS? 25
+006 TIME
+007 FC? 25
+008 E2
+009 FC?C 25
+010 *
+011 +
+012 E49
+013 *
+014 PI
+015 MOD
+016 LN1+X
+017 R-D
+018 FRC
+019 6
+020 *
+021 INT
+022 1
+023 + 
+024 RTN
+025 LBL "O6"
+026 LBL 11 
+027 SF 05	; Set MARK flag 
+028 CF 00	; Clear "Fumble flag"
+029 CF 01	; Clear "Critical flag"
+030 XEQ 00	; Roll a D6
+031 1
+032 X<>Y 
+033 X=Y?
+034 GTO 01	; We may go DOWN
+035 6
+036 X<>Y 
+037 X=Y?
+038 GTO 06	; We may go UP
+039 LBL 10	; Return result  
+040 CF 05
+041 STOP
+042 GTO 11	; GTO "D6" 
+043 LBL 01  ; We got a 1
+044 XEQ 00
+045 1
+046 X=Y?
+047 XEQ 02	; Another 1
+048 X!=Y?
+049 CF 05	; Not a 1, clear MARK flag
+050 RDN 
+051 3
+052 X<Y?
+053 GTO 09
+054 RDN
+055 RDN
+056 1
+057 -
+058 GTO 01
+059 LBL 02
+060 FS? 05
+061 SF 00
+062 SF 05
+063 RTN 
+064 LBL 06 ; We got a 6
+065 XEQ 00
+066 6
+067 X=Y?
+068 XEQ 07	; Another 6
+069 X!=Y?
+070 CF 05	; Not a 6, clear MARK flag
+071 RDN 
+072 4
+073 X>Y?
+074 GTO 09
+075 RDN
+076 RDN
+077 1
+078 +
+079 GTO 01
+080 LBL 07
+081 FS? 05
+082 SF 01
+083 SF 05
+084 RTN 
+085 LBL 09
+086 RDN
+087 RDN
+088 GTO 10 
+089 END 
