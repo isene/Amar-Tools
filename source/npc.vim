@@ -19,11 +19,11 @@ endif
 
 syntax	keyword	npcATTR2    DB BP MD
 syntax	match	npcSlash    "/"
-syntax	match	npcSkills   "\(Name:\)\@!\u.\{-}\(:\|=\)\@="
+syntax	match	npcSkills   "\(Name:\)\@!\u[^  ]\{-}\(:\|=\)\@="
 syntax	match	npcWPN	    "\(Name:\)\@!\(^\s\{,2}\u\|>\)..\{-}  "
 syntax	match	npcUNline   "\(^Day:.*\|^Night:.*\|^Type:.*\|^Area:.*\|^Description:.*\|^ENC:.*\|^Status:.*\|^Cult:.*\)" contains=npcDate
 syntax	match	npcATTR1    "\u\{4,}:\@="
-syntax	match	npcHEAD	    "^WEAPON .*"
+syntax	match	npcHEAD	    "^\(WEAPON\|SPELL\) .*"
 syntax	match	npcHLine    ">*#\{4,}<*"
 syntax	match	npcLine	    "-\{4,}"
 syntax	match	npcNumber   "\d\d\{-}"
