@@ -13,9 +13,14 @@
         <center><h2>Random town - for the Amar RPG</h2></center>
       </td>
     </tr>     
+    <tr>
+      <td>         
+	    "Unhoused residents" are visitors from nearby or homeless residents.
+      </td>
+    </tr>     
   </tbody>   
 </table>
-
+<br />
 <table width="800" border="0" cellspacing="0" cellpadding="1"
  align="center" bgcolor="#333333">
   <tbody>
@@ -31,7 +36,7 @@
                 </tr>
                 <% @t.each_with_index do |h,i| %>
                 <tr>
-				  <td width="150" bgcolor="#dddddd"><input type="text" style="font-weight: bold; background-color: #dddddd;" size="70" name="house" value="#<%= i+1 %>: <%= h[0] %>"</td>
+				  <td width="150" bgcolor="#dddddd"><input type="text" style="font-weight: bold; background-color: #dddddd;" size="70" name="house" value="#<%= i %>: <%= h[0] %>"</td>
                 </tr>
                 <% h[1..-1].each do |r| %>
                 <tr>

@@ -13,7 +13,7 @@ class Town
 	def name(race)
 		new_name = naming(race, @r_sex)
 		name_split = new_name.split
-		$Last_name = name_split[1].to_s if $Last_name == "" or /Soldier/ =~ @town[@h_index][0]
+		$Last_name = name_split[1].to_s if $Last_name == "" or /Soldier/ =~ @town[@h_index][0] or /residents/ =~ @town[@h_index][0]
 		name_split[1] = $Last_name if rand(1..4) > 1
 		new_name = name_split.join(" ").strip
 		return new_name
@@ -77,8 +77,8 @@ class Town
 		# Get race
 		if $Race == ""
 			@r_race = race(@town_var)
-			$Race = @r_race
-		elsif rand(6).to_i == 0
+			$Race = @r_race unless /residents/ =~ @town[@h_index][0]
+		elsif rand(5).to_i == 0
 			@r_race = race(@town_var)
 		else
 			@r_race = $Race
@@ -126,14 +126,14 @@ class Town
 	# The initializing method - generates houses
 	def initialize(town_name, town_size, town_var)
 
-		@town_size = town_size.to_i
+		@town_size = town_size.to_i + 1
 		@town_var  = town_var.to_i
 		@town_name = town_name.to_s
 		if @town_name == ""
 			case @town_size
-			when 1..4
+			when 1..5
 				@town_name = naming("castle")
-			when 5..25
+			when 6..25
 				@town_name = naming("village")
 			when 26..99
 				@town_name = naming("town")
@@ -159,7 +159,8 @@ class Town
 			"Maleko"							=> 1,
 			"Fal Munir"						=> 2,
 			"Moltan"							=> 4,
-			"Kraagh"							=> 4}
+			"Kraagh"							=> 4,
+			"Lesser God"					=> 1}
 		#Initiate the Temple hash to be used if/when temples are picked
 		t = $Temple_types.dup
 
