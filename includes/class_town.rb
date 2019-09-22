@@ -126,7 +126,7 @@ class Town
 	# The initializing method - generates houses
 	def initialize(town_name, town_size, town_var)
 
-		@town_size = town_size.to_i + 1
+		@town_size = town_size.to_i
 		@town_var  = town_var.to_i
 		@town_name = town_name.to_s
 		if @town_name == ""
@@ -214,9 +214,9 @@ class Town
 				(rand(h_type[6]) + rand(h_type[6])).to_i.times {add_resident(3)}
 				@h_index += 1
 				puts "Progress: House ##{@h_index}"
-				break if @h_index == town_size
+				break if @h_index > town_size
 			end
-			break if @h_index == town_size
+			break if @h_index > town_size
 		end
 	end
 end
