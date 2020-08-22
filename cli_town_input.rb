@@ -5,8 +5,7 @@ def town_input
 	# Get Town name
 	town_name = ""
  	puts "\nEnter Village/Town/City name:"
-	print "> "
-	town_name = gets.chomp.to_s
+	town_name = Readline.readline('> ', true).chomp.to_s
 
   # Get Town size
  	puts "\nEnter number of houses (default=1):"

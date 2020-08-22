@@ -103,7 +103,8 @@ else
     
 	$editor = "less" if $editor == "" or $editor == nil
 
-	require "date"
+	require 'date'
+  require 'readline'
 
 	# Include all core files via includes.rb
 	load "includes/includes.rb"
@@ -129,7 +130,7 @@ else
 	
 	loop do
 		system "clear"
-		puts "\nTools for the Amar RPG.\n"
+    puts "\nTools for the Amar RPG. Press a key to access the desired tool:\n\n"
 		puts "e = Random encounter"
 		puts "t = Create a village/town/city"
 		puts "r = Make town relations"
@@ -137,9 +138,12 @@ else
 		puts "N = Generate names"
 		puts "w = Generate a month of weather"
 		puts "q = Quit npcg\n\n"
+    print "> "
 		c = get_char
+    puts c
 		# q = Quit
 		if c == "q"
+      puts ""
 			break
 		# e = Random Encounter
 		elsif c == "e"

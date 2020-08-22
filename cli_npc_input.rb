@@ -2,10 +2,11 @@
 
 def npc_input
 
+  require 'readline'
+
   # Get the character's name
   puts "\nEnter the NPC's name:"
-  print "> "
-  name = gets.chomp.to_s
+  name = Readline.readline('> ', true).chomp.to_s
 
   # Get the type
   puts "\nEnter the NPC's type (enter the number):"
@@ -116,8 +117,7 @@ def npc_input
 
   # Get description
   puts "\nEnter description of the NPC:"
-  print "> "
-  description = gets.chomp
+  description = Readline.readline('> ', true).chomp.to_s
 
   puts "\n"
 

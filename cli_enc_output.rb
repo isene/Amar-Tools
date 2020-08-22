@@ -54,8 +54,9 @@ def enc_output(anENC, cli)
 				f += "  END=" + e[i]["endurance"].to_s
 				f += "  AWR=" + e[i]["awareness"].to_s
 				f += "  MAG=" + e[i]["mag"].to_s
-				f += "  Ddg=" + e[i]["dodge"].to_s
-				f += " (Status: " + e[i]["status"].to_s + ")"
+				f += "  RS=" + e[i]["reaction"].to_s
+				f += " Ddg=" + e[i]["dodge"].to_s
+				f += "  (S:" + e[i]["status"].to_s + ")"
 				if e[i]["mag_lore"]
 					f += "\n".ljust(17) + e[i]["mag_type"] + " Lore=" + e[i]["mag_lore"].to_s
 					f += ", # of spells: " + e[i]["spells"].to_s
@@ -67,7 +68,7 @@ def enc_output(anENC, cli)
 				f += "    AP:" + e[i]["ap"].to_s + ", BP:" + e[i]["bp"].to_s + "\n"
 
 				if e[i]["msl_name"]
-					f += "  " + e[i]["msl_name"].ljust(14) + "Skill=" + e[i]["msl_skill"].to_s.rjust(2)
+					f += "  " + e[i]["msl_name"].ljust(14) + "Skill=" + e[i]["msl_skill"].to_s.rjust(2) + ", Ini: " + e[i]["msl_ini"].to_s
 					f += ", Off:" + e[i]["msl_off"].to_s.rjust(2) + ", Dam:" + e[i]["msl_dam"].to_s.rjust(2) + ", Rng:" + e[i]["msl_rng"].to_s + "\n"
 				end
 			end

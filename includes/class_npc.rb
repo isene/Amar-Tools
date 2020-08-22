@@ -252,7 +252,7 @@ class Npc
 
 # Calculate Social status and money
 
-	tmp = @npc["specials"]["Status"].to_i
+	  tmp = @npc["specials"]["Status"].to_i
     tmp = (4 * tmp + @level + aD6) / 5
     tmp = 0 if tmp < 0
     @npc["specials"]["Status"] = tmp.to_i
@@ -352,6 +352,13 @@ class Npc
       @npc["specials"]["Status"] = "N"
     end
 
+    # Reaction speed is calculated as weighted average between Awareness and Melee skill
+    if @npc["c_skill"]["Melee1s"] < @npc["attr"]["AWARE"]
+      @npc["a_skill"]["Reaction"] = (@npc["c_skill"]["Melee1s"] * 2 + @npc["attr"]["AWARE"]) / 3 + d6 - 3
+    else
+      @npc["a_skill"]["Reaction"] = (@npc["attr"]["AWARE"] * 2 + @npc["c_skill"]["Melee1s"]) / 3 + d6 - 3
+    end
+      @npc["a_skill"]["Reaction"] = @npc["attr"]["AWARE"] / 3 if @npc["a_skill"]["Reaction"] < @npc["attr"]["AWARE"] / 3
 
 # Pick armour and weapons for the character (and drop duplicates)
 
@@ -363,6 +370,7 @@ class Npc
     tmp.to_i
     @npc["items"]["Melee1"] = $Melee[tmp].dup
     @npc["items"]["Melee1"][3] += @DB
+    @npc["items"]["Melee1"][4] += @npc["a_skill"]["Reaction"]
     @npc["items"]["Melee1"][5] += @npc["c_skill"]["Melee1s"]
     @npc["items"]["Melee1"][6] += @npc["c_skill"]["Melee1s"]
     @npc["items"]["Melee1"][6] += (@npc["c_skill"]["Dodge"] / 5).to_i
@@ -372,6 +380,7 @@ class Npc
     if tmp2 != tmp
       @npc["items"]["Melee2"] = $Melee[tmp2].dup
       @npc["items"]["Melee2"][3] += @DB
+      @npc["items"]["Melee2"][4] += @npc["a_skill"]["Reaction"]
       @npc["items"]["Melee2"][5] += @npc["c_skill"]["Melee2s"]
       @npc["items"]["Melee2"][6] += @npc["c_skill"]["Melee2s"]
       @npc["items"]["Melee2"][6] += (@npc["c_skill"]["Dodge"] / 5).to_i
@@ -385,6 +394,7 @@ class Npc
     if tmp3 != tmp && tmp3 != tmp2
       @npc["items"]["Melee3"] = $Melee[tmp3].dup
       @npc["items"]["Melee3"][3] += @DB
+      @npc["items"]["Melee3"][4] += @npc["a_skill"]["Reaction"]
       @npc["items"]["Melee3"][5] += @npc["c_skill"]["Melee3s"]
       @npc["items"]["Melee3"][6] += @npc["c_skill"]["Melee3s"]
       @npc["items"]["Melee3"][6] += (@npc["c_skill"]["Dodge"] / 5).to_i
@@ -399,6 +409,7 @@ class Npc
     if @npc["items"]["Missile1"][1] != "Crossbow" && @npc["items"]["Missile1"][1] != "Bow"  
       @npc["items"]["Missile1"][3] += (@npc["attr"]["STRNG"] / 5).to_i
     end
+    @npc["items"]["Missile1"][9] += @npc["a_skill"]["Reaction"]
     @npc["items"]["Missile1"][4] += @npc["c_skill"]["Missile1s"]
 
     tmp2 = rand(@npc["specials"]["Msl-level"]) + 1
@@ -408,6 +419,7 @@ class Npc
       if @npc["items"]["Missile2"][1] != "Crossbow" && @npc["items"]["Missile2"][1] != "Bow"  
         @npc["items"]["Missile2"][3] += (@npc["attr"]["STRNG"] / 5).to_i
       end
+      @npc["items"]["Missile2"][9] += @npc["a_skill"]["Reaction"]
       @npc["items"]["Missile2"][4] += @npc["c_skill"]["Missile2s"]
     else
       @npc["items"]["Missile2"] = ""
@@ -705,6 +717,10 @@ class Npc
     self.c_skill("Physical3s")
   end
 
+  def react
+    self.a_skill("Reaction")
+  end
+
   def dtraps
     self.a_skill("DTraps")
   end
@@ -897,6 +913,10 @@ class Npc
     @npc["items"]["Missile1"][6]
   end
 
+  def missile1i
+    @npc["items"]["Missile1"][9]
+  end
+
   def missile2
     @npc["items"]["Missile2"][0]
   end
@@ -923,6 +943,10 @@ class Npc
 
   def missile2rmax
     @npc["items"]["Missile2"][6]
+  end
+
+  def missile2i
+    @npc["items"]["Missile1"][9]
   end
 
   def maglore

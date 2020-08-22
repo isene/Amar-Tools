@@ -3,7 +3,7 @@
 # When the class is initialized, a random encounter is generated
 # using data from the imported tables (hashes and arrays)
 #
-# Theis class is pretty straight forward and should need much comments
+# This class is pretty straight forward and shouldn't need much comments
 
 class Enc
 
@@ -177,6 +177,39 @@ class Enc
 				@stats[9] > 0 ? @encounter[i]["mag"] = ((@stats[9] * @level + 1) / 3 - 2 + aD6) : @encounter[i]["mag"] = 0
 				@encounter[i]["mag"] = 0 if @encounter[i]["mag"] < 0
 
+        @arax = 0
+        if @encounter[i]["race"] == "Arax"
+          case rand(24).to_i
+            when 0
+              @encounter[i]["size"] += d6 - 1
+            when 1
+              @encounter[i]["strength"] += oD6 + 3
+              @encounter[i]["strength"] = 3 if @encounter[i]["strength"] < 3
+            when 2
+              @encounter[i]["endurance"] += oD6 + 3
+              @encounter[i]["endurance"] = 2 if @encounter[i]["endurance"] < 2
+            when 3
+              @encounter[i]["awareness"] += oD6 + 3
+              @encounter[i]["awareness"] = 0 if @encounter[i]["awareness"] < 0
+            when 4
+              @encounter[i]["mag"] += oD6
+              @encounter[i]["mag"] = 1 if @encounter[i]["mag"] < 1
+            when 5
+              @encounter[i]["dodge"] += oD6
+              @encounter[i]["dodge"] = 5 if @encounter[i]["dodge"] < 5
+            when 6
+					    @encounter[i]["mag_lore"] = ((@stats[10] * @level + 1) / 3 - 2 + aD6)
+					    @encounter[i]["spells"] = 1
+							@encounter[i]["mag_type"] = randomizer(
+								"Black"			=> 3,
+								"Earth"			=> 3,
+								"Prot."			=> 2,
+                "Perc."			=> 2)
+            when 7..12
+              @arax = 1
+          end
+        end
+
 				if @stats[10] > 0
 					@encounter[i]["mag_lore"] = ((@stats[10] * @level + 1) / 3 - 2 + aD6)
 					@encounter[i]["mag_lore"] = 1 if @encounter[i]["mag_lore"] < 1
@@ -219,7 +252,14 @@ class Enc
 				@encounter[i]["wpn_name"] = @wpn[0]
 				@encounter[i]["wpn_skill"] = ((@stats[6].abs * @level + 1) / 3 - 2 + aD6)
 				@encounter[i]["wpn_skill"] = 1 if @encounter[i]["wpn_skill"] < 1
-				@encounter[i]["wpn_ini"] = @wpn[4]
+        # Reaction speed is calculated as weighted average between Awareness and Melee skill
+        if @encounter[i]["wpn_skill"] < @encounter[i]["awareness"]
+          @encounter[i]["reaction"] = (@encounter[i]["wpn_skill"] * 2 + @encounter[i]["awareness"]) / 3 + d6 - 3
+        else
+          @encounter[i]["reaction"] = (@encounter[i]["awareness"] * 2 + @encounter[i]["wpn_skill"]) / 3 + d6 - 3
+        end
+        @encounter[i]["reaction"] = @encounter[i]["awareness"] / 3 if @encounter[i]["reaction"] < @encounter[i]["awareness"] / 3
+				@encounter[i]["wpn_ini"] = @wpn[4] + @encounter[i]["reaction"]
 				@encounter[i]["wpn_off"] = @encounter[i]["wpn_skill"] + @wpn[5]
 				@encounter[i]["wpn_def"] = @encounter[i]["wpn_skill"] + @wpn[6] + @encounter[i]["dodge"] / 5
 				@encounter[i]["wpn_dam"] = @db + @wpn[3]
@@ -248,6 +288,7 @@ class Enc
 					@encounter[i]["msl_name"] = @msl[0]
 					@encounter[i]["msl_skill"] = ((@stats[7] * @level + 1) / 3 - 2 + aD6)
 					@encounter[i]["msl_skill"] = 1 if @encounter[i]["msl_skill"] < 1
+					@encounter[i]["msl_ini"] = @msl[9] + @encounter[i]["reaction"]
 					@encounter[i]["msl_off"] = @encounter[i]["msl_skill"] + @msl[4]
 					@encounter[i]["msl_dam"] = @msl[3]
 					@encounter[i]["msl_rng"] = @msl[5]
@@ -255,6 +296,39 @@ class Enc
 						@encounter[i]["msl_dam"] += @encounter[i]["strength"] / 5
 					end
 				end
+
+        if @arax == 1
+          case rand(11).to_i
+            when 0
+              @encounter[i]["ap"] += d6
+            when 1..3
+              @tmp = oD6 + 3
+              @encounter[i]["wpn_skill"] += @tmp
+              @encounter[i]["wpn_off"]   += @tmp
+              @encounter[i]["wpn_def"]   += @tmp
+            when 4..5
+              @tmp = oD6 + 3
+              @encounter[i]["msl_skill"] += @tmp
+              @encounter[i]["msl_off"]   += @tmp 
+            when 6
+              @encounter[i]["msl_name"] = "Poison spit"
+              @encounter[i]["msl_skill"] = ((@stats[7] * @level + 1) / 3 - 2 + aD6)
+              @encounter[i]["msl_skill"] = 1 if @encounter[i]["msl_skill"] < 1
+              @encounter[i]["msl_off"] = @encounter[i]["msl_skill"]
+              @encounter[i]["msl_dam"] = 2
+              @encounter[i]["msl_rng"] = 10
+            when 7
+              @encounter[i]["msl_name"] = "Poison breath"
+              @encounter[i]["msl_skill"] = ((@stats[7] * @level + 1) / 3 + aD6)
+              @encounter[i]["msl_skill"] = 1 if @encounter[i]["msl_skill"] < 1
+              @encounter[i]["msl_off"] = @encounter[i]["msl_skill"]
+              @encounter[i]["msl_dam"] = 0
+              @encounter[i]["msl_rng"] = 3
+            else
+              @encounter[i]["string"] += " [Chaos feature, GM's discr.]"
+          end
+        end
+
 				rescue # Result for corner cases
 					@encounter[0] = {}
 					@encounter[0]["string"] = "NO ENCOUNTER"
