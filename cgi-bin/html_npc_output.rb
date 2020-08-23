@@ -75,6 +75,7 @@ n = Npc.new(@name, @type, @level, @area, @sex, @age, @height, @weight, @descript
 @physical3 = n.physical3
 @physical3s = n.physical3s
 @dtraps = n.dtraps
+@react = n.react
 @tracking = n.tracking
 @percept1 = n.percept1
 @percept1s = n.percept1s
@@ -129,7 +130,7 @@ end
 
 @missile1 = n.missile1
 @missile1s = n.missile1s
-@missile1sr = n.missile1sr
+@missile1i = n.missile1i
 @missile1o = n.missile1o
 @missile1dam = n.missile1dam
 @missile1rng = n.missile1rng
@@ -139,7 +140,7 @@ if n.missile2s != 0
 	@ms2 = true
 	@missile2 = n.missile2
 	@missile2s = n.missile2s
-	@missile2sr = n.missile2sr
+	@missile2i = n.missile2i
 	@missile2o = n.missile2o
 	@missile2dam = n.missile2dam
 	@missile2rng = n.missile2rng
