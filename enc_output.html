@@ -6,7 +6,7 @@
 
 <body bgcolor="#ffffff" text="#000000">
         
-<table width="480" border="0" cellspacing="0" cellpadding="2" align="center">
+<table width="600" border="0" cellspacing="0" cellpadding="2" align="center">
   <tbody>
     <tr>
       <td>         
@@ -39,7 +39,7 @@
 				  <% if @event %>
 				  <td colspan="14" bgcolor="#ffffff"><b><input type="text" size="115" name="string" value="<%= @e[0]["string"] %>"</b></td>
 				  <% else %>
-                  <td colspan="14" bgcolor="#cccccc"><input type="text" size="30" name="enc_attitude" value="<%= @enc_attitude %>"</td>
+                  <td colspan="15" bgcolor="#cccccc"><input type="text" size="30" name="enc_attitude" value="<%= @enc_attitude %>"</td>
 				  <% end %>
                 </tr>
 				<% if not @event %>
@@ -86,7 +86,7 @@
                   <td width="40" bgcolor="#cccccc"><b>Dam</b></td>
                   <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="wpn_dam" value="<%= @e[i]["wpn_dam"] %>"</td>
                   <td width="40" bgcolor="#cccccc"><b>AP/BP</b></td>
-                  <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="ap" value="<%= @e[i]["ap"] %>/<%= @e[i]["bp"] %>"</td>
+                  <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="ap" value="<%= @e[i]["ap"] %> / <%= @e[i]["bp"] %>"</td>
                   <td width="40" bgcolor="#cccccc"><b>Stat</b></td>
                   <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="bp" value="<%= @e[i]["status"] %>"</td>
                 </tr>
