@@ -23,31 +23,29 @@
       <td>                  
         <table width="100%" border="0" cellspacing="1" cellpadding="1">
           <tbody>
-            <tr><td colspan="16" bgcolor="#666666">
+            <tr><td colspan="15" bgcolor="#666666">
             <table width="100%" border="0" cellspacing="1" cellpadding="2">
               <tbody>
                 <tr>
-				  <td colspan="16" width="180" bgcolor="#cccccc"><b><%= @day %>: <%= @terrain %></b> (Level mod = <%= $Level %>)</td>
+				  <td colspan="15" width="180" bgcolor="#cccccc"><b><%= @day %>: <%= @terrain %></b> (Level mod = <%= $Level %>)</td>
                 </tr>
 				  <% if @no_encounter %>
                 <tr>
-				  <td colspan="16" width="180" bgcolor="#ffffff"><b>NO ENCOUNTER</td>
+				  <td colspan="15" width="180" bgcolor="#ffffff"><b>NO ENCOUNTER</td>
                 </tr>
 				<% end %>
 				<% if not @no_encounter %>
                 <tr>
 				  <% if @event %>
-				  <td colspan="16" bgcolor="#ffffff"><b><input type="text" size="115" name="string" value="<%= @e[0]["string"] %>"</b></td>
+				  <td colspan="14" bgcolor="#ffffff"><b><input type="text" size="115" name="string" value="<%= @e[0]["string"] %>"</b></td>
 				  <% else %>
-                  <td colspan="16" bgcolor="#cccccc"><input type="text" size="30" name="enc_attitude" value="<%= @enc_attitude %>"</td>
+                  <td colspan="14" bgcolor="#cccccc"><input type="text" size="30" name="enc_attitude" value="<%= @enc_attitude %>"</td>
 				  <% end %>
                 </tr>
 				<% if not @event %>
 				<% @enc_number.times do |i| %>
                 <tr>
 				  <td width="180" bgcolor="#ffffff"><b><input type="text" size="30" name="string" value="<%= @e[i]["string"] %>"</b></td>
-                  <td width="40" bgcolor="#cccccc"><b>Lvl</b></td>
-				  <td width="40" bgcolor="#ffffff"><input type="text" size="2" name="level" value="<%= @e[i]["level"] %>"</td>
                   <td width="40" bgcolor="#cccccc"><b>SIZ</b></td>
                   <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="size" value="<%= @e[i]["size"] %>"</td>
                   <td width="40" bgcolor="#cccccc"><b>STR</b></td>
@@ -60,6 +58,8 @@
                   <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="mag" value="<%= @e[i]["mag"] %>"</td>
                   <td width="40" bgcolor="#cccccc"><b>Ddg</b></td>
                   <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="dodge" value="<%= @e[i]["dodge"] %>"</td>
+                  <td width="40" bgcolor="#cccccc"><b>RS</b></td>
+                  <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="reaction" value="<%= @e[i]["reaction"] %>"</td>
                 </tr>
 				<% if @e[i]["mag_lore"] %>
                 <tr>
@@ -85,10 +85,10 @@
                   <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="wpn_def" value="<%= @e[i]["wpn_def"] %>"</td>
                   <td width="40" bgcolor="#cccccc"><b>Dam</b></td>
                   <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="wpn_dam" value="<%= @e[i]["wpn_dam"] %>"</td>
-                  <td width="40" bgcolor="#cccccc"><b>AP</b></td>
-                  <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="ap" value="<%= @e[i]["ap"] %>"</td>
-                  <td width="40" bgcolor="#cccccc"><b>BP</b></td>
-                  <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="bp" value="<%= @e[i]["bp"] %>"</td>
+                  <td width="40" bgcolor="#cccccc"><b>AP/BP</b></td>
+                  <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="ap" value="<%= @e[i]["ap"] %>/<%= @e[i]["bp"] %>"</td>
+                  <td width="40" bgcolor="#cccccc"><b>Stat</b></td>
+                  <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="bp" value="<%= @e[i]["status"] %>"</td>
                 </tr>
 				<% if @e[i]["msl_name"] %>
                 <tr>
@@ -103,10 +103,9 @@
                   <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="msl_dam" value="<%= @e[i]["msl_dam"] %>"</td>
                   <td width="40" bgcolor="#cccccc"><b>Rng</b></td>
                   <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="msl_rng" value="<%= @e[i]["msl_rng"] %>"</td>
-                  <td width="40" bgcolor="#cccccc"><b>Stat</b></td>
-                  <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="status" value="<%= @e[i]["status"] %>"</td>
-                  <td width="40" bgcolor="#cccccc"><b>RS</b></td>
-                  <td width="30" bgcolor="#ffffff"><input type="text" size="2" name="reaction" value="<%= @e[i]["reaction"] %>"</td>
+				  <td width="40" bgcolor="#cccccc"><b>Note</b></td>
+                  <td colspan="3" width="30" bgcolor="#ffffff"><input type="text" size="14" name="note" value=""</td>
+
                 </tr>
 				  <% end %>
                 <tr>
