@@ -288,7 +288,7 @@ class Enc
 					@encounter[i]["msl_name"] = @msl[0]
 					@encounter[i]["msl_skill"] = ((@stats[7] * @level + 1) / 3 - 2 + aD6)
 					@encounter[i]["msl_skill"] = 1 if @encounter[i]["msl_skill"] < 1
-					@encounter[i]["msl_ini"] = @msl[9] + @encounter[i]["reaction"]
+					@encounter[i]["msl_ini"] = @msl[7] + @encounter[i]["reaction"]
 					@encounter[i]["msl_off"] = @encounter[i]["msl_skill"] + @msl[4]
 					@encounter[i]["msl_dam"] = @msl[3]
 					@encounter[i]["msl_rng"] = @msl[5]

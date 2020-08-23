@@ -409,7 +409,7 @@ class Npc
     if @npc["items"]["Missile1"][1] != "Crossbow" && @npc["items"]["Missile1"][1] != "Bow"  
       @npc["items"]["Missile1"][3] += (@npc["attr"]["STRNG"] / 5).to_i
     end
-    @npc["items"]["Missile1"][9] += @npc["a_skill"]["Reaction"]
+    @npc["items"]["Missile1"][7] += @npc["a_skill"]["Reaction"]
     @npc["items"]["Missile1"][4] += @npc["c_skill"]["Missile1s"]
 
     tmp2 = rand(@npc["specials"]["Msl-level"]) + 1
@@ -419,7 +419,7 @@ class Npc
       if @npc["items"]["Missile2"][1] != "Crossbow" && @npc["items"]["Missile2"][1] != "Bow"  
         @npc["items"]["Missile2"][3] += (@npc["attr"]["STRNG"] / 5).to_i
       end
-      @npc["items"]["Missile2"][9] += @npc["a_skill"]["Reaction"]
+      @npc["items"]["Missile2"][7] += @npc["a_skill"]["Reaction"]
       @npc["items"]["Missile2"][4] += @npc["c_skill"]["Missile2s"]
     else
       @npc["items"]["Missile2"] = ""
@@ -893,10 +893,6 @@ class Npc
     self.c_skill("Missile1s")
   end
 
-  def missile1sr
-    @npc["items"]["Missile1"][7]
-  end
-
   def missile1o
     @npc["items"]["Missile1"][4]
   end
@@ -914,7 +910,7 @@ class Npc
   end
 
   def missile1i
-    @npc["items"]["Missile1"][9]
+    @npc["items"]["Missile1"][7]
   end
 
   def missile2
@@ -923,10 +919,6 @@ class Npc
 
   def missile2s
     self.c_skill("Missile2s")
-  end
-
-  def missile2sr
-    @npc["items"]["Missile2"][7]
   end
 
   def missile2o
@@ -946,7 +938,7 @@ class Npc
   end
 
   def missile2i
-    @npc["items"]["Missile1"][9]
+    @npc["items"]["Missile1"][7]
   end
 
   def maglore

@@ -117,7 +117,7 @@ def npc_output(n, cli)
   end
   f += "\n"
   f += "> "
-  f += (n.missile1 + "(" + n.missile1sr.to_s + ")").ljust(19)
+  f += n.missile1.ljust(19)
   f += n.missile1s.to_s.ljust(8)
   f += n.missile1i.to_s.ljust(8)
   f += n.missile1o.to_s.ljust(7)
@@ -128,7 +128,7 @@ def npc_output(n, cli)
   if n.missile2s != 0
     f += "\n"
     f += "> "
-    f += (n.missile2 + "(" + n.missile2sr.to_s + ")").ljust(19)
+    f += n.missile2.ljust(19)
     f += n.missile2s.to_s.ljust(8)
     f += n.missile2i.to_s.ljust(8)
     f += n.missile2o.to_s.ljust(7)
