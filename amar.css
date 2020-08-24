@@ -1,5 +1,10 @@
 body { margin-top: 20px; }
 
+a:link    { color: darkgreen; }
+a:hover   { text-decoration: underline overline; }
+a:active  { color: green; }
+a:visited { color: green; }
+
 .button-enc,
 .button-npc,
 .button-town,
