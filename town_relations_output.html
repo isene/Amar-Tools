@@ -1,6 +1,9 @@
 <html>
 <head>
 <title>Town realtions - for Amar RPG</title>
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+<link rel="stylesheet" href="amar.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body bgcolor="#FFFFFF" text="#000000">
@@ -36,10 +39,10 @@
   <tbody>
     <tr>
       <td align="center">         
-	    <p><button style="width:300px" onclick="location.href = 'saved/town_relations.txt';" > Download town relations </button></p>
+	    <p><button class="pure-button button-download" onclick="location.href = 'saved/town_relations.txt';" > Download town relations </button></p>
         <form name="new" method="post" action="/cgi-bin/html_town_relations_input.rb">
-        <input type="submit" style="width:300px" name="new" value=" Upload new town "></form>
-	    <p><button style="width:300px" onclick="location.href = '/amar.html';" > Front page </button></p>
+        <input type="submit" name="new" value=" Upload new town " class="pure-button button-townrel"></form>
+	    <p><button class="pure-button button-front" onclick="location.href = '/amar.html';" > Front page </button></p>
       </td>
     </tr>     
   </tbody>   

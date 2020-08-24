@@ -1,7 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <title>Weather Generator - For the Amar RPG</title>
+<title>Weather Generator - For the Amar RPG</title>
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+<link rel="stylesheet" href="amar.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
@@ -49,11 +52,11 @@
   <tbody>
     <tr>
       <td align="center"> 
-	    <p><button style="width:300px" onclick="location.href = 'saved/weather.pdf';" > Download weather as PDF </button></p>
+	    <p><button class="pure-button button-download" onclick="location.href = 'saved/weather.pdf';" > Download weather as PDF </button></p>
         <form name="new" method="post" action="/cgi-bin/html_weather_input.rb">
-        <input type="submit" style="width:300px" name="new" value=" New random weather "></form>
-	    <p><button style="width:300px" onClick="history.go(0);"> Reload with same values </button></p>
-	    <p><button style="width:300px" onclick="location.href = '/amar.html';" > Front page </button></p>
+        <input type="submit" class="pure-button button-weather" name="new" value=" New random weather "></form>
+	    <p><button class="pure-button button-reload" onClick="history.go(0);"> Reload with same values </button></p>
+	    <p><button class="pure-button button-front" onclick="location.href = '/amar.html';" > Front page </button></p>
       </td>
     </tr>     
   </tbody>   

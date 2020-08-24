@@ -1,7 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <title>Random town generation - For the Amar RPG</title>
+<title>Random town generation - For the Amar RPG</title>
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+<link rel="stylesheet" href="amar.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
@@ -60,7 +63,7 @@
 <table width="800" border="0" cellspacing="0" cellpadding="2" align="center">
   <tbody>
     <tr>
-      <td align="center">         
+      <td colspan="2" align="center">         
 		<p><small><b>The image above</b> shows those residents with special relationships. A
 		black line indicates a very good relationship while a double black
 		line shows love or a strong alliance. A red line shows animosity while
@@ -85,12 +88,18 @@
     </tr>     
     <tr>
       <td align="center">         
-	    <p><button style="width:300px" onclick="location.href = '<%= $nfile %>';" > Download generated town </button></p>
-	    <p><button style="width:300px" onclick="location.href = '<%= $townrel_file %>';" > Download town relations </button></p>
+	    <button class="pure-button button-download" onclick="location.href = '<%= $nfile %>';" > Download generated town </button></p>
+      </td>
+      <td align="center">         
+	    <button class="pure-button button-download" onclick="location.href = '<%= $townrel_file %>';" > Download town relations </button></p>
+      </td>
+    </tr>     
+    <tr>
+      <td colspan="2"align="center">         
         <form name="new" method="post" action="/cgi-bin/html_town_input.rb">
-        <input type="submit" style="width:300px" name="new" value=" New random town "></form>
-	    <p><button style="width:300px" onClick="history.go(0);"> Reload with same values </button></p>
-	    <p><button style="width:300px" onclick="location.href = '/amar.html';" > Front page </button></p>
+        <input type="submit" class="pure-button button-town" name="new" value=" New random town "></form>
+	    <p><button class="pure-button button-reload" onClick="history.go(0);"> Reload with same values </button></p>
+	    <p><button class="pure-button button-front" onclick="location.href = '/amar.html';" > Front page </button></p>
       </td>
     </tr>     
   </tbody>   

@@ -1,7 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <title>Random Name Generator - For the Amar RPG</title>
+<title>Random Name Generator - For the Amar RPG</title>
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+<link rel="stylesheet" href="amar.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
@@ -39,9 +42,9 @@
     <tr>
       <td align="center"> 
         <form name="new" method="post" action="/cgi-bin/html_name_input.rb">
-        <input type="submit" style="width:300px" name="new" value=" New random names "></form>
-	    <p><button style="width:300px" onClick="history.go(0);"> More random names of same race </button></p>
-	    <p><button style="width:300px" onclick="location.href = '/amar.html';" > Front page </button></p>
+        <input type="submit" name="new" value=" New random names " class="pure-button button-names"></form>
+	    <p><button class="pure-button button-reload" onClick="history.go(0);"> More of same race </button></p>
+	    <p><button class="pure-button button-front" onclick="location.href = '/amar.html';" > Front page </button></p>
       </td>
     </tr>     
   </tbody>   

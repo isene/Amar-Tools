@@ -1,39 +1,70 @@
 <html>
 <head>
 <title>Tools for the Amar RPG</title>
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+<link rel="stylesheet" href="amar.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body bgcolor="#FFFFFF" text="#000000">
+<body>
 
 <table width="800" border="0" cellspacing="0" cellpadding="2" align="center">
   <tr>
-    <td><center><h1>Tools for the Amar RPG</h1></center></td>
+    <td colspan="3"><center><h1>Tools for the Amar RPG</h1></center></td>
   </tr>
   <tr>
     <td>
       <center>
         <form name="new" method="post" action="/cgi-bin/html_enc_input.rb">
-        <input type="submit" style="width:300px" name="new" value=" Generate random encounter "></form>
+        <input type="submit" name="new" value=" Random encounter " class="pure-button button-enc"></form>
+      </center>
+    </td>
+    <td>
+      <center>
         <form name="new" method="post" action="/cgi-bin/html_npc_input.rb">
-        <input type="submit" style="width:300px" name="new" value=" Generate a detailed human NPC "></form>
+        <input type="submit" name="new" value=" Detailed human NPC " class="pure-button button-npc"></form>
+      </center>
+    </td>
+    <td>
+      <center>
         <form name="new" method="post" action="/cgi-bin/html_town_input.rb">
-        <input type="submit" style="width:300px" name="new" value=" Generate a random town "></form>
-        <form name="new" method="post" action="/cgi-bin/html_town_relations_input.rb">
-        <input type="submit" style="width:300px" name="new" value=" Generate town relations "></form>
-        <form name="new" method="post" action="/cgi-bin/html_name_input.rb">
-        <input type="submit" style="width:300px" name="new" value=" Generate random names "></form>
-        <form name="new" method="post" action="/cgi-bin/html_weather_input.rb">
-        <input type="submit" style="width:300px" name="new" value=" Generate random weather "></form>
-        <form name="new" method="post" action="/cgi-bin/O6.rb">
-        <input type="submit" style="width:300px" name="new" value=" Make open ended D6 rolls "></form>
+        <input type="submit" name="new" value=" Random town " class="pure-button button-town"></form>
       </center>
     </td>
   </tr>
   <tr>
-	<td><p>The tools above will only make sense if you know what
-    roleplaying games (RPGs) are. It is a usefull asset for players and
-	Game Masters of the <a href="http://d6gaming.org">Amar RPG</a> (the Amar
-	wiki).</p> 
+    <td>
+      <center>
+        <form name="new" method="post" action="/cgi-bin/html_name_input.rb">
+        <input type="submit" name="new" value=" Random names " class="pure-button button-names"></form>
+      </center>
+    </td>
+    <td>
+      <center>
+        <form name="new" method="post" action="/cgi-bin/html_weather_input.rb">
+        <input type="submit" name="new" value=" Random weather " class="pure-button button-weather"></form>
+      </center>
+    </td>
+    <td>
+      <center>
+        <form name="new" method="post" action="/cgi-bin/html_town_relations_input.rb">
+        <input type="submit" name="new" value=" Town relations " class="pure-button button-townrel"></form>
+      </center>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="3">
+      <center>
+        <form name="new" method="post" action="/cgi-bin/O6.rb">
+        <input type="submit" name="new" value=" Open ended D6 rolls " class="pure-button button-dice"></form>
+      </center>
+    </td>
+  </tr>
+  <tr>
+	<td colspan="3">
+	<p>The tools above will only make sense if you know what roleplaying games
+	(RPGs) are. It is a usefull asset for players and Game Masters of the <a
+	href="http://d6gaming.org">Amar RPG</a> (the Amar wiki).</p> 
 
 	<p>Upon pressing the top three buttons, you will be asked for certain
 	inputs. You may select or enter values in any of the input fields. Those
@@ -54,8 +85,8 @@
 	randomly generating a month of weather (28 days) and 10 "Open Ended Dice
 	Rolls".</p>
 	<br />
-  <tr><td><center><img src="/images/amar.png" /></center></td></tr>
-  <tr><td><center><small><br />These tools and illustrations are licensed under GPL3<br />Copyright 2002-2020, <a href="https://isene.org/">Geir Isene</a>.</small></center></td></tr>
+  <tr><td colspan="3"><center><img src="amar.png" /></center></td></tr>
+  <tr><td colspan="3"><center><small><br />These tools and illustrations are licensed under GPL3<br />Copyright 2002-2020, <a href="https://isene.org/">Geir Isene</a>.</small></center></td></tr>
 </table>
 </body>
 </html>
