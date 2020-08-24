@@ -7,6 +7,9 @@ print <<HTML1
 <html>
 <head>
 <title>Open ended D6 rolls</title>
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+<link rel="stylesheet" href="amar.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body bgcolor="#FFFFFF" text="#000000">
@@ -21,8 +24,8 @@ print <<HTML2
   <tr>                                                                                                                                                       
     <td align="center">                                                                                                                                      
       <form name="new" method="post" action="/cgi-bin/O6.rb">                                                                                    
-      <input type="submit" style="width:300px" name="new" value=" Make new rolls "></form>
-      <p><button style="width:300px" onclick="location.href = '/amar.html';" > Front page </button></p>
+      <input type="submit" class="pure-button button-dice" name="new" value=" Make new rolls "></form>
+      <p><button class="pure-button button-front" onclick="location.href = '/amar.html';" > Front page </button></p>
     </td>                                                                                                                                                    
   </tr>                                                                                                                                                      
 	<tr><td><center><br /><image src="/images/dice.png" /></td></tr>
