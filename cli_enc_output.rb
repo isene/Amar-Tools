@@ -63,12 +63,12 @@ def enc_output(anENC, cli)
 				end
 				f += "\n"
 
-				f += "  " + e[i]["wpn_name"].ljust(14) + "Skill=" + e[i]["wpn_skill"].to_s.rjust(2) + ", Ini: " + e[i]["wpn_ini"].to_s
+				f += "  " + e[i]["wpn_name"].ljust(14) + "Skill=" + e[i]["wpn_skill"].to_s.rjust(2) + ", Ini:" + e[i]["wpn_ini"].to_s
 				f += ", Off:" + e[i]["wpn_off"].to_s.rjust(2) + ", Def:" + e[i]["wpn_def"].to_s.rjust(2) + ", Dam:" + e[i]["wpn_dam"].to_s.rjust(2)
 				f += "    AP:" + e[i]["ap"].to_s + ", BP:" + e[i]["bp"].to_s + "\n"
 
 				if e[i]["msl_name"]
-					f += "  " + e[i]["msl_name"].ljust(14) + "Skill=" + e[i]["msl_skill"].to_s.rjust(2) + ", Ini: " + e[i]["msl_ini"].to_s
+					f += "  " + e[i]["msl_name"].ljust(14) + "Skill=" + e[i]["msl_skill"].to_s.rjust(2) + ", Ini:" + e[i]["msl_ini"].to_s
 					f += ", Off:" + e[i]["msl_off"].to_s.rjust(2) + ", Dam:" + e[i]["msl_dam"].to_s.rjust(2) + ", Rng:" + e[i]["msl_rng"].to_s + "\n"
 				end
 			end
