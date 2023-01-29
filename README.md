@@ -30,6 +30,9 @@ between NPCs ('apt install graphviz' on Ubuntu).
 LaTeX is needed for random weather generation ('apt install
 texlive-latex-recommended' on Ubuntu).
 
+To generate an adventure via OpenAI, you need to install my openai gem (see
+https://github.com/isene/openai).
+
 ## Setup
 To set up the program, extract npcg.tar.gz:
 

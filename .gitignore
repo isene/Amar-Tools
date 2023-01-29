@@ -1,3 +1,4 @@
 *.swp
+*.conf
 saved/*
 cgi-bin/saved/*

@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Generated adventure for Amar RPG using OpenAI</title>
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+<link rel="stylesheet" href="/amar.css">
+</head>
+
+<body bgcolor="#ffffff" text="#000000">
+        
+<table width="800" border="0" cellspacing="0" cellpadding="2" align="center">
+  <tbody>
+    <tr>
+      <td>         
+        <center><%= @adventure %></center>
+      </td>
+    </tr>     
+  </tbody>   
+</table>
+
+<table width="480" border="0" cellspacing="0" cellpadding="2" align="center">
+  <tbody>
+    <tr>
+      <td align="center"> 
+        <form name="new" method="post" action="/cgi-bin/html_adventure_input.rb">
+        <input type="submit" name="new" value=" Generate a new adventure " class="pure-button button-adventure"></form>
+	    <p><button class="pure-button button-front" onclick="location.href = '/amar.html';" > Front page </button></p>
+      </td>
+    </tr>     
+  </tbody>   
+</table>
+
+</body>
+
+</html>

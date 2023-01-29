@@ -131,6 +131,7 @@ else
 	loop do
 		system "clear"
     puts "\nTools for the Amar RPG. Press a key to access the desired tool:\n\n"
+    puts "a = Generate an adventure from OpenAI"
 		puts "e = Random encounter"
 		puts "t = Create a village/town/city"
 		puts "r = Make town relations"
@@ -140,11 +141,34 @@ else
 		puts "q = Quit npcg\n\n"
     print "> "
 		c = get_char
-    puts c
+    if c == "a"
+      puts "Getting adventure from OpenAI... (quality may vary, use at your own discretion)\n\n"
+    else
+      puts c
+    end
 		# q = Quit
 		if c == "q"
       puts ""
 			break
+    # a = Generate an adventure
+    elsif c == "a"
+      cmd    = "openai -f " + __dir__ + "/amar.txt -x 2000"
+      begin
+        adv    = %x[#{cmd}]
+        twidth = `tput cols`.to_i
+        puts adv.gsub(/(.{1,#{twidth}})( +|$\n?)|(.{1,#{twidth}})/, "\\1\\3\n")
+      rescue => error
+        p error
+        puts "\nYou need to install openai-term to use this feature (see https://github.com/isene/openai)"
+      end
+      begin
+        system("echo '#{adv}' | xclip")
+        puts "\n\n(Adventure copied to clipboard)"
+      rescue
+        puts "\n\nInstall xclip to have the adventure copied to the clipboard."
+      end
+      puts "Press any key..."
+      get_char
 		# e = Random Encounter
 		elsif c == "e"
 			ia = enc_input

@@ -22,15 +22,16 @@ a:visited { color: green; }
 	border-radius: 4px;
 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
-.button-enc		{ background: #2e7a4c; }
-.button-npc		{ background: #0e5a2c; }
-.button-town	{ background: #7d4733; }
-.button-townrel { background: #9d6753; }
-.button-names	{ background: #6d5951; }
-.button-weather { background: #47648a; }
-.button-dice	{ background: #aa8888; }
-.button-download{ background: #666666; }
-.button-submit  { background: #111111; }
-.button-new     { background: #444444; }
-.button-reload  { background: #222222; }
-.button-front   { background: #d4a05f; }
+.button-enc			{ background: #2e7a4c; }
+.button-npc			{ background: #0e5a2c; }
+.button-town		{ background: #7d4733; }
+.button-townrel		{ background: #9d6753; }
+.button-names		{ background: #6d5951; }
+.button-weather		{ background: #47648a; }
+.button-dice		{ background: #aa8888; }
+.button-adventure	{ background: #7f6d99; }
+.button-download	{ background: #666666; }
+.button-submit		{ background: #111111; }
+.button-new			{ background: #444444; }
+.button-reload		{ background: #222222; }
+.button-front		{ background: #d4a05f; }
