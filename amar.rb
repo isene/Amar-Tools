@@ -162,7 +162,7 @@ else
         puts "\nYou need to install openai-term to use this feature (see https://github.com/isene/openai)"
       end
       begin
-        system("echo '#{adv}' | xclip")
+        system("echo '#{adv}' | xclip > /dev/null 2>&1")
         puts "\n\n(Adventure copied to clipboard)"
       rescue
         puts "\n\nInstall xclip to have the adventure copied to the clipboard."
