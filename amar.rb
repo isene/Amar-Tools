@@ -17,6 +17,38 @@ def get_char
     return c
 end
 
+# Define a function to get OpenAI response
+def openai(adv)
+  if adv
+    cmd  = "openai -f " + __dir__ + "/amar.txt -x 2000"
+  else
+    fl = "temp.npc"
+    puts "\nEnter npc file name (default is the latest generated [temp.npc]):"
+    print "> "
+    f  = gets.chomp.to_s
+    fl = f unless f == ""
+    fl =  __dir__ + "/saved/" + fl
+    cmd = "openai -t 'Generate a detailed description of the following NPC from the AMAR RPG system (see https://d6gaming.org):' -f " + fl + " -x 2000"
+  end
+  puts "Getting response from OpenAI... (quality may vary, use at your own discretion)\n\n"
+  begin
+    resp   = %x[#{cmd}]
+    twidth = `tput cols`.to_i
+    puts resp.gsub(/(.{1,#{twidth}})( +|$\n?)|(.{1,#{twidth}})/, "\\1\\3\n")
+  rescue => error
+    p error
+    puts "\nYou need to install openai-term to use this feature (see https://github.com/isene/openai)"
+  end
+  begin
+    system("echo '#{resp}' | xclip > /dev/null 2>&1")
+    puts "\n\n(Text copied to clipboard)"
+  rescue
+    puts "\n\nInstall xclip to have the adventure copied to the clipboard."
+  end
+  puts "Press any key..."
+  get_char
+end
+
 # Deal with the directory from which NPCg is run then the arguments
 if File::symlink?($0)
     $pgmdir = File::dirname(File::expand_path(File::readlink($0), \
@@ -132,6 +164,7 @@ else
 		system "clear"
     puts "\nTools for the Amar RPG. Press a key to access the desired tool:\n\n"
     puts "a = Generate an adventure from OpenAI"
+    puts "d = Generate a description for an NPC (via OpenAI)"
 		puts "e = Random encounter"
 		puts "t = Create a village/town/city"
 		puts "r = Make town relations"
@@ -141,34 +174,16 @@ else
 		puts "q = Quit npcg\n\n"
     print "> "
 		c = get_char
-    if c == "a"
-      puts "Getting adventure from OpenAI... (quality may vary, use at your own discretion)\n\n"
-    else
-      puts c
-    end
 		# q = Quit
 		if c == "q"
       puts ""
 			break
     # a = Generate an adventure
     elsif c == "a"
-      cmd    = "openai -f " + __dir__ + "/amar.txt -x 2000"
-      begin
-        adv    = %x[#{cmd}]
-        twidth = `tput cols`.to_i
-        puts adv.gsub(/(.{1,#{twidth}})( +|$\n?)|(.{1,#{twidth}})/, "\\1\\3\n")
-      rescue => error
-        p error
-        puts "\nYou need to install openai-term to use this feature (see https://github.com/isene/openai)"
-      end
-      begin
-        system("echo '#{adv}' | xclip > /dev/null 2>&1")
-        puts "\n\n(Adventure copied to clipboard)"
-      rescue
-        puts "\n\nInstall xclip to have the adventure copied to the clipboard."
-      end
-      puts "Press any key..."
-      get_char
+      openai(true)
+    # d = Generate NPC description
+    elsif c == "d"
+      openai(false)
 		# e = Random Encounter
 		elsif c == "e"
 			ia = enc_input
@@ -181,16 +196,16 @@ else
 			town_output(aTOWN, "cli")
 		# r = Random relationship map
 		elsif c == "r"
-			town_file = "saved/town.npc"
+			town_file = __dir__ + "saved/town.npc"
 			#Get town file name
-			puts "\nEnter town file name (default=saved/town.npc):"
+			puts "\nEnter town file name (default is the latest town generated [town.npc]):"
 			print "> "
 			fl = gets.chomp.to_s
-			town_file = fl unless fl == ""
+			town_file = __dir__ + "/saved/" + fl unless fl == ""
 			town_relations(town_file)
 			town_dot2txt(town_file)
 			puts "\nPress any key..."
-			c = get_char
+			get_char
 		# n = Random NPC
 		elsif c == "n"
 			# Reload chartypes as it gets reworked every time
