@@ -2,7 +2,7 @@
 
 def town_output(aTOWN, cli)
 
-	@t = aTOWN.town
+	@town = aTOWN.town
 
 	# Start creating the output text
 	@tn= ""
@@ -25,9 +25,9 @@ def town_output(aTOWN, cli)
 	@tn += " - Houses: #{aTOWN.town_size} - Residents: #{aTOWN.town_residents}\n\n"
 	f   += @tn
 
-	@t.length.times do |house|
-		f += "##{house}: #{@t[house][0]}\n"
-		@t[house][1..-1].each do |r|
+	@town.length.times do |house|
+		f += "##{house}: #{@town[house][0]}\n"
+		@town[house][1..-1].each do |r|
 			f += "   #{r}\n"
 		end
 		f += "\n"

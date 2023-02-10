@@ -1,0 +1,48 @@
+Amar RPG is a realistic, yet simple Role-Playing Game.
+
+A Player Character (PC) or Non-Player Character (NPC) is described with certain characteristics that has numeric values.
+
+The basic attributes of a character is:
+
+Size (SIZE) is calculated from the character's weight:
+	Less than 20kg = 1
+	20kg to 50 kg  = 2
+	50kg to 100 kg = 3
+	Above 100kg    = 4
+Strength (STRNG) is the bodily strength of the character.
+Endurance (ENDUR) is the stamina and willpower.
+Coordination (COORD) is how swift and agile the character is.
+Learning (LEARN) is the character's ability to assimilate information.
+Awareness (AWARE) is how keen senses the character has and the attentiveness.
+Magical Aptitude (MAGAP) is how attuned to magic the character is (it defines how many spells a character can cast per day)
+
+From these attributes one would calculate:
+Damage Bonus (DB) - the amount added when damage is rolled in combat. DB = (SIZE + STRNG)/3 
+Body Points (BP) - the amount of damage the character can take before passing out (the character dies when he take twice that amount of damage, i.e. reaches -BP). BP = 2*SIZE + ENDUR/3
+Magic Defence (MD) - the magic resistance of the character. MD = (MAGAP + ENDUR)/3
+
+Then there are a multitude of skills.
+
+Attributes and skills range from 0 to approximately 18 (except for SIZE), with the average value of 3.
+
+When a character tries to succeed in any situation, a 6-sided dice (d6) is rolled, the attribute or skill value added along with any modifiers. This total must be equal to or higher then the Difficulty Rating (DR) for the given situation.
+
+Some other abbreviations:
+Cult = The religion of choice (the number in parenthesis is the character's Cult Standing where 5 is quite a lot and 10 would be required for priesthood).
+ENC = Encumbrance; The total weight carried by the character.
+Status = How much the Encumbrance limits the character (determined by the STRNG). This number is subtracted from all attribute and skill rolls.
+AP = Armour Points. The number is subtracted when the character takes damage.
+Social status:
+	S   = Bound (like a slave)
+	LC  = Lower Class
+	LMC = Lower Middle Class
+	MC  = Middle Class
+	UC  = Upper Class
+	N   = Noble
+Money is the amount of Silver Pieces carried
+Weapons have a Skill, Initiative (I) for melee weapons or Shots per Round (SR) for missile weapons, Offensive value (OFF), Defensive value (DEF), Damage (DAM), the amount of damage the weapon can take before breaking (Hit Points or HP) and RANGE (the normal shooting range for missile weapons).
+Spells have a Level, Difficulty rating at level 0 (DR), whether it must be actively maintained (A?), whether it can be resisted by the target (R?), Casting Time in rounds or minutes (CT), Duration (DUR), Maximum weight of the target (WT) and Area of Effect (AoE).
+
+Based on the above, give a description of the following character:
+
+
