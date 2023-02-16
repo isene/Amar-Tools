@@ -45,4 +45,3 @@ Spells have a Level, Difficulty rating at level 0 (DR), whether it must be activ
 
 Based on the above, give a description of the following character:
 
-

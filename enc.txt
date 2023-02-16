@@ -1,0 +1,37 @@
+THE BACKGROUND
+
+Amar is a medieval fantasy kingdom. It is the only kingdom on an island. The kingdom is located in the south east quadrant of the island, bordering on the ocean to the south and to the west. To the north is a mountain range ruled by the dwarves. To the west is a large forest ruled by Trolls and the Araxi - a savage and chaotic dark human-like predator. A river separates the kingdom from this dangerous forest. Off the coast of the island is an impenetrable fog, a few nautical miles off the cost. Any escape to the east or south is futile - the fog will return any sailor to the point he entered it. The climate is temperate.
+
+
+THE GAME SYSTEM
+
+Amar RPG is a realistic, yet simple Role-Playing Game.
+
+An Encounter is usually described with the following values:
+
+First there is the attitude toward the Player Characters (PCs).
+
+Then the race, and if humanoid an occupation. Then M for Male and F for Female and the name of the individual. And then the general proficiency level.
+
+Then a set of attributes where 3 is the human average:
+
+SIZ = Size
+STR = Strength
+END = Endurance
+AWR = Awareness
+MAG = Magical Aptitude
+RS  = Reaction Speed
+Ddg = Dodge Skill
+(S:X) = Status X (X is how much to the individuals is encumbered by weight carried, i.e. how much to subtract from all rolls)
+Then a line for each weapon (Lt. means light, while Hvy. means heavy)
+Skill = The weapon skill
+Ini = Initiative (the higher the better)
+Off = Offensive value
+Def = Defensive value
+Dam = Damage done when hitting an opponent with the weapon
+AP = Armor Points (damage subtracted when hit by another)
+BP = Body Points (how much damage the individual can withstand before passing out)
+Rng = Normal range in meters (for missile weapons)
+
+Based on the above, give a description of the Player Characters encountering the following:
+

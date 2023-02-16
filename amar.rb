@@ -98,12 +98,14 @@ class String
 end
 
 # Define colors
-$dark ? @a = 194 : @a = 29
+$dark ? @A = 194 : @A = 29
+$dark ? @e = 231 : @e = 65
+$dark ? @E = 230 : @E = 64
+$dark ? @n = 229 : @n = 29
+$dark ? @N = 228 : @N = 28
 $dark ? @t = 223 : @t = 59
 $dark ? @r = 222 : @r = 58
-$dark ? @e = 231 : @e = 65
-$dark ? @n = 230 : @n = 64
-$dark ? @N = 228 : @N = 94
+$dark ? @m = 228 : @m = 94
 $dark ? @w = 225 : @w = 57
 @red  = 160
 @gray = 240
@@ -111,25 +113,33 @@ $dark ? @w = 225 : @w = 57
 prompt = TTY::Prompt.new
 
 # Define a function to get OpenAI response
-def openai(adv)
+def openai(type)
   p = TTY::Prompt.new
-  if adv
-    cmd  = "openai -f " + __dir__ + "/amar.txt -x 2000"
-  else
+  if type == "adv"
+    cmd  = "openai -f " + __dir__ + "/adv.txt -x 2500"
+  elsif type == "npc"
     fl = "temp.npc"
-    f  = p.ask("\nEnter npc file name (default is the latest generated [temp.npc]):".c(@a)).to_s
+    f  = p.ask("\nEnter npc file name (default is the latest generated [temp.npc]):").to_s
     fl = f unless f == ""
     fl =  __dir__ + "/saved/" + fl
-    cmd = "openai -t 'Generate a detailed description of the following NPC from the AMAR RPG system (see https://d6gaming.org):' -f " + fl + " -x 2000"
+    text = File.read(__dir__ + "/npc.txt")
+    cmd = "openai -t \"#{text}\" -f " + fl + " -x 2500"
+  elsif type == "enc"
+    fl = "encounter.npc"
+    f  = p.ask("\nEnter encounter file name (default is the latest generated [encounter.npc]):").to_s
+    fl = f unless f == ""
+    fl =  __dir__ + "/saved/" + fl
+    text = File.read(__dir__ + "/enc.txt")
+    cmd = "openai -t \"#{text}\" -f " + fl + " -x 2500"
   end
-  puts "\nGetting response from OpenAI... (quality may vary, use at your own discretion)\n".c(@a)
+  puts "\nGetting response from OpenAI... (quality may vary, use at your own discretion)\n".c(@gray)
   begin
     resp   = %x[#{cmd}]
     twidth = `tput cols`.to_i
-    puts resp.gsub(/(.{1,#{twidth}})( +|$\n?)|(.{1,#{twidth}})/, "\\1\\3\n").c(@a)
+    puts resp.gsub(/(.{1,#{twidth}})( +|$\n?)|(.{1,#{twidth}})/, "\\1\\3\n")
   rescue => error
     p error
-    puts "\nYou need to install openai-term to use this feature (see https://github.com/isene/openai)".c(@a)
+    puts "\nYou need to install openai-term to use this feature (see https://github.com/isene/openai)"
   end
   p.keypress("\nPress any key...".c(@gray))
 end
@@ -169,13 +179,14 @@ $Level = 0
 loop do
   system "clear"
   puts "\nTools for the Amar RPG. Press a key to access the desired tool:\n\n"
-  puts "a".cb(@a) + " = Generate an adventure from OpenAI".c(@a)
-  puts "d".cb(@a) + " = Generate a description for an NPC (via OpenAI)".c(@a)
+  puts "A".cb(@A) + " = Generate an adventure from OpenAI".c(@A)
+  puts "e".cb(@e) + " = Random encounter".c(@e)
+  puts "E".cb(@E) + " = Generate a description for a random encounter".c(@E)
+  puts "n".cb(@n) + " = Generate a detailed human NPC".c(@n)
+  puts "N".cb(@N) + " = Generate a description for an NPC (via OpenAI)".c(@N)
   puts "t".cb(@t) + " = Create a village/town/city".c(@t)
   puts "r".cb(@r) + " = Make town relations".c(@r)
-  puts "e".cb(@e) + " = Random encounter".c(@e)
-  puts "n".cb(@n) + " = Generate a detailed human NPC".c(@n)
-  puts "N".cb(@N) + " = Generate names".c(@N)
+  puts "m".cb(@m) + " = Generate names".c(@m)
   puts "w".cb(@w) + " = Generate a month of weather".c(@w)
   puts "q".cb(@gray) + " = Quit npcg\n".c(@gray)
   c = prompt.keypress()
@@ -183,17 +194,27 @@ loop do
   if c == "q"
     puts ""
     break
-  # a = Generate an adventure
-  elsif c == "a"
-    openai(true)
-  # d = Generate NPC description
-  elsif c == "d"
-    openai(false)
+  # A = Generate an adventure
+  elsif c == "A"
+    openai("adv")
   # e = Random Encounter
   elsif c == "e"
     ia = enc_input
     anENC = Enc.new(ia[0], ia[1])
     enc_output(anENC, "cli")
+  # E = Generate Encounter description
+  elsif c == "E"
+    openai("enc")
+  # n = Random NPC
+  elsif c == "n"
+    # Reload chartypes as it gets reworked every time
+    load "includes/tables/chartype.rb"
+    ia = npc_input
+    aNPC = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
+    npc_output(aNPC, "cli")
+  # N = Generate NPC description
+  elsif c == "N"
+    openai("npc")
   # t = Random Town (castle/village/town/city)
   elsif c == "t"
     ia = town_input
@@ -208,15 +229,8 @@ loop do
     town_relations(town_file)
     town_dot2txt(town_file)
     prompt.keypress("\nPress any key...".c(@gray))
-  # n = Random NPC
-  elsif c == "n"
-    # Reload chartypes as it gets reworked every time
-    load "includes/tables/chartype.rb"
-    ia = npc_input
-    aNPC = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
-    npc_output(aNPC, "cli")
-  # N = Random names
-  elsif c == "N"
+  # m = Random names
+  elsif c == "m"
     name_gen
     prompt.keypress("\nPress any key...".c(@gray))
   # w = Random weather
