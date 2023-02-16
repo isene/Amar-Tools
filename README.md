@@ -52,11 +52,15 @@ This makes it possible for you to run the program by just entering
 ## Running the command line version (CLI)
 Running npcg on the command line will give you a set of options:
 
+	A = Generate an adventure from OpenAI
 	e = Random encounter
+	E = Generate a description for a random encounter
+	n = Generate a detailed human NPC
+	N = Generate a description for an NPC (via OpenAI)
 	t = Create a village/town/city
 	r = Make town relations
-	n = Generate a detailed human NPC
-	N = Generate names
+	m = Generate names
+	w = Generate a month of weather
 	q = Quit npcg
 
 Simply pick the tool you want and follow the instructions.
