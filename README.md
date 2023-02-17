@@ -53,6 +53,7 @@ This makes it possible for you to run the program by just entering
 Running npcg on the command line will give you a set of options:
 
 	A = Generate an adventure from OpenAI
+	I = Make a general question or request to OpenAI
 	e = Random encounter
 	E = Generate a description for a random encounter
 	n = Generate a detailed human NPC

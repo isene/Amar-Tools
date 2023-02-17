@@ -99,6 +99,7 @@ end
 
 # Define colors
 $dark ? @A = 194 : @A = 29
+$dark ? @I = 194 : @I = 29
 $dark ? @e = 231 : @e = 65
 $dark ? @E = 230 : @E = 64
 $dark ? @n = 229 : @n = 29
@@ -117,20 +118,24 @@ def openai(type)
   p = TTY::Prompt.new
   if type == "adv"
     cmd  = "openai -f " + __dir__ + "/adv.txt -x 2000"
+  elsif type == "gen"
+    req  = p.ask("\nEnter a request for OpenAI:").to_s
+    text = File.read(__dir__ + "/gen.txt") + req
+    cmd  = "openai -t \"#{text}\" -x 2000"
   elsif type == "npc"
-    fl = "temp.npc"
-    f  = p.ask("\nEnter npc file name (default is the latest generated [temp.npc]):").to_s
-    fl = f unless f == ""
-    fl =  __dir__ + "/saved/" + fl
+    fl   = "temp.npc"
+    f    = p.ask("\nEnter npc file name (default is the latest generated [temp.npc]):").to_s
+    fl   = f unless f == ""
+    fl   =  __dir__ + "/saved/" + fl
     text = File.read(__dir__ + "/npc.txt")
-    cmd = "openai -t \"#{text}\" -f " + fl + " -x 2000"
+    cmd  = "openai -t \"#{text}\" -f " + fl + " -x 2000"
   elsif type == "enc"
-    fl = "encounter.npc"
-    f  = p.ask("\nEnter encounter file name (default is the latest generated [encounter.npc]):").to_s
-    fl = f unless f == ""
-    fl =  __dir__ + "/saved/" + fl
+    fl   = "encounter.npc"
+    f    = p.ask("\nEnter encounter file name (default is the latest generated [encounter.npc]):").to_s
+    fl   = f unless f == ""
+    fl   =  __dir__ + "/saved/" + fl
     text = File.read(__dir__ + "/enc.txt")
-    cmd = "openai -t \"#{text}\" -f " + fl + " -x 2000"
+    cmd  = "openai -t \"#{text}\" -f " + fl + " -x 2000"
   end
   puts "\nGetting response from OpenAI... (quality may vary, use at your own discretion)\n".c(@gray)
   begin
@@ -180,6 +185,7 @@ loop do
   system "clear"
   puts "\nTools for the Amar RPG. Press a key to access the desired tool:\n\n"
   puts "A".cb(@A) + " = Generate an adventure from OpenAI".c(@A)
+  puts "I".cb(@I) + " = Make a general question or request to OpenAI".c(@I)
   puts "e".cb(@e) + " = Random encounter".c(@e)
   puts "E".cb(@E) + " = Generate a description for a random encounter".c(@E)
   puts "n".cb(@n) + " = Generate a detailed human NPC".c(@n)
@@ -197,6 +203,9 @@ loop do
   # A = Generate an adventure
   elsif c == "A"
     openai("adv")
+  # I = Generate an adventure
+  elsif c == "I"
+    openai("gen")
   # e = Random Encounter
   elsif c == "e"
     ia = enc_input
