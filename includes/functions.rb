@@ -47,7 +47,9 @@ def save_named_file(content, file_base, cli)
 
 	$nfile = "saved/" + file_base + file_ext
   while File.exists?($nfile)
-		$nfile =  "saved/" + File.basename($nfile) + "1" + file_ext
+    c = $nfile[-1].to_i + 1
+    $nfile.chop! if c > 1
+    $nfile =  "saved/" + File.basename($nfile).sub(File.extname($nfile), "") + file_ext + c.to_s 
 	end
   begin
   	File.write($nfile, content, perm: 0644)
