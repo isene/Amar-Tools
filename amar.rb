@@ -209,8 +209,12 @@ loop do
   # e = Random Encounter
   elsif c == "e"
     ia = enc_input
-    anENC = Enc.new(ia[0], ia[1])
-    enc_output(anENC, "cli")
+    loop do
+      anENC = Enc.new(ia[0], ia[1])
+      enc_output(anENC, "cli")
+      puts "\n\nPress 'r' if you want to re-roll with the same inputs."
+      break if STDIN.getch != "r"
+    end
   # E = Generate Encounter description
   elsif c == "E"
     openai("enc")
@@ -219,16 +223,24 @@ loop do
     # Reload chartypes as it gets reworked every time
     load "includes/tables/chartype.rb"
     ia = npc_input
-    aNPC = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
-    npc_output(aNPC, "cli")
+    loop do
+      aNPC = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
+      npc_output(aNPC, "cli")
+      puts "\n\nPress 'r' if you want to re-roll with the same inputs."
+      break if STDIN.getch != "r"
+    end
   # N = Generate NPC description
   elsif c == "N"
     openai("npc")
   # t = Random Town (castle/village/town/city)
   elsif c == "t"
     ia = town_input
-    aTOWN = Town.new(ia[0], ia[1], ia[2])
-    town_output(aTOWN, "cli")
+    loop do
+      aTOWN = Town.new(ia[0], ia[1], ia[2])
+      town_output(aTOWN, "cli")
+      puts "\n\nPress 'r' if you want to re-roll with the same inputs."
+      break if STDIN.getch != "r"
+    end
   # r = Random relationship map
   elsif c == "r"
     town_file = __dir__ + "saved/town.npc"
