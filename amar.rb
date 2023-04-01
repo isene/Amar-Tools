@@ -1,6 +1,6 @@
 #! /usr/bin/ruby
 #encoding: utf-8
-
+ 
 # Welcome to Amar Tools (https://github.com/isene/Amar-Tools)
 #  
 # This file is the umbrella for Amar Tools to work as CLI/terminal program.
