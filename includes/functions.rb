@@ -46,7 +46,7 @@ def save_named_file(content, file_base, cli)
 	cli == "cli" ? file_ext = ".npc" : file_ext = ".txt"
 
 	$nfile = "saved/" + file_base + file_ext
-  while File.exists?($nfile)
+  while File.exist?($nfile)
     c = $nfile[-1].to_i + 1
     $nfile.chop! if c > 1
     $nfile =  "saved/" + File.basename($nfile).sub(File.extname($nfile), "") + file_ext + c.to_s 
