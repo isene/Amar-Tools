@@ -62,8 +62,8 @@ DOTSTART
 
 	$town_png = File.dirname(town_file) + "/" + File.basename(town_file, ".*") + ".png"
 	town_dot  = File.dirname(town_file) + "/" + File.basename(town_file, ".*") + ".dot"
-	File.delete($town_png) if File.exists?($town_png)
-	File.delete(town_dot) if File.exists?(town_dot)
+	File.delete($town_png) if File.exist?($town_png)
+	File.delete(town_dot) if File.exist?(town_dot)
 
 	begin
 		File.write(town_dot, dot_text, perm: 0644)
@@ -107,7 +107,7 @@ def town_dot2txt(town_file)
 	townrel.gsub!(/\n}/, '')
 	townrel =	"#{town_name} relationships:\n\n" + townrel
 	
-	File.delete($townrel_file) if File.exists?($townrel_file)
+	File.delete($townrel_file) if File.exist?($townrel_file)
 	begin
 		File.open($townrel_file, File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
 			fl.write townrel
