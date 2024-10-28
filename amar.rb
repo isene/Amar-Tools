@@ -117,7 +117,7 @@ prompt = TTY::Prompt.new
 def openai(type)
   p = TTY::Prompt.new
   if type == "adv"
-    cmd  = "openai -f " + __dir__ + "/adv.txt -x 2000"
+    cmd  = "openai -f " + __dir__ + "/adv.txt -x 1800"
   elsif type == "gen"
     req  = p.ask("\nEnter a request for OpenAI:").to_s
     text = File.read(__dir__ + "/gen.txt") + req
@@ -139,9 +139,11 @@ def openai(type)
   end
   puts "\nGetting response from OpenAI... (quality may vary, use at your own discretion)\n".c(@gray)
   begin
+    puts 'OpenAI response is written to the file "openai.txt" in the directory "saved".'
     resp   = %x[#{cmd}]
     twidth = `tput cols`.to_i
     puts resp.gsub(/(.{1,#{twidth}})( +|$\n?)|(.{1,#{twidth}})/, "\\1\\3\n")
+    File.write("saved/openai.txt", resp, perm: 0644)
   rescue => error
     p error
     puts "\nYou need to install openai-term to use this feature (see https://github.com/isene/openai)"
@@ -187,7 +189,7 @@ loop do
   puts "A".cb(@A) + " = Generate an adventure from OpenAI".c(@A)
   puts "I".cb(@I) + " = Make a general question or request to OpenAI".c(@I)
   puts "e".cb(@e) + " = Random encounter".c(@e)
-  puts "E".cb(@E) + " = Generate a description for a random encounter".c(@E)
+  puts "E".cb(@E) + " = Generate a description for a random encounter (via OpenAI)".c(@E)
   puts "n".cb(@n) + " = Generate a detailed human NPC".c(@n)
   puts "N".cb(@N) + " = Generate a description for an NPC (via OpenAI)".c(@N)
   puts "t".cb(@t) + " = Create a village/town/city".c(@t)
