@@ -223,10 +223,10 @@ loop do
   # n = Random NPC
   elsif c == "n"
     # Reload chartypes as it gets reworked every time
-    load "includes/tables/chartype.rb"
     ia = npc_input
     loop do
-      aNPC = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
+      load "includes/tables/chartype.rb"
+      aNPC  = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
       npc_output(aNPC, "cli")
       puts "\n\nPress the ENTER key if you want to re-roll with the same inputs. All other keys bring up the main menu."
       break if STDIN.getch != "\r"
