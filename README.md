@@ -5,12 +5,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/isene/Amar-Tools.svg)](https://github.com/isene/Amar-Tools/stargazers)
 [![Stay Amazing](https://img.shields.io/badge/Stay-Amazing-blue.svg)](https://isene.org)
 
-<img src="images/amarcover.jpg" width="150" height="150">
-
----------------------------------------------------------------------------
-
-## Introduction
-Welcome to the swiss army knife for the Amar Role-Playing Game (http://d6gaming.org).
+<img src="images/amarcover.jpg" align="left" width="150" height="150"> Welcome to the swiss army knife for the Amar Role-Playing Game (http://d6gaming.org).
 
 This program suite runs on any GNU/Linux system where the scripting
 language Ruby is installed. Ruby is available as tar.gz, rpm packages or
