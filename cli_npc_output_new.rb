@@ -479,29 +479,12 @@ def generate_money(status, level)
   "#{total} silver"
 end
 
+# Load the new equipment tables if not already loaded
 def generate_equipment(type, level)
-  equipment = []
-  
-  case type
-  when "Warrior", "Guard"
-    equipment << "Backpack" << "Rope (10m)" << "Waterskin"
-    equipment << "Whetstone" if level > 1
-    equipment << "Shield strap" if level > 2
-  when "Thief", "Bandit", "Assassin"
-    equipment << "Lockpicks" << "Dark cloak" << "Rope (10m)"
-    equipment << "Grappling hook" if level > 2
-  when "Mage", "Scholar", "Priest"
-    equipment << "Spell components" << "Scroll case" << "Ink & quill"
-    equipment << "Spellbook" if level > 2
-  when "Ranger", "Hunter"
-    equipment << "Tracking kit" << "Snares" << "Camping gear"
-  when "Merchant"
-    equipment << "Scales" << "Ledger" << "Money pouch"
-  else
-    equipment << "Backpack" << "Waterskin" << "Flint & steel"
+  unless defined?(generate_npc_equipment)
+    load File.join($pgmdir, "includes/equipment_tables.rb")
   end
-  
-  equipment
+  generate_npc_equipment(type, level)
 end
 
 def calculate_total_weight(n)

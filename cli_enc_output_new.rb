@@ -138,13 +138,13 @@ def enc_output_new(e, cli)
         move_total = body + athletics_attr + move_quietly
         alertness_total = mind + awareness_attr + alertness
         
-        f += "   Skills: #{@stat_color}Dodge:#{dodge_total}#{@reset} #{@stat_color}Hide:#{hide_total}#{@reset} #{@stat_color}MoveQ:#{move_total}#{@reset} #{@stat_color}Alert:#{alertness_total}#{@reset}"
+        f += "   Skills: #{@skill_color}Dodge:#{@reset}#{@stat_color}#{dodge_total}#{@reset} #{@skill_color}Hide:#{@reset}#{@stat_color}#{hide_total}#{@reset} #{@skill_color}MoveQ:#{@reset}#{@stat_color}#{move_total}#{@reset} #{@skill_color}Alert:#{@reset}#{@stat_color}#{alertness_total}#{@reset}"
         
         # Add tracking if non-zero
         tracking = npc.get_skill("MIND", "Awareness", "Tracking")
         if tracking > 0
           tracking_total = mind + awareness_attr + tracking
-          f += " #{@stat_color}Track:#{tracking_total}#{@reset}"
+          f += " #{@skill_color}Track:#{@reset}#{@stat_color}#{tracking_total}#{@reset}"
         end
         
         # Show spells if any
@@ -219,12 +219,12 @@ def enc_output_new(e, cli)
       # Equipment and money for humanoids (not monsters)
       if npc.respond_to?(:type) && !npc.type.to_s.match(/Monster:|Animal:|monster/i)
         # Load equipment generation if not loaded
-        unless defined?(generate_equipment)
-          load File.join($pgmdir, "cli_npc_output_new.rb")
+        unless defined?(generate_npc_equipment)
+          load File.join($pgmdir, "includes/equipment_tables.rb")
         end
         
         # Generate equipment and money
-        equipment = generate_equipment(npc.type, npc.level)
+        equipment = generate_npc_equipment(npc.type, npc.level)
         
         # Determine social status for money calculation
         social_status = case npc.type
