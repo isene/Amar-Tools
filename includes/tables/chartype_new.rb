@@ -3,6 +3,9 @@
 # Load the full character type definitions with all 64 types
 load File.join($pgmdir, "includes/tables/chartype_new_full.rb")
 
+# Load race-based character templates
+load File.join($pgmdir, "includes/tables/race_templates.rb")
+
 # The main character type table is now loaded from chartype_new_full.rb
 # $ChartypeNew is set at the end of that file
 

@@ -407,4 +407,34 @@ class MonsterNew
     casting_level = @tiers["SPIRIT"]["Casting"]["level"] || 0
     casting_level > 0
   end
+  
+  def get_skill_total(char_name, attr_name, skill_name)
+    # Calculate total: Characteristic + Attribute + Skill
+    char_level = get_characteristic(char_name)
+    attr_level = get_attribute(char_name, attr_name)
+    skill_level = get_skill(char_name, attr_name, skill_name)
+    
+    char_level + attr_level + skill_level
+  end
+  
+  # Additional methods for compatibility with detailed views
+  def profession
+    @type.to_s.gsub(/Monster:|Animal:/, "")
+  end
+  
+  def cult
+    nil  # Monsters don't have religions
+  end
+  
+  def social_status
+    "Wild"  # Monsters are outside society
+  end
+  
+  def money
+    0  # Monsters don't carry money
+  end
+  
+  def equipment
+    []  # Monsters don't have equipment
+  end
 end

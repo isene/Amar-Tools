@@ -200,7 +200,30 @@ class EncNew
   
   def determine_character_type(enc_string)
     # Map encounter strings to character types
+    # First check for race-based encounters
     case enc_string.downcase
+    when /elf/
+      # Elves can be various types
+      ["Elf: Ranger", "Elf: Warrior", "Elf: Mage"].sample
+    when /dwarf/
+      # Dwarves are typically warriors or smiths
+      ["Dwarf: Warrior", "Dwarf: Smith", "Dwarf: Guard"].sample
+    when /araxi/, /arax/
+      # Araxi are savage predatory warriors
+      "Araxi: Warrior"
+    when /troll/
+      "Troll: Warrior"
+    when /ogre/
+      "Ogre: Warrior"
+    when /lizard/
+      "Lizard Man: Warrior"
+    when /goblin/
+      ["Goblin: Warrior", "Goblin: Thief"].sample
+    when /centaur/
+      ["Centaur: Warrior", "Centaur: Ranger"].sample
+    when /faer/
+      "Faerie: Mage"
+    # Then check for profession-based encounters
     when /warrior/, /soldier/, /guard/
       "Warrior"
     when /merchant/, /trader/, /caravan/
