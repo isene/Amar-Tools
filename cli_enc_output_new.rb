@@ -230,6 +230,30 @@ def enc_output_new(e, cli)
       
       # Derived stats
       f += "   " + "─" * (width - 10) + "\n"
+      
+      # Check if NPC has spells and show domain lore on separate line
+      if npc.respond_to?(:spells) && npc.spells && npc.spells.length > 0
+        # Determine primary spell domain
+        domain = nil
+        domain_skill = 0
+        
+        if npc.tiers["SPIRIT"] && npc.tiers["SPIRIT"]["Attunement"] && npc.tiers["SPIRIT"]["Attunement"]["skills"]
+          # Find highest attunement domain
+          npc.tiers["SPIRIT"]["Attunement"]["skills"].each do |dom, val|
+            if val > domain_skill
+              domain = dom
+              domain_skill = val
+            end
+          end
+        end
+        
+        # Show domain lore and spell count
+        if domain && domain_skill > 0
+          total_lore = spirit + npc.get_attribute("SPIRIT", "Attunement") + domain_skill
+          f += "   #{@stat_color}#{domain} Lore: #{total_lore}, # of spells: #{npc.spells.length}#{@reset}\n"
+        end
+      end
+      
       f += "   #{@stat_color}SIZE: #{npc.SIZE}    BP: #{npc.BP}    DB: #{npc.DB}    MD: #{npc.MD}"
       if npc.armor
         f += "    Armor: #{npc.armor[:name]} (AP: #{npc.armor[:ap]})"
