@@ -32,7 +32,9 @@ def save_temp_file(content, file_base, cli)
 	tfile = "saved/" + file_base + file_ext
 	File.delete(tfile) if File.exist?(tfile)
 	begin
-		File.write(tfile, content, perm: 0644)
+		# Strip ANSI codes when saving to file for clean editing
+		clean_content = content.respond_to?(:pure) ? content.pure : content.gsub(/\e\[\d+(?:;\d+)*m/, '')
+		File.write(tfile, clean_content, perm: 0644)
 	rescue
   	if cli == "cli"
 			puts "Error writing file #{tfile}"

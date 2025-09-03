@@ -96,6 +96,10 @@ class String
   def cu(code)
     "\e[38;5;#{code};4m#{self}\e[0m"
   end
+  # Strip all ANSI color codes
+  def pure
+    gsub(/\e\[\d+(?:;\d+)*m/, '')
+  end
 end
 
 # Define colors

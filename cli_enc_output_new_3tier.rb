@@ -142,7 +142,9 @@ def enc_output_new_3tier(e, cli)
   
   # Output handling
   if cli == "cli"
-    File.write("saved/encounter_new.npc", f, perm: 0644)
+    # Save clean version without ANSI codes for editing
+    File.write("saved/encounter_new.npc", f.pure, perm: 0644)
+    # Display version with colors
     print f
     
     if !e.is_no_encounter? && e.npcs.length > 0

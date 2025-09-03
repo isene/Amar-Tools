@@ -319,7 +319,9 @@ def npc_output_new(n, cli)
   
   # Output handling
   if cli == "cli"
-    File.write("saved/temp_new.npc", f, perm: 0644)
+    # Save clean version without ANSI codes for editing
+    File.write("saved/temp_new.npc", f.pure, perm: 0644)
+    # Display version with colors
     print f
     
     # Options
