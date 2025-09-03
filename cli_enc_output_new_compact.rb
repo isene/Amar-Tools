@@ -152,18 +152,31 @@ def enc_output_new(e, cli)
     print f
     
     if !e.is_no_encounter? && e.npcs.length > 0
-      # Option to view detailed NPC
-      puts "\nEnter NPC number (1-#{e.npcs.length}) to view details, 'e' to edit, or any other key to continue"
-      input = STDIN.getch
-      
-      if input.to_i.between?(1, e.npcs.length)
-        npc_output_new(e.get_npc(input.to_i - 1), "cli")
-      elsif input == "e"
-        # Use vim with settings to avoid binary file warnings
-        if $editor.include?("vim") || $editor.include?("vi")
-          system("#{$editor} -c 'set fileformat=unix' saved/encounter_new.npc")
+      # Loop to allow viewing multiple NPCs
+      loop do
+        # Option to view detailed NPC
+        puts "\nEnter NPC number (1-#{e.npcs.length}) to view details, 'e' to edit, or any other key to exit"
+        input = STDIN.getch
+        
+        if input.to_i.between?(1, e.npcs.length)
+          npc_output_new(e.get_npc(input.to_i - 1), "cli")
+          
+          # After viewing NPC, redisplay the encounter
+          system("clear") || system("cls")
+          print f
+        elsif input == "e"
+          # Use vim with settings to avoid binary file warnings
+          if $editor.include?("vim") || $editor.include?("vi")
+            system("#{$editor} -c 'set fileformat=unix' saved/encounter_new.npc")
+          else
+            system("#{$editor} saved/encounter_new.npc")
+          end
+          # Redisplay after editing
+          system("clear") || system("cls")
+          print f
         else
-          system("#{$editor} saved/encounter_new.npc")
+          # Exit the loop on any other key
+          break
         end
       end
     end
