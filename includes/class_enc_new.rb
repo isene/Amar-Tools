@@ -229,6 +229,18 @@ class EncNew
       "Sailor"
     when /bard/, /minstrel/, /storyteller/
       "Bard"
+    when /sage/, /scholar/, /learned/, /wise/
+      "Sage"
+    when /scribe/, /clerk/, /secretary/
+      "Scribe"
+    when /healer/, /physician/, /apothecary/
+      "Healer"
+    when /entertainer/, /actor/, /dancer/
+      "Entertainer"
+    when /artisan/, /craftsman/, /crafter/
+      "Artisan"
+    when /guard/, /watchman/
+      "Guard"
     else
       "Commoner"
     end

@@ -511,11 +511,31 @@ class NpcNew
   
   # Calculate derived stats
   def SIZE
-    # Size based on height and weight
-    base_size = 10  # Human average
-    height_mod = (@height - 170) / 20
-    weight_mod = (@weight - 70) / 20
-    base_size + (height_mod + weight_mod) / 2
+    # Size based on weight (matching old system)
+    case @weight
+    when 0..19
+      1
+    when 20..49
+      2
+    when 50..99
+      3
+    when 100..149
+      4
+    when 150..224
+      5
+    when 225..299
+      6
+    when 300..399
+      7
+    when 400..499
+      8
+    when 500..599
+      9
+    when 600..724
+      10
+    else
+      [@weight / 72, 1].max  # For very large creatures
+    end
   end
   
   def BP
