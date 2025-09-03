@@ -118,25 +118,25 @@ prompt = TTY::Prompt.new
 def openai(type)
   p = TTY::Prompt.new
   if type == "adv"
-    cmd  = "openai-term -f " + __dir__ + "/adv.txt -x 1800"
+    cmd  = "openai -f " + __dir__ + "/adv.txt -x 1800"
   elsif type == "gen"
     req  = p.ask("\nEnter a request for OpenAI:").to_s
     text = File.read(__dir__ + "/gen.txt") + req
-    cmd  = "openai-term -t \"#{text}\" -x 2000"
+    cmd  = "openai -t \"#{text}\" -x 2000"
   elsif type == "npc"
-    fl   = "temp.npc"
-    f    = p.ask("\nEnter npc file name (default is the latest generated [temp.npc]):").to_s
+    fl   = "temp_new.npc"
+    f    = p.ask("\nEnter npc file name (default is the latest generated [temp_new.npc]):").to_s
     fl   = f unless f == ""
     fl   =  __dir__ + "/saved/" + fl
     text = File.read(__dir__ + "/npc.txt")
-    cmd  = "openai-term -t \"#{text}\" -f " + fl + " -x 2000"
+    cmd  = "openai -t \"#{text}\" -f " + fl + " -x 2000"
   elsif type == "enc"
-    fl   = "encounter.npc"
-    f    = p.ask("\nEnter encounter file name (default is the latest generated [encounter.npc]):").to_s
+    fl   = "encounter_new.npc"
+    f    = p.ask("\nEnter encounter file name (default is the latest generated [encounter_new.npc]):").to_s
     fl   = f unless f == ""
     fl   =  __dir__ + "/saved/" + fl
     text = File.read(__dir__ + "/enc.txt")
-    cmd  = "openai-term -t \"#{text}\" -f " + fl + " -x 2000"
+    cmd  = "openai -t \"#{text}\" -f " + fl + " -x 2000"
   end
   puts "\nGetting response from OpenAI... (quality may vary, use at your own discretion)\n".c(@gray)
   begin
@@ -147,7 +147,7 @@ def openai(type)
     File.write("saved/openai.txt", resp, perm: 0644)
   rescue => error
     p error
-    puts "\nYou need to install openai-term to use this feature (see https://github.com/isene/openai-term)"
+    puts "\nYou need to install openai-term to use this feature (see https://github.com/isene/openai)"
   end
   p.keypress("\nPress any key...".c(@gray))
 end

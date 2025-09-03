@@ -1,18 +1,45 @@
-Amar is a medieval fantasy kingdom. It is the only kingdom on an island. The kingdom is located in the south east quadrant of the island, bordering on the ocean to the south and to the west. To the north is a mountain range ruled by the dwarves. To the west is a large forest ruled by Trolls and the Araxi - a savage and chaotic dark human-like predator. A river separates the kingdom from this dangerous forest. Off the coast of the island is an impenetrable fog, a few nautical miles off the cost. Any escape to the east or south is futile - the fog will return any sailor to the point he entered it. The climate is temperate.
+THE KINGDOM OF AMAR - World Setting
 
-Amar is a fairly peaceful kingdom. The year is 354. It is that long since the Kingdom was formed.
+GEOGRAPHY & ISOLATION:
+Amar is a medieval fantasy kingdom occupying the southeast quadrant of an isolated island. The kingdom borders ocean to the south and east. To the north, a mountain range forms the dwarven realm. To the west, across a protective river, lies a dark forest controlled by Trolls and the Araxi - savage, predatory humanoids. An supernatural fog barrier surrounds the island waters, making escape impossible - any ship entering returns to its origin point.
 
-Amar inhabits 50000 humans, 1000 dwarves, 200 half-elves, 50 elves, 1000 goblins, 1000 lizardmen, 200 centaurs, 500 ogres, 1000 trollkins, 30 trolls, 1000 Araxi, 2000 faeries, 100 wyverns and many other small groups and individual other creatures. The kingdom has a rich animal population. Orcs, Halflings and Hobbits do not exist in Amar.
+DEMOGRAPHICS (Year 354 since founding):
+- 50,000 humans (dominant population)
+- 1,000 dwarves (mountain dwellers, master craftsmen)
+- 1,000 each: goblins, lizardmen, trollkins, Araxi
+- 2,000 faeries
+- 500 ogres
+- 200 half-elves, 200 centaurs
+- 50 elves, 30 trolls, 100 wyverns
+- Various other creatures in smaller numbers
+Note: Orcs, Halflings, and Hobbits do not exist in this world.
 
-It is a stable society and its problems are mostly predictable.
+SOCIETY & ECONOMY:
+- Feudal system with Lords of Land and Barons
+- No slavery, but some peasants are "bound" to their lords
+- Trade: Humans provide food, wine, cloth to dwarves; receive superior weapons, armor, jewelry in return
+- Stable, predictable society with cordial inter-racial relations
 
-The humans sell food, wine and clothes to the dwarves. In exchange, they get metals, weapons, armour and jewellery. Dwarven weapons and armour is of higher quality than those made by humans. The relationship between the two races is cordial.
+RELIGION & PANTHEON:
+Major Deities:
+- McGillan (King of Gods) & Gwendyll (Queen of Gods) - worshipped by all nobility
+- Walmaer (Water), Shalissa (Air), Anashina (Nature), Alesia (Earth)
+- Taroc (War), Juba (Jester/Trickster)
+- Ikali (Sun/Fire/Light), FalMunir (Knowledge)
+- Recolar (Athletics), Fenimaal (Willpower Magic)
 
-Some villages and areas have a Lord of Land as principal. There is no slavery, but some peasants are so tied to their Lord of Land or Baron that they are considered bound people. The nobility also embraces the Lords not owning any sizeable portion of land, but their titles cannot be inherited. Those religions that give the title of Lord to high ranking members do so in coordination with McGillan the King of the Gods or Gwendyll the Queen of the Gods, and they are thus automatically initiated into these religions as well. All nobles are initiates of McGillan or Gwendyll, it goes with the title. The close family of a noble is considered nobles themselves unless the noble is without land.
+Forbidden/Cursed Gods:
+- Man Peggon (Strength), Elesi (Love/Birth) - extinct cults
+- Mestronorpha (Evil/Underworld), Maleko (Meditation)
 
-The main religions are: Walmaer the God of water, Shalissa the Goddess of air, Anashina the Goddess of nature, Alesia the Mother Earth, Taroc the God of war and Juba the jester God. The nobles of course worship McGillan and Gwendyll. There are priests and other principals of most of the religions. Man Peggon the God of Strength and Elesi the Goddess of love, birth and creation are extinct and considered cursed. No one knows why that is. Mestronorpha the evil god of the Underworld and Maleko the God of meditation and inner strength is also considered cursed or just a "no". Moltan the God of judgement is worshipped by the upholders of law and order and no one else. Kraagh the God of death and recirculation is a somewhat shun cult - the worshipers are mostly lonely undertakers. Other Gods that are worshipped are Ikali the Sun God of fire and light, FalMunir the God of knowledge, Recolar the God of athletics and sports, Fenimaal the God of willpower magic, and several minor Gods.
+Specialized Worship:
+- Moltan (Judgment) - law enforcers only
+- Kraagh (Death/Reincarnation) - undertakers, shunned
 
-The border against the Araxi is turbulent and the soldiers guarding the border are mostly Taroc initiates or non-religious.
+CURRENT TENSIONS:
+The western border with the Araxi forest remains turbulent, defended primarily by Taroc worshippers and non-religious soldiers.
 
-Based on the above background, please answer the following request:
+GAME CONTEXT:
+This setting uses the Amar RPG system with a 3-tier character structure (Characteristics > Attributes > Skills). Magic exists but is rare. Combat is realistic and deadly. Social intrigue and exploration are as important as combat.
 
+YOUR REQUEST:

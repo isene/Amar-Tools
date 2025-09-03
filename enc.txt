@@ -1,37 +1,52 @@
-THE BACKGROUND
+THE WORLD OF AMAR
 
-Amar is a medieval fantasy kingdom. It is the only kingdom on an island. The kingdom is located in the south east quadrant of the island, bordering on the ocean to the south and to the west. To the north is a mountain range ruled by the dwarves. To the west is a large forest ruled by Trolls and the Araxi - a savage and chaotic dark human-like predator. A river separates the kingdom from this dangerous forest. Off the coast of the island is an impenetrable fog, a few nautical miles off the cost. Any escape to the east or south is futile - the fog will return any sailor to the point he entered it. The climate is temperate.
+Amar is a medieval fantasy kingdom on an isolated island. The kingdom occupies the southeast quadrant, bordered by ocean to the south and east. To the north lies a mountain range ruled by dwarves. To the west, across a protective river, sprawls a dark forest inhabited by Trolls and the Araxi - savage, chaotic predators. An impenetrable fog surrounds the island waters, trapping all within by returning any ship to where it entered. The climate is temperate.
 
+ENCOUNTER SYSTEM - NEW 3-TIER RULES
 
-THE GAME SYSTEM
+Encounters in Amar use the following format:
 
-Amar RPG is a realistic, yet simple Role-Playing Game.
+ENCOUNTER HEADER:
+- Attitude: HOSTILE/ANTAGONISTIC/NEUTRAL/POSITIVE/FRIENDLY
+- Environment: Day/Night, Terrain type (City/Rural/Road/Plains/Hills/Mountains/Woods/Wilderness)
+- Summary: Brief description of who/what is encountered
 
-An Encounter is usually described with the following values:
+CHARACTER STATS (3-Tier System):
+Base Characteristics (0-6 typical):
+- BODY: Physical capability
+- MIND: Mental capacity  
+- SPIRIT: Magical connection (0 for mundane beings)
 
-First there is the attitude toward the Player Characters (PCs).
+Key Combat Stats:
+- SIZE: 1-4 based on weight
+- BP: Body Points (damage capacity)
+- DB: Damage Bonus
+- MD: Magic Defense
+- Reaction Speed: Initiative modifier
 
-Then the race, and if humanoid an occupation. Then M for Male and F for Female and the name of the individual. And then the general proficiency level.
+Weapons Format:
+- Melee: WeaponName(Skill/Init/Off/Def/Damage)
+- Missile: WeaponName(Skill/Range/Damage)
 
-Then a set of attributes where 3 is the human average:
+Essential Skills:
+- Dodge, Hide, Move Quietly, Alertness, Tracking
 
-SIZ = Size
-STR = Strength
-END = Endurance
-AWR = Awareness
-MAG = Magical Aptitude
-RS  = Reaction Speed
-Ddg = Dodge Skill
-(S:X) = Status X (X is how much to the individuals is encumbered by weight carried, i.e. how much to subtract from all rolls)
-Then a line for each weapon (Lt. means light, while Hvy. means heavy)
-Skill = The weapon skill
-Ini = Initiative (the higher the better)
-Off = Offensive value
-Def = Defensive value
-Dam = Damage done when hitting an opponent with the weapon
-AP = Armor Points (damage subtracted when hit by another)
-BP = Body Points (how much damage the individual can withstand before passing out)
-Rng = Normal range in meters (for missile weapons)
+ENCOUNTER DESCRIPTION REQUEST:
 
-Based on the above, give a description of the Player Characters encountering the following:
+Based on the encounter data below, create a cinematic description that brings this meeting to life. Include:
 
+1. OPENING SCENE: Set the atmosphere with sensory details - sights, sounds, smells. How do the PCs first notice this encounter?
+
+2. INITIAL CONTACT: Describe body language, positioning, and first impressions. What tension exists?
+
+3. PERSONALITY & MOTIVATION: What drives these NPCs? What do they want? How might they react to different approaches?
+
+4. TACTICAL ELEMENTS: If combat occurs, how would these NPCs fight? What advantages do they seek?
+
+5. RESOLUTION PATHS: Suggest 2-3 ways this encounter could end, from peaceful to violent.
+
+6. MEMORABLE DETAILS: Add something unique - a distinctive mannerism, an unexpected element, or environmental factor that makes this encounter special.
+
+Make the NPCs feel like real individuals with goals and fears, not just statistics. The encounter should feel dynamic and full of potential.
+
+ENCOUNTER DATA:
