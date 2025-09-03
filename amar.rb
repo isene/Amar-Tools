@@ -197,10 +197,15 @@ $Level = 0
 loop do
   system "clear"
   puts ""
-  puts "╔" + "═" * 58 + "╗".c(245)
-  puts "║".c(245) + " AMAR RPG TOOLS".cb(226).center(57) + "║".c(245)  # Bright yellow title
-  puts "║".c(245) + " Main Menu".c(255).center(57) + "║".c(245)
-  puts "╚" + "═" * 58 + "╝".c(245)
+  puts ("╔" + "═" * 58 + "╗").c(245)
+  # Calculate padding for centering without color codes interfering
+  title = "AMAR RPG TOOLS"
+  subtitle = "Main Menu"
+  title_padding = (58 - title.length) / 2
+  subtitle_padding = (58 - subtitle.length) / 2
+  puts "║".c(245) + " " * title_padding + title.cb(226) + " " * (58 - title_padding - title.length) + "║".c(245)
+  puts "║".c(245) + " " * subtitle_padding + subtitle.c(255) + " " * (58 - subtitle_padding - subtitle.length) + "║".c(245)
+  puts ("╚" + "═" * 58 + "╝").c(245)
   
   # New 3-Tier System (highlighted)
   puts "\n" + "NEW 3-TIER SYSTEM ".cb(46) + "(Recommended)".c(46)
