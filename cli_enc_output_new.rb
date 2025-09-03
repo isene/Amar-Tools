@@ -27,10 +27,11 @@ def enc_output_new(e, cli)
     @stat_color = "\e[1;32m"       # Bright green
     @special_color = "\e[38;5;202m" # Orange for special abilities
     @name_color = "\e[38;5;111m"    # Light blue for names
+    @gray = "\e[38;5;240m"          # Gray for explanatory text
     @reset = "\e[0m"
   else
     @header_color = @char_color = @attr_color = @skill_color = ""
-    @stat_color = @special_color = @name_color = @reset = ""
+    @stat_color = @special_color = @name_color = @gray = @reset = ""
   end
   
   # Header with box characters (white)
