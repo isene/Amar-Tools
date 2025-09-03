@@ -216,9 +216,9 @@ def npc_output_new(n, cli)
       init = reaction_speed + (wpn_stats[:init] || 0)
       off = skill_total + (wpn_stats[:off] || 0)
       defense = skill_total + (wpn_stats[:def] || 0)
-      dmg = wpn_stats[:dmg] || "0"
+      dmg = n.DB + (wpn_stats[:dmg] || 0)
       
-      line = "#{weapon.ljust(15)} #{skill_total.to_s.rjust(3)}  #{init.to_s.rjust(4)}  #{off.to_s.rjust(3)}  #{defense.to_s.rjust(3)}  #{dmg.rjust(3)}"
+      line = "#{weapon.ljust(15)} #{skill_total.to_s.rjust(3)}  #{init.to_s.rjust(4)}  #{off.to_s.rjust(3)}  #{defense.to_s.rjust(3)}  #{dmg.to_s.rjust(3)}"
       melee_lines << line
     end
     
@@ -228,9 +228,9 @@ def npc_output_new(n, cli)
       skill_total = body_char + attr + skill
       
       range = wpn_stats[:range] || "30m"
-      dmg = wpn_stats[:dmg] || "0"
+      dmg = n.DB + (wpn_stats[:dmg] || 0)
       
-      line = "#{weapon.ljust(15)} #{skill_total.to_s.rjust(3)}  #{range.ljust(10)} #{dmg.rjust(3)}"
+      line = "#{weapon.ljust(15)} #{skill_total.to_s.rjust(3)}  #{range.ljust(10)} #{dmg.to_s.rjust(3)}"
       missile_lines << line
     end
     

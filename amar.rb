@@ -196,9 +196,11 @@ $Level = 0
 
 loop do
   system "clear"
-  puts "\n" + "═" * 60
-  puts " AMAR RPG TOOLS".cb(@h) + " - Main Menu".c(@h)
-  puts "═" * 60
+  puts ""
+  puts "╔" + "═" * 58 + "╗".c(245)
+  puts "║".c(245) + " AMAR RPG TOOLS".cb(226).center(57) + "║".c(245)  # Bright yellow title
+  puts "║".c(245) + " Main Menu".c(255).center(57) + "║".c(245)
+  puts "╚" + "═" * 58 + "╝".c(245)
   
   # New 3-Tier System (highlighted)
   puts "\n" + "NEW 3-TIER SYSTEM ".cb(46) + "(Recommended)".c(46)
