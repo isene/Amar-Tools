@@ -328,7 +328,7 @@ def enc_output_new(e, cli)
     
     if !e.is_no_encounter? && e.npcs.length > 0
       # Option to view detailed NPC
-      puts "\nEnter NPC number (1-#{e.npcs.length}) to view full details, 'v' to edit, or any other key to continue"
+      puts "\nEnter NPC number (1-#{e.npcs.length}) for details, 'v' to view in less, 'e' to edit, or any other key to continue"
       input = STDIN.getc
       
       if input.to_i.between?(1, e.npcs.length)
@@ -338,6 +338,8 @@ def enc_output_new(e, cli)
         end
         npc_output_new(e.get_npc(input.to_i - 1), "cli")
       elsif input == "v"
+        system("less saved/encounter_new.npc")
+      elsif input == "e"
         system("#{$editor} saved/encounter_new.npc")
       end
     end

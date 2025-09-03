@@ -196,20 +196,40 @@ $Level = 0
 
 loop do
   system "clear"
-  puts "\nTools for the Amar RPG. Press a key to access the desired tool:\n\n"
-  puts "A".cb(@A) + " = Generate an adventure from OpenAI".c(@A)
-  puts "I".cb(@I) + " = Make a general question or request to OpenAI".c(@I)
-  puts "e".cb(@e) + " = Random encounter (OLD SYSTEM)".c(@e)
-  puts "y".cb(@e) + " = Random encounter (NEW 3-TIER SYSTEM)".c(@e)
-  puts "E".cb(@E) + " = Generate a description for a random encounter (via OpenAI)".c(@E)
-  puts "n".cb(@n) + " = Generate a detailed human NPC (OLD SYSTEM)".c(@n)
-  puts "x".cb(@n) + " = Generate a detailed human NPC (NEW 3-TIER SYSTEM)".c(@n)
-  puts "N".cb(@N) + " = Generate a description for an NPC (via OpenAI)".c(@N)
-  puts "t".cb(@t) + " = Create a village/town/city".c(@t)
-  puts "r".cb(@r) + " = Make town relations".c(@r)
-  puts "m".cb(@m) + " = Generate names".c(@m)
-  puts "w".cb(@w) + " = Generate a month of weather".c(@w)
-  puts "q".cb(@gray) + " = Quit npcg\n".c(@gray)
+  puts "\n" + "═" * 60
+  puts " AMAR RPG TOOLS".cb(@h) + " - Main Menu".c(@h)
+  puts "═" * 60
+  
+  # New 3-Tier System (highlighted)
+  puts "\n" + "NEW 3-TIER SYSTEM ".cb(46) + "(Recommended)".c(46)
+  puts "─" * 40
+  puts " e".cb(82) + " = Random encounter".c(82)
+  puts " n".cb(82) + " = Generate detailed NPC".c(82)
+  
+  # Legacy System
+  puts "\n" + "LEGACY SYSTEM".cb(@gray)
+  puts "─" * 40
+  puts " E".cb(@gray) + " = Random encounter (old)".c(@gray)
+  puts " N".cb(@gray) + " = Generate detailed NPC (old)".c(@gray)
+  
+  # World Building
+  puts "\n" + "WORLD BUILDING".cb(@t)
+  puts "─" * 40
+  puts " t".cb(@t) + " = Create village/town/city".c(@t)
+  puts " r".cb(@r) + " = Generate town relations".c(@r)
+  puts " m".cb(@m) + " = Generate names".c(@m)
+  puts " w".cb(@w) + " = Generate weather (monthly)".c(@w)
+  
+  # AI Tools (if API key available)
+  puts "\n" + "AI GENERATION".cb(213) + " (OpenAI)".c(213)
+  puts "─" * 40
+  puts " A".cb(213) + " = Generate adventure".c(213)
+  puts " D".cb(213) + " = Describe random encounter".c(213)
+  puts " d".cb(213) + " = Describe NPC".c(213)
+  
+  puts "\n" + "─" * 60
+  puts " q".cb(196) + " = Quit".c(196)
+  puts ""
   c = prompt.keypress()
   # q = Quit
   if c == "q"
@@ -218,11 +238,17 @@ loop do
   # A = Generate an adventure
   elsif c == "A"
     openai("adv")
-  # I = Generate an adventure
-  elsif c == "I"
-    openai("gen")
-  # e = Random Encounter
+  # e = Random Encounter (NEW SYSTEM)
   elsif c == "e"
+    ia = enc_input_new
+    loop do
+      anENC = EncNew.new(ia[0], ia[1], ia[2], ia[3])
+      enc_output_new(anENC, "cli")
+      puts "\n\nPress the ENTER key if you want to re-roll with the same inputs. All other keys bring up the main menu."
+      break if STDIN.getch != "\r"
+    end
+  # E = Random Encounter (OLD SYSTEM)
+  elsif c == "E"
     ia = enc_input
     loop do
       anENC = Enc.new(ia[0], ia[1])
@@ -230,20 +256,20 @@ loop do
       puts "\n\nPress the ENTER key if you want to re-roll with the same inputs. All other keys bring up the main menu."
       break if STDIN.getch != "\r"
     end
-  # y = Random Encounter (NEW SYSTEM)
-  elsif c == "y"
-    ia = enc_input_new
+  # D = Describe random encounter (OpenAI)
+  elsif c == "D"
+    openai("enc")
+  # n = Random NPC (NEW SYSTEM)
+  elsif c == "n"
+    ia = npc_input_new
     loop do
-      anENC = EncNew.new(ia[0], ia[1])
-      enc_output_new(anENC, "cli")
+      aNPC = NpcNew.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
+      npc_output_new(aNPC, "cli")
       puts "\n\nPress the ENTER key if you want to re-roll with the same inputs. All other keys bring up the main menu."
       break if STDIN.getch != "\r"
     end
-  # E = Generate Encounter description
-  elsif c == "E"
-    openai("enc")
-  # n = Random NPC
-  elsif c == "n"
+  # N = Random NPC (OLD SYSTEM)
+  elsif c == "N"
     # Reload chartypes as it gets reworked every time
     ia = npc_input
     loop do
@@ -253,17 +279,8 @@ loop do
       puts "\n\nPress the ENTER key if you want to re-roll with the same inputs. All other keys bring up the main menu."
       break if STDIN.getch != "\r"
     end
-  # x = Random NPC (NEW SYSTEM)
-  elsif c == "x"
-    ia = npc_input_new
-    loop do
-      aNPC = NpcNew.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
-      npc_output_new(aNPC, "cli")
-      puts "\n\nPress the ENTER key if you want to re-roll with the same inputs. All other keys bring up the main menu."
-      break if STDIN.getch != "\r"
-    end
-  # N = Generate NPC description
-  elsif c == "N"
+  # d = Describe NPC (OpenAI)
+  elsif c == "d"
     openai("npc")
   # t = Random Town (castle/village/town/city)
   elsif c == "t"

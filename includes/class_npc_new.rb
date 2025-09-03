@@ -569,24 +569,36 @@ class NpcNew
   end
   
   def BP
-    # Body Points based on size and endurance
-    endurance = @tiers["BODY"]["Endurance"]["level"] || 2
-    base_bp = self.SIZE + endurance * 2
-    base_bp
+    # Body Points: SIZE * 2 + Fortitude / 3
+    # Fortitude is under Endurance
+    fortitude = get_skill("BODY", "Endurance", "Fortitude")
+    endurance = get_attribute("BODY", "Endurance")
+    body = get_characteristic("BODY")
+    total_fortitude = body + endurance + fortitude
+    (self.SIZE * 2 + total_fortitude / 3.0).round
   end
   
   def DB
-    # Defensive Bonus based on Athletics
-    athletics = @tiers["BODY"]["Athletics"]["level"] || 2
-    awareness = @tiers["MIND"]["Awareness"]["level"] || 2
-    (athletics + awareness) / 2
+    # Damage Bonus: (SIZE + Strength total) / 3
+    strength = get_attribute("BODY", "Strength")
+    body = get_characteristic("BODY")
+    total_strength = body + strength
+    ((self.SIZE + total_strength) / 3.0).round
   end
   
   def MD
-    # Morale/Mental Defense
-    willpower = @tiers["MIND"]["Willpower"]["level"] || 2
-    intelligence = @tiers["MIND"]["Intelligence"]["level"] || 2
-    (willpower * 2 + intelligence) / 2
+    # Magic Defense: (Mental Fortitude + Attunement Self) / 3
+    mental_fortitude = get_skill("MIND", "Willpower", "Mental Fortitude")
+    willpower = get_attribute("MIND", "Willpower")
+    mind = get_characteristic("MIND")
+    total_mental_fortitude = mind + willpower + mental_fortitude
+    
+    attunement_self = get_skill("SPIRIT", "Attunement", "Self")
+    attunement = get_attribute("SPIRIT", "Attunement")
+    spirit = get_characteristic("SPIRIT")
+    total_attunement_self = spirit + attunement + attunement_self
+    
+    ((total_mental_fortitude + total_attunement_self) / 3.0).round
   end
   
   def get_characteristic(name)
