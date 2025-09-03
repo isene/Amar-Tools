@@ -130,7 +130,7 @@ def enc_output_new(e, cli)
             ini = reaction_speed + (wpn_stats[:ini] || 0)
             off = total + wpn_stats[:off]
             def_val = total + wpn_stats[:def]
-            dmg = npc.DB + wpn_stats[:dmg]
+            dmg = (npc.DB + wpn_stats[:dmg]).round
             
             weapons << "#{skill}(#{total}/#{ini}/#{off}/#{def_val}/#{dmg})"
           end
@@ -143,7 +143,7 @@ def enc_output_new(e, cli)
           missile_skills.each do |skill, value|
             total = body + missile_attr + value
             msl_stats = get_missile_stats(skill)
-            dmg = npc.DB + msl_stats[:dmg]
+            dmg = (npc.DB + msl_stats[:dmg]).round
             
             weapons << "#{skill}(#{total}/#{msl_stats[:range]}/#{dmg})"
           end
@@ -188,7 +188,11 @@ def enc_output_new(e, cli)
       f += "   " + "─" * (width - 10) + "\n"
       
       # Build stats line
-      stats_line = "   #{@stat_color}SIZE:#{npc.SIZE} BP:#{npc.BP} DB:#{npc.DB} MD:#{npc.MD}"
+      # Ensure all values are rounded integers (SIZE can have half values)
+      bp_value = npc.BP.respond_to?(:round) ? npc.BP.round : npc.BP.to_i
+      db_value = npc.DB.respond_to?(:round) ? npc.DB.round : npc.DB.to_i  
+      md_value = npc.MD.respond_to?(:round) ? npc.MD.round : npc.MD.to_i
+      stats_line = "   #{@stat_color}SIZE:#{npc.SIZE} BP:#{bp_value} DB:#{db_value} MD:#{md_value}"
       
       # Add armor if present
       if npc.armor

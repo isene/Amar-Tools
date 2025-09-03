@@ -124,7 +124,11 @@ def enc_output_new_3tier(e, cli)
       
       # Derived stats
       f += "   " + "─" * 80 + "\n"
-      f += "   SIZE: #{npc.SIZE}    BP: #{npc.BP}    DB: #{npc.DB}    MD: #{npc.MD}"
+      # Ensure all values are rounded integers (SIZE can have half values)
+      bp_value = npc.BP.respond_to?(:round) ? npc.BP.round : npc.BP.to_i
+      db_value = npc.DB.respond_to?(:round) ? npc.DB.round : npc.DB.to_i  
+      md_value = npc.MD.respond_to?(:round) ? npc.MD.round : npc.MD.to_i
+      f += "   SIZE: #{npc.SIZE}    BP: #{bp_value}    DB: #{db_value}    MD: #{md_value}"
       if npc.armor
         f += "    Armor: #{npc.armor[:name]} (AP: #{npc.armor[:ap]})"
       end
