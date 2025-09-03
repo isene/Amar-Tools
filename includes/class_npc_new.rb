@@ -511,30 +511,60 @@ class NpcNew
   
   # Calculate derived stats
   def SIZE
-    # Size based on weight (matching old system)
+    # New SIZE system with half-point values based on weight
     case @weight
-    when 0..19
+    when 0...5
+      0.5
+    when 5...10
       1
-    when 20..49
+    when 10...20
+      1.5
+    when 20...35
       2
-    when 50..99
+    when 35...50
+      2.5
+    when 50...75
       3
-    when 100..149
+    when 75...100
+      3.5
+    when 100...125
       4
-    when 150..224
+    when 125...150
+      4.5
+    when 150...175
       5
-    when 225..299
+    when 175...200
+      5.5
+    when 200...225
       6
-    when 300..399
+    when 225...250
+      6.5
+    when 250...275
       7
-    when 400..499
+    when 275...300
+      7.5
+    when 300...350
       8
-    when 500..599
+    when 350...400
+      8.5
+    when 400...450
       9
-    when 600..724
+    when 450...500
+      9.5
+    when 500...550
       10
+    when 550...600
+      10.5
+    when 600...650
+      11
+    when 650...700
+      11.5
+    when 700...750
+      12
     else
-      [@weight / 72, 1].max  # For very large creatures
+      # For very large creatures, continue the pattern
+      base = (@weight / 25.0).floor * 0.5
+      [base, 0.5].max
     end
   end
   

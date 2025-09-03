@@ -2,7 +2,7 @@
 # This creates simplified NPCs for non-humanoid encounters
 
 class MonsterNew
-  attr_accessor :name, :type, :level, :sex, :description
+  attr_accessor :name, :type, :level, :sex, :description, :weight
   attr_accessor :SIZE, :BP, :DB, :MD, :ENC
   attr_accessor :tiers, :armor, :special_abilities, :spells
   
@@ -24,9 +24,22 @@ class MonsterNew
     @description = stats["description"]
     @special_abilities = stats["special"]
     
-    # Generate size
-    size_range = stats["size_range"] || [8, 10]
-    @SIZE = rand(size_range[0]..size_range[1])
+    # Generate weight and SIZE
+    if stats["weight_range"]
+      # New system: use weight range and calculate SIZE
+      @weight = rand(stats["weight_range"][0]..stats["weight_range"][1])
+      @SIZE = calculate_size_from_weight(@weight)
+    elsif stats["size_range"]
+      # Legacy system: convert old SIZE to approximate weight
+      old_size = rand(stats["size_range"][0]..stats["size_range"][1])
+      # Convert old SIZE to weight (rough approximation)
+      @weight = size_to_weight(old_size)
+      @SIZE = calculate_size_from_weight(@weight)
+    else
+      # Default human range
+      @weight = rand(50..100)
+      @SIZE = calculate_size_from_weight(@weight)
+    end
     
     # Initialize tiers with simplified structure for monsters
     @tiers = {
@@ -101,6 +114,92 @@ class MonsterNew
   end
   
   private
+  
+  def size_to_weight(old_size)
+    # Convert old SIZE system to approximate weight for backward compatibility
+    # Old system: SIZE 8-10 for humans, SIZE 15-20 for dragons
+    case old_size
+    when 0..1 then rand(5..15)
+    when 2 then rand(15..30)
+    when 3 then rand(30..60)
+    when 4 then rand(60..90)
+    when 5 then rand(90..135)
+    when 6 then rand(135..180)
+    when 7 then rand(180..240)
+    when 8 then rand(240..300)
+    when 9 then rand(300..375)
+    when 10 then rand(375..450)
+    when 11 then rand(450..525)
+    when 12 then rand(525..600)
+    when 13 then rand(600..700)
+    when 14 then rand(700..800)
+    when 15 then rand(800..900)
+    when 16 then rand(900..1000)
+    when 17 then rand(1000..1200)
+    when 18 then rand(1200..1400)
+    when 19 then rand(1400..1600)
+    when 20 then rand(1600..1800)
+    else old_size * 90  # Rough approximation for very large creatures
+    end
+  end
+  
+  def calculate_size_from_weight(weight)
+    # New SIZE system with half-point values based on weight
+    case weight
+    when 0...5
+      0.5
+    when 5...10
+      1
+    when 10...20
+      1.5
+    when 20...35
+      2
+    when 35...50
+      2.5
+    when 50...75
+      3
+    when 75...100
+      3.5
+    when 100...125
+      4
+    when 125...150
+      4.5
+    when 150...175
+      5
+    when 175...200
+      5.5
+    when 200...225
+      6
+    when 225...250
+      6.5
+    when 250...275
+      7
+    when 275...300
+      7.5
+    when 300...350
+      8
+    when 350...400
+      8.5
+    when 400...450
+      9
+    when 450...500
+      9.5
+    when 500...550
+      10
+    when 550...600
+      10.5
+    when 600...650
+      11
+    when 650...700
+      11.5
+    when 700...750
+      12
+    else
+      # For very large creatures, continue the pattern
+      base = (weight / 25.0).floor * 0.5
+      [base, 0.5].max
+    end
+  end
   
   def generate_combat_skills(skill_list)
     skills = {}
