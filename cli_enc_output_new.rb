@@ -129,7 +129,7 @@ def enc_output_new(e, cli)
             wpn_stats = get_weapon_stats(skill)
             ini = reaction_speed + (wpn_stats[:ini] || 0)
             off = total + wpn_stats[:off]
-            def_val = total + wpn_stats[:def]
+            def_val = total + wpn_stats[:def] + dodge_bonus  # Include Dodge/5
             dmg = (npc.DB + wpn_stats[:dmg]).round
             
             weapons << "#{skill}(#{total}/#{ini}/#{off}/#{def_val}/#{dmg})"
@@ -163,6 +163,7 @@ def enc_output_new(e, cli)
         alertness = npc.get_skill("MIND", "Awareness", "Alertness")
         
         dodge_total = body + athletics_attr + dodge
+        dodge_bonus = (dodge_total / 5).to_i  # Dodge/5 bonus for defense
         hide_total = body + athletics_attr + hide
         move_total = body + athletics_attr + move_quietly
         alertness_total = mind + awareness_attr + alertness

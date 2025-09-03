@@ -206,6 +206,10 @@ def npc_output_new(n, cli)
     
     body_char = n.get_characteristic("BODY")
     
+    # Calculate Dodge bonus for defense (Dodge/5 rounded down)
+    dodge_total = n.get_skill_total("BODY", "Athletics", "Dodge") || 0
+    dodge_bonus = (dodge_total / 5).to_i
+    
     melee_weapons.each do |weapon, skill|
       wpn_stats = get_weapon_stats(weapon)
       attr = n.get_attribute("BODY", "Melee Combat") || 0
@@ -216,7 +220,7 @@ def npc_output_new(n, cli)
       reaction_speed = n.get_skill_total("MIND", "Awareness", "Reaction speed") || 0
       init = reaction_speed + (wpn_stats[:init] || 0)
       off = skill_total + (wpn_stats[:off] || 0)
-      defense = skill_total + (wpn_stats[:def] || 0)
+      defense = skill_total + (wpn_stats[:def] || 0) + dodge_bonus  # Include Dodge/5
       dmg = n.DB + (wpn_stats[:dmg] || 0)
       
       line = "#{weapon.ljust(15)} #{skill_total.to_s.rjust(3)}  #{init.to_s.rjust(4)}  #{off.to_s.rjust(3)}  #{defense.to_s.rjust(3)}  #{dmg.to_s.rjust(3)}"
