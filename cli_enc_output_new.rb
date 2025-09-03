@@ -1,6 +1,11 @@
 # Encounter output module showing full 3-tier system format
 
 def enc_output_new(e, cli)
+  # Clear screen before output if CLI mode
+  if cli == "cli"
+    system("clear") || system("cls")
+  end
+  
   f = ""
   
   # Get terminal width or use default
@@ -81,7 +86,8 @@ def enc_output_new(e, cli)
       # NPC header with color
       name_str = npc.name.empty? ? enc_data["string"] : npc.name
       type_str = npc.respond_to?(:type) ? npc.type : "Unknown"
-      f += "\n#{@name_color}#{index + 1}. #{name_str} (#{npc.sex}) - #{type_str} [Level #{npc.level}]#{@reset}\n"
+      age_str = npc.respond_to?(:age) ? npc.age : "Unknown"
+      f += "\n#{@name_color}#{index + 1}. #{name_str} (#{npc.sex}, #{age_str}) - #{type_str} [Level #{npc.level}]#{@reset}\n"
       f += "   " + "─" * (width - 10) + "\n"
       
       # Show 3-tier stats in compact format
@@ -259,6 +265,52 @@ def enc_output_new(e, cli)
         f += "    Armor: #{npc.armor[:name]} (AP: #{npc.armor[:ap]})"
       end
       f += "#{@reset}\n"
+      
+      # Equipment and money for humanoids (not monsters)
+      if npc.respond_to?(:type) && !npc.type.to_s.match(/Monster:|Animal:|monster/i)
+        # Load equipment generation if not loaded
+        unless defined?(generate_equipment)
+          load File.join($pgmdir, "cli_npc_output_new.rb")
+        end
+        
+        # Generate equipment and money
+        equipment = generate_equipment(npc.type, npc.level)
+        
+        # Determine social status for money calculation
+        social_status = case npc.type
+        when /Noble/ then "N"
+        when /Merchant/ then "UC"
+        when /Priest/ then "MC"
+        when /Smith/, /Bard/ then "LMC"
+        else "LC"
+        end
+        
+        money = generate_money(social_status, npc.level)
+        
+        # Convert money format
+        money_value = money.split(' ').first.to_i
+        money_str = if money_value >= 100
+          gp = money_value / 100
+          sp = (money_value % 100) / 10
+          cp = money_value % 10
+          parts = []
+          parts << "#{gp}gp" if gp > 0
+          parts << "#{sp}sp" if sp > 0
+          parts << "#{cp}cp" if cp > 0
+          parts.join(' ')
+        elsif money_value >= 10
+          sp = money_value / 10
+          cp = money_value % 10
+          parts = []
+          parts << "#{sp}sp" if sp > 0
+          parts << "#{cp}cp" if cp > 0
+          parts.join(' ')
+        else
+          "#{money_value}cp"
+        end
+        
+        f += "   #{@stat_color}Equipment: #{equipment.join(', ')} | Money: #{money_str}#{@reset}\n"
+      end
       
       # Special abilities for monsters
       if npc.respond_to?(:special_abilities) && npc.special_abilities

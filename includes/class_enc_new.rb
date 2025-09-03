@@ -221,6 +221,14 @@ class EncNew
       "Assassin"
     when /gladiator/
       "Gladiator"
+    when /smith/, /blacksmith/, /weaponsmith/, /armorer/
+      "Smith"
+    when /farmer/, /peasant/, /laborer/
+      "Farmer"
+    when /sailor/, /seaman/, /mariner/
+      "Sailor"
+    when /bard/, /minstrel/, /storyteller/
+      "Bard"
     else
       "Commoner"
     end

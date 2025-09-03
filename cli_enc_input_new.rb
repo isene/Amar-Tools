@@ -1,6 +1,9 @@
 # Input module for new encounter system
 
 def enc_input_new
+  # Clear screen
+  system("clear") || system("cls")
+  
   prompt = TTY::Prompt.new
   
   puts "\n" + "=" * 60
