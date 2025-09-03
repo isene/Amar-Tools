@@ -1,4 +1,5 @@
 # Encounter output module showing full 3-tier system format
+require 'io/console'
 
 def enc_output_new(e, cli)
   # Clear screen before output if CLI mode
@@ -276,7 +277,7 @@ def enc_output_new(e, cli)
     if !e.is_no_encounter? && e.npcs.length > 0
       # Option to view detailed NPC
       puts "\nEnter NPC number (1-#{e.npcs.length}) for details, 'e' to edit, or any other key to continue"
-      input = STDIN.getc
+      input = STDIN.getch
       
       if input.to_i.between?(1, e.npcs.length)
         # Load the NPC output module if not loaded

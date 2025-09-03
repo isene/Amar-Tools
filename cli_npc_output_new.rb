@@ -1,4 +1,5 @@
 # Compact output module for new 3-tier NPC system with full details
+require 'io/console'
 
 def npc_output_new(n, cli)
   # Clear screen before displaying character
@@ -326,7 +327,7 @@ def npc_output_new(n, cli)
     
     # Options
     puts "\nPress 'e' to edit, any other key to continue"
-    key = STDIN.getc
+    key = STDIN.getch
     
     if key == "e"
       # Use vim with settings to avoid binary file warnings

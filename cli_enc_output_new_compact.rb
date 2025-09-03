@@ -1,4 +1,5 @@
 # Output module for new encounter system
+require 'io/console'
 
 def enc_output_new(e, cli)
   f = ""

@@ -1,4 +1,5 @@
 # Encounter output module showing full 3-tier system format
+require 'io/console'
 
 def enc_output_new_3tier(e, cli)
   f = ""
