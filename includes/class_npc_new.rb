@@ -487,10 +487,20 @@ class NpcNew
   
   def generate_spells
     # Generate spell cards based on character type and level
-    casting_level = @tiers["SPIRIT"]["Casting"]["level"] || 0
+    spirit = get_characteristic("SPIRIT")
+    casting_attr = get_attribute("SPIRIT", "Casting")
+    casting_total = spirit + casting_attr
     
-    # Only generate spells if character has casting ability
-    if casting_level > 0
+    # Restrict spells to appropriate creatures
+    # Require SPIRIT >= 2 AND total Casting >= 5
+    # Exclude specific races and creature types
+    excluded_types = ["Araxi", "Troll", "Dwarf", "Ogre", "Lizard", "Animal", "Zombie", "Skeleton"]
+    type_lower = @type.to_s.downcase
+    
+    is_excluded = excluded_types.any? { |ex| type_lower.include?(ex.downcase) }
+    
+    # Only generate spells for intelligent magical beings
+    if spirit >= 2 && casting_total >= 5 && !is_excluded
       # Load spell database if not already loaded
       unless defined?($SpellDatabase)
         load File.join($pgmdir, "includes/tables/spells_new.rb")

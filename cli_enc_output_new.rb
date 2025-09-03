@@ -92,135 +92,129 @@ def enc_output_new(e, cli)
       f += "\n#{@name_color}#{index + 1}. #{name_str} (#{npc.sex}, #{age_str}) - #{type_str} [Level #{npc.level}]#{@reset}\n"
       f += "   " + "─" * (width - 10) + "\n"
       
-      # Show 3-tier stats in compact format
+      # Show 3-tier stats in reorganized format
       if npc.respond_to?(:tiers) && npc.tiers
-        # BODY section with three columns layout
         body = npc.get_characteristic("BODY")
         mind = npc.get_characteristic("MIND")
         spirit = npc.get_characteristic("SPIRIT")
         
-        # Get all key stats for compact display
+        # Get all key stats
         str_attr = npc.get_attribute("BODY", "Strength")
         end_attr = npc.get_attribute("BODY", "Endurance")
         awareness_attr = npc.get_attribute("MIND", "Awareness")
         reaction_speed = mind + awareness_attr + npc.get_skill("MIND", "Awareness", "Reaction speed")
         
-        # First line: Characteristics and key attributes
-        f += "   #{@char_color}BODY:#{body}#{@reset}  "
-        f += "#{@attr_color}STR:#{body + str_attr}#{@reset}  "
-        f += "#{@attr_color}END:#{body + end_attr}#{@reset}  | "
-        f += "#{@char_color}MIND:#{mind}#{@reset}  "
-        f += "#{@attr_color}AWR:#{mind + awareness_attr}#{@reset}  "
-        f += "#{@attr_color}RS:#{reaction_speed}#{@reset}"
+        # Calculate derived values
+        bp_value = npc.BP.respond_to?(:round) ? npc.BP.round : npc.BP.to_i
+        db_value = npc.DB.respond_to?(:round) ? npc.DB.round : npc.DB.to_i  
+        md_value = npc.MD.respond_to?(:round) ? npc.MD.round : npc.MD.to_i
+        
+        # Line 1: SIZE, Characteristics and key attributes
+        f += "   SIZE:#{npc.SIZE}  BODY:#{body}  Str:#{body + str_attr}  End:#{body + end_attr}"
+        f += " | MIND:#{mind}  Awr:#{mind + awareness_attr}  RS:#{reaction_speed}"
         if spirit > 0
-          f += " | #{@char_color}SPIRIT:#{spirit}#{@reset}"
+          f += " | SPIRIT:#{spirit}"
         end
         f += "\n"
         
-        # Weapons line (all in one row if possible)
-        weapons = []
-        
-        # Melee combat skills
-        if npc.tiers["BODY"]["Melee Combat"]
-          melee_attr = npc.get_attribute("BODY", "Melee Combat")
-          melee_skills = npc.tiers["BODY"]["Melee Combat"]["skills"].select { |_, v| v > 0 }
-          melee_skills.each do |skill, value|
-            total = body + melee_attr + value
-            wpn_stats = get_weapon_stats(skill)
-            ini = reaction_speed + (wpn_stats[:ini] || 0)
-            off = total + wpn_stats[:off]
-            def_val = total + wpn_stats[:def] + dodge_bonus  # Include Dodge/5
-            dmg = (npc.DB + wpn_stats[:dmg]).round
-            
-            weapons << "#{skill}(#{total}/#{ini}/#{off}/#{def_val}/#{dmg})"
-          end
+        # Line 2: Derived stats and armor
+        f += "   BP:#{bp_value} DB:#{db_value} MD:#{md_value}"
+        if npc.armor
+          f += " Armor:#{npc.armor[:name]}(#{npc.armor[:ap]})"
         end
         
-        # Missile combat skills if any
-        if npc.tiers["BODY"]["Missile Combat"]
-          missile_attr = npc.get_attribute("BODY", "Missile Combat")
-          missile_skills = npc.tiers["BODY"]["Missile Combat"]["skills"].select { |_, v| v > 0 }
-          missile_skills.each do |skill, value|
-            total = body + missile_attr + value
-            msl_stats = get_missile_stats(skill)
-            dmg = (npc.DB + msl_stats[:dmg]).round
-            
-            weapons << "#{skill}(#{total}/#{msl_stats[:range]}/#{dmg})"
-          end
-        end
-        
-        # Display weapons compactly
-        if weapons.any?
-          f += "   #{@skill_color}Weapons: #{weapons.join(' | ')}#{@reset}\n"
-          f += "   #{@gray}(Skill/Init/Off/Def/Dmg for melee, Skill/Range/Dmg for missile)#{@reset}\n"
-        end
-        
-        # Essential skills on one line
+        # Calculate dodge bonus for defense
         athletics_attr = npc.get_attribute("BODY", "Athletics")
         dodge = npc.get_skill("BODY", "Athletics", "Dodge")
+        dodge_total = body + athletics_attr + dodge
+        dodge_bonus = (dodge_total / 5).to_i
+        
+        # Line 3: Skills and spells
         hide = npc.get_skill("BODY", "Athletics", "Hide")
         move_quietly = npc.get_skill("BODY", "Athletics", "Move Quietly")
         alertness = npc.get_skill("MIND", "Awareness", "Alertness")
         
-        dodge_total = body + athletics_attr + dodge
-        dodge_bonus = (dodge_total / 5).to_i  # Dodge/5 bonus for defense
         hide_total = body + athletics_attr + hide
         move_total = body + athletics_attr + move_quietly
         alertness_total = mind + awareness_attr + alertness
         
-        f += "   #{@skill_color}Skills: Dodge:#{dodge_total} Hide:#{hide_total} MoveQ:#{move_total} Alert:#{alertness_total}#{@reset}"
+        f += "   Skills: #{@stat_color}Dodge:#{dodge_total}#{@reset} #{@stat_color}Hide:#{hide_total}#{@reset} #{@stat_color}MoveQ:#{move_total}#{@reset} #{@stat_color}Alert:#{alertness_total}#{@reset}"
         
         # Add tracking if non-zero
         tracking = npc.get_skill("MIND", "Awareness", "Tracking")
         if tracking > 0
           tracking_total = mind + awareness_attr + tracking
-          f += " #{@skill_color}Track:#{tracking_total}#{@reset}"
+          f += " #{@stat_color}Track:#{tracking_total}#{@reset}"
         end
         
         # Show spells if any
         if npc.respond_to?(:spells) && npc.spells && npc.spells.length > 0
-          spell_names = npc.spells.take(3).map{|s| s['name']}.join(', ')
-          f += " #{@skill_color}Spells(#{npc.spells.length}): #{spell_names}#{'...' if npc.spells.length > 3}#{@reset}"
+          spell_names = npc.spells.take(2).map{|s| s['name']}.join(', ')
+          f += " Spells(#{npc.spells.length}): #{spell_names}#{'...' if npc.spells.length > 2}"
         end
         f += "\n"
-      end
-      
-      # Derived stats and spell lore on same line if applicable
-      f += "   " + "─" * (width - 10) + "\n"
-      
-      # Build stats line
-      # Ensure all values are rounded integers (SIZE can have half values)
-      bp_value = npc.BP.respond_to?(:round) ? npc.BP.round : npc.BP.to_i
-      db_value = npc.DB.respond_to?(:round) ? npc.DB.round : npc.DB.to_i  
-      md_value = npc.MD.respond_to?(:round) ? npc.MD.round : npc.MD.to_i
-      stats_line = "   #{@stat_color}SIZE:#{npc.SIZE} BP:#{bp_value} DB:#{db_value} MD:#{md_value}"
-      
-      # Add armor if present
-      if npc.armor
-        stats_line += " Armor:#{npc.armor[:name]}(AP#{npc.armor[:ap]})"
-      end
-      
-      # Check if NPC has spells and add domain lore
-      if npc.respond_to?(:spells) && npc.spells && npc.spells.length > 0
-        domain = nil
-        domain_skill = 0
         
-        if npc.tiers["SPIRIT"] && npc.tiers["SPIRIT"]["Attunement"] && npc.tiers["SPIRIT"]["Attunement"]["skills"]
-          npc.tiers["SPIRIT"]["Attunement"]["skills"].each do |dom, val|
-            if val > domain_skill
-              domain = dom
-              domain_skill = val
-            end
+        # Line 4 & 5: Weapons (melee and missile on separate lines)
+        melee_weapons = []
+        missile_weapons = []
+        
+        # Melee combat
+        if npc.tiers["BODY"]["Melee Combat"]
+          melee_attr = npc.get_attribute("BODY", "Melee Combat")
+          melee_skills = npc.tiers["BODY"]["Melee Combat"]["skills"].select { |_, v| v > 0 }
+          melee_skills.take(2).each do |skill, value|
+            total = body + melee_attr + value
+            wpn_stats = get_weapon_stats(skill)
+            ini = reaction_speed + (wpn_stats[:ini] || 0)
+            off = total + wpn_stats[:off]
+            def_val = total + wpn_stats[:def] + dodge_bonus
+            dmg = (db_value + wpn_stats[:dmg]).round
+            
+            melee_weapons << "#{skill} (#{total}) I:#{ini} #{@stat_color}O:#{off}#{@reset} #{@stat_color}D:#{def_val}#{@reset} #{@stat_color}d:#{dmg}#{@reset}"
           end
         end
         
-        if domain && domain_skill > 0
-          total_lore = spirit + npc.get_attribute("SPIRIT", "Attunement") + domain_skill
-          stats_line += " | #{domain}Lore:#{total_lore} Spells:#{npc.spells.length}"
+        # Missile combat
+        if npc.tiers["BODY"]["Missile Combat"]
+          missile_attr = npc.get_attribute("BODY", "Missile Combat")
+          missile_skills = npc.tiers["BODY"]["Missile Combat"]["skills"].select { |_, v| v > 0 }
+          missile_skills.take(2).each do |skill, value|
+            total = body + missile_attr + value
+            msl_stats = get_missile_stats(skill)
+            dmg = (db_value + msl_stats[:dmg]).round
+            
+            missile_weapons << "#{skill} (#{total}) R:#{msl_stats[:range]} #{@stat_color}d:#{dmg}#{@reset}"
+          end
         end
+        
+        # Display weapons
+        if melee_weapons.any?
+          f += "   Weapons: #{melee_weapons.join(' | ')}\n"
+        end
+        if missile_weapons.any?
+          f += "   Missile: #{missile_weapons.join(' | ')}\n"
+        end
+        # Add spell lore info to line 2 if applicable
+        if npc.respond_to?(:spells) && npc.spells && npc.spells.length > 0
+          domain = nil
+          domain_skill = 0
+          
+          if npc.tiers["SPIRIT"] && npc.tiers["SPIRIT"]["Attunement"] && npc.tiers["SPIRIT"]["Attunement"]["skills"]
+            npc.tiers["SPIRIT"]["Attunement"]["skills"].each do |dom, val|
+              if val > domain_skill
+                domain = dom
+                domain_skill = val
+              end
+            end
+          end
+          
+          if domain && domain_skill > 0
+            total_lore = spirit + npc.get_attribute("SPIRIT", "Attunement") + domain_skill
+            f += " | #{domain}Lore:#{total_lore}"
+          end
+        end
+        f += "\n"
       end
-      
-      f += stats_line + "#{@reset}\n"
       
       # Equipment and money for humanoids (not monsters)
       if npc.respond_to?(:type) && !npc.type.to_s.match(/Monster:|Animal:|monster/i)
@@ -264,9 +258,10 @@ def enc_output_new(e, cli)
         f += "   #{@stat_color}Equip: #{equip_short} | $: #{money_str}#{@reset}\n"
       end
       
-      # Special abilities for monsters
-      if npc.respond_to?(:special_abilities) && npc.special_abilities
-        f += "   #{@special_color}Special: #{npc.special_abilities}#{@reset}\n"
+      # Special abilities for monsters (skip generic/unknown text)
+      if npc.respond_to?(:special_abilities) && npc.special_abilities && 
+         !npc.special_abilities.to_s.downcase.include?("unknown")
+        f += "   Special: #{npc.special_abilities}\n"
       end
     end
   end
