@@ -400,4 +400,11 @@ class MonsterNew
   def area
     "Wild"
   end
+  
+  def has_magic?
+    # Check if monster has any casting ability
+    return false unless @tiers["SPIRIT"] && @tiers["SPIRIT"]["Casting"]
+    casting_level = @tiers["SPIRIT"]["Casting"]["level"] || 0
+    casting_level > 0
+  end
 end

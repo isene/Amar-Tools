@@ -46,8 +46,14 @@ def npc_output_new(n, cli)
   f += "#{area_part}#{' ' * spaces_needed}#{status_part}\n"
   
   # Add religion line for priests and anyone with Attunement
-  attunement_level = n.tiers["SPIRIT"]["Attunement"]["level"] || 0
-  if ["Priest", "Clergyman", "Monk"].include?(n.type) || n.has_magic? || attunement_level > 0
+  attunement_level = 0
+  if n.tiers && n.tiers["SPIRIT"] && n.tiers["SPIRIT"]["Attunement"]
+    attunement_level = n.tiers["SPIRIT"]["Attunement"]["level"] || 0
+  end
+  
+  # Check if NPC should have religion info (skip for monsters)
+  is_humanoid = !n.type.to_s.match(/Monster:|Animal:|monster/i)
+  if is_humanoid && (["Priest", "Clergyman", "Monk"].include?(n.type) || (n.respond_to?(:has_magic?) && n.has_magic?) || attunement_level > 0)
     cult_info = generate_cult_info(n.type, n.level, attunement_level, n.sex)
     f += "#{cult_info}\n" if cult_info
   end
