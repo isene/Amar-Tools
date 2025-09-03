@@ -1,8 +1,6 @@
 # The CLI input module for Amar Tools
 
 def npc_input
-  # Clear screen before starting input
-  system("clear") || system("cls")  # Works on both Unix and Windows
 
   prompt = TTY::Prompt.new
 

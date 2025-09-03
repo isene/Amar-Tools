@@ -1,0 +1,706 @@
+# New NPC class for the 3-tier Amar RPG system
+# Supports Characteristics > Attributes > Skills hierarchy
+
+class NpcNew
+  attr_reader :type, :level, :name, :area, :sex, :age
+  attr_reader :height, :weight, :description
+  attr_reader :SIZE, :BP, :DB, :MD, :ENC, :STATUS
+  attr_reader :tiers, :marks, :spells, :armor
+  attr_writer :name, :area, :sex, :age, :height, :weight, :description
+  attr_writer :ENC
+
+  def initialize(name, type, level, area, sex, age, height, weight, description)
+    @name = name.to_s
+    @type = type.to_s
+    @level = level.to_i
+    @area = area.to_s
+    @sex = sex.to_s
+    @age = age.to_i
+    @height = height.to_i
+    @weight = weight.to_i
+    @description = description.to_s
+    
+    # Initialize the 3-tier system
+    @tiers = {
+      "BODY" => {},
+      "MIND" => {},
+      "SPIRIT" => {}
+    }
+    
+    # Initialize marks tracking for progression
+    @marks = {
+      "BODY" => {},
+      "MIND" => {},
+      "SPIRIT" => {}
+    }
+    
+    # Initialize spell ownership system
+    @spells = []
+    
+    # Randomize omitted values
+    randomize_basics
+    
+    # Generate tier values based on type and level
+    generate_tiers
+    
+    # Calculate derived statistics
+    calculate_modifiers
+    
+    # Generate equipment
+    generate_equipment
+    
+    # Generate spells if applicable
+    generate_spells if has_magic?
+  end
+  
+  private
+  
+  def randomize_basics
+    # Sex
+    if @sex == ""
+      @sex = rand(2) == 0 ? "F" : "M"
+    end
+    
+    # Name
+    @name = naming("Human", @sex) if @name == ""
+    
+    # Type
+    unless $ChartypeNew.has_key?(@type)
+      @type = $ChartypeNew.keys.sample
+    end
+    
+    # Level
+    @level = rand(5) + 1 if @level == 0
+    
+    # Area
+    if @area == ""
+      @area = randomizer(
+        "Amaronir"  => 4,
+        "Merisir"   => 2,
+        "Calaronir" => 2,
+        "Feronir"   => 2,
+        "Aleresir"  => 2,
+        "Rauinir"   => 3,
+        "Outskirts" => 1,
+        "Other"     => 1
+      )
+    end
+    
+    # Age
+    @age = @level * 5 + oD6.abs * 3 + rand(10) if @age == 0
+    
+    # Height
+    if @height == 0
+      @height = 160 + oD6 * 2 + oD6 + rand(10)
+      @height -= 5 if @sex == "F"
+      @height -= (3 * (16 - @age)) if @age < 17
+    end
+    
+    # Weight
+    @weight = @height - 120 + aD6 * 4 + rand(10) if @weight == 0
+  end
+  
+  def generate_tiers
+    # Get character type template
+    template = $ChartypeNew[@type]
+    
+    # Generate characteristics (top tier)
+    $TierSystem.each do |char_name, attributes|
+      @tiers[char_name] = {}
+      
+      # Set characteristic level based on template and NPC level
+      char_base = template["characteristics"][char_name] || 0
+      char_level = calculate_tier_level(char_base, @level, 1.0)
+      
+      # Generate attributes (middle tier)
+      attributes.each do |attr_name, attr_data|
+        @tiers[char_name][attr_name] = {}
+        
+        # Calculate attribute level
+        attr_base = template["attributes"]["#{char_name}/#{attr_name}"] || attr_data["base"]
+        
+        # Special handling for Innate - should be very rare
+        if attr_name == "Innate"
+          # Only special character types get Innate
+          special_types = ["Witch (white)", "Witch (black)", "Sorcerer", "Summoner"]
+          unless special_types.include?(@type)
+            attr_base = 0  # Force to 0 for non-special types
+          end
+        end
+        
+        attr_level = calculate_tier_level(attr_base, @level, 0.8)
+        @tiers[char_name][attr_name]["level"] = attr_level
+        
+        # Generate skills (bottom tier)
+        @tiers[char_name][attr_name]["skills"] = {}
+        attr_data["skills"].each do |skill_name|
+          skill_key = "#{char_name}/#{attr_name}/#{skill_name}"
+          skill_base = template["skills"][skill_key] || 0
+          
+          # Zero out Innate skills for non-special types
+          if attr_name == "Innate" && attr_base == 0
+            skill_level = 0
+          # Zero out Casting skills for non-casters
+          elsif attr_name == "Casting" && !has_template_magic?(template)
+            skill_level = 0
+          else
+            skill_level = calculate_tier_level(skill_base, @level, 0.6)
+          end
+          
+          @tiers[char_name][attr_name]["skills"][skill_name] = skill_level
+        end
+      end
+    end
+    
+    # Add weapon skills from existing tables
+    add_weapon_skills(template)
+    
+    # Add additional skills for experienced NPCs (level 4+)
+    if @level >= 4
+      add_experience_skills()
+    end
+  end
+  
+  def add_experience_skills
+    # Add additional skills for experienced characters
+    # These represent skills picked up through life experience
+    
+    # Add some general skills based on level and type
+    experience_bonus = @level - 3  # 1 for level 4, 2 for level 5, etc.
+    
+    # Significantly expand skill generation based on level
+    # Level 4: 8-12 additional skills
+    # Level 5: 12-18 additional skills 
+    # Level 6+: 18-25 additional skills
+    skill_count = case @level
+                  when 4 then rand(8..12)
+                  when 5 then rand(12..18)
+                  when 6 then rand(18..25)
+                  else rand(20..30)
+                  end
+    
+    skills_added = 0
+    
+    # Helper method to safely add skills
+    def safe_add_skill(char, attr, skill, value)
+      if @tiers[char] && @tiers[char][attr] && @tiers[char][attr]["skills"]
+        # Initialize skills hash if it's an array
+        if @tiers[char][attr]["skills"].is_a?(Array)
+          skill_list = @tiers[char][attr]["skills"]
+          @tiers[char][attr]["skills"] = {}
+          skill_list.each { |s| @tiers[char][attr]["skills"][s] = 0 }
+        end
+        # Now add the skill if it exists or create it
+        if @tiers[char][attr]["skills"].key?(skill) || @tiers[char][attr]["skills"][skill].nil?
+          @tiers[char][attr]["skills"][skill] ||= 0
+          if @tiers[char][attr]["skills"][skill] == 0
+            @tiers[char][attr]["skills"][skill] = value
+            return true
+          end
+        end
+      end
+      false
+    end
+    
+    # AWARENESS SKILLS - everyone needs these
+    awareness_skills = ["Spot Hidden", "Listening", "Direction Sense", "Tracking", "Lie Detection"]
+    awareness_skills.sample(3 + experience_bonus).each do |skill|
+      if @tiers["MIND"]["Awareness"]["skills"].key?(skill) && @tiers["MIND"]["Awareness"]["skills"][skill] == 0
+        @tiers["MIND"]["Awareness"]["skills"][skill] = rand(2..4) + experience_bonus
+        skills_added += 1
+      end
+    end
+    
+    # SOCIAL SKILLS - for interaction
+    social_skills = ["Rhetoric", "Bargain", "Read People", "Persuasion", "Etiquette", "Leadership"]
+    social_skills.sample(3 + experience_bonus).each do |skill|
+      if @tiers["MIND"]["Social Knowledge"]["skills"].key?(skill) && @tiers["MIND"]["Social Knowledge"]["skills"][skill] == 0
+        @tiers["MIND"]["Social Knowledge"]["skills"][skill] = rand(2..3) + experience_bonus
+        skills_added += 1
+      end
+    end
+    
+    # PRACTICAL SKILLS - everyday knowledge
+    practical_skills = ["Direction Sense", "First Aid", "Cooking", "Animal Handling", "Navigation"]
+    practical_skills.sample(2 + experience_bonus).each do |skill|
+      if @tiers["MIND"]["Practical Knowledge"]["skills"].key?(skill) && @tiers["MIND"]["Practical Knowledge"]["skills"][skill] == 0
+        @tiers["MIND"]["Practical Knowledge"]["skills"][skill] = rand(2..3) + experience_bonus
+        skills_added += 1
+      end
+    end
+    
+    # ATHLETICS SKILLS - physical competencies
+    athletics_skills = ["Swimming", "Climbing", "Running", "Jumping", "Balance", "Acrobatics"]
+    athletics_skills.sample(2 + experience_bonus).each do |skill|
+      if @tiers["BODY"]["Athletics"]["skills"].key?(skill) && @tiers["BODY"]["Athletics"]["skills"][skill] == 0
+        @tiers["BODY"]["Athletics"]["skills"][skill] = rand(1..3) + experience_bonus
+        skills_added += 1
+      end
+    end
+    
+    # DEXTERITY SKILLS
+    dex_skills = ["Sleight of Hand", "Pick Locks", "Disarm Traps", "Juggling", "Crafting"]
+    dex_skills.sample(2).each do |skill|
+      if @tiers["BODY"]["Dexterity"] && @tiers["BODY"]["Dexterity"]["skills"] && 
+         @tiers["BODY"]["Dexterity"]["skills"].key?(skill) && @tiers["BODY"]["Dexterity"]["skills"][skill] == 0
+        @tiers["BODY"]["Dexterity"]["skills"][skill] = rand(1..2) + experience_bonus
+        skills_added += 1
+      end
+    end
+    
+    # NATURE KNOWLEDGE - world understanding
+    nature_skills = ["History", "Geography", "Legends", "Heraldry", "Languages", "Culture", "Weather", "Nature Lore"]
+    nature_skills.sample(3 + experience_bonus).each do |skill|
+      if @tiers["MIND"]["Nature Knowledge"]["skills"].key?(skill) && @tiers["MIND"]["Nature Knowledge"]["skills"][skill] == 0
+        @tiers["MIND"]["Nature Knowledge"]["skills"][skill] = rand(2..3) + experience_bonus
+        skills_added += 1
+      end
+    end
+    
+    # For magic users, add extensive magic-related skills
+    if @tiers["SPIRIT"]["Casting"]["level"] > 0
+      magic_skills = ["Spell art I", "Spell art II", "Spell mastery", "Ritual Casting", "Counterspelling"]
+      magic_skills.sample(3).each do |skill|
+        if @tiers["SPIRIT"]["Casting"]["skills"].key?(skill) && @tiers["SPIRIT"]["Casting"]["skills"][skill] == 0
+          @tiers["SPIRIT"]["Casting"]["skills"][skill] = rand(3..5) + experience_bonus
+          skills_added += 1
+        end
+      end
+      
+      # Magical knowledge
+      if @tiers["MIND"]["Nature Knowledge"]["skills"]["Magick Rituals"] == 0
+        @tiers["MIND"]["Nature Knowledge"]["skills"]["Magick Rituals"] = rand(3..5) + experience_bonus
+        skills_added += 1
+      end
+      if @tiers["MIND"]["Nature Knowledge"]["skills"].key?("Arcane Lore") && @tiers["MIND"]["Nature Knowledge"]["skills"]["Arcane Lore"] == 0
+        @tiers["MIND"]["Nature Knowledge"]["skills"]["Arcane Lore"] = rand(2..4) + experience_bonus
+        skills_added += 1
+      end
+      
+      # Literacy is essential for magic users
+      if @tiers["MIND"]["Social Knowledge"]["skills"]["Literacy"] == 0
+        @tiers["MIND"]["Social Knowledge"]["skills"]["Literacy"] = rand(3..5) + experience_bonus
+        skills_added += 1
+      end
+    end
+    
+    # For physical combat types, add extensive combat skills
+    if ["Warrior", "Guard", "Soldier", "Gladiator", "Body guard", "Ranger", "Hunter", "Barbarian"].any? { |t| @type.include?(t) }
+      combat_skills = ["Dodge", "Parry", "Shield Use", "Tactics", "Battle Formation"]
+      combat_skills.sample(3).each do |skill|
+        if @tiers["BODY"]["Athletics"]["skills"].key?(skill) && @tiers["BODY"]["Athletics"]["skills"][skill] == 0
+          @tiers["BODY"]["Athletics"]["skills"][skill] = rand(3..5) + experience_bonus
+          skills_added += 1
+        end
+      end
+      
+      endurance_skills = ["Combat Tenacity", "Pain Resistance", "Stamina", "Recovery"]
+      endurance_skills.sample(2).each do |skill|
+        if @tiers["BODY"]["Endurance"]["skills"].key?(skill) && @tiers["BODY"]["Endurance"]["skills"][skill] == 0
+          @tiers["BODY"]["Endurance"]["skills"][skill] = rand(2..4) + experience_bonus
+          skills_added += 1
+        end
+      end
+    end
+    
+    # For scholarly types, add extensive intellectual skills
+    if ["Scholar", "Sage", "Scribe", "Wizard", "Mage"].any? { |t| @type.include?(t) }
+      intel_skills = ["Logic", "Memory", "Research", "Analysis", "Mathematics", "Philosophy"]
+      intel_skills.sample(4).each do |skill|
+        if @tiers["MIND"]["Intelligence"]["skills"].key?(skill) && @tiers["MIND"]["Intelligence"]["skills"][skill] == 0
+          @tiers["MIND"]["Intelligence"]["skills"][skill] = rand(3..5) + experience_bonus
+          skills_added += 1
+        end
+      end
+      
+      # Extra history and languages
+      if @tiers["MIND"]["Nature Knowledge"]["skills"].key?("Ancient History") && @tiers["MIND"]["Nature Knowledge"]["skills"]["Ancient History"] == 0
+        @tiers["MIND"]["Nature Knowledge"]["skills"]["Ancient History"] = rand(3..5) + experience_bonus
+        skills_added += 1
+      end
+      if @tiers["MIND"]["Nature Knowledge"]["skills"].key?("Dead Languages") && @tiers["MIND"]["Nature Knowledge"]["skills"]["Dead Languages"] == 0
+        @tiers["MIND"]["Nature Knowledge"]["skills"]["Dead Languages"] = rand(2..4) + experience_bonus
+        skills_added += 1
+      end
+    end
+    
+    # For rogueish types, add stealth and subterfuge
+    if ["Thief", "Rogue", "Assassin", "Scout", "Spy"].any? { |t| @type.include?(t) }
+      # Stealth skills are under Dexterity in our tier system
+      stealth_skills = ["Hide", "Sneak", "Move Silently", "Hide in Shadows", "Stealth"]
+      stealth_skills.sample(3).each do |skill|
+        if @tiers["BODY"]["Dexterity"]["skills"].key?(skill) && @tiers["BODY"]["Dexterity"]["skills"][skill] == 0
+          @tiers["BODY"]["Dexterity"]["skills"][skill] = rand(4..6) + experience_bonus
+          skills_added += 1
+        end
+      end
+      
+      thief_skills = ["Pick Pockets", "Forgery", "Disguise", "Escape Artist"]
+      thief_skills.sample(2).each do |skill|
+        if @tiers["BODY"]["Dexterity"]["skills"].key?(skill) && @tiers["BODY"]["Dexterity"]["skills"][skill] == 0
+          @tiers["BODY"]["Dexterity"]["skills"][skill] = rand(3..5) + experience_bonus
+          skills_added += 1
+        end
+      end
+    end
+    
+    # For merchants and nobles, add trade and social skills
+    if ["Merchant", "Trader", "Noble", "Diplomat"].any? { |t| @type.include?(t) }
+      trade_skills = ["Appraisal", "Accounting", "Law", "Economics", "Negotiation"]
+      trade_skills.sample(3).each do |skill|
+        if @tiers["MIND"]["Intelligence"]["skills"].key?(skill) && @tiers["MIND"]["Intelligence"]["skills"][skill] == 0
+          @tiers["MIND"]["Intelligence"]["skills"][skill] = rand(3..5) + experience_bonus
+          skills_added += 1
+        end
+      end
+    end
+    
+    # Everyone gets willpower skills at higher levels
+    if @level >= 5
+      will_skills = ["Mental Fortitude", "Resist Pain", "Concentration", "Meditation"]
+      will_skills.sample(2).each do |skill|
+        if @tiers["MIND"]["Willpower"]["skills"].key?(skill) && @tiers["MIND"]["Willpower"]["skills"][skill] == 0
+          @tiers["MIND"]["Willpower"]["skills"][skill] = rand(2..4) + experience_bonus
+          skills_added += 1
+        end
+      end
+    end
+    
+    # Ensure we hit minimum skill counts by adding random skills
+    while skills_added < skill_count
+      # Pick random characteristic, attribute, and skill
+      char_name = ["BODY", "MIND", "SPIRIT"].sample
+      if @tiers[char_name]
+        attr_name = @tiers[char_name].keys.sample
+        if @tiers[char_name][attr_name] && @tiers[char_name][attr_name]["skills"]
+          skill_name = @tiers[char_name][attr_name]["skills"].keys.sample
+          if @tiers[char_name][attr_name]["skills"][skill_name] == 0
+            @tiers[char_name][attr_name]["skills"][skill_name] = rand(1..3) + experience_bonus
+            skills_added += 1
+          end
+        end
+      end
+      # Prevent infinite loop
+      break if skills_added >= 50
+    end
+  end
+  
+  def calculate_tier_level(base, npc_level, tier_modifier)
+    # Natural caps based on training difficulty
+    # The harder to train, the lower the natural cap
+    
+    # Determine tier type and apply realistic caps
+    # Adjusted to create proper population distribution
+    tier_caps = case tier_modifier
+                when 1.0  # Characteristic (hardest to train)
+                  { normal: 2, experienced: 3, master: 4, hero: 5 }
+                when 0.8  # Attribute (moderate training)
+                  { normal: 3, experienced: 5, master: 6, hero: 7 }
+                when 0.6  # Skill (easiest to train)
+                  { normal: 5, experienced: 7, master: 9, hero: 11 }
+                else
+                  { normal: 2, experienced: 3, master: 4, hero: 5 }
+                end
+    
+    # Determine NPC experience level - matches population distribution
+    experience = case npc_level
+                 when 1..2 then :normal       # Common folk
+                 when 3..4 then :experienced  # Town champions  
+                 when 5..6 then :master       # Regional masters
+                 else :hero                   # National/legendary
+                 end
+    
+    max_value = tier_caps[experience]
+    
+    # Calculate level with diminishing returns
+    # Characteristics grow very slowly, skills grow faster
+    growth_rate = case tier_modifier
+                  when 1.0 then 0.4  # Very slow for characteristics
+                  when 0.8 then 0.6  # Moderate for attributes
+                  when 0.6 then 0.8  # Faster for skills
+                  else 0.5
+                  end
+    
+    # Use square root for more realistic progression
+    level = (base * Math.sqrt(npc_level + 1) * growth_rate).to_i
+    
+    # Add minimal variation ONLY if base > 0
+    if base > 0
+      variation = rand(3) - 1  # -1, 0, or 1
+      level += variation
+    end
+    
+    # Ensure minimum competence for trained individuals
+    # Skills should rarely be below 3 for anyone with training
+    if tier_modifier == 0.6  # Skills
+      min_skill = case npc_level
+                  when 1..2 then 2
+                  when 3..4 then 3
+                  else 4
+                  end
+      level = min_skill if level < min_skill && base > 0
+    elsif tier_modifier == 0.8  # Attributes
+      min_attr = case npc_level
+                 when 1..2 then 1
+                 when 3..4 then 2
+                 else 3
+                 end
+      level = min_attr if level < min_attr && base > 0
+    end
+    
+    # Apply training reality - most people plateau
+    # Only exceptional individuals (high level + good base) reach max
+    if tier_modifier == 1.0  # Characteristics rarely exceed 3
+      level = 3 if level > 3 && rand(100) > 20  # 80% plateau at 3
+    elsif tier_modifier == 0.8  # Attributes occasionally reach 6
+      level = 5 if level > 5 && rand(100) > 40  # 60% plateau at 5
+    end
+    
+    # Ensure within bounds
+    level = 0 if level < 0
+    level = max_value if level > max_value
+    
+    level
+  end
+  
+  def add_weapon_skills(template)
+    # Add melee weapon skills
+    if template["melee_weapons"]
+      @tiers["BODY"]["Melee Combat"]["skills"] ||= {}
+      template["melee_weapons"].each do |weapon, skill_level|
+        base_level = calculate_tier_level(skill_level, @level, 0.6)
+        @tiers["BODY"]["Melee Combat"]["skills"][weapon] = base_level
+      end
+    end
+    
+    # Add missile weapon skills
+    if template["missile_weapons"]
+      @tiers["BODY"]["Missile Combat"]["skills"] ||= {}
+      template["missile_weapons"].each do |weapon, skill_level|
+        base_level = calculate_tier_level(skill_level, @level, 0.6)
+        @tiers["BODY"]["Missile Combat"]["skills"][weapon] = base_level
+      end
+    end
+  end
+  
+  def calculate_modifiers
+    # Calculate SIZE based on weight
+    @SIZE = case @weight
+            when 0..10 then 0
+            when 11..30 then 1
+            when 31..50 then 2
+            when 51..70 then 3
+            when 71..90 then 4
+            when 91..110 then 5
+            else 6
+            end
+    
+    # Get relevant skill values
+    fortitude = @tiers["BODY"]["Endurance"]["skills"]["Fortitude"] || 0
+    wield_weapon = @tiers["BODY"]["Strength"]["skills"]["Wield weapon"] || 0
+    mental_fortitude = @tiers["MIND"]["Willpower"]["skills"]["Mental Fortitude"] || 0
+    attunement_self = @tiers["SPIRIT"]["Attunement"]["skills"]["Self"] || 0
+    
+    # Calculate derived stats using new formulas
+    @BP = @SIZE * 2 + fortitude / 3
+    @DB = (@SIZE + wield_weapon) / 3
+    @MD = (mental_fortitude + attunement_self) / 3
+    
+    # Calculate encumbrance
+    carrying = @tiers["BODY"]["Strength"]["skills"]["Carrying"] || 0
+    @ENC = @SIZE + carrying
+  end
+  
+  def generate_equipment
+    # Generate armor based on character type and level
+    generate_armor
+    
+    # Weapons are already handled via character templates
+  end
+  
+  def generate_armor
+    # Determine armor type based on character type
+    armor_chance = case @type
+                   when "Warrior", "Guard" then 80
+                   when "Soldier", "Noble" then 60
+                   when "Bandit", "Assassin" then 40
+                   when "Ranger", "Thief" then 30
+                   when "Priest" then 20
+                   else 10
+                   end
+    
+    if rand(100) < armor_chance
+      # Select armor based on level and type
+      if @type == "Warrior" || @type == "Guard"
+        armor_types = case @level
+                      when 1..2 then ["Leather", "Padded"]
+                      when 3..4 then ["Leather", "Chain shirt", "Scale"]
+                      when 5..6 then ["Chain mail", "Scale", "Plate"]
+                      else ["Chain mail", "Plate", "Full plate"]
+                      end
+      else
+        armor_types = ["Leather", "Padded", "None"]
+      end
+      
+      armor_name = armor_types.sample
+      
+      @armor = case armor_name
+               when "Leather"
+                 { name: "Leather", ap: 2, enc: 2 }
+               when "Padded"
+                 { name: "Padded", ap: 1, enc: 1 }
+               when "Chain shirt"
+                 { name: "Chain shirt", ap: 3, enc: 3 }
+               when "Scale"
+                 { name: "Scale armor", ap: 4, enc: 4 }
+               when "Chain mail"
+                 { name: "Chain mail", ap: 4, enc: 5 }
+               when "Plate"
+                 { name: "Plate armor", ap: 5, enc: 6 }
+               when "Full plate"
+                 { name: "Full plate", ap: 6, enc: 7 }
+               else
+                 nil
+               end
+      
+      # Add armor encumbrance to total
+      @ENC += @armor[:enc] if @armor
+    end
+  end
+  
+  def has_template_magic?(template)
+    # Check if template indicates magical ability
+    return false unless template
+    
+    # Check if template has Casting attribute > 0
+    casting_attr = template["attributes"]["SPIRIT/Casting"] || 0
+    return true if casting_attr > 0
+    
+    # Check for specific magic-using types
+    magic_types = ["Mage", "Wizard", "Witch (white)", "Witch (black)", "Sorcerer", 
+                   "Summoner", "Priest", "Sage", "Seer"]
+    magic_types.include?(@type)
+  end
+  
+  # Moved to public section below
+  
+  def generate_spells
+    # Generate spell cards based on character type and level
+    casting_level = @tiers["SPIRIT"]["Casting"]["level"] || 0
+    
+    # Only generate spells if character has casting ability
+    if casting_level > 0
+      # Load spell database if not already loaded
+      unless defined?($SpellDatabase)
+        load File.join($pgmdir, "includes/tables/spells_new.rb")
+      end
+      
+      @spells = generate_spell_cards(@type, @level, casting_level)
+    end
+  end
+  
+  # Public methods for accessing tier data
+  public
+  
+  def has_magic?
+    # Check if character has any casting ability
+    casting_level = @tiers["SPIRIT"]["Casting"]["level"] || 0
+    casting_level > 0
+  end
+  
+  def get_characteristic(name)
+    # Calculate characteristic as weighted average of its attributes
+    # Reflects years of broad training across all aspects
+    total = 0
+    count = 0
+    @tiers[name].each do |attr_name, attr_data|
+      if attr_data["level"] && attr_data["level"] > 0
+        total += attr_data["level"]
+        count += 1
+      end
+    end
+    
+    return 0 if count == 0
+    
+    # Characteristics are very hard to improve - most people stay at 2-3
+    char_level = (total.to_f / count / 1.5).round  # Scaled down to reflect training difficulty
+    
+    # Apply realistic caps based on NPC level
+    max_char = case @level
+               when 1..2 then 2  # Novices rarely exceed 2
+               when 3..4 then 3  # Experienced typically max at 3
+               when 5..6 then 4  # Veterans might reach 4
+               else 5            # Only masters achieve 5
+               end
+    
+    char_level = max_char if char_level > max_char
+    char_level
+  end
+  
+  def get_attribute(char_name, attr_name)
+    @tiers[char_name][attr_name]["level"] || 0
+  end
+  
+  def get_skill(char_name, attr_name, skill_name)
+    @tiers[char_name][attr_name]["skills"][skill_name] || 0
+  end
+  
+  def get_skill_total(char_name, attr_name, skill_name)
+    # Calculate total: Characteristic + Attribute + Skill
+    char_level = get_characteristic(char_name)
+    attr_level = get_attribute(char_name, attr_name)
+    skill_level = get_skill(char_name, attr_name, skill_name)
+    
+    # Natural progression based on training difficulty:
+    # - Getting to 10 is achievable with focused skill training
+    # - Getting to 15 requires years of dedicated work
+    # - Getting to 18+ is legendary, requiring lifetime mastery
+    total = char_level + attr_level + skill_level
+    
+    # Apply soft cap at 18 for game balance (only true masters exceed)
+    if total > 18 && @level < 7
+      # Small chance for exceptional individuals to exceed 18
+      total = 18 unless rand(100) < 5
+    end
+    
+    total
+  end
+  
+  # Mark system for progression
+  
+  def add_mark(char_name, attr_name, skill_name = nil)
+    if skill_name
+      # Add mark to skill
+      key = "#{attr_name}/#{skill_name}"
+      @marks[char_name][key] ||= 0
+      @marks[char_name][key] += 1
+      
+      # Check if ready to advance
+      check_advancement(char_name, attr_name, skill_name)
+    else
+      # Add mark to attribute
+      @marks[char_name][attr_name] ||= 0
+      @marks[char_name][attr_name] += 1
+    end
+  end
+  
+  def check_advancement(char_name, attr_name, skill_name)
+    current_level = get_skill(char_name, attr_name, skill_name)
+    required_marks = (current_level + 1) * 5
+    key = "#{attr_name}/#{skill_name}"
+    
+    if @marks[char_name][key] >= required_marks
+      # Roll for advancement (all but a 1)
+      if oD6 > 1
+        @tiers[char_name][attr_name]["skills"][skill_name] += 1
+        @marks[char_name][key] = 0
+        
+        # Add mark to attribute above
+        add_mark(char_name, attr_name)
+        
+        return true
+      end
+    end
+    false
+  end
+end

@@ -175,17 +175,6 @@ load "cli_name_gen.rb"
 load "cli_weather_input.rb"
 load "cli_weather_output.rb"
 
-# Load new system modules
-load "includes/tables/tier_system.rb"
-load "includes/tables/chartype_new.rb"
-load "includes/tables/spells_new.rb"
-load "includes/class_npc_new.rb"
-load "includes/class_enc_new.rb"
-load "cli_npc_input_new.rb"
-load "cli_npc_output_new.rb"
-load "cli_enc_input_new.rb"
-load "cli_enc_output_new.rb"
-
 # Set initial global encounter default values
 $Day = 1
 $Terrain = 0
@@ -199,11 +188,9 @@ loop do
   puts "\nTools for the Amar RPG. Press a key to access the desired tool:\n\n"
   puts "A".cb(@A) + " = Generate an adventure from OpenAI".c(@A)
   puts "I".cb(@I) + " = Make a general question or request to OpenAI".c(@I)
-  puts "e".cb(@e) + " = Random encounter (OLD SYSTEM)".c(@e)
-  puts "y".cb(@e) + " = Random encounter (NEW 3-TIER SYSTEM)".c(@e)
+  puts "e".cb(@e) + " = Random encounter".c(@e)
   puts "E".cb(@E) + " = Generate a description for a random encounter (via OpenAI)".c(@E)
-  puts "n".cb(@n) + " = Generate a detailed human NPC (OLD SYSTEM)".c(@n)
-  puts "x".cb(@n) + " = Generate a detailed human NPC (NEW 3-TIER SYSTEM)".c(@n)
+  puts "n".cb(@n) + " = Generate a detailed human NPC".c(@n)
   puts "N".cb(@N) + " = Generate a description for an NPC (via OpenAI)".c(@N)
   puts "t".cb(@t) + " = Create a village/town/city".c(@t)
   puts "r".cb(@r) + " = Make town relations".c(@r)
@@ -230,15 +217,6 @@ loop do
       puts "\n\nPress the ENTER key if you want to re-roll with the same inputs. All other keys bring up the main menu."
       break if STDIN.getch != "\r"
     end
-  # y = Random Encounter (NEW SYSTEM)
-  elsif c == "y"
-    ia = enc_input_new
-    loop do
-      anENC = EncNew.new(ia[0], ia[1])
-      enc_output_new(anENC, "cli")
-      puts "\n\nPress the ENTER key if you want to re-roll with the same inputs. All other keys bring up the main menu."
-      break if STDIN.getch != "\r"
-    end
   # E = Generate Encounter description
   elsif c == "E"
     openai("enc")
@@ -250,15 +228,6 @@ loop do
       load "includes/tables/chartype.rb"
       aNPC  = Npc.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
       npc_output(aNPC, "cli")
-      puts "\n\nPress the ENTER key if you want to re-roll with the same inputs. All other keys bring up the main menu."
-      break if STDIN.getch != "\r"
-    end
-  # x = Random NPC (NEW SYSTEM)
-  elsif c == "x"
-    ia = npc_input_new
-    loop do
-      aNPC = NpcNew.new(ia[0], ia[1], ia[2], ia[3], ia[4], ia[5], ia[6], ia[7], ia[8])
-      npc_output_new(aNPC, "cli")
       puts "\n\nPress the ENTER key if you want to re-roll with the same inputs. All other keys bring up the main menu."
       break if STDIN.getch != "\r"
     end

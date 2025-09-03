@@ -6,10 +6,6 @@
 # and a file named after the NPC, "<FirstLast>.npc
 
 def npc_output(n, cli) 
-  # Clear screen before displaying character
-  if cli == "cli"
-    system("clear") || system("cls")  # Works on both Unix and Windows
-  end
 
   mag = n.spell0(0) + n.spell1(0) + n.spell2(0) + n.spell3(0) + n.spell4(0)
   mag += n.spell5(0) + n.spell6(0) + n.spell7(0) + n.spell8(0)

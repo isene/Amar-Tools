@@ -1,0 +1,609 @@
+# Compact output module for new 3-tier NPC system with full details
+
+def npc_output_new(n, cli)
+  # Clear screen before displaying character
+  if cli == "cli"
+    system("clear") || system("cls")  # Works on both Unix and Windows
+  end
+  
+  f = ""
+  
+  # Use UTF-8 box drawing characters (no side borders for easy copy-paste)
+  width = 120
+  
+  # Define colors if terminal output
+  if cli == "cli"
+    # Colors for different elements
+    @header_color = "\e[1;36m"  # Bright cyan
+    @char_color = "\e[1;33m"     # Bright yellow
+    @attr_color = "\e[1;35m"     # Bright magenta
+    @skill_color = "\e[0;37m"    # White
+    @stat_color = "\e[1;32m"     # Bright green
+    @weapon_color = "\e[38;5;202m"   # Brighter red (202)
+    @spell_color = "\e[0;34m"    # Blue
+    @desc_color = "\e[38;5;229m"  # Light color for description
+    @reset = "\e[0m"
+  else
+    @header_color = @char_color = @attr_color = @skill_color = ""
+    @stat_color = @weapon_color = @spell_color = @desc_color = @reset = ""
+  end
+  
+  # Header (no side borders) with better alignment
+  f += "═" * width + "\n"
+  
+  # Compact header: Name (sex age) H/W: height/weight with right-justified type
+  name_hw_part = "#{n.name} (#{n.sex} #{n.age}) H/W: #{n.height}cm/#{n.weight}kg"
+  type_part = "#{n.type} (#{n.level})"
+  spaces_needed = width - name_hw_part.length - type_part.length
+  f += "#{@header_color}#{name_hw_part}#{' ' * spaces_needed}#{type_part}#{@reset}\n"
+  
+  # Area and Social Status on same line, with status right-justified
+  social_status = generate_social_status(n.type, n.level)
+  area_part = "Area: #{n.area}"
+  status_part = "Social Status: #{social_status}"
+  spaces_needed = width - area_part.length - status_part.length
+  f += "#{area_part}#{' ' * spaces_needed}#{status_part}\n"
+  
+  # Add religion line for priests and anyone with Attunement
+  attunement_level = n.tiers["SPIRIT"]["Attunement"]["level"] || 0
+  if ["Priest", "Clergyman", "Monk"].include?(n.type) || n.has_magic? || attunement_level > 0
+    cult_info = generate_cult_info(n.type, n.level, attunement_level, n.sex)
+    f += "#{cult_info}\n" if cult_info
+  end
+  
+  # Add description line with correct light color (229)
+  description = n.description && !n.description.empty? ? n.description : generate_description(n.type, n.level, n.sex)
+  if cli == "cli"
+    f += "#{@desc_color}Description: #{description}#{@reset}\n"
+  else
+    f += "Description: #{description}\n"
+  end
+  f += "─" * width + "\n"
+  
+  # Three-column layout for skills
+  col_width = 40
+  columns = [[], [], []]
+  
+  # BODY hierarchy with non-zero skills
+  body_char = n.get_characteristic('BODY')
+  body_lines = ["#{@char_color}BODY (#{body_char.to_s.rjust(2)})#{@reset}"]
+  n.tiers["BODY"].each do |attr_name, attr_data|
+    non_zero_skills = attr_data["skills"].select { |_, v| v > 0 }
+    next if non_zero_skills.empty?
+    
+    attr_level = attr_data["level"]
+    body_lines << " #{@attr_color}#{attr_name} (#{attr_level.to_s.rjust(2)})#{@reset}"
+    non_zero_skills.each do |skill_name, skill_level|
+      total = body_char + attr_level + skill_level
+      skill_display = "  #{skill_name} (#{skill_level.to_s.rjust(2)})"
+      body_lines << "#{@skill_color}#{skill_display.ljust(30)}: #{total.to_s.rjust(2)}#{@reset}"
+    end
+  end
+  
+  # MIND hierarchy with non-zero skills
+  mind_char = n.get_characteristic('MIND')
+  mind_lines = ["#{@char_color}MIND (#{mind_char.to_s.rjust(2)})#{@reset}"]
+  n.tiers["MIND"].each do |attr_name, attr_data|
+    non_zero_skills = attr_data["skills"].select { |_, v| v > 0 }
+    next if non_zero_skills.empty?
+    
+    attr_level = attr_data["level"]
+    mind_lines << " #{@attr_color}#{attr_name} (#{attr_level.to_s.rjust(2)})#{@reset}"
+    non_zero_skills.each do |skill_name, skill_level|
+      total = mind_char + attr_level + skill_level
+      skill_display = "  #{skill_name} (#{skill_level.to_s.rjust(2)})"
+      mind_lines << "#{@skill_color}#{skill_display.ljust(30)}: #{total.to_s.rjust(2)}#{@reset}"
+    end
+  end
+  
+  # SPIRIT hierarchy with non-zero skills
+  spirit_char = n.get_characteristic("SPIRIT")
+  spirit_lines = []
+  spirit_attrs_with_skills = n.tiers["SPIRIT"].select do |_, attr_data|
+    attr_data["skills"].any? { |_, v| v > 0 }
+  end
+  
+  if !spirit_attrs_with_skills.empty?
+    spirit_lines << "#{@char_color}SPIRIT (#{spirit_char.to_s.rjust(2)})#{@reset}"
+    n.tiers["SPIRIT"].each do |attr_name, attr_data|
+      non_zero_skills = attr_data["skills"].select { |_, v| v > 0 }
+      next if non_zero_skills.empty?
+      
+      attr_level = attr_data["level"]
+      spirit_lines << " #{@attr_color}#{attr_name} (#{attr_level.to_s.rjust(2)})#{@reset}"
+      non_zero_skills.each do |skill_name, skill_level|
+        total = spirit_char + attr_level + skill_level
+        skill_display = "  #{skill_name} (#{skill_level.to_s.rjust(2)})"
+        spirit_lines << "#{@skill_color}#{skill_display.ljust(30)}: #{total.to_s.rjust(2)}#{@reset}"
+      end
+    end
+  end
+  
+  # Distribute content across three columns more evenly
+  all_lines = []
+  all_lines.concat(body_lines) unless body_lines.length == 1
+  all_lines.concat(mind_lines) unless mind_lines.length == 1
+  all_lines.concat(spirit_lines) unless spirit_lines.empty?
+  
+  # Calculate lines per column for even distribution
+  total_lines = all_lines.length
+  lines_per_col = (total_lines / 3.0).ceil
+  
+  # Fill columns
+  all_lines.each_with_index do |line, idx|
+    col_idx = idx / lines_per_col
+    col_idx = 2 if col_idx > 2
+    columns[col_idx] << line
+  end
+  
+  # Balance columns
+  max_lines = columns.map(&:length).max
+  columns.each { |col| col.concat([""] * (max_lines - col.length)) }
+  
+  # Print three columns with vertical separators
+  max_lines.times do |i|
+    line = ""
+    columns.each_with_index do |col, idx|
+      # Strip color codes for length calculation
+      plain_text = col[i].to_s.gsub(/\e\[[0-9;]*m/, '')
+      padding = col_width - plain_text.length
+      line += col[i].to_s + " " * padding
+      line += "│" if idx < 2
+    end
+    f += line.rstrip + "\n"
+  end
+  
+  # Stats line
+  f += "─" * width + "\n"
+  
+  # Calculate proper encumbrance based on weight carried
+  total_weight = calculate_total_weight(n)
+  
+  # Calculate carrying capacity based on Strength
+  strength = n.tiers["BODY"]["Strength"]["level"] || 2
+  base_capacity = strength * 5  # Base carrying capacity in kg
+  
+  # Calculate ENC penalty based on Amar rules
+  enc_penalty = if total_weight <= base_capacity
+    0  # No penalty under normal load
+  elsif total_weight <= base_capacity * 2
+    -1  # Light encumbrance
+  elsif total_weight <= base_capacity * 5
+    -3  # Medium encumbrance
+  elsif total_weight <= base_capacity * 10
+    -5  # Heavy encumbrance
+  else
+    -7  # Extreme encumbrance (not -10)
+  end
+  
+  f += "#{@stat_color}SIZE:#{n.SIZE.to_s.rjust(2)}    BP:#{n.BP.to_s.rjust(2)}    DB:#{n.DB.to_s.rjust(2)}    MD:#{n.MD.to_s.rjust(2)}    "
+  f += "Weight Carried:#{total_weight.to_s.rjust(5)}kg    ENC Penalty:#{enc_penalty.to_s.rjust(3)}#{@reset}\n"
+  
+  # Armor section (moved above weapons)
+  if n.armor
+    f += "─" * width + "\n"
+    f += "#{@weapon_color}ARMOR: #{n.armor[:name].ljust(20)} AP: #{n.armor[:ap].to_s.rjust(2)}  Weight: #{get_armor_weight(n.armor[:name]).to_s.rjust(2)}kg#{@reset}\n"
+  end
+  
+  # Weapons section with proper headers and totals
+  melee_weapons = n.tiers["BODY"]["Melee Combat"]["skills"].select { |_, v| v > 0 }
+  missile_weapons = n.tiers["BODY"]["Missile Combat"]["skills"].select { |_, v| v > 0 }
+  
+  if melee_weapons.any? || missile_weapons.any?
+    f += "─" * width + "\n"
+    f += "#{@weapon_color}WEAPONS:#{@reset}\n"
+    
+    # Headers
+    melee_header = "Melee Weapon".ljust(15) + "Skill  Init  Off  Def  Damage"
+    missile_header = "Missile Weapon".ljust(15) + "Skill  Range     Damage"
+    f += "#{melee_header.ljust(60)} │ #{missile_header}\n"
+    f += "─" * 61 + "┼" + "─" * 58 + "\n"
+    
+    # Format weapons with calculated totals
+    melee_lines = []
+    missile_lines = []
+    
+    body_char = n.get_characteristic("BODY")
+    
+    melee_weapons.each do |weapon, skill|
+      wpn_stats = get_weapon_stats(weapon)
+      attr = n.get_attribute("BODY", "Melee Combat") || 0
+      skill_total = body_char + attr + skill
+      
+      # Calculate weapon totals with correct initiative formula
+      # Initiative = Weapon Init + Reaction Speed skill total
+      reaction_speed = n.get_skill_total("MIND", "Awareness", "Reaction speed") || 0
+      init = reaction_speed + (wpn_stats[:init] || 0)
+      off = skill_total + (wpn_stats[:off] || 0)
+      defense = skill_total + (wpn_stats[:def] || 0)
+      dmg = wpn_stats[:dmg] || "0"
+      
+      line = "#{weapon.ljust(15)} #{skill_total.to_s.rjust(3)}  #{init.to_s.rjust(4)}  #{off.to_s.rjust(3)}  #{defense.to_s.rjust(3)}  #{dmg.rjust(3)}"
+      melee_lines << line
+    end
+    
+    missile_weapons.each do |weapon, skill|
+      wpn_stats = get_missile_stats(weapon)
+      attr = n.get_attribute("BODY", "Missile Combat") || 0
+      skill_total = body_char + attr + skill
+      
+      range = wpn_stats[:range] || "30m"
+      dmg = wpn_stats[:dmg] || "0"
+      
+      line = "#{weapon.ljust(15)} #{skill_total.to_s.rjust(3)}  #{range.ljust(10)} #{dmg.rjust(3)}"
+      missile_lines << line
+    end
+    
+    # Balance weapon columns
+    max_wpn_lines = [melee_lines.length, missile_lines.length].max
+    melee_lines += [""] * (max_wpn_lines - melee_lines.length)
+    missile_lines += [""] * (max_wpn_lines - missile_lines.length)
+    
+    max_wpn_lines.times do |i|
+      f += "#{melee_lines[i].ljust(60)} │ #{missile_lines[i]}\n"
+    end
+  end
+  
+  # Equipment section with money
+  equipment = generate_equipment(n.type, n.level)
+  social_status = generate_social_status(n.type, n.level)
+  money = generate_money(social_status, n.level)
+  
+  # Convert money format from "X silver" to currency abbreviations
+  money_value = money.split(' ').first.to_i
+  money_str = if money_value >= 100
+    gp = money_value / 100
+    sp = (money_value % 100) / 10
+    cp = money_value % 10
+    parts = []
+    parts << "#{gp}gp" if gp > 0
+    parts << "#{sp}sp" if sp > 0
+    parts << "#{cp}cp" if cp > 0
+    parts.join(" ")
+  elsif money_value >= 10
+    sp = money_value / 10
+    cp = money_value % 10
+    parts = []
+    parts << "#{sp}sp" if sp > 0
+    parts << "#{cp}cp" if cp > 0
+    parts.join(" ")
+  else
+    "#{money_value}cp"
+  end
+  
+  f += "─" * width + "\n"
+  equipment_list = equipment + [money_str]
+  f += "EQUIPMENT: #{equipment_list.join(", ")}\n"
+  
+  # Spells section with headers (more compact)
+  if n.spells && n.spells.length > 0
+    f += "─" * width + "\n"
+    # Use color 111 for SPELLS title
+    spell_title_color = cli == "cli" ? "\e[38;5;111m" : ""
+    f += "#{spell_title_color}SPELLS (#{n.spells.length}):#{@reset}\n"
+    # Narrower headers with DR added, Duration abbreviated to Dur
+    f += "Spell (Domain)".ljust(28) + "DR  CT   CD  Range     Dur      │ "
+    f += "Spell (Domain)".ljust(28) + "DR  CT   CD  Range     Dur\n"
+    f += "─" * 60 + "┼" + "─" * 59 + "\n"
+    
+    # Format spells in two columns
+    spell_pairs = n.spells.each_slice(2).to_a
+    
+    spell_pairs.each do |spell_pair|
+      spell1 = spell_pair[0]
+      dr1 = spell1['dr'] ? spell1['dr'].first.to_s : "?"
+      ct1 = spell1['casting_time'] ? spell1['casting_time'].gsub(/ rounds?/, 'r').gsub(/ minutes?/, 'm') : "?"
+      cd1 = spell1['cooldown'] ? "#{spell1['cooldown']}h" : "?"
+      # Abbreviate duration
+      dur1 = spell1['duration'].to_s.gsub(/minutes?/, 'min').gsub(/hours?/, 'hr').gsub(/Instant/, 'Inst').gsub(/Concentration/, 'Conc.').gsub(/Permanent/, 'Perm')
+      line1 = "#{spell1['name']} (#{spell1['domain']})".ljust(28)
+      line1 += "#{dr1.rjust(2)}  #{ct1.ljust(4)} #{cd1.ljust(3)}  #{spell1['distance'].to_s.ljust(8)} #{dur1.ljust(8)}"
+      
+      if spell_pair[1]
+        spell2 = spell_pair[1]
+        dr2 = spell2['dr'] ? spell2['dr'].first.to_s : "?"
+        ct2 = spell2['casting_time'] ? spell2['casting_time'].gsub(/ rounds?/, 'r').gsub(/ minutes?/, 'm') : "?"
+        cd2 = spell2['cooldown'] ? "#{spell2['cooldown']}h" : "?"
+        # Abbreviate duration
+        dur2 = spell2['duration'].to_s.gsub(/minutes?/, 'min').gsub(/hours?/, 'hr').gsub(/Instant/, 'Inst').gsub(/Concentration/, 'Conc.').gsub(/Permanent/, 'Perm')
+        line2 = "#{spell2['name']} (#{spell2['domain']})".ljust(28)
+        line2 += "#{dr2.rjust(2)}  #{ct2.ljust(4)} #{cd2.ljust(3)}  #{spell2['distance'].to_s.ljust(8)} #{dur2.ljust(8)}"
+        f += "#{line1.ljust(57)} │ #{line2}\n"
+      else
+        f += "#{line1.ljust(57)} │\n"
+      end
+    end
+  end
+  
+  f += "═" * width + "\n"
+  
+  # Output handling
+  if cli == "cli"
+    File.write("saved/temp_new.npc", f, perm: 0644)
+    print f
+    
+    # Options
+    puts "\nPress 'v' to edit, any other key to continue"
+    key = STDIN.getc
+    
+    if key == "v"
+      system("#{$editor} saved/temp_new.npc")
+    end
+  else
+    return f
+  end
+end
+
+# Helper functions
+
+def generate_cult_info(type, level, attunement_level = 0, sex = nil)
+  # Generate religion and cult standing for religious types
+  # Format: "Cult: [Religion], [Standing] (CS)"
+  
+  # Load religion table if not loaded
+  unless defined?($CharacterReligions)
+    load File.join($pgmdir, "includes/tables/religions.rb")
+  end
+  
+  # Get appropriate deity from table - pass sex for nobility handling
+  cult = get_character_religion(type, sex)
+  
+  # Determine cult standing based on level and attunement
+  # Higher attunement means deeper religious involvement
+  standing, cs = case level
+  when 1..2
+    if attunement_level >= 3
+      ["Initiate", rand(3..5)]
+    else
+      ["Lay Member", rand(1..3)]
+    end
+  when 3..4
+    if attunement_level >= 4
+      ["Priest", rand(6..8)]
+    else
+      ["Initiate", rand(4..7)]
+    end
+  when 5..6
+    if attunement_level >= 5
+      ["High Priest", rand(10..12)]
+    else
+      ["Priest", rand(8..11)]
+    end
+  else
+    ["High Priest", rand(12..15)]
+  end
+  
+  # Special handling for non-priest types (they progress slower in cult)
+  if !["Priest", "Clergyman", "Monk"].include?(type)
+    standing, cs = case level
+    when 1..3
+      if attunement_level >= 3
+        ["Initiate", rand(2..3)]
+      else
+        ["Lay Member", rand(1..2)]
+      end
+    when 4..5
+      if attunement_level >= 4
+        ["Initiate", rand(4..6)]
+      else
+        ["Initiate", rand(3..5)]
+      end
+    else
+      if attunement_level >= 5
+        ["Priest", rand(7..9)]
+      else
+        ["Initiate", rand(6..8)]
+      end
+    end
+  end
+  
+  "Cult: #{cult}, #{standing} (#{cs})"
+end
+
+def generate_description(type, level, sex)
+  # Generate random description if none provided
+  build = ["lean", "muscular", "stocky", "thin", "athletic", "sturdy", "wiry", "robust"].sample
+  hair = ["dark", "brown", "blonde", "red", "grey", "black", "auburn", "silver"].sample
+  eyes = ["blue", "brown", "green", "grey", "hazel", "dark", "amber"].sample
+  feature = ["scarred", "weathered", "youthful", "stern", "friendly", "intense", "calm", "sharp"].sample
+  
+  pronoun = sex == "F" ? "She" : "He"
+  pronoun_pos = sex == "F" ? "Her" : "His"
+  
+  case type
+  when "Warrior", "Guard", "Soldier"
+    "#{build.capitalize} build with #{hair} hair. #{pronoun} has #{eyes} eyes and a #{feature} face. Battle-hardened."
+  when "Mage", "Wizard", "Scholar"
+    "#{pronoun} has #{eyes} eyes that show intelligence. #{hair.capitalize} hair, #{build} build. Scholarly demeanor."
+  when "Thief", "Bandit", "Assassin"
+    "#{feature.capitalize} features with #{eyes} eyes. #{build.capitalize} and agile. Moves with quiet confidence."
+  when "Noble", "Merchant"
+    "Well-groomed with #{hair} hair and #{eyes} eyes. #{build.capitalize} build. #{pronoun_pos} bearing shows status."
+  when "Priest", "Monk"
+    "#{pronoun} has a serene face with #{eyes} eyes. #{hair.capitalize} hair. #{feature.capitalize} presence."
+  when "Ranger", "Hunter"
+    "Weather-beaten with #{hair} hair. #{eyes.capitalize} eyes scan surroundings. #{build.capitalize} and outdoorsy."
+  else
+    "#{build.capitalize} build with #{hair} hair and #{eyes} eyes. #{feature.capitalize} appearance."
+  end
+end
+
+def generate_social_status(type, level)
+  # Generate social status using old system abbreviations
+  # S=Slave, LC=Lower Class, LMC=Lower Middle Class, MC=Middle Class, UC=Upper Class, N=Noble
+  case type
+  when "Noble"
+    "N"
+  when "Priest", "Mage", "Wizard (air)", "Wizard (earth)", "Wizard (fire)", "Wizard (prot.)", "Wizard (water)", "Sorcerer", "Summoner"
+    level > 3 ? "UC" : "MC"
+  when "Merchant", "Scholar", "Sage", "Seer"
+    level > 2 ? "MC" : "LMC"
+  when "Warrior", "Guard", "Soldier", "Army officer", "Body guard"
+    level > 4 ? "MC" : "LMC"
+  when "Bandit", "Thief", "Assassin", "Prostitute", "Highwayman"
+    "LC"
+  when "Commoner", "Farmer", "House wife", "Nanny"
+    "LMC"
+  when "Executioner", "Gladiator"
+    "LC"
+  else
+    level > 3 ? "LMC" : "LC"
+  end
+end
+
+def generate_money(status, level)
+  base = case status
+         when "N" then 100 * level  # Noble
+         when "UC" then 50 * level  # Upper Class
+         when "MC" then 30 * level  # Middle Class
+         when "LMC" then 15 * level # Lower Middle Class
+         when "LC" then 8 * level   # Lower Class
+         when "S" then 2 * level    # Slave
+         else 10 * level
+         end
+  
+  variance = rand(base / 2) - base / 4
+  total = base + variance
+  "#{total} silver"
+end
+
+def generate_equipment(type, level)
+  equipment = []
+  
+  case type
+  when "Warrior", "Guard"
+    equipment << "Backpack" << "Rope (10m)" << "Waterskin"
+    equipment << "Whetstone" if level > 1
+    equipment << "Shield strap" if level > 2
+  when "Thief", "Bandit", "Assassin"
+    equipment << "Lockpicks" << "Dark cloak" << "Rope (10m)"
+    equipment << "Grappling hook" if level > 2
+  when "Mage", "Scholar", "Priest"
+    equipment << "Spell components" << "Scroll case" << "Ink & quill"
+    equipment << "Spellbook" if level > 2
+  when "Ranger", "Hunter"
+    equipment << "Tracking kit" << "Snares" << "Camping gear"
+  when "Merchant"
+    equipment << "Scales" << "Ledger" << "Money pouch"
+  else
+    equipment << "Backpack" << "Waterskin" << "Flint & steel"
+  end
+  
+  equipment
+end
+
+def calculate_total_weight(n)
+  weight = 0
+  
+  # Armor weight
+  if n.armor
+    weight += get_armor_weight(n.armor[:name])
+  end
+  
+  # Weapon weights (approximate)
+  melee_count = n.tiers["BODY"]["Melee Combat"]["skills"].select { |_, v| v > 0 }.size
+  missile_count = n.tiers["BODY"]["Missile Combat"]["skills"].select { |_, v| v > 0 }.size
+  weight += melee_count * 2  # Average 2kg per melee weapon
+  weight += missile_count * 1.5  # Average 1.5kg per missile weapon
+  
+  # Basic equipment
+  weight += 5  # Basic gear
+  
+  weight.round(1)
+end
+
+def get_armor_weight(armor_name)
+  case armor_name
+  when /Leather/i then 5
+  when /Padded|Quilt/i then 7
+  when /Chain shirt/i then 12
+  when /Scale/i then 15
+  when /Chain mail/i then 19
+  when /Plate/i then 25
+  when /Full plate/i then 30
+  else 0
+  end
+end
+
+# Get weapon stats from tables with init modifier
+def get_weapon_stats(weapon)
+  # Ensure weapon is a string and handle nil
+  weapon = weapon.to_s.downcase
+  
+  # Return default stats if weapon is empty
+  if weapon.empty?
+    return { init: 0, off: 0, def: 0, dmg: "0" }
+  end
+  
+  # Default values for weapons based on name patterns
+  stats = case weapon
+  when /sword/
+    { init: 0, off: 0, def: 0, dmg: "+1" }
+  when /dagger/, /knife/
+    { init: 2, off: 1, def: -1, dmg: "-1" }
+  when /axe/
+    { init: -1, off: 0, def: -1, dmg: "+2" }
+  when /spear/, /pike/
+    { init: 1, off: 0, def: 1, dmg: "0" }
+  when /mace/, /club/, /hammer/
+    { init: -1, off: -1, def: 0, dmg: "+1" }
+  when /staff/, /quarterstaff/
+    { init: 0, off: 0, def: 2, dmg: "-1" }
+  when /shield/
+    { init: 0, off: -2, def: 3, dmg: "-2" }
+  when /net/
+    { init: -2, off: 0, def: 0, dmg: "special" }
+  when /unarmed/
+    { init: 1, off: -2, def: -4, dmg: "-4" }
+  else
+    { init: 0, off: 0, def: 0, dmg: "0" }
+  end
+  
+  # Make absolutely sure all values are present
+  stats ||= {}
+  stats[:init] ||= 0
+  stats[:off] ||= 0
+  stats[:def] ||= 0
+  stats[:dmg] ||= "0"
+  
+  stats
+end
+
+def get_missile_stats(weapon)
+  # Ensure weapon is a string
+  weapon = weapon.to_s.downcase
+  
+  # Return default stats if weapon is empty
+  if weapon.empty?
+    return { range: "30m", dmg: "0" }
+  end
+  
+  # Default values for missile weapons
+  stats = case weapon
+  when /longbow/
+    { range: "150m", dmg: "+1" }
+  when /bow/
+    { range: "100m", dmg: "0" }
+  when /x-bow/, /crossbow/
+    { range: "150m", dmg: "+2" }
+  when /sling/
+    { range: "50m", dmg: "-1" }
+  when /throwing/, /javelin/
+    { range: "30m", dmg: "0" }
+  when /net/
+    { range: "10m", dmg: "special" }
+  when /spear/
+    { range: "30m", dmg: "0" }
+  when /blowgun/
+    { range: "20m", dmg: "-5" }
+  else
+    { range: "30m", dmg: "0" }
+  end
+  
+  # Ensure all values are present
+  stats ||= {}
+  stats[:range] ||= "30m"
+  stats[:dmg] ||= "0"
+  
+  stats
+end
