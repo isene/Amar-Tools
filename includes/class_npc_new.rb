@@ -506,7 +506,7 @@ class NpcNew
         load File.join($pgmdir, "includes/tables/spells_new.rb")
       end
       
-      @spells = generate_spell_cards(@type, @level, casting_level)
+      @spells = generate_spell_cards(@type, @level, casting_total)
     end
   end
   

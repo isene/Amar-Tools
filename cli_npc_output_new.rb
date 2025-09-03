@@ -75,6 +75,9 @@ def npc_output_new(n, cli)
   body_char = n.get_characteristic('BODY')
   body_lines = ["#{@char_color}BODY (#{body_char.to_s.rjust(2)})#{@reset}"]
   n.tiers["BODY"].each do |attr_name, attr_data|
+    # Skip if attr_data is not a hash or doesn't have skills
+    next unless attr_data.is_a?(Hash) && attr_data["skills"].is_a?(Hash)
+    
     non_zero_skills = attr_data["skills"].select { |_, v| v > 0 }
     next if non_zero_skills.empty?
     
@@ -91,6 +94,9 @@ def npc_output_new(n, cli)
   mind_char = n.get_characteristic('MIND')
   mind_lines = ["#{@char_color}MIND (#{mind_char.to_s.rjust(2)})#{@reset}"]
   n.tiers["MIND"].each do |attr_name, attr_data|
+    # Skip if attr_data is not a hash or doesn't have skills
+    next unless attr_data.is_a?(Hash) && attr_data["skills"].is_a?(Hash)
+    
     non_zero_skills = attr_data["skills"].select { |_, v| v > 0 }
     next if non_zero_skills.empty?
     
@@ -107,12 +113,15 @@ def npc_output_new(n, cli)
   spirit_char = n.get_characteristic("SPIRIT")
   spirit_lines = []
   spirit_attrs_with_skills = n.tiers["SPIRIT"].select do |_, attr_data|
-    attr_data["skills"].any? { |_, v| v > 0 }
+    attr_data.is_a?(Hash) && attr_data["skills"].is_a?(Hash) && attr_data["skills"].any? { |_, v| v > 0 }
   end
   
   if !spirit_attrs_with_skills.empty?
     spirit_lines << "#{@char_color}SPIRIT (#{spirit_char.to_s.rjust(2)})#{@reset}"
     n.tiers["SPIRIT"].each do |attr_name, attr_data|
+      # Skip if attr_data is not a hash or doesn't have skills
+      next unless attr_data.is_a?(Hash) && attr_data["skills"].is_a?(Hash)
+      
       non_zero_skills = attr_data["skills"].select { |_, v| v > 0 }
       next if non_zero_skills.empty?
       
