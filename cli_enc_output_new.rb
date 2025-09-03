@@ -97,43 +97,40 @@ def enc_output_new(e, cli)
         mind = npc.get_characteristic("MIND")
         spirit = npc.get_characteristic("SPIRIT")
         
-        # Build columns
-        body_lines = []
-        mind_lines = []
-        spirit_lines = []
-        
-        # BODY column
-        body_lines << "#{@char_color}BODY (#{body})#{@reset}"
-        
-        # Show key BODY attributes with skills
+        # Get all key stats for compact display
         str_attr = npc.get_attribute("BODY", "Strength")
-        if str_attr > 0
-          body_lines << " #{@attr_color}Strength (#{str_attr})#{@reset}"
-        end
-        
         end_attr = npc.get_attribute("BODY", "Endurance")
-        if end_attr > 0
-          body_lines << " #{@attr_color}Endurance (#{end_attr})#{@reset}"
-        end
+        awareness_attr = npc.get_attribute("MIND", "Awareness")
+        reaction_speed = mind + awareness_attr + npc.get_skill("MIND", "Awareness", "Reaction speed")
         
-        # Melee combat skills with weapon stats
+        # First line: Characteristics and key attributes
+        f += "   #{@char_color}BODY:#{body}#{@reset}  "
+        f += "#{@attr_color}STR:#{body + str_attr}#{@reset}  "
+        f += "#{@attr_color}END:#{body + end_attr}#{@reset}  | "
+        f += "#{@char_color}MIND:#{mind}#{@reset}  "
+        f += "#{@attr_color}AWR:#{mind + awareness_attr}#{@reset}  "
+        f += "#{@attr_color}RS:#{reaction_speed}#{@reset}"
+        if spirit > 0
+          f += " | #{@char_color}SPIRIT:#{spirit}#{@reset}"
+        end
+        f += "\n"
+        
+        # Weapons line (all in one row if possible)
+        weapons = []
+        
+        # Melee combat skills
         if npc.tiers["BODY"]["Melee Combat"]
           melee_attr = npc.get_attribute("BODY", "Melee Combat")
           melee_skills = npc.tiers["BODY"]["Melee Combat"]["skills"].select { |_, v| v > 0 }
-          if melee_skills.any?
-            body_lines << " #{@attr_color}Melee Combat (#{melee_attr})#{@reset}"
-            melee_skills.each do |skill, value|
-              total = body + melee_attr + value
-              # Get weapon stats
-              wpn_stats = get_weapon_stats(skill)
-              reaction_speed = mind + npc.get_attribute("MIND", "Awareness") + npc.get_skill("MIND", "Awareness", "Reaction speed")
-              ini = reaction_speed + (wpn_stats[:ini] || 0)
-              off = total + wpn_stats[:off]
-              def_val = total + wpn_stats[:def]
-              dmg = npc.DB + wpn_stats[:dmg]
-              
-              body_lines << "  #{@skill_color}#{skill.ljust(18)}: Skl:#{total} Ini:#{ini} Off:#{off} Def:#{def_val} Dmg:#{dmg}#{@reset}"
-            end
+          melee_skills.each do |skill, value|
+            total = body + melee_attr + value
+            wpn_stats = get_weapon_stats(skill)
+            ini = reaction_speed + (wpn_stats[:ini] || 0)
+            off = total + wpn_stats[:off]
+            def_val = total + wpn_stats[:def]
+            dmg = npc.DB + wpn_stats[:dmg]
+            
+            weapons << "#{skill}(#{total}/#{ini}/#{off}/#{def_val}/#{dmg})"
           end
         end
         
@@ -141,110 +138,67 @@ def enc_output_new(e, cli)
         if npc.tiers["BODY"]["Missile Combat"]
           missile_attr = npc.get_attribute("BODY", "Missile Combat")
           missile_skills = npc.tiers["BODY"]["Missile Combat"]["skills"].select { |_, v| v > 0 }
-          if missile_skills.any?
-            body_lines << " #{@attr_color}Missile Combat (#{missile_attr})#{@reset}"
-            missile_skills.each do |skill, value|
-              total = body + missile_attr + value
-              # Get missile weapon stats
-              msl_stats = get_missile_stats(skill)
-              off = total
-              dmg = npc.DB + msl_stats[:dmg]
-              
-              body_lines << "  #{@skill_color}#{skill.ljust(18)}: Skl:#{total} Rng:#{msl_stats[:range]} Dmg:#{dmg}#{@reset}"
-            end
+          missile_skills.each do |skill, value|
+            total = body + missile_attr + value
+            msl_stats = get_missile_stats(skill)
+            dmg = npc.DB + msl_stats[:dmg]
+            
+            weapons << "#{skill}(#{total}/#{msl_stats[:range]}/#{dmg})"
           end
         end
         
-        # Athletics skills (always show key ones)
+        # Display weapons compactly
+        if weapons.any?
+          f += "   #{@skill_color}Weapons: #{weapons.join(' | ')}#{@reset}\n"
+          f += "   #{@gray}(Skill/Init/Off/Def/Dmg for melee, Skill/Range/Dmg for missile)#{@reset}\n"
+        end
+        
+        # Essential skills on one line
         athletics_attr = npc.get_attribute("BODY", "Athletics")
-        if athletics_attr >= 0
-          body_lines << " #{@attr_color}Athletics (#{athletics_attr})#{@reset}"
-          
-          # Always show these essential skills even if 0
-          dodge = npc.get_skill("BODY", "Athletics", "Dodge")
-          hide = npc.get_skill("BODY", "Athletics", "Hide")
-          move_quietly = npc.get_skill("BODY", "Athletics", "Move Quietly")
-          
-          dodge_total = body + athletics_attr + dodge
-          hide_total = body + athletics_attr + hide
-          move_total = body + athletics_attr + move_quietly
-          
-          body_lines << "  #{@skill_color}Dodge: #{dodge_total}#{@reset}"
-          body_lines << "  #{@skill_color}Hide: #{hide_total}#{@reset}"
-          body_lines << "  #{@skill_color}Move Quietly: #{move_total}#{@reset}"
+        dodge = npc.get_skill("BODY", "Athletics", "Dodge")
+        hide = npc.get_skill("BODY", "Athletics", "Hide")
+        move_quietly = npc.get_skill("BODY", "Athletics", "Move Quietly")
+        alertness = npc.get_skill("MIND", "Awareness", "Alertness")
+        
+        dodge_total = body + athletics_attr + dodge
+        hide_total = body + athletics_attr + hide
+        move_total = body + athletics_attr + move_quietly
+        alertness_total = mind + awareness_attr + alertness
+        
+        f += "   #{@skill_color}Skills: Dodge:#{dodge_total} Hide:#{hide_total} MoveQ:#{move_total} Alert:#{alertness_total}#{@reset}"
+        
+        # Add tracking if non-zero
+        tracking = npc.get_skill("MIND", "Awareness", "Tracking")
+        if tracking > 0
+          tracking_total = mind + awareness_attr + tracking
+          f += " #{@skill_color}Track:#{tracking_total}#{@reset}"
         end
         
-        # MIND column
-        mind_lines << "#{@char_color}MIND (#{mind})#{@reset}"
-        
-        # Awareness (always show key skills)
-        awr_attr = npc.get_attribute("MIND", "Awareness")
-        if awr_attr >= 0
-          mind_lines << " #{@attr_color}Awareness (#{awr_attr})#{@reset}"
-          
-          # Essential awareness skills
-          reaction = npc.get_skill("MIND", "Awareness", "Reaction speed")
-          alertness = npc.get_skill("MIND", "Awareness", "Alertness") 
-          tracking = npc.get_skill("MIND", "Awareness", "Tracking")
-          
-          reaction_total = mind + awr_attr + reaction
-          alertness_total = mind + awr_attr + alertness
-          tracking_total = mind + awr_attr + tracking
-          
-          mind_lines << "  #{@skill_color}Reaction speed: #{reaction_total}#{@reset}"
-          mind_lines << "  #{@skill_color}Alertness: #{alertness_total}#{@reset}"
-          if tracking > 0  # Only show tracking if non-zero
-            mind_lines << "  #{@skill_color}Tracking: #{tracking_total}#{@reset}"
-          end
+        # Show spells if any
+        if npc.respond_to?(:spells) && npc.spells && npc.spells.length > 0
+          spell_names = npc.spells.take(3).map{|s| s['name']}.join(', ')
+          f += " #{@skill_color}Spells(#{npc.spells.length}): #{spell_names}#{'...' if npc.spells.length > 3}#{@reset}"
         end
-        
-        # SPIRIT column (only if non-zero)
-        if spirit > 0
-          spirit_lines << "#{@char_color}SPIRIT (#{spirit})#{@reset}"
-          
-          # Show casting if applicable
-          if npc.respond_to?(:spells) && npc.spells && npc.spells.length > 0
-            casting = npc.get_attribute("SPIRIT", "Casting")
-            spirit_lines << " #{@attr_color}Casting (#{casting})#{@reset}"
-            spell_names = npc.spells.take(3).map{|s| s['name']}.join(', ')
-            spirit_lines << "  #{@skill_color}Spells(#{npc.spells.length}): #{spell_names}#{'...' if npc.spells.length > 3}#{@reset}"
-          end
-        end
-        
-        # Output columns in three-column layout
-        col_width = (width - 6) / 3
-        max_lines = [body_lines.length, mind_lines.length, spirit_lines.length].max
-        
-        max_lines.times do |i|
-          body_text = body_lines[i] || ""
-          mind_text = mind_lines[i] || ""
-          spirit_text = spirit_lines[i] || ""
-          
-          # Strip color codes for length calculation
-          body_plain = body_text.gsub(/\e\[[0-9;]*m/, '')
-          mind_plain = mind_text.gsub(/\e\[[0-9;]*m/, '')
-          spirit_plain = spirit_text.gsub(/\e\[[0-9;]*m/, '')
-          
-          # Add padding
-          body_padded = body_text + ' ' * [0, col_width - body_plain.length].max
-          mind_padded = mind_text + ' ' * [0, col_width - mind_plain.length].max
-          spirit_padded = spirit_text
-          
-          f += "   #{body_padded}#{mind_padded}#{spirit_padded}\n"
-        end
+        f += "\n"
       end
       
-      # Derived stats
+      # Derived stats and spell lore on same line if applicable
       f += "   " + "─" * (width - 10) + "\n"
       
-      # Check if NPC has spells and show domain lore on separate line
+      # Build stats line
+      stats_line = "   #{@stat_color}SIZE:#{npc.SIZE} BP:#{npc.BP} DB:#{npc.DB} MD:#{npc.MD}"
+      
+      # Add armor if present
+      if npc.armor
+        stats_line += " Armor:#{npc.armor[:name]}(AP#{npc.armor[:ap]})"
+      end
+      
+      # Check if NPC has spells and add domain lore
       if npc.respond_to?(:spells) && npc.spells && npc.spells.length > 0
-        # Determine primary spell domain
         domain = nil
         domain_skill = 0
         
         if npc.tiers["SPIRIT"] && npc.tiers["SPIRIT"]["Attunement"] && npc.tiers["SPIRIT"]["Attunement"]["skills"]
-          # Find highest attunement domain
           npc.tiers["SPIRIT"]["Attunement"]["skills"].each do |dom, val|
             if val > domain_skill
               domain = dom
@@ -253,18 +207,13 @@ def enc_output_new(e, cli)
           end
         end
         
-        # Show domain lore and spell count
         if domain && domain_skill > 0
           total_lore = spirit + npc.get_attribute("SPIRIT", "Attunement") + domain_skill
-          f += "   #{@stat_color}#{domain} Lore: #{total_lore}, # of spells: #{npc.spells.length}#{@reset}\n"
+          stats_line += " | #{domain}Lore:#{total_lore} Spells:#{npc.spells.length}"
         end
       end
       
-      f += "   #{@stat_color}SIZE: #{npc.SIZE}    BP: #{npc.BP}    DB: #{npc.DB}    MD: #{npc.MD}"
-      if npc.armor
-        f += "    Armor: #{npc.armor[:name]} (AP: #{npc.armor[:ap]})"
-      end
-      f += "#{@reset}\n"
+      f += stats_line + "#{@reset}\n"
       
       # Equipment and money for humanoids (not monsters)
       if npc.respond_to?(:type) && !npc.type.to_s.match(/Monster:|Animal:|monster/i)
@@ -286,30 +235,26 @@ def enc_output_new(e, cli)
         end
         
         money = generate_money(social_status, npc.level)
-        
-        # Convert money format
         money_value = money.split(' ').first.to_i
-        money_str = if money_value >= 100
-          gp = money_value / 100
-          sp = (money_value % 100) / 10
-          cp = money_value % 10
-          parts = []
-          parts << "#{gp}gp" if gp > 0
-          parts << "#{sp}sp" if sp > 0
-          parts << "#{cp}cp" if cp > 0
-          parts.join(' ')
-        elsif money_value >= 10
-          sp = money_value / 10
-          cp = money_value % 10
-          parts = []
-          parts << "#{sp}sp" if sp > 0
-          parts << "#{cp}cp" if cp > 0
-          parts.join(' ')
-        else
-          "#{money_value}cp"
-        end
         
-        f += "   #{@stat_color}Equipment: #{equipment.join(', ')} | Money: #{money_str}#{@reset}\n"
+        # Compact money format
+        money_str = ""
+        if money_value >= 100
+          gp = money_value / 100
+          money_str += "#{gp}g"
+        end
+        if money_value >= 10
+          sp = (money_value % 100) / 10
+          money_str += "#{sp}s" if sp > 0
+        end
+        cp = money_value % 10
+        money_str += "#{cp}c" if cp > 0
+        
+        # Shorten equipment list
+        equip_short = equipment.take(3).join(', ')
+        equip_short += "..." if equipment.length > 3
+        
+        f += "   #{@stat_color}Equip: #{equip_short} | $: #{money_str}#{@reset}\n"
       end
       
       # Special abilities for monsters
