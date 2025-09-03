@@ -117,25 +117,25 @@ prompt = TTY::Prompt.new
 def openai(type)
   p = TTY::Prompt.new
   if type == "adv"
-    cmd  = "openai -f " + __dir__ + "/adv.txt -x 1800"
+    cmd  = "openai-term -f " + __dir__ + "/adv.txt -x 1800"
   elsif type == "gen"
     req  = p.ask("\nEnter a request for OpenAI:").to_s
     text = File.read(__dir__ + "/gen.txt") + req
-    cmd  = "openai -t \"#{text}\" -x 2000"
+    cmd  = "openai-term -t \"#{text}\" -x 2000"
   elsif type == "npc"
     fl   = "temp.npc"
     f    = p.ask("\nEnter npc file name (default is the latest generated [temp.npc]):").to_s
     fl   = f unless f == ""
     fl   =  __dir__ + "/saved/" + fl
     text = File.read(__dir__ + "/npc.txt")
-    cmd  = "openai -t \"#{text}\" -f " + fl + " -x 2000"
+    cmd  = "openai-term -t \"#{text}\" -f " + fl + " -x 2000"
   elsif type == "enc"
     fl   = "encounter.npc"
     f    = p.ask("\nEnter encounter file name (default is the latest generated [encounter.npc]):").to_s
     fl   = f unless f == ""
     fl   =  __dir__ + "/saved/" + fl
     text = File.read(__dir__ + "/enc.txt")
-    cmd  = "openai -t \"#{text}\" -f " + fl + " -x 2000"
+    cmd  = "openai-term -t \"#{text}\" -f " + fl + " -x 2000"
   end
   puts "\nGetting response from OpenAI... (quality may vary, use at your own discretion)\n".c(@gray)
   begin
@@ -146,7 +146,7 @@ def openai(type)
     File.write("saved/openai.txt", resp, perm: 0644)
   rescue => error
     p error
-    puts "\nYou need to install openai-term to use this feature (see https://github.com/isene/openai)"
+    puts "\nYou need to install openai-term to use this feature (see https://github.com/isene/openai-term)"
   end
   p.keypress("\nPress any key...".c(@gray))
 end
@@ -209,19 +209,19 @@ loop do
   
   # New 3-Tier System (highlighted)
   puts "\n" + "NEW 3-TIER SYSTEM ".cb(46) + "(Recommended)".c(46)
-  puts "─" * 40
+  puts ("─" * 58).c(243)
   puts " e".cb(82) + " = Random encounter".c(82)
   puts " n".cb(82) + " = Generate detailed NPC".c(82)
   
-  # Legacy System
-  puts "\n" + "LEGACY SYSTEM".cb(@gray)
-  puts "─" * 40
-  puts " E".cb(@gray) + " = Random encounter (old)".c(@gray)
-  puts " N".cb(@gray) + " = Generate detailed NPC (old)".c(@gray)
+  # Legacy System  
+  puts "\n" + "LEGACY SYSTEM".cb(241)
+  puts ("─" * 58).c(243)
+  puts " E".cb(241) + " = Random encounter (old)".c(241)
+  puts " N".cb(241) + " = Generate detailed NPC (old)".c(241)
   
   # World Building
   puts "\n" + "WORLD BUILDING".cb(@t)
-  puts "─" * 40
+  puts ("─" * 58).c(243)
   puts " t".cb(@t) + " = Create village/town/city".c(@t)
   puts " r".cb(@r) + " = Generate town relations".c(@r)
   puts " m".cb(@m) + " = Generate names".c(@m)
@@ -229,12 +229,12 @@ loop do
   
   # AI Tools (if API key available)
   puts "\n" + "AI GENERATION".cb(213) + " (OpenAI)".c(213)
-  puts "─" * 40
+  puts ("─" * 58).c(243)
   puts " A".cb(213) + " = Generate adventure".c(213)
   puts " D".cb(213) + " = Describe random encounter".c(213)
   puts " d".cb(213) + " = Describe NPC".c(213)
   
-  puts "\n" + "─" * 60
+  puts "\n" + ("─" * 60).c(243)
   puts " q".cb(196) + " = Quit".c(196)
   puts ""
   c = prompt.keypress()
