@@ -323,10 +323,10 @@ def npc_output_new(n, cli)
     print f
     
     # Options
-    puts "\nPress 'v' to edit, any other key to continue"
+    puts "\nPress 'e' to edit, any other key to continue"
     key = STDIN.getc
     
-    if key == "v"
+    if key == "e"
       system("#{$editor} saved/temp_new.npc")
     end
   else

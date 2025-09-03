@@ -150,12 +150,12 @@ def enc_output_new(e, cli)
     
     if !e.is_no_encounter? && e.npcs.length > 0
       # Option to view detailed NPC
-      puts "\nEnter NPC number (1-#{e.npcs.length}) to view details, 'v' to edit, or any other key to continue"
+      puts "\nEnter NPC number (1-#{e.npcs.length}) to view details, 'e' to edit, or any other key to continue"
       input = STDIN.getch
       
       if input.to_i.between?(1, e.npcs.length)
         npc_output_new(e.get_npc(input.to_i - 1), "cli")
-      elsif input == "v"
+      elsif input == "e"
         system("#{$editor} saved/encounter_new.npc")
       end
     end
