@@ -70,7 +70,7 @@ optparse = OptionParser.new do |opts|
   opts.banner = "Usage: amar.rb [options]"
 
   # Define the options, and what they do
-  opts.on('-e',     'Set Editor to use (default = less')             { |e| $editor = e }
+  opts.on('-e',     'Set Editor to use (default = vim)')             { |e| $editor = e }
   opts.on('-l',     'Use theme for terminals with light background') { $dark = false }
   opts.on('-h',     'Display SHORT help text')                       { puts opts; exit }
   opts.on('--help', 'Display LONG help text')                        { puts @help; exit }
@@ -78,7 +78,8 @@ optparse = OptionParser.new do |opts|
 end
 optparse.parse!
 
-$editor = "less" if $editor == "" or $editor == nil
+# Use environment EDITOR if available, otherwise vim
+$editor = ENV['EDITOR'] || ENV['VISUAL'] || "vim" if $editor == "" or $editor == nil
 
 # Extend String Class to use colors
 class String

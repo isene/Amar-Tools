@@ -156,7 +156,12 @@ def enc_output_new(e, cli)
       if input.to_i.between?(1, e.npcs.length)
         npc_output_new(e.get_npc(input.to_i - 1), "cli")
       elsif input == "e"
-        system("#{$editor} saved/encounter_new.npc")
+        # Use vim with settings to avoid binary file warnings
+        if $editor.include?("vim") || $editor.include?("vi")
+          system("#{$editor} -c 'set fileformat=unix' saved/encounter_new.npc")
+        else
+          system("#{$editor} saved/encounter_new.npc")
+        end
       end
     end
   else

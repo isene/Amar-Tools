@@ -327,7 +327,12 @@ def npc_output_new(n, cli)
     key = STDIN.getc
     
     if key == "e"
-      system("#{$editor} saved/temp_new.npc")
+      # Use vim with settings to avoid binary file warnings
+      if $editor.include?("vim") || $editor.include?("vi")
+        system("#{$editor} -c 'set fileformat=unix' saved/temp_new.npc")
+      else
+        system("#{$editor} saved/temp_new.npc")
+      end
     end
   else
     return f
