@@ -117,8 +117,8 @@ def enc_output_new(e, cli)
         end
         f += "\n"
         
-        # Line 2: Derived stats and armor
-        f += "   BP:#{bp_value} DB:#{db_value} MD:#{md_value}"
+        # Line 2: Derived stats and armor (highlight BP/DB/MD)
+        f += "   #{@skill_color}BP:#{@reset}#{@stat_color}#{bp_value}#{@reset} #{@skill_color}DB:#{@reset}#{@stat_color}#{db_value}#{@reset} #{@skill_color}MD:#{@reset}#{@stat_color}#{md_value}#{@reset}"
         if npc.armor
           f += " Armor:#{npc.armor[:name]}(#{npc.armor[:ap]})"
         end
@@ -192,10 +192,29 @@ def enc_output_new(e, cli)
           f += "   Weapons: #{melee_weapons.join(' | ')}\n"
         end
         if missile_weapons.any?
-          f += "   Missile: #{missile_weapons.join(' | ')}\n"
-        end
-        # Add spell lore info to line 2 if applicable
-        if npc.respond_to?(:spells) && npc.spells && npc.spells.length > 0
+          f += "   Missile: #{missile_weapons.join(' | ')}"
+          # Add spell lore info on same line as missile if applicable
+          if npc.respond_to?(:spells) && npc.spells && npc.spells.length > 0
+            domain = nil
+            domain_skill = 0
+            
+            if npc.tiers["SPIRIT"] && npc.tiers["SPIRIT"]["Attunement"] && npc.tiers["SPIRIT"]["Attunement"]["skills"]
+              npc.tiers["SPIRIT"]["Attunement"]["skills"].each do |dom, val|
+                if val > domain_skill
+                  domain = dom
+                  domain_skill = val
+                end
+              end
+            end
+            
+            if domain && domain_skill > 0
+              total_lore = spirit + npc.get_attribute("SPIRIT", "Attunement") + domain_skill
+              f += " | #{domain}Lore:#{total_lore}"
+            end
+          end
+          f += "\n"
+        elsif npc.respond_to?(:spells) && npc.spells && npc.spells.length > 0
+          # If no missile weapons but has spells, add lore info on its own line
           domain = nil
           domain_skill = 0
           
@@ -210,10 +229,9 @@ def enc_output_new(e, cli)
           
           if domain && domain_skill > 0
             total_lore = spirit + npc.get_attribute("SPIRIT", "Attunement") + domain_skill
-            f += " | #{domain}Lore:#{total_lore}"
+            f += "   MagicLore: #{domain}Lore:#{total_lore}\n"
           end
         end
-        f += "\n"
       end
       
       # Equipment and money for humanoids (not monsters)

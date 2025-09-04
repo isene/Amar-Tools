@@ -11,27 +11,6 @@ def enc_input_new
   puts "NEW SYSTEM ENCOUNTER GENERATION"
   puts "=" * 60
   
-  # Race selection
-  races = [
-    "Human", "Elf", "Half-elf", "Dwarf", "Goblin", "Lizard Man",
-    "Centaur", "Ogre", "Troll", "Araxi", "Faerie"
-  ]
-  
-  puts "\nSelect Race:"
-  puts "0: Random (default)"
-  races.each_with_index do |race, index|
-    puts "#{index + 1}: #{race}"
-  end
-  
-  race = ""
-  race_input = prompt.ask("\nEnter race number (0 or blank for random):").to_i
-  if race_input > 0 && race_input <= races.length
-    race = races[race_input - 1]
-    puts "Selected race: #{race}"
-  else
-    puts "Random race will be selected based on encounter"
-  end
-  
   # Get night/day
   $Day = 1 if $Day.nil?  # Default to day
   day_choice = prompt.ask("\nEnter night (0) or day (1) [Default = #{$Day}]:".c(@e))
@@ -59,6 +38,27 @@ def enc_input_new
     $Level = level_mod.to_i
   end
   
+  # Race selection (after terrain so user knows the context)
+  races = [
+    "Human", "Elf", "Half-elf", "Dwarf", "Goblin", "Lizard Man",
+    "Centaur", "Ogre", "Troll", "Araxi", "Faerie"
+  ]
+  
+  puts "\nSelect Race (for humanoid encounters):"
+  puts "0: Random (default)"
+  races.each_with_index do |race, index|
+    puts "#{index + 1}: #{race}"
+  end
+  
+  race = ""
+  race_input = prompt.ask("\nEnter race number (0 or blank for random):").to_i
+  if race_input > 0 && race_input <= races.length
+    race = races[race_input - 1]
+    puts "Selected race: #{race}"
+  else
+    puts "Random race will be selected based on encounter"
+  end
+  
   # Get specific encounter or random
   encounter = ""
   enc_number = 0
@@ -73,13 +73,21 @@ def enc_input_new
   tmp = Array.new
   tmp[0] = ""
   
-  if race != ""
-    # Filter encounters based on selected race
+  if race != "" && race != "Human"
+    # For non-human races, only show generic profession types (not race-specific)
+    # Skip animals, monsters, and other races
     $Encounters.each_key do |key|
-      # Include encounters that match the race or are generic
-      if key.downcase.include?(race.downcase) || 
-         (!key.downcase.match?(/elf|dwarf|araxi|troll|ogre|lizard|goblin|centaur|faer/) && 
-          !key.downcase.match?(/animal:|monster:|event:/))
+      # Include only generic humanoid professions (no race prefix, no monsters/animals)
+      if !key.match?(/animal:|monster:|event:/i) && 
+         !key.match?(/elf|dwarf|araxi|troll|ogre|lizard|goblin|centaur|faer/i)
+        tmp[i] = key
+        i += 1
+      end
+    end
+  elsif race == "Human"
+    # For humans, show all non-monster/animal encounters except other races
+    $Encounters.each_key do |key|
+      if !key.match?(/animal:|monster:|event:/i)
         tmp[i] = key
         i += 1
       end
@@ -123,6 +131,7 @@ def enc_input_new
   if race != "" && race != "Human" && encounter != "" && !encounter.include?(":")
     # Check if this is a humanoid encounter that should have race prefix
     unless encounter.match?(/animal:|monster:|event:/i)
+      # This will signal the encounter generator to use this race
       encounter = "#{race}: #{encounter}"
     end
   end

@@ -84,8 +84,8 @@ class MonsterNew
       }
     }
     
-    # Add magical abilities for creatures with spirit
-    if stats["base_spirit"] > 0
+    # Add magical abilities ONLY for truly magical creatures (not animals)
+    if stats["base_spirit"] > 0 && !@type.match?(/animal:/i)
       # Dragons get Earth magic, other magical creatures get varied
       if @type =~ /dragon/i
         @tiers["SPIRIT"]["Attunement"]["skills"]["Earth"] = @level + rand(2..4)
@@ -96,18 +96,19 @@ class MonsterNew
         @tiers["SPIRIT"]["Attunement"]["skills"][element] = @level + rand(2..4)
       elsif @type =~ /undead|zombie|skeleton|lich/i
         @tiers["SPIRIT"]["Attunement"]["skills"]["Death"] = @level + rand(1..3)
-      else
-        # Other magical creatures get random domain
+      elsif @type =~ /vampire|werewolf|faerie|wyvern/i
+        # Specific magical monsters
         domain = ["Fire", "Water", "Air", "Earth", "Life", "Death", "Mind"].sample
         @tiers["SPIRIT"]["Attunement"]["skills"][domain] = @level + rand(1..2)
       end
+      # Do NOT give magic to generic creatures or animals
     end
     
     # Calculate derived stats
     calculate_derived_stats
     
-    # Generate spells for magical creatures
-    generate_spells if stats["base_spirit"] > 0
+    # Generate spells for magical creatures (not animals)
+    generate_spells if stats["base_spirit"] > 0 && !@type.match?(/animal:/i)
     
     # Set armor
     set_armor(stats["armor"])
