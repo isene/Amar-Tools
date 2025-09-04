@@ -253,14 +253,22 @@ class EncNew
         @encounter[i]["sex"] = npc.sex
       else
         # Handle humanoid encounters
+        # Check if this is a race-prefixed encounter (e.g., "Faerie: Sailor")
+        lookup_spec = @enc_spec
+        if @enc_spec =~ /^(\w+):\s+(.+)/
+          race_prefix = $1
+          base_type = $2
+          lookup_spec = base_type  # Look up the base type in encounters table
+        end
+        
         # Get stats from encounter table if exists
-        if defined?($Encounters) && $Encounters[@enc_spec]
-          stats = $Encounters[@enc_spec].dup
+        if defined?($Encounters) && $Encounters[lookup_spec]
+          stats = $Encounters[lookup_spec].dup
           
           # Generate level with modifier
           base_level = stats[0].is_a?(Array) ? dX(stats[0]) : stats[0]
           @encounter[i]["level"] = base_level + @level_mod
-          @encounter[i]["level"] += 2 if @enc_spec =~ /Elf/
+          @encounter[i]["level"] += 2 if @enc_spec =~ /Elf|Faerie/
           @encounter[i]["level"] += 1 if @enc_spec =~ /Dwarf/
           @encounter[i]["level"] = 1 if @encounter[i]["level"] < 1
           
@@ -316,20 +324,31 @@ class EncNew
         "Mage"
       when /thief/, /rogue/, /bandit/
         "Thief"
-      when /smith/, /blacksmith/
+      when /smith/, /blacksmith/, /armour smith/
         "Smith"
       when /guard/, /watchman/
         "Guard"
-      when /priest/, /cleric/
+      when /priest/, /cleric/, /monk/
         "Priest"
       when /merchant/, /trader/
         "Merchant"
       when /noble/, /lord/, /lady/
         "Noble"
+      when /sailor/, /seaman/, /mariner/
+        "Sailor"
+      when /bard/, /minstrel/, /entertainer/
+        "Bard"
+      when /assassin/
+        "Assassin"
+      when /sage/, /scholar/
+        "Sage"
+      when /healer/, /physician/
+        "Healer"
       when /commoner/, /farmer/, /peasant/
         "Commoner"
       else
-        "Warrior"  # Default to warrior
+        # Use the profession directly if not matched
+        profession.capitalize
       end
       
       # Return race-specific type if it exists in templates

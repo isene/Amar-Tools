@@ -517,6 +517,13 @@ class NpcNew
       if has_shield && rand(100) < 30
         @weapons << "Shield"
       end
+    when /Sailor|Seaman|Mariner/
+      # Sailors typically have cutlass, club, or dagger
+      primary = select_best_weapon(melee_skills, ["Cutlass", "Short sword", "Club", "Hatchet"])
+      @weapons << (primary || "Cutlass")
+      if rand(100) < 40
+        @weapons << "Dagger"  # Utility knife
+      end
     when /Farmer|Commoner/
       # Common folk have simple weapons
       @weapons << select_best_weapon(melee_skills, ["Pitchfork", "Club", "Staff", "Dagger"]) || "Club"
@@ -526,12 +533,30 @@ class NpcNew
         # Get all weapons with decent skill
         good_weapons = melee_skills.select { |k, v| v > 0 && k != "Shield" }
         if good_weapons.any?
-          # Pick randomly from good options
-          @weapons << good_weapons.keys.sample
+          # Sort weapons by skill level and pick from the better ones
+          sorted_weapons = good_weapons.sort_by { |_, v| -v }
+          # Take top weapons (those within 2 skill points of best)
+          best_skill = sorted_weapons.first[1]
+          top_weapons = sorted_weapons.select { |_, v| v >= best_skill - 2 }
+          
+          # Prefer non-Club/Dagger if available
+          preferred = top_weapons.reject { |k, _| k =~ /Club|Dagger/ }
+          if preferred.any?
+            @weapons << preferred.sample[0]
+          else
+            @weapons << top_weapons.sample[0]
+          end
+          
+          # Sometimes add a secondary weapon
+          if rand(100) < 30 && good_weapons.size > 1
+            secondary = good_weapons.keys - [@weapons.first]
+            @weapons << secondary.sample
+          end
         end
       else
-        # No skills, give basic weapon
-        @weapons << ["Dagger", "Club", "Staff"].sample
+        # No skills, give more varied basic weapons
+        basic_weapons = ["Staff", "Short sword", "Hatchet", "Mace", "Spear", "Club", "Dagger"]
+        @weapons << basic_weapons.sample
       end
     end
     
