@@ -468,6 +468,31 @@ class NpcNew
     end
   end
   
+  def select_best_weapon(skills, preferred_weapons)
+    # Find the best weapon from preferred list that character has skill in
+    best_weapon = nil
+    best_skill = 0
+    
+    preferred_weapons.each do |weapon|
+      if skills[weapon] && skills[weapon] > best_skill
+        best_weapon = weapon
+        best_skill = skills[weapon]
+      end
+    end
+    
+    # If no preferred weapon found, check for any weapon skill
+    if !best_weapon && skills.any?
+      # Filter out Shield as it's not a primary weapon
+      weapon_skills = skills.reject { |k, _| k == "Shield" }
+      if weapon_skills.any?
+        best = weapon_skills.max_by { |_, v| v }
+        best_weapon = best[0]
+      end
+    end
+    
+    best_weapon
+  end
+  
   def has_template_magic?(template)
     # Check if template indicates magical ability
     return false unless template
