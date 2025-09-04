@@ -208,7 +208,7 @@ class MonsterNew
     skill_list.each do |skill_name|
       case skill_name.downcase
       when /bite/, /claw/, /tusk/, /tail/
-        skills["Natural weapons"] = @level + rand(1..3)
+        skills["Unarmed"] = @level + rand(1..3)  # Natural attacks
       when /sword/, /spear/, /dagger/
         skills[skill_name.capitalize] = @level + rand(0..2)
       when /club/
@@ -221,7 +221,7 @@ class MonsterNew
     end
     
     # Ensure at least one combat skill
-    skills["Natural weapons"] = @level if skills.empty?
+    skills["Unarmed"] = @level if skills.empty?
     
     skills
   end

@@ -405,6 +405,24 @@ class NpcNew
         @tiers["BODY"]["Missile Combat"]["skills"][weapon] = base_level
       end
     end
+    
+    # Add Unarmed combat for all NPCs (everyone can fight with fists)
+    @tiers["BODY"]["Melee Combat"]["skills"] ||= {}
+    if !@tiers["BODY"]["Melee Combat"]["skills"]["Unarmed"]
+      # Base unarmed skill based on type and level
+      unarmed_bonus = case @type
+                      when /Monk|Martial|Barbarian/
+                        2  # Better at unarmed
+                      when /Warrior|Guard|Soldier|Gladiator/
+                        1  # Decent at unarmed
+                      when /Wizard|Sage|Scholar|Scribe/
+                        -1  # Poor at unarmed
+                      else
+                        0  # Average
+                      end
+      unarmed_skill = calculate_tier_level(1 + unarmed_bonus, @level, 0.5)
+      @tiers["BODY"]["Melee Combat"]["skills"]["Unarmed"] = [unarmed_skill, 0].max
+    end
   end
   
   def select_equipment
@@ -455,7 +473,7 @@ class NpcNew
       end
     when /Priest|Cleric|Monk/
       # Religious types often use blunt weapons
-      primary = select_best_weapon(melee_skills, ["Mace", "Staff", "Club"])
+      primary = select_best_weapon(melee_skills, ["Mace", "Staff", "Hammer"])
       @weapons << (primary || "Staff")
       if has_shield && rand(100) < 40
         @weapons << "Shield"
@@ -474,7 +492,7 @@ class NpcNew
     when /Barbarian/
       # Barbarians use heavy weapons
       if rand(100) < 60
-        primary = select_best_weapon(melee_skills, ["2H Axe", "2H Sword", "Club"])
+        primary = select_best_weapon(melee_skills, ["2H Axe", "2H Sword", "Spear"])
         @weapons << (primary || "2H Axe")
       else
         # Dual wield
@@ -518,15 +536,15 @@ class NpcNew
         @weapons << "Shield"
       end
     when /Sailor|Seaman|Mariner/
-      # Sailors typically have cutlass, club, or dagger
-      primary = select_best_weapon(melee_skills, ["Cutlass", "Short sword", "Club", "Hatchet"])
+      # Sailors typically have cutlass or short sword
+      primary = select_best_weapon(melee_skills, ["Cutlass", "Short sword", "Hatchet"])
       @weapons << (primary || "Cutlass")
       if rand(100) < 40
         @weapons << "Dagger"  # Utility knife
       end
     when /Farmer|Commoner/
       # Common folk have simple weapons
-      @weapons << select_best_weapon(melee_skills, ["Pitchfork", "Club", "Staff", "Dagger"]) || "Club"
+      @weapons << select_best_weapon(melee_skills, ["Pitchfork", "Staff", "Hatchet"]) || "Staff"
     else
       # Default: pick best available weapon with more variety
       if melee_skills.any?
@@ -539,8 +557,8 @@ class NpcNew
           best_skill = sorted_weapons.first[1]
           top_weapons = sorted_weapons.select { |_, v| v >= best_skill - 2 }
           
-          # Prefer non-Club/Dagger if available
-          preferred = top_weapons.reject { |k, _| k =~ /Club|Dagger/ }
+          # Prefer weapons other than Dagger if available
+          preferred = top_weapons.reject { |k, _| k =~ /Dagger/ }
           if preferred.any?
             @weapons << preferred.sample[0]
           else
@@ -555,7 +573,7 @@ class NpcNew
         end
       else
         # No skills, give more varied basic weapons
-        basic_weapons = ["Staff", "Short sword", "Hatchet", "Mace", "Spear", "Club", "Dagger"]
+        basic_weapons = ["Staff", "Short sword", "Hatchet", "Mace", "Spear", "Knife"]
         @weapons << basic_weapons.sample
       end
     end

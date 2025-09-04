@@ -143,7 +143,7 @@ $RaceTemplates = {
       "MIND/Willpower" => 2
     },
     "skills" => {
-      "BODY/Melee Combat/Natural weapons" => 3,  # Claws/teeth
+      "BODY/Melee Combat/Unarmed" => 3,  # Claws/teeth
       "BODY/Athletics/Hide" => 2,
       "MIND/Awareness/Tracking" => 2
     }
@@ -181,7 +181,7 @@ $RaceTemplates = {
     },
     "skills" => {
       "BODY/Melee Combat/Club" => 2,
-      "BODY/Melee Combat/Natural weapons" => 2
+      "BODY/Melee Combat/Unarmed" => 2
     }
   },
   
