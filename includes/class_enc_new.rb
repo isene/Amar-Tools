@@ -200,7 +200,71 @@ class EncNew
   
   def determine_character_type(enc_string)
     # Map encounter strings to character types
-    # First check for race-based encounters
+    # Check if encounter string already has race prefix
+    if enc_string =~ /^(\w+):\s+(.+)/
+      race = $1
+      profession = $2
+      
+      # Map profession to appropriate type for that race
+      base_type = case profession.downcase
+      when /warrior/, /soldier/, /fighter/
+        "Warrior"
+      when /ranger/, /scout/, /hunter/
+        "Ranger"
+      when /mage/, /wizard/, /sorcerer/
+        "Mage"
+      when /thief/, /rogue/, /bandit/
+        "Thief"
+      when /smith/, /blacksmith/
+        "Smith"
+      when /guard/, /watchman/
+        "Guard"
+      when /priest/, /cleric/
+        "Priest"
+      when /merchant/, /trader/
+        "Merchant"
+      when /noble/, /lord/, /lady/
+        "Noble"
+      when /commoner/, /farmer/, /peasant/
+        "Commoner"
+      else
+        "Warrior"  # Default to warrior
+      end
+      
+      # Return race-specific type if it exists in templates
+      race_type = "#{race}: #{base_type}"
+      
+      # Check if this race-type combo exists in templates
+      if defined?($ChartypeNew) && $ChartypeNew.key?(race_type)
+        return race_type
+      elsif defined?($RaceTemplates) && $RaceTemplates.key?(race_type)
+        return race_type
+      else
+        # Try alternate names
+        alt_types = []
+        case base_type
+        when "Mage"
+          alt_types = ["Wizard", "Sorcerer"]
+        when "Warrior"
+          alt_types = ["Fighter", "Soldier"]
+        when "Ranger"
+          alt_types = ["Scout", "Hunter"]
+        end
+        
+        for alt in alt_types
+          alt_race_type = "#{race}: #{alt}"
+          if (defined?($ChartypeNew) && $ChartypeNew.key?(alt_race_type)) ||
+             (defined?($RaceTemplates) && $RaceTemplates.key?(alt_race_type))
+            return alt_race_type
+          end
+        end
+        
+        # Fallback to generic warrior for that race
+        return "#{race}: Warrior"
+      end
+    end
+    
+    # Original logic for encounters without race prefix
     case enc_string.downcase
     when /elf/
       # Elves can be various types

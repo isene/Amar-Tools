@@ -1,4 +1,5 @@
 # Input module for new 3-tier NPC system
+require 'tty-prompt'
 
 def npc_input_new
   # Clear screen before starting input
@@ -13,8 +14,44 @@ def npc_input_new
   # Name input
   name = prompt.ask("Enter NPC name (or leave blank for random):") || ""
   
+  # Race selection
+  races = [
+    "Human", "Elf", "Half-elf", "Dwarf", "Goblin", "Lizard Man",
+    "Centaur", "Ogre", "Troll", "Araxi", "Faerie"
+  ]
+  
+  puts "\nSelect Race:"
+  puts "0: Human (default)"
+  races.each_with_index do |race, index|
+    puts "#{index + 1}: #{race}"
+  end
+  
+  race = "Human"
+  race_input = prompt.ask("\nEnter race number (0 or blank for Human):").to_i
+  if race_input > 0 && race_input <= races.length
+    race = races[race_input - 1]
+  end
+  puts "Selected race: #{race}"
+  
+  # Filter types based on race
+  if race == "Human"
+    # Humans can be any non-race-specific type
+    types = $ChartypeNew.keys.reject { |k| k.include?(":") }.sort
+  else
+    # Non-humans get race-specific types plus some generic ones
+    race_types = $ChartypeNew.keys.select { |k| k.start_with?("#{race}:") }
+    generic_types = ["Commoner", "Farmer", "Merchant", "Thief", "Warrior"]
+    types = race_types + generic_types.map { |t| "#{race}: #{t}" }
+    types = types.select { |t| $ChartypeNew.key?(t) || generic_types.include?(t.split(": ").last) }
+    types.uniq!
+    types.sort!
+  end
+  
   # Type selection with numbered list (like old system)
-  types = $ChartypeNew.keys.sort
+  if types.empty?
+    puts "\nNo specific types for #{race}, using generic types."
+    types = ["#{race}: Warrior", "#{race}: Commoner"]  # Fallback
+  end
   puts "\nCharacter Types (#{types.length} available):"
   puts "0: Random"
   
@@ -89,6 +126,11 @@ def npc_input_new
   
   # Description
   description = prompt.ask("Enter description (optional):") || ""
+  
+  # If race is not Human and type doesn't already include race, prepend it
+  if race != "Human" && !type.include?(":")
+    type = "#{race}: #{type}" if !type.empty?
+  end
   
   return [name, type, level, area, sex, age, height, weight, description]
 end

@@ -1,4 +1,5 @@
 # Input module for new encounter system
+require 'tty-prompt'
 
 def enc_input_new
   # Clear screen
@@ -9,6 +10,27 @@ def enc_input_new
   puts "\n" + "=" * 60
   puts "NEW SYSTEM ENCOUNTER GENERATION"
   puts "=" * 60
+  
+  # Race selection
+  races = [
+    "Human", "Elf", "Half-elf", "Dwarf", "Goblin", "Lizard Man",
+    "Centaur", "Ogre", "Troll", "Araxi", "Faerie"
+  ]
+  
+  puts "\nSelect Race:"
+  puts "0: Random (default)"
+  races.each_with_index do |race, index|
+    puts "#{index + 1}: #{race}"
+  end
+  
+  race = ""
+  race_input = prompt.ask("\nEnter race number (0 or blank for random):").to_i
+  if race_input > 0 && race_input <= races.length
+    race = races[race_input - 1]
+    puts "Selected race: #{race}"
+  else
+    puts "Random race will be selected based on encounter"
+  end
   
   # Get night/day
   $Day = 1 if $Day.nil?  # Default to day
@@ -46,17 +68,33 @@ def enc_input_new
     load File.join($pgmdir, "includes/tables/encounters.rb")
   end
   
-  # Display encounter options
+  # Filter encounter options based on race
   i = 1
   tmp = Array.new
   tmp[0] = ""
-  $Encounters.each_key do |key|
-    tmp[i] = key
-    i += 1
+  
+  if race != ""
+    # Filter encounters based on selected race
+    $Encounters.each_key do |key|
+      # Include encounters that match the race or are generic
+      if key.downcase.include?(race.downcase) || 
+         (!key.downcase.match?(/elf|dwarf|araxi|troll|ogre|lizard|goblin|centaur|faer/) && 
+          !key.downcase.match?(/animal:|monster:|event:/))
+        tmp[i] = key
+        i += 1
+      end
+    end
+  else
+    # Show all encounters if no race selected
+    $Encounters.each_key do |key|
+      tmp[i] = key
+      i += 1
+    end
   end
+  
   tmp.sort!
   i = 1
-  puts
+  puts "\nAvailable encounters#{race != '' ? ' for ' + race : ''}:"
   while tmp[i]
     print "#{i}: #{tmp[i]}".ljust(30).c(@e)
     print "\n" if i % 3 == 0
@@ -79,6 +117,14 @@ def enc_input_new
   # Get number of encounters if specific
   if encounter != ""
     enc_number = prompt.ask("\nEnter the number of encounters or press ENTER for random number:".c(@e)).to_i
+  end
+  
+  # If race was selected and encounter is specific, prepend race if needed
+  if race != "" && race != "Human" && encounter != "" && !encounter.include?(":")
+    # Check if this is a humanoid encounter that should have race prefix
+    unless encounter.match?(/animal:|monster:|event:/i)
+      encounter = "#{race}: #{encounter}"
+    end
   end
   
   return encounter, enc_number, $Terraintype, $Level
