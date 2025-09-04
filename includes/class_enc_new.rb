@@ -97,8 +97,13 @@ class EncNew
       @enc_number = 5 if @enc_number > 5 && @enc_type =~ /onster/
     end
     
-    # Generate NPCs
-    generate_npcs_from_tables
+    # For humanoid encounters, sometimes create mixed groups
+    if @enc_type =~ /human/i && @enc_number > 3 && rand(100) < 30
+      generate_mixed_group
+    else
+      # Generate NPCs normally
+      generate_npcs_from_tables
+    end
   end
   
   def generate_specific_encounter
@@ -112,6 +117,102 @@ class EncNew
     
     # Generate NPCs
     generate_npcs_from_tables
+  end
+  
+  def generate_mixed_group
+    # Create a diverse but logical group
+    # Examples: merchant caravan, adventuring party, soldiers with support
+    
+    # Load required classes if needed
+    unless defined?(NpcNew)
+      load File.join($pgmdir, "includes/class_npc_new.rb")
+    end
+    
+    group_type = rand(100)
+    
+    if group_type < 25
+      # Merchant caravan
+      leader_count = 1 + rand(2)
+      guard_count = (@enc_number - leader_count) * 2 / 3
+      worker_count = @enc_number - leader_count - guard_count
+      
+      enc_types = []
+      leader_count.times { enc_types << "Merchant" }
+      guard_count.times { enc_types << ["Guard", "Warrior", "Soldier"].sample }
+      worker_count.times { enc_types << ["Worker", "Farmer", "Porter"].sample }
+      
+      @enc_spec = "Mixed merchant caravan"
+    elsif group_type < 50
+      # Adventuring party
+      enc_types = []
+      enc_types << ["Warrior", "Soldier", "Gladiator"].sample
+      enc_types << ["Priest", "Cleric", "Healer"].sample if @enc_number > 2
+      enc_types << ["Wizard (fire)", "Wizard (water)", "Wizard (air)", "Wizard (earth)"].sample if @enc_number > 3
+      enc_types << ["Thief", "Ranger", "Scout"].sample if @enc_number > 4
+      
+      # Fill rest with warriors/fighters
+      while enc_types.length < @enc_number
+        enc_types << ["Warrior", "Ranger", "Soldier", "Guard"].sample
+      end
+      
+      @enc_spec = "Adventuring party"
+    elsif group_type < 75
+      # Military patrol
+      officer_count = 1
+      soldier_count = @enc_number - 1
+      
+      enc_types = []
+      officer_count.times { enc_types << "Army officer" }
+      soldier_count.times { enc_types << ["Soldier", "Guard", "Warrior"].sample }
+      
+      @enc_spec = "Military patrol"
+    else
+      # Bandits/thieves
+      leader_count = 1
+      thief_count = (@enc_number - leader_count) / 2
+      muscle_count = @enc_number - leader_count - thief_count
+      
+      enc_types = []
+      leader_count.times { enc_types << ["Assassin", "Highwayman", "Bandit"].sample }
+      thief_count.times { enc_types << ["Thief", "Rogue", "Highwayman"].sample }
+      muscle_count.times { enc_types << ["Warrior", "Barbarian", "Thug"].sample }
+      
+      @enc_spec = "Bandit group"
+    end
+    
+    # Generate the NPCs
+    enc_types.shuffle! # Randomize order
+    
+    @enc_number.times do |i|
+      @encounter[i] = {}
+      @encounter[i]["string"] = enc_types[i] || "Commoner"
+      
+      # Generate level with some variety
+      base_level = rand(3) + 1 + @level_mod
+      if i == 0 && group_type != 50  # Leader gets bonus (except adventuring party)
+        base_level += 1
+      end
+      @encounter[i]["level"] = [base_level, 1].max
+      
+      # Generate sex
+      @encounter[i]["sex"] = rand(2) == 0 ? "F" : "M"
+      
+      # Create NPC
+      npc = NpcNew.new(
+        "",  # Name will be generated
+        enc_types[i] || "Commoner",
+        @encounter[i]["level"],
+        "",  # Area
+        @encounter[i]["sex"],
+        0,   # Age will be generated
+        0,   # Height will be generated
+        0,   # Weight will be generated
+        ""   # Description
+      )
+      
+      @encounter[i]["npc"] = npc
+      @npcs << npc
+    end
   end
   
   def generate_npcs_from_tables

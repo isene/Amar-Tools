@@ -297,10 +297,10 @@ def enc_output_new(e, cli)
       # Loop to allow viewing multiple NPCs
       loop do
         # Option to view detailed NPC
-        puts "\nEnter NPC number (1-#{e.npcs.length}) for details, 'e' to edit, or any other key to exit"
-        input = STDIN.getch
+        puts "\nEnter NPC number (1-#{e.npcs.length}) for details, 'e' to edit, or press Enter to exit"
+        input = STDIN.gets.chomp
         
-        if input.to_i.between?(1, e.npcs.length)
+        if input.match?(/^\d+$/) && input.to_i.between?(1, e.npcs.length)
           # Load the NPC output module if not loaded
           unless defined?(npc_output_new)
             load File.join($pgmdir, "cli_npc_output_new.rb")

@@ -408,24 +408,147 @@ class NpcNew
   end
   
   def select_equipment
-    # Select melee weapon based on skills
-    if @tiers["BODY"]["Melee Combat"]["skills"] && @tiers["BODY"]["Melee Combat"]["skills"].any?
-      # Find weapon with highest skill
-      best_weapon = @tiers["BODY"]["Melee Combat"]["skills"].max_by { |_, v| v }
-      if best_weapon
-        @melee_weapon = best_weapon[0]
-        @ENC = 1  # Default encumbrance
+    @weapons = []
+    @ENC = 0
+    
+    # Get melee combat skills
+    melee_skills = @tiers["BODY"]["Melee Combat"]["skills"] || {}
+    missile_skills = @tiers["BODY"]["Missile Combat"]["skills"] || {}
+    
+    # Check if has shield skill
+    has_shield = melee_skills["Shield"] && melee_skills["Shield"] > 0
+    
+    # Determine weapon loadout based on character type and skills
+    case @type
+    when /Warrior|Guard|Soldier|Knight/
+      # Warriors typically have weapon + shield or two-handed weapon
+      if has_shield && rand(100) < 70
+        # Weapon + shield combo (70% chance if has shield skill)
+        primary = select_best_weapon(melee_skills, ["Sword", "Axe", "Mace", "Spear"])
+        @weapons << primary if primary
+        @weapons << "Shield"
+      elsif rand(100) < 40
+        # Two-handed weapon (40% chance)
+        primary = select_best_weapon(melee_skills, ["2H Sword", "2H Axe", "Polearm", "Spear"])
+        @weapons << (primary || "Spear")
+      else
+        # Dual wield
+        primary = select_best_weapon(melee_skills, ["Sword", "Axe", "Mace"])
+        secondary = select_best_weapon(melee_skills, ["Short sword", "Dagger", "Hatchet"])
+        @weapons << (primary || "Sword")
+        @weapons << (secondary || "Dagger")
+      end
+    when /Thief|Assassin|Rogue/
+      # Thieves prefer light weapons, often dual wield
+      primary = select_best_weapon(melee_skills, ["Short sword", "Dagger", "Rapier"])
+      @weapons << (primary || "Dagger")
+      if rand(100) < 60
+        # Often carry a second weapon
+        @weapons << "Dagger"
+      end
+    when /Ranger|Hunter|Scout/
+      # Rangers typically have melee + ranged
+      primary = select_best_weapon(melee_skills, ["Sword", "Axe", "Spear"])
+      @weapons << (primary || "Sword")
+      if rand(100) < 30
+        @weapons << "Dagger"  # Backup weapon
+      end
+    when /Priest|Cleric|Monk/
+      # Religious types often use blunt weapons
+      primary = select_best_weapon(melee_skills, ["Mace", "Staff", "Club"])
+      @weapons << (primary || "Staff")
+      if has_shield && rand(100) < 40
+        @weapons << "Shield"
+      end
+    when /Wizard|Mage|Sorcerer/
+      # Mages usually just have a staff or dagger
+      primary = select_best_weapon(melee_skills, ["Staff", "Dagger"])
+      @weapons << (primary || "Staff")
+    when /Noble/
+      # Nobles have fancy weapons
+      primary = select_best_weapon(melee_skills, ["Sword", "Rapier"])
+      @weapons << (primary || "Sword")
+      if rand(100) < 50
+        @weapons << "Dagger"  # Ornamental backup
+      end
+    when /Barbarian/
+      # Barbarians use heavy weapons
+      if rand(100) < 60
+        primary = select_best_weapon(melee_skills, ["2H Axe", "2H Sword", "Club"])
+        @weapons << (primary || "2H Axe")
+      else
+        # Dual wield
+        @weapons << select_best_weapon(melee_skills, ["Axe", "Sword"]) || "Axe"
+        @weapons << select_best_weapon(melee_skills, ["Axe", "Mace"]) || "Hatchet"
+      end
+    when /Gladiator/
+      # Gladiators have varied weapon combos
+      combo = rand(100)
+      if combo < 33
+        # Sword and shield
+        @weapons << select_best_weapon(melee_skills, ["Sword", "Spear"]) || "Sword"
+        @weapons << "Shield"
+      elsif combo < 66
+        # Dual wield
+        @weapons << "Sword"
+        @weapons << "Short sword"
+      else
+        # Exotic weapon
+        @weapons << select_best_weapon(melee_skills, ["Trident", "Net", "Spear"]) || "Spear"
+        if has_shield
+          @weapons << "Shield"
+        end
+      end
+    when /Smith/
+      # Smiths have varied hammers and tools - add randomization
+      weapon_choice = rand(100)
+      if weapon_choice < 40
+        @weapons << select_best_weapon(melee_skills, ["Hammer", "War hammer"]) || "Hammer"
+      elsif weapon_choice < 70
+        @weapons << select_best_weapon(melee_skills, ["Mace", "Hammer"]) || "Mace"
+      elsif weapon_choice < 85
+        # Smith with axe
+        @weapons << select_best_weapon(melee_skills, ["Axe", "Hatchet"]) || "Axe"
+      else
+        # Smith with sword (forged their own)
+        @weapons << select_best_weapon(melee_skills, ["Sword", "Short sword"]) || "Sword"
+      end
+      # Sometimes add a shield
+      if has_shield && rand(100) < 30
+        @weapons << "Shield"
+      end
+    when /Farmer|Commoner/
+      # Common folk have simple weapons
+      @weapons << select_best_weapon(melee_skills, ["Pitchfork", "Club", "Staff", "Dagger"]) || "Club"
+    else
+      # Default: pick best available weapon with more variety
+      if melee_skills.any?
+        # Get all weapons with decent skill
+        good_weapons = melee_skills.select { |k, v| v > 0 && k != "Shield" }
+        if good_weapons.any?
+          # Pick randomly from good options
+          @weapons << good_weapons.keys.sample
+        end
+      else
+        # No skills, give basic weapon
+        @weapons << ["Dagger", "Club", "Staff"].sample
       end
     end
     
-    # Select missile weapon if applicable
-    if @tiers["BODY"]["Missile Combat"]["skills"] && @tiers["BODY"]["Missile Combat"]["skills"].any?
-      best_missile = @tiers["BODY"]["Missile Combat"]["skills"].max_by { |_, v| v }
-      if best_missile
+    # Add missile weapon if applicable
+    if missile_skills.any?
+      best_missile = missile_skills.max_by { |_, v| v }
+      if best_missile && rand(100) < 70  # 70% chance to actually carry it
         @missile_weapon = best_missile[0]
-        @ENC += 1  # Add default missile weapon encumbrance
+        @ENC += 1
       end
     end
+    
+    # Set primary melee weapon for compatibility
+    @melee_weapon = @weapons.first if @weapons.any?
+    
+    # Calculate encumbrance
+    @ENC += @weapons.size
     
     # Select armor based on type and level
     armor_types = case @type
