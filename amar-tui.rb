@@ -10,7 +10,6 @@ begin
   require 'rcurses'
   include Rcurses
   include Rcurses::Input
-  include Rcurses::Cursor
 rescue LoadError
   puts "ERROR: Amar TUI requires rcurses gem"
   puts "Install with: gem install rcurses"
@@ -22,10 +21,10 @@ require 'fileutils'
 
 # GLOBAL VARS & CONSTANTS
 @version = "1.0.0"
-@pgmdir = File.dirname(__FILE__)
+$pgmdir = File.dirname(__FILE__)  # Global for includes
 
 # Load includes
-load File.join(@pgmdir, "includes/includes.rb")
+load File.join($pgmdir, "includes/includes.rb")
 
 # CONFIGURATION
 @config = {
@@ -97,8 +96,14 @@ end
 
 def init_screen
   Rcurses.init!
-  Rcurses::Cursor.hide  # Hide cursor
-  @rows, @cols = IO.console.winsize
+  Cursor.hide  # Hide cursor
+  
+  # Get terminal size - fallback to defaults if console not available
+  if IO.console
+    @rows, @cols = IO.console.winsize
+  else
+    @rows, @cols = 24, 80  # Default terminal size
+  end
   
   # Create main panes
   #                     x   y   width        height      fg              bg
@@ -214,7 +219,7 @@ def show_popup(title, content, width = 60, height = 20)
   
   # Wait for key to dismiss
   loop do
-    key = getch
+    key = getchr
     break if key == "\e" || key == "q" || key == "\r"
     
     case key
@@ -233,7 +238,7 @@ def show_popup(title, content, width = 60, height = 20)
 end
 
 def handle_menu_navigation
-  key = getch
+  key = getchr
   
   case key
   when "j", "\e[B"  # Down arrow
@@ -332,7 +337,7 @@ end
 def generate_npc_new
   show_content("Generating NPC (New 3-Tier System)...\n\nPress any key for random, or:\n1-6 for level\nOr ESC to cancel")
   
-  key = getch
+  key = getchr
   return if key == "\e"
   
   level = key.to_i if key =~ /[1-6]/
@@ -357,7 +362,7 @@ end
 def generate_encounter_new
   show_content("Generating Encounter...\n\nPress any key for random encounter\nOr ESC to cancel")
   
-  key = getch
+  key = getchr
   return if key == "\e"
   
   begin
@@ -430,7 +435,7 @@ end
 
 def handle_content_view(object, type)
   loop do
-    key = getch
+    key = getchr
     
     case key
     when "\e", "q"  # ESC or q to go back
@@ -491,7 +496,7 @@ def roll_dice_ui
   # Simple dice roller implementation
   dice_input = ""
   loop do
-    key = getch
+    key = getchr
     break if key == "\e"
     
     if key == "\r" && !dice_input.empty?
@@ -523,12 +528,12 @@ end
 def generate_monster_new
   show_content("Generating Monster...\n\nPress any key for random monster\nOr ESC to cancel")
   
-  key = getch
+  key = getchr
   return if key == "\e"
   
   begin
     # Get random monster type from monster_stats
-    load File.join(@pgmdir, "includes/tables/monster_stats_new.rb") unless defined?($MonsterStats)
+    load File.join($pgmdir, "includes/tables/monster_stats_new.rb") unless defined?($MonsterStats)
     monster_type = $MonsterStats.keys.sample
     level = rand(1..6)
     
@@ -585,17 +590,17 @@ end
 def generate_npc_old
   show_content("Generating NPC (Old System)...\n\nPress any key to continue\nOr ESC to cancel")
   
-  key = getch
+  key = getchr
   return if key == "\e"
   
   begin
     # Use the old system
-    npc_string = `ruby #{File.join(@pgmdir, "randomizer.rb")} npc`
+    npc_string = `ruby #{File.join($pgmdir, "randomizer.rb")} npc`
     show_content(npc_string)
     
     # Simple navigation for old system output
     loop do
-      key = getch
+      key = getchr
       case key
       when "\e", "q"
         break
@@ -623,17 +628,17 @@ end
 def generate_encounter_old
   show_content("Generating Encounter (Old System)...\n\nPress any key to continue\nOr ESC to cancel")
   
-  key = getch
+  key = getchr
   return if key == "\e"
   
   begin
     # Use the old system
-    enc_string = `ruby #{File.join(@pgmdir, "randomizer.rb")} enc`
+    enc_string = `ruby #{File.join($pgmdir, "randomizer.rb")} enc`
     show_content(enc_string)
     
     # Simple navigation
     loop do
-      key = getch
+      key = getchr
       case key
       when "\e", "q"
         break
@@ -661,12 +666,12 @@ end
 def generate_weather_ui
   show_content("Generating Weather...\n\nPress any key to continue\nOr ESC to cancel")
   
-  key = getch
+  key = getchr
   return if key == "\e"
   
   begin
     # Generate weather
-    weather_string = `ruby #{File.join(@pgmdir, "randomizer.rb")} weather`
+    weather_string = `ruby #{File.join($pgmdir, "randomizer.rb")} weather`
     
     # Format for display
     output = "═" * 60 + "\n"
@@ -678,7 +683,7 @@ def generate_weather_ui
     
     # Simple navigation
     loop do
-      key = getch
+      key = getchr
       case key
       when "\e", "q"
         break
@@ -698,7 +703,7 @@ end
 def generate_town_ui
   show_content("Generating Town...\n\nEnter town size (1-5):\n1=Hamlet 2=Village 3=Town 4=City 5=Metropolis\n\nOr press ESC to cancel")
   
-  key = getch
+  key = getchr
   return if key == "\e"
   
   size = key.to_i
@@ -706,7 +711,7 @@ def generate_town_ui
   
   begin
     # Generate town
-    town_string = `ruby #{File.join(@pgmdir, "randomizer.rb")} town #{size}`
+    town_string = `ruby #{File.join($pgmdir, "randomizer.rb")} town #{size}`
     
     # Format for display
     output = "═" * 60 + "\n"
@@ -718,7 +723,7 @@ def generate_town_ui
     
     # Navigation
     loop do
-      key = getch
+      key = getchr
       case key
       when "\e", "q"
         break
@@ -755,7 +760,7 @@ def generate_name_ui
   
   show_content(menu_text)
   
-  key = getch
+  key = getchr
   return if key == "\e"
   
   culture_idx = key.to_i
@@ -769,13 +774,13 @@ def generate_name_ui
     
     output += "MALE NAMES:\n"
     10.times do
-      name = `ruby #{File.join(@pgmdir, "randomizer.rb")} name #{culture} male`.strip
+      name = `ruby #{File.join($pgmdir, "randomizer.rb")} name #{culture} male`.strip
       output += "  #{name}\n"
     end
     
     output += "\nFEMALE NAMES:\n"
     10.times do
-      name = `ruby #{File.join(@pgmdir, "randomizer.rb")} name #{culture} female`.strip
+      name = `ruby #{File.join($pgmdir, "randomizer.rb")} name #{culture} female`.strip
       output += "  #{name}\n"
     end
     
@@ -783,7 +788,7 @@ def generate_name_ui
     
     # Navigation
     loop do
-      key = getch
+      key = getchr
       case key
       when "\e", "q"
         break
@@ -818,7 +823,7 @@ rescue => e
   File.write("amar_tui_error.log", "#{Time.now}: #{e.message}\n#{e.backtrace.join("\n")}")
 ensure
   Rcurses.cleanup!
-  Rcurses::Cursor.show  # Show cursor again
+  Cursor.show  # Show cursor again
 end
 
 # START APPLICATION

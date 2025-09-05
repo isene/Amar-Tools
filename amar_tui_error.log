@@ -1,4 +1,0 @@
-2025-09-05 09:51:32 +0200: undefined method `winsize' for nil
-amar-tui.rb:101:in `init_screen'
-amar-tui.rb:809:in `main_loop'
-amar-tui.rb:826:in `<main>'
