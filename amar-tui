@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+# AMAR TUI - Terminal User Interface launcher
+# This is a simple launcher script for the Amar TUI application
+
+require_relative 'amar-tui.rb'
