@@ -5,6 +5,9 @@
 # Based on rcurses library
 # Author: Geir Isene & Claude
 
+# Wrap everything to catch top-level errors
+begin
+
 # REQUIRED GEMS
 begin
   require 'rcurses'
@@ -18,16 +21,29 @@ end
 
 require 'io/console'
 require 'fileutils'
+require 'json'  # Needed for config save/load
 
 # GLOBAL VARS & CONSTANTS
 @version = "1.0.0"
 $pgmdir = File.dirname(__FILE__)  # Global for includes
 
 # Debug logging
-$debug_log = File.open("/tmp/amar_tui_debug.log", "w")
-$debug_log.sync = true
+begin
+  $debug_log = File.open("/tmp/amar_tui_debug.log", "w")
+  $debug_log.sync = true
+rescue => e
+  puts "Warning: Could not open debug log: #{e.message}"
+  $debug_log = nil
+end
+
 def debug(msg)
-  $debug_log.puts "[#{Time.now}] #{msg}"
+  return unless $debug_log
+  begin
+    $debug_log.puts "[#{Time.now}] #{msg}"
+    $debug_log.flush
+  rescue => e
+    # Silent fail if debug log fails
+  end
 end
 
 debug "Starting TUI - version #{@version}"
@@ -36,13 +52,29 @@ debug "Program directory: #{$pgmdir}"
 # Load includes
 begin
   debug "Loading includes..."
-  load File.join($pgmdir, "includes/includes.rb")
+  includes_file = File.join($pgmdir, "includes/includes.rb")
+  debug "Loading from: #{includes_file}"
+  debug "File exists: #{File.exist?(includes_file)}"
+  
+  load includes_file
   debug "Includes loaded successfully"
+  
+  # Verify critical classes are loaded
+  debug "Checking loaded classes..."
+  debug "NpcNew defined: #{defined?(NpcNew)}"
+  debug "EncNew defined: #{defined?(EncNew)}"
+  debug "MonsterNew defined: #{defined?(MonsterNew)}"
 rescue => e
   debug "Error loading includes: #{e.message}"
-  debug e.backtrace.join("\n")
-  raise
+  debug e.backtrace.join("\n") if e.backtrace
+  puts "Fatal: Could not load includes - #{e.message}"
+  exit 1
 end
+
+debug "After includes load block"
+
+# Test point after includes
+debug "About to define configuration"
 
 # CONFIGURATION
 @config = {
@@ -53,9 +85,14 @@ end
   last_encounter: nil
 }
 
+debug "Configuration initialized"
+
+debug "Defining CONFIG_FILE constant"
 CONFIG_FILE = File.join(Dir.home, '.amar_tui.conf')
+debug "CONFIG_FILE defined as: #{CONFIG_FILE}"
 
 # COLOR SCHEME
+debug "Defining colors hash"
 @colors = {
   header: 24,      # Dark blue
   menu: 236,       # Dark gray
@@ -66,8 +103,10 @@ CONFIG_FILE = File.join(Dir.home, '.amar_tui.conf')
   success: 46,     # Green
   info: 39        # Cyan
 }
+debug "Colors defined"
 
 # HELP TEXT
+debug "Defining help text"
 @help = <<~HELP
   AMAR RPG TOOLS - TUI Version #{@version}
   
@@ -96,8 +135,10 @@ CONFIG_FILE = File.join(Dir.home, '.amar_tui.conf')
     w      Weather generation
     t      Town generation
 HELP
+debug "Help text defined"
 
 # HELPER METHODS
+debug "Defining helper methods"
 def save_config
   File.write(CONFIG_FILE, @config.to_json)
 rescue => e
@@ -865,6 +906,8 @@ def generate_name_ui
   end
 end
 
+debug "All methods defined"
+
 # MAIN LOOP
 def main_loop
   debug "Starting main loop"
@@ -913,17 +956,47 @@ ensure
   debug "Cleanup completed"
 end
 
+debug "About to check if __FILE__ == $0"
+debug "__FILE__ = #{__FILE__}"
+debug "$0 = #{$0}"
+
 # START APPLICATION
 if __FILE__ == $0
   debug "Starting application (called directly)"
   
-  # Check if we have a proper terminal
-  unless $stdin.tty? && $stdout.tty?
-    puts "Error: This application requires an interactive terminal"
-    puts "Please run directly in a terminal, not piped or redirected"
-    exit 1
+  begin
+    # Check if we have a proper terminal
+    debug "Checking terminal status..."
+    debug "stdin.tty? = #{$stdin.tty?}"
+    debug "stdout.tty? = #{$stdout.tty?}"
+    
+    unless $stdin.tty? && $stdout.tty?
+      debug "Not in interactive terminal, exiting"
+      puts "Error: This application requires an interactive terminal"
+      puts "Please run directly in a terminal, not piped or redirected"
+      exit 1
+    end
+    
+    debug "Terminal check passed, calling main_loop"
+    main_loop
+    debug "Application ended normally"
+  rescue => e
+    debug "Fatal error at top level: #{e.message}"
+    debug e.backtrace.join("\n")
+    puts "Fatal error: #{e.message}"
+    raise
   end
-  
-  main_loop
-  debug "Application ended"
+end
+
+# End of top-level error catching
+rescue => e
+  if $debug_log
+    debug "FATAL TOP-LEVEL ERROR: #{e.message}"
+    debug "Backtrace:"
+    debug e.backtrace.join("\n") if e.backtrace
+  end
+  puts "FATAL ERROR: #{e.message}"
+  puts "Check /tmp/amar_tui_debug.log for details"
+  puts e.backtrace.first(5).join("\n") if e.backtrace
+  exit 1
 end
