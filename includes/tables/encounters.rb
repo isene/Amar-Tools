@@ -92,7 +92,6 @@ $Encounters = {#								[L, Z, S, E, A, d,ml,ms,ap,ma,ml]
   "Monster: Gold Dragon" =>			[9,15,15, 9, 6, 2,-8, 0,-7, 7, 4],
   "Monster: Ancient Dragon" =>	[10,16,16,10, 6, 3,-9, 0,-8, 8, 5],
   "Monster: Drake" =>						[6, 8, 8, 6, 4, 3,-5, 0,-4, 3, 1],
-  "Monster: Wyvern" =>					[5,10,10, 7, 5, 2,-5, 0,-3, 0, 0],
   "Monster: Hydra" =>						[7,11,10, 9, 3, 1,-6, 0,-5, 0, 0],
   "Monster: Basilisk" =>				[6, 9, 9, 7, 4, 2,-5, 0,-4, 3, 1],
   "Monster: Special" =>					[9, 7, 7, 7, 5, 5, 5, 5,10, 0, 0]
