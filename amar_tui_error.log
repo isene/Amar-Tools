@@ -1,0 +1,6 @@
+2025-09-06 00:48:15 +0200: Inappropriate ioctl for device
+/var/lib/gems/3.3.0/gems/rcurses-6.0.2/lib/rcurses/input.rb:7:in `getch'
+/var/lib/gems/3.3.0/gems/rcurses-6.0.2/lib/rcurses/input.rb:7:in `getchr'
+amar-tui.rb:293:in `handle_menu_navigation'
+amar-tui.rb:894:in `main_loop'
+amar-tui.rb:919:in `<main>'

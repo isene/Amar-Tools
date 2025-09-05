@@ -23,8 +23,26 @@ require 'fileutils'
 @version = "1.0.0"
 $pgmdir = File.dirname(__FILE__)  # Global for includes
 
+# Debug logging
+$debug_log = File.open("/tmp/amar_tui_debug.log", "w")
+$debug_log.sync = true
+def debug(msg)
+  $debug_log.puts "[#{Time.now}] #{msg}"
+end
+
+debug "Starting TUI - version #{@version}"
+debug "Program directory: #{$pgmdir}"
+
 # Load includes
-load File.join($pgmdir, "includes/includes.rb")
+begin
+  debug "Loading includes..."
+  load File.join($pgmdir, "includes/includes.rb")
+  debug "Includes loaded successfully"
+rescue => e
+  debug "Error loading includes: #{e.message}"
+  debug e.backtrace.join("\n")
+  raise
+end
 
 # CONFIGURATION
 @config = {
@@ -95,22 +113,54 @@ rescue => e
 end
 
 def init_screen
-  Rcurses.init!
-  Cursor.hide  # Hide cursor
+  debug "Initializing screen..."
+  
+  begin
+    debug "Calling Rcurses.init!"
+    Rcurses.init!
+    debug "Rcurses initialized"
+  rescue => e
+    debug "Error initializing Rcurses: #{e.message}"
+    raise
+  end
+  
+  begin
+    debug "Hiding cursor"
+    Cursor.hide  # Hide cursor
+    debug "Cursor hidden"
+  rescue => e
+    debug "Error hiding cursor: #{e.message}"
+    raise
+  end
   
   # Get terminal size - fallback to defaults if console not available
+  debug "Getting terminal size..."
   if IO.console
     @rows, @cols = IO.console.winsize
+    debug "Terminal size: #{@rows}x#{@cols}"
   else
     @rows, @cols = 24, 80  # Default terminal size
+    debug "Using default terminal size: #{@rows}x#{@cols}"
   end
   
   # Create main panes
-  #                     x   y   width        height      fg              bg
-  @header = Pane.new(   1,  1,  @cols,       2,          255,            @colors[:header])
-  @menu   = Pane.new(   2,  4,  30,          @rows - 5,  255,            @colors[:menu])
-  @content= Pane.new(   34, 4,  @cols - 35,  @rows - 5,  255,            @colors[:content])
-  @footer = Pane.new(   1,  @rows, @cols,    1,          255,            @colors[:info])
+  debug "Creating panes..."
+  begin
+    #                     x   y   width        height      fg              bg
+    debug "Creating header pane"
+    @header = Pane.new(   1,  1,  @cols,       2,          255,            @colors[:header])
+    debug "Creating menu pane"
+    @menu   = Pane.new(   2,  4,  30,          @rows - 5,  255,            @colors[:menu])
+    debug "Creating content pane"
+    @content= Pane.new(   34, 4,  @cols - 35,  @rows - 5,  255,            @colors[:content])
+    debug "Creating footer pane"
+    @footer = Pane.new(   1,  @rows, @cols,    1,          255,            @colors[:info])
+    debug "All panes created"
+  rescue => e
+    debug "Error creating panes: #{e.message}"
+    debug e.backtrace.join("\n")
+    raise
+  end
   
   # Set borders
   if @config[:show_borders]
@@ -238,7 +288,14 @@ def show_popup(title, content, width = 60, height = 20)
 end
 
 def handle_menu_navigation
-  key = getchr
+  debug "Waiting for key input..."
+  begin
+    key = getchr
+    debug "Got key: #{key.inspect}"
+  rescue => e
+    debug "Error getting key: #{e.message}"
+    raise
+  end
   
   case key
   when "j", "\e[B"  # Down arrow
@@ -810,23 +867,63 @@ end
 
 # MAIN LOOP
 def main_loop
-  load_config
-  init_screen
+  debug "Starting main loop"
+  
+  begin
+    debug "Loading config..."
+    load_config
+    debug "Config loaded"
+  rescue => e
+    debug "Error loading config: #{e.message}"
+  end
+  
+  begin
+    debug "Initializing screen..."
+    init_screen
+    debug "Screen initialized"
+  rescue => e
+    debug "Error in init_screen: #{e.message}"
+    debug e.backtrace.join("\n")
+    raise
+  end
   
   running = true
   while running
-    running = handle_menu_navigation
+    debug "Main loop iteration"
+    begin
+      running = handle_menu_navigation
+    rescue => e
+      debug "Error in handle_menu_navigation: #{e.message}"
+      debug e.backtrace.join("\n")
+      raise
+    end
   end
   
+  debug "Exiting main loop"
   save_config
 rescue => e
+  debug "Fatal error in main_loop: #{e.message}"
+  debug e.backtrace.join("\n")
   File.write("amar_tui_error.log", "#{Time.now}: #{e.message}\n#{e.backtrace.join("\n")}")
 ensure
-  Rcurses.cleanup!
-  Cursor.show  # Show cursor again
+  debug "Cleanup started"
+  Rcurses.cleanup! if defined?(Rcurses)
+  Cursor.show if defined?(Cursor) # Show cursor again
+  $debug_log.close if $debug_log
+  debug "Cleanup completed"
 end
 
 # START APPLICATION
 if __FILE__ == $0
+  debug "Starting application (called directly)"
+  
+  # Check if we have a proper terminal
+  unless $stdin.tty? && $stdout.tty?
+    puts "Error: This application requires an interactive terminal"
+    puts "Please run directly in a terminal, not piped or redirected"
+    exit 1
+  end
+  
   main_loop
+  debug "Application ended"
 end
