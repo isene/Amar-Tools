@@ -2083,63 +2083,34 @@ def generate_town_ui
     @content.text = output
     @content.refresh
 
-    # Generate the town with real-time progress
-    progress_lines = []
+    # Update to show generating
+    output += colorize_output("Generating...", :label) + "\n"
+    @content.text = output
+    @content.refresh
 
-    # Store references for the custom stdout
-    tui_instance = self
-    base_for_progress = base_output
-
-    # Create a custom StringIO that captures and displays progress
+    # Generate the town - simple capture
+    captured = StringIO.new
     original_stdout = $stdout
-
-    # Create custom stdout class
-    custom_stdout = Class.new(StringIO) do
-      def initialize(tui, base_output)
-        super()
-        @tui = tui
-        @base = base_output
-        @progress_lines = []
-      end
-
-      def puts(str = "")
-        super(str)  # Call StringIO's puts to maintain compatibility
-        if str && str.to_s =~ /House (\d+)/
-          @progress_lines << str.to_s
-          # Update display in real-time
-          output = @base
-          @progress_lines.each do |line|
-            output += "  " + @tui.colorize_output(line.strip, :success) + "\n"
-          end
-          @tui.instance_eval do
-            @content.text = output
-            @content.refresh
-          end
-        end
-      end
-
-      def get_progress
-        @progress_lines
-      end
-    end
-
-    $stdout = custom_stdout.new(tui_instance, base_for_progress)
+    $stdout = captured
 
     town = Town.new(town_name, town_size, town_var)
 
-    # Get the captured progress
-    progress_lines = $stdout.get_progress if $stdout.respond_to?(:get_progress)
-
     $stdout = original_stdout
 
-    # Final display with all progress
+    # Get progress lines
+    progress_lines = captured.string.lines.select { |l| l =~ /House \d+/ }
+
+    # Show complete output with progress
     output = base_output
-    progress_lines.each do |line|
-      output += "  " + colorize_output(line.strip, :success) + "\n"
+    if progress_lines.any?
+      progress_lines.each do |line|
+        output += "  " + colorize_output(line.strip, :success) + "\n"
+      end
     end
-    output += "\n" + colorize_output("Generation complete!", :success) + "\n"
+    output += "\n" + colorize_output("✓ Generation complete!", :success) + "\n"
     @content.text = output
     @content.refresh
+    sleep(0.5)
 
     # Suppress file saving output
     output_io = StringIO.new
