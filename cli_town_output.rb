@@ -7,8 +7,7 @@ def town_output(aTOWN, cli)
 	# Start creating the output text
 	@tn= ""
 	f  = ""
-	f += "(You may want to bookmark this URL for future references to this Town)\n\n" unless cli == "cli"
-	f += "############################<By Amar Tools>############################\n\n"
+	# Remove the hash lines and URL note for cleaner output
 
 	case aTOWN.town_size
 	when 1..4
@@ -32,8 +31,6 @@ def town_output(aTOWN, cli)
 		end
 		f += "\n"
 	end
-		
-	f += "\n#######################################################################"
 
 	# from functions.rb - save to temp file and named file
 	save_temp_file(f, "town", cli)
