@@ -1,16 +1,33 @@
 # Compact output module for new 3-tier NPC system with full details
 require 'io/console'
 
+# Try to load string_extensions for color support
+begin
+  require 'string_extensions'
+rescue LoadError
+  # Define a fallback pure method if string_extensions is not available
+  class String
+    def pure
+      self.gsub(/\e\[[0-9;]*m/, '')
+    end
+  end
+end
+
 def npc_output_new(n, cli)
-  # Clear screen before displaying character
-  if cli == "cli"
+  # Clear screen before displaying character (only for true CLI mode)
+  if cli == "cli_direct"
     system("clear") || system("cls")  # Works on both Unix and Windows
   end
   
   f = ""
   
   # Use UTF-8 box drawing characters (no side borders for easy copy-paste)
-  width = 120
+  # Adjust width based on output mode
+  if cli == "cli_direct"
+    width = 120
+  else
+    width = 80  # For TUI, use narrower width
+  end
   
   # Define colors if terminal output
   if cli == "cli"
@@ -236,7 +253,8 @@ def npc_output_new(n, cli)
       init = reaction_speed + (wpn_stats[:init] || 0)
       off = skill_total + (wpn_stats[:off] || 0)
       defense = skill_total + (wpn_stats[:def] || 0) + dodge_bonus  # Include Dodge/5
-      dmg = n.DB + (wpn_stats[:dmg] || 0)
+      dmg_mod = wpn_stats[:dmg].to_s =~ /special/ ? 0 : (wpn_stats[:dmg].to_s.to_i || 0)
+      dmg = (n.DB || 0) + dmg_mod
       
       line = "#{weapon.ljust(15)} #{skill_total.to_s.rjust(3)}  #{init.to_s.rjust(4)}  #{off.to_s.rjust(3)}  #{defense.to_s.rjust(3)}  #{dmg.to_s.rjust(3)}"
       melee_lines << line
@@ -248,7 +266,8 @@ def npc_output_new(n, cli)
       skill_total = body_char + attr + skill
       
       range = wpn_stats[:range] || "30m"
-      dmg = n.DB + (wpn_stats[:dmg] || 0)
+      dmg_mod = wpn_stats[:dmg].to_s =~ /special/ ? 0 : (wpn_stats[:dmg].to_s.to_i || 0)
+      dmg = (n.DB || 0) + dmg_mod
       
       line = "#{weapon.ljust(15)} #{skill_total.to_s.rjust(3)}  #{range.ljust(10)} #{dmg.to_s.rjust(3)}"
       missile_lines << line
@@ -338,7 +357,8 @@ def npc_output_new(n, cli)
   f += "═" * width + "\n"
   
   # Output handling
-  if cli == "cli"
+  if cli == "cli_direct"
+    # This is the direct CLI mode - print and handle editing
     # Save clean version without ANSI codes for editing
     File.write("saved/temp_new.npc", f.pure, perm: 0644)
     # Display version with colors
@@ -346,7 +366,12 @@ def npc_output_new(n, cli)
     
     # Options
     puts "\nPress 'e' to edit, any other key to continue"
-    key = STDIN.getch
+    begin
+      key = STDIN.getch
+    rescue Errno::ENOTTY
+      # Not in a terminal, skip the interactive part
+      key = nil
+    end
     
     if key == "e"
       # Use vim with settings to avoid binary file warnings
@@ -356,7 +381,13 @@ def npc_output_new(n, cli)
         system("#{$editor} saved/temp_new.npc")
       end
     end
+    
+    return f
+  elsif cli == "cli"
+    # This is TUI mode - just return the colored string without printing
+    return f
   else
+    # Plain mode - return without colors
     return f
   end
 end

@@ -16,6 +16,7 @@ require_relative "weather2latex.rb"
 
 require_relative "tables/armour.rb"
 require_relative "tables/chartype.rb"
+require_relative "tables/chartype_new.rb"
 require_relative "tables/enc_specific.rb"
 require_relative "tables/enc_type.rb"
 require_relative "tables/encounters.rb"

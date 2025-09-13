@@ -1,20 +1,35 @@
 # Encounter output module showing full 3-tier system format
 require 'io/console'
 
+# Try to load string_extensions for color support
+begin
+  require 'string_extensions'
+rescue LoadError
+  # Define a fallback pure method if string_extensions is not available
+  class String
+    def pure
+      self.gsub(/\e\[[0-9;]*m/, '')
+    end
+  end
+end
+
 def enc_output_new(e, cli)
-  # Clear screen before output if CLI mode
-  if cli == "cli"
+  # Clear screen before output if direct CLI mode
+  if cli == "cli_direct"
     system("clear") || system("cls")
   end
   
   f = ""
   
   # Get terminal width or use default
-  if cli == "cli"
+  if cli == "cli_direct"
     width = `tput cols`.to_i rescue 120
     width = 120 if width < 120  # Minimum width
+  elsif cli == "cli"
+    # For TUI, use a narrower width that fits in the content pane
+    width = 80
   else
-    width = 120
+    width = 80
   end
   
   # Define colors if terminal output
@@ -287,7 +302,8 @@ def enc_output_new(e, cli)
   f += "\n" + ("═" * width) + "\n"
   
   # Output handling
-  if cli == "cli"
+  if cli == "cli_direct"
+    # Direct CLI mode - save and print
     # Save clean version without ANSI codes for editing
     File.write("saved/encounter_new.npc", f.pure, perm: 0644)
     # Display version with colors
@@ -305,7 +321,7 @@ def enc_output_new(e, cli)
           unless defined?(npc_output_new)
             load File.join($pgmdir, "cli_npc_output_new.rb")
           end
-          npc_output_new(e.get_npc(input.to_i - 1), "cli")
+          npc_output_new(e.get_npc(input.to_i - 1), "cli_direct")
           
           # After viewing NPC, redisplay the encounter
           system("clear") || system("cls")
@@ -326,7 +342,13 @@ def enc_output_new(e, cli)
         end
       end
     end
+    
+    return f
+  elsif cli == "cli"
+    # TUI mode - just return the colored string without printing
+    return f
   else
+    # Plain mode - return without colors
     return f
   end
 end
