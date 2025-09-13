@@ -2086,70 +2086,60 @@ def generate_town_ui
     # Generate the town with real-time progress
     progress_lines = []
 
-    # Create a custom IO that captures and displays progress in real-time
+    # Store references for the custom stdout
+    tui_instance = self
+    base_for_progress = base_output
+
+    # Create a custom StringIO that captures and displays progress
     original_stdout = $stdout
-    $stdout = Object.new
-    def $stdout.puts(str)
-      if str && str =~ /House (\d+)/
-        # Store for later and update display
-        @parent_ui ||= ObjectSpace.each_object(self.class).first
-        house_num = $1
-        # We need access to the TUI instance to update display
-        # This is a bit hacky but works
-        Thread.current[:house_progress] ||= []
-        Thread.current[:house_progress] << str
+
+    # Create custom stdout class
+    custom_stdout = Class.new(StringIO) do
+      def initialize(tui, base_output)
+        super()
+        @tui = tui
+        @base = base_output
+        @progress_lines = []
       end
-    end
-    def $stdout.write(str); str.to_s.length; end
-    def $stdout.respond_to?(m); [:puts, :write].include?(m) || super; end
 
-    # Store reference to self for the stdout to use
-    Thread.current[:tui_instance] = self
-    Thread.current[:base_output] = base_output
-    Thread.current[:house_progress] = []
-
-    # Redefine stdout.puts to update display
-    $stdout = Object.new
-    class << $stdout
-      def puts(str)
-        if str && str =~ /House (\d+)/
-          Thread.current[:house_progress] << str
-          # Update display
-          tui = Thread.current[:tui_instance]
-          base = Thread.current[:base_output]
-          if tui && base
-            output = base
-            Thread.current[:house_progress].each do |line|
-              output += "  " + tui.colorize_output(line.strip, :success) + "\n"
-            end
-            tui.instance_eval do
-              @content.text = output
-              @content.refresh
-            end
+      def puts(str = "")
+        super(str)  # Call StringIO's puts to maintain compatibility
+        if str && str.to_s =~ /House (\d+)/
+          @progress_lines << str.to_s
+          # Update display in real-time
+          output = @base
+          @progress_lines.each do |line|
+            output += "  " + @tui.colorize_output(line.strip, :success) + "\n"
+          end
+          @tui.instance_eval do
+            @content.text = output
+            @content.refresh
           end
         end
       end
-      def write(str); str.to_s.length; end
-      def respond_to?(m); [:puts, :write].include?(m) || super; end
+
+      def get_progress
+        @progress_lines
+      end
     end
 
+    $stdout = custom_stdout.new(tui_instance, base_for_progress)
+
     town = Town.new(town_name, town_size, town_var)
+
+    # Get the captured progress
+    progress_lines = $stdout.get_progress if $stdout.respond_to?(:get_progress)
 
     $stdout = original_stdout
 
     # Final display with all progress
     output = base_output
-    Thread.current[:house_progress].each do |line|
+    progress_lines.each do |line|
       output += "  " + colorize_output(line.strip, :success) + "\n"
     end
     output += "\n" + colorize_output("Generation complete!", :success) + "\n"
     @content.text = output
     @content.refresh
-
-    # Clean up thread variables
-    Thread.current[:tui_instance] = nil
-    Thread.current[:base_output] = nil
-    Thread.current[:house_progress] = nil
 
     # Suppress file saving output
     output_io = StringIO.new
