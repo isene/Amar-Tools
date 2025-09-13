@@ -1529,17 +1529,20 @@ def format_monster_new(monster)
   content_width = @cols - 35  # Same as content pane width
 
   if @config[:color_mode]
-    output += colorize_output("MONSTER: ", :label) + colorize_output("#{monster.name}", :success) + colorize_output(" (Level #{monster.level})", :value) + "\n"
-    output += colorize_output("Type: ", :label) + colorize_output(monster.type, :name) + "\n"
+    output += colorize_output("#{monster.name}", :success) + colorize_output(" (#{monster.type}, Level #{monster.level})", :value) + "\n"
     output += colorize_output("─" * content_width, :header) + "\n\n"
-    
-    # Physical stats
-    output += colorize_output("PHYSICAL:", :subheader) + "\n"
-    output += "  " + colorize_output("Weight: ", :label) + colorize_output("#{monster.weight} kg", :value)
-    output += " | " + colorize_output("SIZE: ", :label) + colorize_output(monster.SIZE.to_s, :value) + "\n"
-    output += "  " + colorize_output("BP: ", :label) + colorize_output(monster.BP.to_s, :dice)
-    output += " | " + colorize_output("DB: ", :label) + colorize_output(monster.DB.to_s, :dice)
-    output += " | " + colorize_output("MD: ", :label) + colorize_output(monster.MD.to_s, :dice) + "\n\n"
+
+    # Physical stats - ensure integers
+    size_val = monster.SIZE.is_a?(Float) ? monster.SIZE.round : monster.SIZE
+    bp_val = monster.BP.is_a?(Float) ? monster.BP.round : monster.BP
+    db_val = monster.DB.is_a?(Float) ? monster.DB.round : monster.DB
+    md_val = monster.MD.is_a?(Float) ? monster.MD.round : monster.MD
+
+    output += colorize_output("SIZE: ", :label) + colorize_output(size_val.to_s, :value)
+    output += "  " + colorize_output("BP: ", :label) + colorize_output(bp_val.to_s, :dice)
+    output += "  " + colorize_output("DB: ", :label) + colorize_output(db_val.to_s, :dice)
+    output += "  " + colorize_output("MD: ", :label) + colorize_output(md_val.to_s, :dice) + "\n"
+    output += colorize_output("Weight: ", :label) + colorize_output("#{monster.weight.round} kg", :value) + "\n\n"
     
     # Special abilities
     if monster.special_abilities && !monster.special_abilities.empty?
@@ -1547,12 +1550,32 @@ def format_monster_new(monster)
       output += "  " + colorize_output(monster.special_abilities, :success) + "\n\n"
     end
     
-    # Combat skills
-    output += colorize_output("COMBAT SKILLS:", :subheader) + "\n"
+    # Weapons/Attacks
+    output += colorize_output("WEAPONS/ATTACKS:", :subheader) + "\n"
+    output += colorize_output("Attack", :label).ljust(20) + colorize_output("Skill  Init  Off  Def  Damage", :label) + "\n"
     monster.tiers["BODY"]["Melee Combat"]["skills"].each do |skill, value|
       next if value == 0
       total = monster.get_skill_total("BODY", "Melee Combat", skill)
-      output += "  " + colorize_output(skill + ": ", :label) + colorize_output(total.to_s, :value) + "\n"
+
+      # Calculate weapon stats based on skill type and monster DB
+      db = monster.DB.is_a?(Float) ? monster.DB.round : monster.DB
+      if skill.downcase.include?("unarmed") || skill.downcase.include?("claw") || skill.downcase.include?("bite")
+        init = 3 + (monster.level / 2)
+        off = total + 2
+        def_val = total
+        damage = db + 1  # Natural attacks use DB + 1
+        attack_name = skill.capitalize.ljust(15)
+      else
+        # Other weapons
+        init = 4
+        off = total + 1
+        def_val = total + 1
+        damage = db + 2
+        attack_name = skill.capitalize.ljust(15)
+      end
+
+      output += colorize_output(attack_name, :value)
+      output += colorize_output("#{total.to_s.rjust(5)}  #{init.to_s.rjust(4)}  #{off.to_s.rjust(3)}  #{def_val.to_s.rjust(3)}  #{damage.to_s.rjust(6)}", :value) + "\n"
     end
     
     # Spells if any
@@ -1564,14 +1587,17 @@ def format_monster_new(monster)
     end
   else
     # Non-colored version
-    output += "MONSTER: #{monster.name} (Level #{monster.level})\n"
-    output += "Type: #{monster.type}\n"
+    output += "#{monster.name} (#{monster.type}, Level #{monster.level})\n"
     output += "─" * content_width + "\n\n"
-    
-    # Physical stats
-    output += "PHYSICAL:\n"
-    output += "  Weight: #{monster.weight} kg | SIZE: #{monster.SIZE}\n"
-    output += "  BP: #{monster.BP} | DB: #{monster.DB} | MD: #{monster.MD}\n\n"
+
+    # Physical stats - ensure integers
+    size_val = monster.SIZE.is_a?(Float) ? monster.SIZE.round : monster.SIZE
+    bp_val = monster.BP.is_a?(Float) ? monster.BP.round : monster.BP
+    db_val = monster.DB.is_a?(Float) ? monster.DB.round : monster.DB
+    md_val = monster.MD.is_a?(Float) ? monster.MD.round : monster.MD
+
+    output += "SIZE: #{size_val}  BP: #{bp_val}  DB: #{db_val}  MD: #{md_val}\n"
+    output += "Weight: #{monster.weight.round} kg\n\n"
     
     # Special abilities
     if monster.special_abilities && !monster.special_abilities.empty?
@@ -1579,12 +1605,30 @@ def format_monster_new(monster)
       output += "  #{monster.special_abilities}\n\n"
     end
     
-    # Combat skills
-    output += "COMBAT SKILLS:\n"
+    # Weapons/Attacks
+    output += "WEAPONS/ATTACKS:\n"
+    output += "Attack          Skill  Init  Off  Def  Damage\n"
     monster.tiers["BODY"]["Melee Combat"]["skills"].each do |skill, value|
       next if value == 0
       total = monster.get_skill_total("BODY", "Melee Combat", skill)
-      output += "  #{skill}: #{total}\n"
+
+      # Calculate weapon stats
+      db = monster.DB.is_a?(Float) ? monster.DB.round : monster.DB
+      if skill.downcase.include?("unarmed") || skill.downcase.include?("claw") || skill.downcase.include?("bite")
+        init = 3 + (monster.level / 2)
+        off = total + 2
+        def_val = total
+        damage = db + 1
+        attack_name = skill.capitalize.ljust(15)
+      else
+        init = 4
+        off = total + 1
+        def_val = total + 1
+        damage = db + 2
+        attack_name = skill.capitalize.ljust(15)
+      end
+
+      output += "#{attack_name} #{total.to_s.rjust(5)}  #{init.to_s.rjust(4)}  #{off.to_s.rjust(3)}  #{def_val.to_s.rjust(3)}  #{damage.to_s.rjust(6)}\n"
     end
     
     # Spells if any

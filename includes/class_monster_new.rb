@@ -145,101 +145,94 @@ class MonsterNew
   end
   
   def calculate_size_from_weight(weight)
-    # New SIZE system with half-point values based on weight
+    # SIZE system based on weight - returns integer SIZE
     case weight
-    when 0...5
-      0.5
-    when 5...10
+    when 0...10
       1
-    when 10...20
-      1.5
-    when 20...35
+    when 10...25
       2
-    when 35...50
-      2.5
-    when 50...75
+    when 25...50
       3
-    when 75...100
-      3.5
-    when 100...125
+    when 50...100
       4
-    when 125...150
-      4.5
-    when 150...175
+    when 100...150
       5
-    when 175...200
-      5.5
-    when 200...225
+    when 150...200
       6
-    when 225...250
-      6.5
-    when 250...275
+    when 200...275
       7
-    when 275...300
-      7.5
-    when 300...350
+    when 275...350
       8
-    when 350...400
-      8.5
-    when 400...450
+    when 350...450
       9
-    when 450...500
-      9.5
-    when 500...550
+    when 450...550
       10
-    when 550...600
-      10.5
-    when 600...650
+    when 550...650
       11
-    when 650...700
-      11.5
-    when 700...750
+    when 650...750
       12
+    when 750...900
+      13
+    when 900...1100
+      14
+    when 1100...1300
+      15
     else
-      # For very large creatures, continue the pattern
-      base = (weight / 25.0).floor * 0.5
-      [base, 0.5].max
+      # For very large creatures
+      15 + ((weight - 1300) / 300).floor
     end
   end
   
   def generate_combat_skills(skill_list)
     skills = {}
-    
+
     skill_list.each do |skill_name|
       case skill_name.downcase
-      when /bite/, /claw/, /tusk/, /tail/
-        skills["Unarmed"] = @level + rand(1..3)  # Natural attacks
-      when /sword/, /spear/, /dagger/
-        skills[skill_name.capitalize] = @level + rand(0..2)
+      when /bite/
+        skills["Bite"] = @level + rand(2..4)  # Natural attacks are effective
+      when /claw/
+        skills["Claw"] = @level + rand(2..4)
+      when /tusk/
+        skills["Tusk"] = @level + rand(1..3)
+      when /tail/
+        skills["Tail"] = @level + rand(1..3)
+      when /sword/
+        skills["Sword"] = @level + rand(1..3)
+      when /spear/
+        skills["Spear"] = @level + rand(1..3)
+      when /dagger/
+        skills["Dagger"] = @level + rand(0..2)
       when /club/
         skills["Club"] = @level + rand(0..2)
       when /unarmed/
-        skills["Unarmed combat"] = @level + rand(1..3)
+        skills["Unarmed"] = @level + rand(2..4)
       when /grappl/
-        skills["Grappling"] = @level + rand(0..2)
+        skills["Grappling"] = @level + rand(1..3)
       end
     end
-    
-    # Ensure at least one combat skill
-    skills["Unarmed"] = @level if skills.empty?
-    
+
+    # Ensure at least one combat skill with a reasonable level
+    if skills.empty?
+      skills["Unarmed"] = @level + rand(2..3)
+    end
+
     skills
   end
   
   def calculate_derived_stats
     body = @tiers["BODY"]["level"]
     mind = @tiers["MIND"]["level"]
-    
-    # Body Points
-    @BP = @SIZE + body + @tiers["BODY"]["Endurance"]["level"]
-    
-    # Damage Bonus
+
+    # Body Points (round to integer)
+    @BP = (@SIZE + body + @tiers["BODY"]["Endurance"]["level"]).round
+
+    # Damage Bonus (round to integer)
     strength_total = body + @tiers["BODY"]["Strength"]["level"]
-    @DB = (strength_total + @SIZE - 10) / 3
-    
-    # Magic Defense
-    @MD = mind + @tiers["MIND"]["Awareness"]["level"]
-    
+    @DB = ((strength_total + @SIZE - 10) / 3.0).round
+
+    # Magic Defense (round to integer)
+    @MD = (mind + @tiers["MIND"]["Awareness"]["level"]).round
+
     # Encumbrance (monsters don't carry much)
     @ENC = 0
   end
