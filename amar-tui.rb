@@ -2067,283 +2067,121 @@ def generate_town_ui
   town_var = 6 if town_var > 6
   
   begin
-    # Generate the town
-    town = nil
-    output = ""
+    # Show simple generating message
+    show_content("Generating town...\n\nThis may take a moment for larger towns.")
 
-    begin
-      # Show colored header
-      content_width = @cols - 35
-      output = colorize_output("GENERATING TOWN", :header) + "\n"
-      output += colorize_output("─" * content_width, :header) + "\n\n"
-      output += colorize_output("Name: ", :label) + colorize_output(town_name.empty? ? "Random" : town_name, :value) + "\n"
-      output += colorize_output("Houses: ", :label) + colorize_output(town_size.to_s, :value) + "\n"
-      variation_names = ["Only humans", "Few non-humans", "Several non-humans",
-                        "Crazy place", "Only Dwarves", "Only Elves",
-                        "Only Lizardfolk"]
-      output += colorize_output("Variation: ", :label) + colorize_output(variation_names[town_var], :value) + "\n\n"
-      output += colorize_output("Generating...", :label) + "\n"
-      show_content(output)
+    # Generate the town - capture progress
+    captured = StringIO.new
+    original_stdout = $stdout
+    $stdout = captured
 
-      # Simple capture with StringIO
-      captured = StringIO.new
-      original_stdout = $stdout
-      $stdout = captured
+    town = Town.new(town_name, town_size, town_var)
 
-      # Generate the town
-      town = Town.new(town_name, town_size, town_var)
+    $stdout = original_stdout
 
-      # Restore stdout
-      $stdout = original_stdout
+    # Get progress lines
+    progress_lines = captured.string.lines.select { |l| l =~ /House \d+/ }
 
-      # Get captured progress
-      progress_lines = captured.string.lines
-      house_lines = progress_lines.select { |l| l =~ /House \d+/ }
+    # Now get the actual town output
+    output_io = StringIO.new
+    original_editor = $editor if defined?($editor)
+    $stdout = output_io
+    $editor = "echo"  # Prevent editor from opening
 
-      # Show completion with captured progress
-      output += "\n" + colorize_output("Progress:", :label) + "\n"
-      house_lines.each_with_index do |line, i|
-        if line =~ /House (\d+)/
-          num = $1
-          output += "  " + colorize_output("House #{num}", :success) + "\n"
+    # Ensure saved directory exists
+    saved_dir = File.join($pgmdir, "saved")
+    FileUtils.mkdir_p(saved_dir) unless Dir.exist?(saved_dir)
+
+    town_output(town, "cli")
+
+    $stdout = original_stdout
+    $editor = original_editor if original_editor
+
+    # Get the generated file content
+    town_file = File.join(saved_dir, "town.npc")
+    if File.exist?(town_file)
+      output = File.read(town_file)
+    else
+      output = output_io.string
+    end
+
+    # Simply display the output as plain text - no complex formatting
+    @content.text = output
+    @content.refresh
+  rescue => e
+    show_content("Error generating town: #{e.message}\n\nPress any key to continue...")
+    getchr
+    return
+  end
+
+  # Check if town was generated
+  if town.nil?
+    show_content("Error: Failed to generate town. Please try again.\n\nPress any key to continue...")
+    getchr
+    return
+  end
+    
+  # Show navigation help
+  @footer.clear
+  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+  @footer.refresh
+
+  # Navigation
+  loop do
+    key = getchr
+    case key
+    when "\e", "q"
+      break
+    when "j", "\e[B"
+      @content.linedown
+    when "k", "\e[A"
+      @content.lineup
+    when "\e[6~"
+      @content.pagedown
+    when "\e[5~"
+      @content.pageup
+    when "r"
+      # Re-roll with same parameters
+      begin
+        @footer.clear
+        @footer.say(" Re-generating town with #{town_size} houses...".ljust(@cols))
+        @footer.refresh
+
+        # Generate new town
+        captured = StringIO.new
+        original_stdout = $stdout
+        $stdout = captured
+
+        town = Town.new(town_name, town_size, town_var)
+
+        $stdout = original_stdout
+
+        # Get new output
+        output_io = StringIO.new
+        original_editor = $editor if defined?($editor)
+        $stdout = output_io
+        $editor = "echo"  # Prevent editor from opening
+
+        # Ensure saved directory exists
+        saved_dir = File.join($pgmdir, "saved")
+        FileUtils.mkdir_p(saved_dir) unless Dir.exist?(saved_dir)
+
+        town_output(town, "cli")
+
+        $stdout = original_stdout
+        $editor = original_editor if original_editor
+
+        # Get the generated file content
+        town_file = File.join(saved_dir, "town.npc")
+        if File.exist?(town_file)
+          output = File.read(town_file)
+        else
+          output = output_io.string
         end
-      end
 
-      output += "\n" + colorize_output("✓ Generation Complete!", :success) + "\n\n"
-      output += colorize_output("Total houses: ", :label) + colorize_output(town.town.size.to_s, :value) + "\n"
-      output += colorize_output("Total residents: ", :label) + colorize_output(town.town_residents.to_s, :value) + "\n"
-      show_content(output)
-      sleep(0.5)
-
-    rescue => e
-      debug "Error generating town: #{e.message}"
-      debug e.backtrace.join("\n")
-      show_content(output + "\n" + colorize_output("Error: #{e.message}", :label) + "\n\nPress any key to continue...")
-      getchr
-      return
-    end
-
-    # Check if town was generated
-    if town.nil?
-      show_content("Error: Failed to generate town. Please try again.\n\nPress any key to continue...")
-      getchr
-      return
-    end
-    
-    # Get the town output
-    output = ""
-    begin
-      # Capture the output from town_output
-      output_io = StringIO.new
-      original_stdout = $stdout
-      original_editor = $editor if defined?($editor)
-      $stdout = output_io
-      $editor = "echo"  # Prevent editor from opening
-      
-      # Ensure saved directory exists
-      saved_dir = File.join($pgmdir, "saved")
-      FileUtils.mkdir_p(saved_dir) unless Dir.exist?(saved_dir)
-      
-      town_output(town, "cli")
-      
-      $stdout = original_stdout
-      $editor = original_editor if original_editor
-      
-      # Get the generated file content
-      town_file = File.join(saved_dir, "town.npc")
-      if File.exist?(town_file)
-        output = File.read(town_file)
-      else
-        output = output_io.string
-      end
-      
-      # Format and color the town output
-      content_width = @cols - 35
-      formatted_output = ""
-
-      # Parse and reformat the output
-      lines = output.split("\n")
-
-      # Find and format the header
-      if lines[0] =~ /(Castle|Village|Town|City) Of (.+?) - Houses: (\d+) - Residents: (\d+)/
-        type = $1
-        name = $2
-        houses = $3
-        residents = $4
-
-        # Build the formatted output using colorize_output
-        formatted_output = colorize_output(type.upcase, :header) + " OF " + colorize_output(name.upcase, :success) + "\n"
-        formatted_output += colorize_output("─" * content_width, :header) + "\n"
-        formatted_output += colorize_output("Houses: ", :label) + colorize_output(houses, :value) +
-                           "  " + colorize_output("Residents: ", :label) + colorize_output(residents, :value) + "\n\n"
-
-        # Process the rest of the lines
-        lines[1..-1].each do |line|
-          if line =~ /^#(\d+): (.+)$/
-            # House header
-            num = $1
-            desc = $2
-            formatted_output += colorize_output("House ##{num}", :subheader) + " - " + desc + "\n"
-          elsif line =~ /^   (.+?) \(([MF]) (\d+)\) (.+?) \[(\d+)\] (.+)$/
-            # Resident with full details
-            name = $1
-            sex = $2
-            age = $3
-            race = $4
-            level = $5
-            personality = $6
-
-            formatted_output += "  • " + colorize_output(name, :name)
-            formatted_output += " (" + colorize_output("#{sex} #{age}", :label) + ")"
-            formatted_output += " " + race
-            formatted_output += " [" + colorize_output(level, :dice) + "]"
-            formatted_output += " " + colorize_output(personality, :label) + "\n"
-          elsif line.strip.empty?
-            formatted_output += "\n"
-          else
-            # Keep other lines as-is
-            formatted_output += line + "\n"
-          end
-        end
-      else
-        # Fallback to original output if parsing fails
-        formatted_output = output
-      end
-
-      output = formatted_output.strip
-    rescue => e
-      debug "Error getting town output: #{e.message}"
-      output = "Error generating town output: #{e.message}"
-    end
-    
-    # Restore normal footer
-    draw_footer
-    
-    show_content(output)
-    
-    # Show navigation help
-    @footer.clear
-    @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-    @footer.refresh
-    
-    # Navigation
-    loop do
-      key = getchr
-      case key
-      when "\e", "q"
-        break
-      when "j", "\e[B"
-        @content.linedown
-      when "k", "\e[A"
-        @content.lineup
-      when "\e[6~"
-        @content.pagedown
-      when "\e[5~"
-        @content.pageup
-      when "r"
-        # Re-roll with same parameters
-        begin
-          show_content("\nRe-rolling town with same parameters...\n")
-          
-          # Show progress in footer
-          @footer.clear
-          @footer.say(" Re-generating town with #{town_size} houses...".ljust(@cols))
-          @footer.refresh
-          
-          # Capture output
-          progress_io = StringIO.new
-          original_stdout = $stdout
-          $stdout = progress_io
-          
-          # Generate new town
-          town = Town.new(town_name, town_size, town_var)
-          
-          # Restore stdout
-          $stdout = original_stdout
-          
-          # Show completion
-          @footer.clear
-          @footer.say(" Town re-generated! Processing output...".ljust(@cols))
-          @footer.refresh
-          
-          # Get new output
-          output_io = StringIO.new
-          original_editor = $editor if defined?($editor)
-          $stdout = output_io
-          $editor = "echo"  # Prevent editor from opening
-          
-          # Ensure saved directory exists
-          saved_dir = File.join($pgmdir, "saved")
-          FileUtils.mkdir_p(saved_dir) unless Dir.exist?(saved_dir)
-          
-          town_output(town, "cli")
-          
-          $stdout = original_stdout
-          $editor = original_editor if original_editor
-          
-          # Get the generated file content
-          town_file = File.join(saved_dir, "town.npc")
-          if File.exist?(town_file)
-            output = File.read(town_file)
-          else
-            output = output_io.string
-          end
-          
-          # Format and color the town output using same logic as initial generation
-          content_width = @cols - 35
-          formatted_output = ""
-
-          # Parse and reformat the output
-          lines = output.split("\n")
-
-          # Find and format the header
-          if lines[0] =~ /(Castle|Village|Town|City) Of (.+?) - Houses: (\d+) - Residents: (\d+)/
-            type = $1
-            name = $2
-            houses = $3
-            residents = $4
-
-            # Build the formatted output using colorize_output
-            formatted_output = colorize_output(type.upcase, :header) + " OF " + colorize_output(name.upcase, :success) + "\n"
-            formatted_output += colorize_output("─" * content_width, :header) + "\n"
-            formatted_output += colorize_output("Houses: ", :label) + colorize_output(houses, :value) +
-                               "  " + colorize_output("Residents: ", :label) + colorize_output(residents, :value) + "\n\n"
-
-            # Process the rest of the lines
-            lines[1..-1].each do |line|
-              if line =~ /^#(\d+): (.+)$/
-                # House header
-                num = $1
-                desc = $2
-                formatted_output += colorize_output("House ##{num}", :subheader) + " - " + desc + "\n"
-              elsif line =~ /^   (.+?) \(([MF]) (\d+)\) (.+?) \[(\d+)\] (.+)$/
-                # Resident with full details
-                name = $1
-                sex = $2
-                age = $3
-                race = $4
-                level = $5
-                personality = $6
-
-                formatted_output += "  • " + colorize_output(name, :name)
-                formatted_output += " (" + colorize_output("#{sex} #{age}", :label) + ")"
-                formatted_output += " " + race
-                formatted_output += " [" + colorize_output(level, :dice) + "]"
-                formatted_output += " " + colorize_output(personality, :label) + "\n"
-              elsif line.strip.empty?
-                formatted_output += "\n"
-              else
-                # Keep other lines as-is
-                formatted_output += line + "\n"
-              end
-            end
-          else
-            # Fallback to original output if parsing fails
-            formatted_output = output
-          end
-
-          output = formatted_output.strip
-          show_content(output)
+        # Simply set the text directly
+        @content.text = output
+        @content.refresh
           
           # Restore navigation help
           @footer.clear
@@ -2354,7 +2192,7 @@ def generate_town_ui
         end
       when "y"
         # Copy to clipboard
-        copy_to_clipboard(output)
+        copy_to_clipboard(@content.text)
         @footer.clear
         @footer.say(" Copied to clipboard! ".ljust(@cols))
         @footer.refresh
@@ -2364,10 +2202,10 @@ def generate_town_ui
         @footer.refresh
       when "e"
         # Edit in editor
-        edit_in_editor(output)
-        show_content(output)
+        edit_in_editor(@content.text)
+        @content.refresh
       when "s"
-        save_to_file(output, :town)
+        save_to_file(@content.text, :town)
       end
     end
   rescue => e
