@@ -2067,18 +2067,37 @@ def generate_town_ui
   town_var = 6 if town_var > 6
   
   begin
-    # Show simple generating message
-    @content.text = "Generating town...\n\nThis may take a moment for larger towns."
+    # Show initial generating message
+    base_message = "GENERATING TOWN\n" + "=" * 40 + "\n\n"
+    base_message += "Name: #{town_name.empty? ? 'Random' : town_name}\n"
+    base_message += "Size: #{town_size} houses\n"
+    base_message += "Variation: #{['Only humans', 'Few non-humans', 'Several non-humans',
+                                    'Crazy place', 'Only Dwarves', 'Only Elves',
+                                    'Only Lizardfolk'][town_var]}\n\n"
+    @content.text = base_message + "Initializing...\n"
     @content.refresh
 
-    # Generate the town - capture ALL output including stderr
+    # Generate the town with progress callback
     captured = StringIO.new
     original_stdout = $stdout
     original_stderr = $stderr
     $stdout = captured
     $stderr = captured
 
-    town = Town.new(town_name, town_size, town_var)
+    town = Town.new(town_name, town_size, town_var) do |current, total|
+      # Update progress display
+      progress_pct = (current.to_f / total * 100).to_i
+      progress_msg = base_message
+      progress_msg += "Progress: House #{current} of #{total} (#{progress_pct}%)\n"
+
+      # Add a simple progress bar
+      bar_width = 40
+      filled = (bar_width * current / total).to_i
+      progress_msg += "[" + "#" * filled + "-" * (bar_width - filled) + "]\n"
+
+      @content.text = progress_msg
+      @content.refresh
+    end
 
     $stdout = original_stdout
     $stderr = original_stderr
@@ -2166,14 +2185,31 @@ def generate_town_ui
         @footer.say(" Re-generating town with #{town_size} houses...".ljust(@cols))
         @footer.refresh
 
-        # Generate new town - capture ALL output
+        # Generate new town with progress
+        base_message = "RE-GENERATING TOWN\n" + "=" * 40 + "\n\n"
+        base_message += "Name: #{town_name.empty? ? 'Random' : town_name}\n"
+        base_message += "Size: #{town_size} houses\n\n"
+
         captured = StringIO.new
         original_stdout = $stdout
         original_stderr = $stderr
         $stdout = captured
         $stderr = captured
 
-        town = Town.new(town_name, town_size, town_var)
+        town = Town.new(town_name, town_size, town_var) do |current, total|
+          # Update progress display
+          progress_pct = (current.to_f / total * 100).to_i
+          progress_msg = base_message
+          progress_msg += "Progress: House #{current} of #{total} (#{progress_pct}%)\n"
+
+          # Add a simple progress bar
+          bar_width = 40
+          filled = (bar_width * current / total).to_i
+          progress_msg += "[" + "#" * filled + "-" * (bar_width - filled) + "]\n"
+
+          @content.text = progress_msg
+          @content.refresh
+        end
 
         $stdout = original_stdout
         $stderr = original_stderr
