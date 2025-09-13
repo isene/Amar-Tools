@@ -2072,60 +2072,77 @@ def generate_town_ui
     output = ""
 
     begin
-      # Show progress header
+      # Show progress header with colors
       content_width = @cols - 35
-      output = "GENERATING TOWN\n"
-      output += "─" * content_width + "\n\n"
-      output += "Name: #{town_name.empty? ? "Random" : town_name}\n"
-      output += "Houses: #{town_size}\n"
-      output += "Variation: #{["Only humans", "Few non-humans", "Several non-humans",
-                               "Crazy place", "Only Dwarves", "Only Elves",
-                               "Only Lizardfolk"][town_var]}\n\n"
+      output = colorize_output("GENERATING TOWN", :header) + "\n"
+      output += colorize_output("─" * content_width, :header) + "\n\n"
+      output += colorize_output("Name: ", :label) + colorize_output(town_name.empty? ? "Random" : town_name, :value) + "\n"
+      output += colorize_output("Houses: ", :label) + colorize_output(town_size.to_s, :value) + "\n"
+      variation_names = ["Only humans", "Few non-humans", "Several non-humans",
+                        "Crazy place", "Only Dwarves", "Only Elves",
+                        "Only Lizardfolk"]
+      output += colorize_output("Variation: ", :label) + colorize_output(variation_names[town_var], :value) + "\n\n"
+
+      # Store the base output for progress updates
+      base_output = output
+      ui_ref = self  # Store reference to self for the custom stdout
+
+      # Show initial state
+      output = base_output + colorize_output("Status: ", :label) + "Starting generation...\n"
       show_content(output)
 
-      # Capture progress output
-      progress_output = output
-      house_count = 0
-
-      # Create custom stdout to capture house progress
+      # Create a StringIO-based stdout that captures house progress
       original_stdout = $stdout
-      progress_capture = []
+      house_count = 0
+      last_update = Time.now
 
-      $stdout = Class.new do
-        def initialize(capture_array, parent_ui, base_output, total_houses)
-          @capture = capture_array
-          @parent_ui = parent_ui
-          @base_output = base_output
-          @total_houses = total_houses
-        end
+      # Use StringIO as base and extend it
+      $stdout = StringIO.new
+      class << $stdout
+        attr_accessor :ui, :base_output, :total_houses, :house_count, :last_update
 
-        def puts(str)
+        alias_method :original_puts, :puts
+
+        def puts(str = "")
           if str && str.to_s.match(/House (\d+)/)
-            house_num = $1.to_i
-            @capture << house_num
-            # Update display with house progress
-            current_output = @base_output.dup
-            current_output += "Generating house #{house_num} of #{@total_houses}...\n"
-            @parent_ui.show_content(current_output)
+            @house_count = $1.to_i
+            # Update display every few houses or every 0.1 seconds to avoid too many refreshes
+            now = Time.now
+            if @house_count % 5 == 0 || @house_count == @total_houses || (now - @last_update) > 0.1
+              progress_output = @base_output
+              progress_output += @ui.colorize_output("Progress: ", :label)
+              progress_output += "Generating house " + @ui.colorize_output(@house_count.to_s, :success)
+              progress_output += " of " + @ui.colorize_output(@total_houses.to_s, :value) + "...\n"
+              @ui.show_content(progress_output)
+              @last_update = now
+            end
           end
+          # Call original puts to maintain StringIO functionality
+          original_puts(str)
         end
+      end
 
-        def respond_to?(method)
-          [:puts, :write].include?(method) || super
-        end
+      $stdout.ui = self
+      $stdout.base_output = base_output
+      $stdout.total_houses = town_size
+      $stdout.house_count = 0
+      $stdout.last_update = Time.now
 
-        def write(str)
-          str.to_s.length
-        end
-      end.new(progress_capture, self, progress_output, town_size)
-
-      # Generate the town
+      # Generate the town - this will trigger progress updates via puts
       town = Town.new(town_name, town_size, town_var)
 
+      # Get the final house count
+      final_house_count = $stdout.house_count || town.town.size
+
+      # Restore stdout
       $stdout = original_stdout
 
-      progress_output += "\n✓ Town generated successfully! Created #{progress_capture.last || 0} houses.\n"
-      show_content(progress_output)
+      # Show completion with colors
+      output = base_output
+      output += colorize_output("Status: ", :label) + colorize_output("✓ Complete!", :success) + "\n\n"
+      output += "Generated " + colorize_output(final_house_count.to_s, :value) + " houses\n"
+      output += "Total residents: " + colorize_output(town.town_residents.to_s, :value) + "\n"
+      show_content(output)
       sleep(0.5)
 
     rescue => e
