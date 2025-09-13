@@ -124,8 +124,7 @@ class Town
 	end
 
 	# The initializing method - generates houses
-	def initialize(town_name, town_size, town_var, &progress_callback)
-		@progress_callback = progress_callback
+	def initialize(town_name, town_size, town_var)
 
 		@town_size = town_size.to_i
 		@town_var  = town_var.to_i
@@ -219,10 +218,8 @@ class Town
 				((town_size / 40) + 1).to_i.times {add_resident(2)} if /Stronghold/ =~ @town[@h_index][0] 
 				(rand(h_type[6]) + rand(h_type[6])).to_i.times {add_resident(3)}
 				@h_index += 1
-				# Output progress for monitoring
+				# Output progress for monitoring - EXACTLY like CLI
 				$stdout.puts "House #{@h_index}" if defined?($stdout) && $stdout.respond_to?(:puts)
-				# Call progress callback if provided
-				@progress_callback.call(@h_index, town_size) if @progress_callback
 				break if @h_index > town_size
 			end
 			break if @h_index > town_size

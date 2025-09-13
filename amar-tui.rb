@@ -2067,62 +2067,47 @@ def generate_town_ui
   town_var = 6 if town_var > 6
   
   begin
-    # Show initial generating message
-    base_message = "GENERATING TOWN\n" + "=" * 40 + "\n\n"
-    base_message += "Name: #{town_name.empty? ? 'Random' : town_name}\n"
-    base_message += "Size: #{town_size} houses\n"
-    base_message += "Variation: #{['Only humans', 'Few non-humans', 'Several non-humans',
-                                    'Crazy place', 'Only Dwarves', 'Only Elves',
-                                    'Only Lizardfolk'][town_var]}\n\n"
-    @content.text = base_message + "Initializing...\n"
+    # Show initial message - EXACTLY like CLI
+    output = "GENERATING TOWN\n" + "=" * 40 + "\n\n"
+    output += "Name: #{town_name.empty? ? 'Random' : town_name}\n"
+    output += "Size: #{town_size} houses\n"
+    output += "Variation: #{['Only humans', 'Few non-humans', 'Several non-humans',
+                            'Crazy place', 'Only Dwarves', 'Only Elves',
+                            'Only Lizardfolk'][town_var]}\n\n"
+    @content.text = output
     @content.refresh
 
-    # Generate the town with progress callback
+    # Generate the town - capture stdout EXACTLY like CLI does
     captured = StringIO.new
     original_stdout = $stdout
-    original_stderr = $stderr
     $stdout = captured
-    $stderr = captured
 
-    last_update = Time.now
-    town = Town.new(town_name, town_size, town_var) do |current, total|
-      # Update progress display (throttle updates to avoid overwhelming the UI)
-      now = Time.now
-      if current == 1 || current == total || (now - last_update) > 0.1
-        progress_pct = (current.to_f / total * 100).to_i
-        progress_msg = base_message
-        progress_msg += "Progress: House #{current} of #{total} (#{progress_pct}%)\n"
-
-        # Add a simple progress bar
-        bar_width = 40
-        filled = (bar_width * current / total).to_i
-        progress_msg += "[" + "#" * filled + "-" * (bar_width - filled) + "]\n"
-
-        @content.text = progress_msg
-        @content.refresh
-        last_update = now
-      end
-    end
+    town = Town.new(town_name, town_size, town_var)
 
     $stdout = original_stdout
-    $stderr = original_stderr
 
-    # Now get the actual town output - capture everything
+    # Show the captured progress
+    progress = captured.string
+    if progress && !progress.empty?
+      output += "Progress:\n" + progress
+      @content.text = output
+      @content.refresh
+    end
+
+    # Suppress file saving output
     output_io = StringIO.new
     original_editor = $editor if defined?($editor)
     $stdout = output_io
-    $stderr = output_io
-    $editor = "/bin/true"  # Use /bin/true instead of echo to avoid output
+    $editor = "/bin/true"  # Use /bin/true to avoid editor output
 
     # Ensure saved directory exists
     saved_dir = File.join($pgmdir, "saved")
     FileUtils.mkdir_p(saved_dir) unless Dir.exist?(saved_dir)
 
-    # Call town_output which will save files
-    town_output(town, "tui")  # Use "tui" instead of "cli" to avoid editor
+    # Call town_output to save files (suppress output)
+    town_output(town, "tui")
 
     $stdout = original_stdout
-    $stderr = original_stderr
     $editor = original_editor if original_editor
 
     # Build the output from the town object directly
@@ -2190,39 +2175,14 @@ def generate_town_ui
         @footer.say(" Re-generating town with #{town_size} houses...".ljust(@cols))
         @footer.refresh
 
-        # Generate new town with progress
-        base_message = "RE-GENERATING TOWN\n" + "=" * 40 + "\n\n"
-        base_message += "Name: #{town_name.empty? ? 'Random' : town_name}\n"
-        base_message += "Size: #{town_size} houses\n\n"
-
+        # Generate new town - EXACTLY like CLI
         captured = StringIO.new
         original_stdout = $stdout
-        original_stderr = $stderr
         $stdout = captured
-        $stderr = captured
 
-        last_update = Time.now
-        town = Town.new(town_name, town_size, town_var) do |current, total|
-          # Update progress display (throttle updates)
-          now = Time.now
-          if current == 1 || current == total || (now - last_update) > 0.1
-            progress_pct = (current.to_f / total * 100).to_i
-            progress_msg = base_message
-            progress_msg += "Progress: House #{current} of #{total} (#{progress_pct}%)\n"
-
-            # Add a simple progress bar
-            bar_width = 40
-            filled = (bar_width * current / total).to_i
-            progress_msg += "[" + "#" * filled + "-" * (bar_width - filled) + "]\n"
-
-            @content.text = progress_msg
-            @content.refresh
-            last_update = now
-          end
-        end
+        town = Town.new(town_name, town_size, town_var)
 
         $stdout = original_stdout
-        $stderr = original_stderr
 
         # Build the output from the town object directly
         output = ""
