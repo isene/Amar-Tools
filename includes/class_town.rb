@@ -125,6 +125,7 @@ class Town
 
 	# The initializing method - generates houses
 	def initialize(town_name, town_size, town_var, &progress_callback)
+		@progress_callback = progress_callback
 
 		@town_size = town_size.to_i
 		@town_var  = town_var.to_i
@@ -221,7 +222,7 @@ class Town
 				# Output progress for monitoring
 				$stdout.puts "House #{@h_index}" if defined?($stdout) && $stdout.respond_to?(:puts)
 				# Call progress callback if provided
-				progress_callback.call(@h_index, town_size) if progress_callback
+				@progress_callback.call(@h_index, town_size) if @progress_callback
 				break if @h_index > town_size
 			end
 			break if @h_index > town_size

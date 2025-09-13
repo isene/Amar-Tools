@@ -2084,19 +2084,24 @@ def generate_town_ui
     $stdout = captured
     $stderr = captured
 
+    last_update = Time.now
     town = Town.new(town_name, town_size, town_var) do |current, total|
-      # Update progress display
-      progress_pct = (current.to_f / total * 100).to_i
-      progress_msg = base_message
-      progress_msg += "Progress: House #{current} of #{total} (#{progress_pct}%)\n"
+      # Update progress display (throttle updates to avoid overwhelming the UI)
+      now = Time.now
+      if current == 1 || current == total || (now - last_update) > 0.1
+        progress_pct = (current.to_f / total * 100).to_i
+        progress_msg = base_message
+        progress_msg += "Progress: House #{current} of #{total} (#{progress_pct}%)\n"
 
-      # Add a simple progress bar
-      bar_width = 40
-      filled = (bar_width * current / total).to_i
-      progress_msg += "[" + "#" * filled + "-" * (bar_width - filled) + "]\n"
+        # Add a simple progress bar
+        bar_width = 40
+        filled = (bar_width * current / total).to_i
+        progress_msg += "[" + "#" * filled + "-" * (bar_width - filled) + "]\n"
 
-      @content.text = progress_msg
-      @content.refresh
+        @content.text = progress_msg
+        @content.refresh
+        last_update = now
+      end
     end
 
     $stdout = original_stdout
@@ -2196,19 +2201,24 @@ def generate_town_ui
         $stdout = captured
         $stderr = captured
 
+        last_update = Time.now
         town = Town.new(town_name, town_size, town_var) do |current, total|
-          # Update progress display
-          progress_pct = (current.to_f / total * 100).to_i
-          progress_msg = base_message
-          progress_msg += "Progress: House #{current} of #{total} (#{progress_pct}%)\n"
+          # Update progress display (throttle updates)
+          now = Time.now
+          if current == 1 || current == total || (now - last_update) > 0.1
+            progress_pct = (current.to_f / total * 100).to_i
+            progress_msg = base_message
+            progress_msg += "Progress: House #{current} of #{total} (#{progress_pct}%)\n"
 
-          # Add a simple progress bar
-          bar_width = 40
-          filled = (bar_width * current / total).to_i
-          progress_msg += "[" + "#" * filled + "-" * (bar_width - filled) + "]\n"
+            # Add a simple progress bar
+            bar_width = 40
+            filled = (bar_width * current / total).to_i
+            progress_msg += "[" + "#" * filled + "-" * (bar_width - filled) + "]\n"
 
-          @content.text = progress_msg
-          @content.refresh
+            @content.text = progress_msg
+            @content.refresh
+            last_update = now
+          end
         end
 
         $stdout = original_stdout
