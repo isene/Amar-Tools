@@ -2182,14 +2182,14 @@ def generate_town_ui
         # Simply set the text directly
         @content.text = output
         @content.refresh
-          
-          # Restore navigation help
-          @footer.clear
-          @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-          @footer.refresh
-        rescue => e
-          show_content("Error re-rolling town: #{e.message}")
-        end
+
+        # Restore navigation help
+        @footer.clear
+        @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+        @footer.refresh
+      rescue => e
+        show_content("Error re-rolling town: #{e.message}")
+      end
       when "y"
         # Copy to clipboard
         copy_to_clipboard(@content.text)
@@ -2478,17 +2478,4 @@ if file_without_ext == script_without_ext
 else
   debug "Not running as main script, skipping startup"
   debug "This happens when __FILE__ != File.expand_path($0)"
-end
-
-# End of top-level error catching
-rescue => e
-  if $debug_log
-    debug "FATAL TOP-LEVEL ERROR: #{e.message}"
-    debug "Backtrace:"
-    debug e.backtrace.join("\n") if e.backtrace
-  end
-  puts "FATAL ERROR: #{e.message}"
-  puts "Check /tmp/amar_tui_debug.log for details"
-  puts e.backtrace.first(5).join("\n") if e.backtrace
-  exit 1
 end
