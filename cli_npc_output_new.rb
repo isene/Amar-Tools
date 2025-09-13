@@ -13,20 +13,22 @@ rescue LoadError
   end
 end
 
-def npc_output_new(n, cli)
+def npc_output_new(n, cli, custom_width = nil)
   # Clear screen before displaying character (only for true CLI mode)
   if cli == "cli_direct"
     system("clear") || system("cls")  # Works on both Unix and Windows
   end
-  
+
   f = ""
-  
+
   # Use UTF-8 box drawing characters (no side borders for easy copy-paste)
   # Adjust width based on output mode
-  if cli == "cli_direct"
+  if custom_width
+    width = custom_width
+  elsif cli == "cli_direct"
     width = 120
   else
-    width = 80  # For TUI, use narrower width
+    width = 80  # Default for other modes
   end
   
   # Define colors if terminal output

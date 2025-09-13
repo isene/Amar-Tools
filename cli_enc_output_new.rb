@@ -13,16 +13,18 @@ rescue LoadError
   end
 end
 
-def enc_output_new(e, cli)
+def enc_output_new(e, cli, custom_width = nil)
   # Clear screen before output if direct CLI mode
   if cli == "cli_direct"
     system("clear") || system("cls")
   end
-  
+
   f = ""
-  
+
   # Get terminal width or use default
-  if cli == "cli_direct"
+  if custom_width
+    width = custom_width
+  elsif cli == "cli_direct"
     width = `tput cols`.to_i rescue 120
     width = 120 if width < 120  # Minimum width
   elsif cli == "cli"

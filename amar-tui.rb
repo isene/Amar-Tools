@@ -492,11 +492,12 @@ def convert_ansi_to_rcurses(text)
 end
 
 def show_help
-  help_text = "═" * 60 + "\n"
+  content_width = @cols - 35
+  help_text = "═" * content_width + "\n"
   help_text += "AMAR RPG TOOLS - HELP\n"
-  help_text += "═" * 60 + "\n\n"
+  help_text += "═" * content_width + "\n\n"
   help_text += @help
-  help_text += "\n\n" + "─" * 60 + "\n"
+  help_text += "\n\n" + "─" * content_width + "\n"
   help_text += "SCROLLING:\n"
   help_text += "  j / DOWN    - Scroll down\n"
   help_text += "  k / UP      - Scroll up\n"
@@ -702,11 +703,12 @@ def roll_o6
     end
   end
   
-  output = colorize_output("═" * 60, :header) + "\n"
+  content_width = @cols - 35
+  output = colorize_output("═" * content_width, :header) + "\n"
   output += colorize_output("OPEN ENDED D6 ROLLS (O6)", :header) + "\n"
-  output += colorize_output("─" * 60, :header) + "\n\n"
+  output += colorize_output("─" * content_width, :header) + "\n\n"
   results.each { |r| output += "#{r}\n" }
-  output += "\n" + colorize_output("═" * 60, :header) + "\n"
+  output += "\n" + colorize_output("═" * content_width, :header) + "\n"
   output += "\nPress any key to continue..."
   
   show_content(output)
@@ -740,8 +742,10 @@ def generate_npc_new
     debug "NPC created successfully"
     
     # Generate output using exact same format as CLI with colors
-    output = npc_output_new(npc, "cli")
-    debug "NPC output generated, length: #{output.length}"
+    # Pass the content pane width for proper formatting
+    content_width = @cols - 35  # Same as content pane width
+    output = npc_output_new(npc, "cli", content_width)
+    debug "NPC output generated, length: #{output.length}, width: #{content_width}"
     debug "Contains ANSI codes: #{output.include?("\e[")}"
     
     # Display in content pane
@@ -1103,7 +1107,9 @@ def generate_encounter_new
     debug "Encounter created successfully"
     
     # Generate output using exact same format as CLI
-    output = enc_output_new(enc, "cli")
+    # Pass the content pane width for proper formatting
+    content_width = @cols - 35  # Same as content pane width
+    output = enc_output_new(enc, "cli", content_width)
     
     # Display in content pane
     show_content(output)
@@ -1243,10 +1249,11 @@ def handle_encounter_view(enc, output)
 end
 
 def format_npc_new(npc)
-  output = "═" * 60 + "\n"
+  content_width = @cols - 35
+  output = "═" * content_width + "\n"
   output += "NPC: #{npc.name} (#{npc.sex}, #{npc.age})\n"
   output += "Type: #{npc.type} | Level: #{npc.level}\n"
-  output += "─" * 60 + "\n\n"
+  output += "─" * content_width + "\n\n"
   
   # Stats
   output += "CHARACTERISTICS:\n"
@@ -1276,10 +1283,11 @@ def format_npc_new(npc)
 end
 
 def format_encounter_new(enc)
-  output = "═" * 60 + "\n"
+  content_width = @cols - 35
+  output = "═" * content_width + "\n"
   output += "ENCOUNTER: #{enc.enc_attitude}\n"
   output += "#{enc.summary}\n"
-  output += "─" * 60 + "\n\n"
+  output += "─" * content_width + "\n\n"
   
   enc.npcs.each_with_index do |npc, idx|
     output += "#{idx + 1}. #{npc.name} - #{npc.type} [Level #{npc.level}]\n"
@@ -1523,12 +1531,13 @@ end
 
 def format_monster_new(monster)
   output = ""
-  
+  content_width = @cols - 35  # Same as content pane width
+
   if @config[:color_mode]
-    output += colorize_output("═" * 60, :header) + "\n"
+    output += colorize_output("═" * content_width, :header) + "\n"
     output += colorize_output("MONSTER: ", :label) + colorize_output("#{monster.name}", :success) + colorize_output(" (Level #{monster.level})", :value) + "\n"
     output += colorize_output("Type: ", :label) + colorize_output(monster.type, :name) + "\n"
-    output += colorize_output("─" * 60, :header) + "\n\n"
+    output += colorize_output("─" * content_width, :header) + "\n\n"
     
     # Physical stats
     output += colorize_output("PHYSICAL:", :subheader) + "\n"
@@ -1561,10 +1570,10 @@ def format_monster_new(monster)
     end
   else
     # Non-colored version
-    output += "═" * 60 + "\n"
+    output += "═" * content_width + "\n"
     output += "MONSTER: #{monster.name} (Level #{monster.level})\n"
     output += "Type: #{monster.type}\n"
-    output += "─" * 60 + "\n\n"
+    output += "─" * content_width + "\n\n"
     
     # Physical stats
     output += "PHYSICAL:\n"
@@ -2180,7 +2189,8 @@ end
 def generate_name_ui
   # Use the actual name types from the $Names table
   menu_text = colorize_output("SELECT NAME TYPE:", :header) + "\n"
-  menu_text += colorize_output("─" * 60, :header) + "\n\n"
+  content_width = @cols - 35
+  menu_text += colorize_output("─" * content_width, :header) + "\n\n"
   
   $Names.each_with_index do |name_type, idx|
     menu_text += colorize_output("#{idx.to_s.rjust(2)}: ", :label) + colorize_output(name_type[0], :value) + "\n"
@@ -2210,9 +2220,10 @@ def generate_name_ui
   
   begin
     # Generate multiple names with colors using the naming function
-    output = colorize_output("═" * 60, :header) + "\n"
+    content_width = @cols - 35
+    output = colorize_output("═" * content_width, :header) + "\n"
     output += colorize_output($Names[idx][0].upcase + " NAMES", :header) + "\n"
-    output += colorize_output("─" * 60, :header) + "\n\n"
+    output += colorize_output("─" * content_width, :header) + "\n\n"
     
     # Generate 20 names of the selected type
     20.times do
@@ -2302,7 +2313,8 @@ def generate_town_relations
   saved_dir = File.join($pgmdir, "saved")
   default_file = File.join(saved_dir, "town.npc")
   
-  show_content("\nTown Relations Generator\n\n" + "─" * 60 + "\n\n")
+  content_width = @cols - 35
+  show_content("\nTown Relations Generator\n\n" + "─" * content_width + "\n\n")
   
   # Ask for town file
   show_content("Enter town file name (default is the latest town generated [town.npc]):")
@@ -2376,21 +2388,24 @@ end
 
 # AI FEATURES
 def generate_adventure_ai
-  show_content("AI Adventure Generator\n\n" + "─" * 60 + "\n\n")
+  content_width = @cols - 35
+  show_content("AI Adventure Generator\n\n" + "─" * content_width + "\n\n")
   show_content("This feature would use OpenAI to generate adventures.\n\nRequires OpenAI API key configuration.\n\nNot yet implemented in TUI version.\n\nPress any key to continue...")
   getchr
   show_content("")
 end
 
 def describe_encounter_ai
-  show_content("AI Encounter Description\n\n" + "─" * 60 + "\n\n")
+  content_width = @cols - 35
+  show_content("AI Encounter Description\n\n" + "─" * content_width + "\n\n")
   show_content("This feature would use OpenAI to describe encounters.\n\nRequires OpenAI API key configuration.\n\nNot yet implemented in TUI version.\n\nPress any key to continue...")
   getchr
   show_content("")
 end
 
 def describe_npc_ai
-  show_content("AI NPC Description\n\n" + "─" * 60 + "\n\n")
+  content_width = @cols - 35
+  show_content("AI NPC Description\n\n" + "─" * content_width + "\n\n")
   show_content("This feature would use OpenAI to describe NPCs.\n\nRequires OpenAI API key configuration.\n\nNot yet implemented in TUI version.\n\nPress any key to continue...")
   getchr
   show_content("")
