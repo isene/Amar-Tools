@@ -2068,44 +2068,63 @@ def generate_town_ui
   
   begin
     # Show simple generating message
-    show_content("Generating town...\n\nThis may take a moment for larger towns.")
+    @content.text = "Generating town...\n\nThis may take a moment for larger towns."
+    @content.refresh
 
-    # Generate the town - capture progress
+    # Generate the town - capture ALL output including stderr
     captured = StringIO.new
     original_stdout = $stdout
+    original_stderr = $stderr
     $stdout = captured
+    $stderr = captured
 
     town = Town.new(town_name, town_size, town_var)
 
     $stdout = original_stdout
+    $stderr = original_stderr
 
-    # Get progress lines
-    progress_lines = captured.string.lines.select { |l| l =~ /House \d+/ }
-
-    # Now get the actual town output
+    # Now get the actual town output - capture everything
     output_io = StringIO.new
     original_editor = $editor if defined?($editor)
     $stdout = output_io
-    $editor = "echo"  # Prevent editor from opening
+    $stderr = output_io
+    $editor = "/bin/true"  # Use /bin/true instead of echo to avoid output
 
     # Ensure saved directory exists
     saved_dir = File.join($pgmdir, "saved")
     FileUtils.mkdir_p(saved_dir) unless Dir.exist?(saved_dir)
 
-    town_output(town, "cli")
+    # Call town_output which will save files
+    town_output(town, "tui")  # Use "tui" instead of "cli" to avoid editor
 
     $stdout = original_stdout
+    $stderr = original_stderr
     $editor = original_editor if original_editor
 
-    # Get the generated file content
-    town_file = File.join(saved_dir, "town.npc")
-    if File.exist?(town_file)
-      output = File.read(town_file)
+    # Build the output from the town object directly
+    output = ""
+    case town.town_size
+    when 1..4
+      output += "Castle"
+    when 5..25
+      output += "Village"
+    when 26..99
+      output += "Town"
     else
-      output = output_io.string
+      output += "City"
+    end
+    output += " Of #{town.town_name}"
+    output += " - Houses: #{town.town.size} - Residents: #{town.town_residents}\n\n"
+
+    town.town.each_with_index do |house, idx|
+      output += "##{idx}: #{house[0]}\n"
+      house[1..-1].each do |resident|
+        output += "   #{resident}\n"
+      end
+      output += "\n"
     end
 
-    # Simply display the output as plain text - no complex formatting
+    # Set the text directly to the content pane
     @content.text = output
     @content.refresh
   rescue => e
@@ -2147,39 +2166,42 @@ def generate_town_ui
         @footer.say(" Re-generating town with #{town_size} houses...".ljust(@cols))
         @footer.refresh
 
-        # Generate new town
+        # Generate new town - capture ALL output
         captured = StringIO.new
         original_stdout = $stdout
+        original_stderr = $stderr
         $stdout = captured
+        $stderr = captured
 
         town = Town.new(town_name, town_size, town_var)
 
         $stdout = original_stdout
+        $stderr = original_stderr
 
-        # Get new output
-        output_io = StringIO.new
-        original_editor = $editor if defined?($editor)
-        $stdout = output_io
-        $editor = "echo"  # Prevent editor from opening
-
-        # Ensure saved directory exists
-        saved_dir = File.join($pgmdir, "saved")
-        FileUtils.mkdir_p(saved_dir) unless Dir.exist?(saved_dir)
-
-        town_output(town, "cli")
-
-        $stdout = original_stdout
-        $editor = original_editor if original_editor
-
-        # Get the generated file content
-        town_file = File.join(saved_dir, "town.npc")
-        if File.exist?(town_file)
-          output = File.read(town_file)
+        # Build the output from the town object directly
+        output = ""
+        case town.town_size
+        when 1..4
+          output += "Castle"
+        when 5..25
+          output += "Village"
+        when 26..99
+          output += "Town"
         else
-          output = output_io.string
+          output += "City"
+        end
+        output += " Of #{town.town_name}"
+        output += " - Houses: #{town.town.size} - Residents: #{town.town_residents}\n\n"
+
+        town.town.each_with_index do |house, idx|
+          output += "##{idx}: #{house[0]}\n"
+          house[1..-1].each do |resident|
+            output += "   #{resident}\n"
+          end
+          output += "\n"
         end
 
-        # Simply set the text directly
+        # Set the text directly to the content pane
         @content.text = output
         @content.refresh
 
