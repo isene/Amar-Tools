@@ -1577,7 +1577,45 @@ def format_monster_new(monster)
       output += colorize_output(attack_name, :value)
       output += colorize_output("#{total.to_s.rjust(5)}  #{init.to_s.rjust(4)}  #{off.to_s.rjust(3)}  #{def_val.to_s.rjust(3)}  #{damage.to_s.rjust(6)}", :value) + "\n"
     end
-    
+
+    # Skills
+    output += "\n" + colorize_output("SKILLS:", :subheader) + "\n"
+
+    # Athletics skills
+    athletics_skills = []
+    if monster.tiers["BODY"]["Athletics"] && monster.tiers["BODY"]["Athletics"]["skills"]
+      monster.tiers["BODY"]["Athletics"]["skills"].each do |skill, value|
+        next if value == 0
+        total = monster.get_skill_total("BODY", "Athletics", skill)
+        athletics_skills << "#{skill}: #{total}"
+      end
+    end
+
+    # Awareness skills
+    awareness_skills = []
+    if monster.tiers["MIND"]["Awareness"] && monster.tiers["MIND"]["Awareness"]["skills"]
+      monster.tiers["MIND"]["Awareness"]["skills"].each do |skill, value|
+        next if value == 0
+        total = monster.get_skill_total("MIND", "Awareness", skill)
+        awareness_skills << "#{skill}: #{total}"
+      end
+    end
+
+    # Display skills in two columns
+    max_lines = [athletics_skills.length, awareness_skills.length].max
+    max_lines.times do |i|
+      line = "  "
+      if athletics_skills[i]
+        line += colorize_output(athletics_skills[i].ljust(30), :value)
+      else
+        line += " " * 30
+      end
+      if awareness_skills[i]
+        line += colorize_output(awareness_skills[i], :value)
+      end
+      output += line + "\n"
+    end
+
     # Spells if any
     if monster.spells && !monster.spells.empty?
       output += "\n" + colorize_output("SPELLS:", :subheader) + "\n"
@@ -1630,7 +1668,39 @@ def format_monster_new(monster)
 
       output += "#{attack_name} #{total.to_s.rjust(5)}  #{init.to_s.rjust(4)}  #{off.to_s.rjust(3)}  #{def_val.to_s.rjust(3)}  #{damage.to_s.rjust(6)}\n"
     end
-    
+
+    # Skills
+    output += "\nSKILLS:\n"
+
+    # Athletics skills
+    athletics_skills = []
+    if monster.tiers["BODY"]["Athletics"] && monster.tiers["BODY"]["Athletics"]["skills"]
+      monster.tiers["BODY"]["Athletics"]["skills"].each do |skill, value|
+        next if value == 0
+        total = monster.get_skill_total("BODY", "Athletics", skill)
+        athletics_skills << "#{skill}: #{total}"
+      end
+    end
+
+    # Awareness skills
+    awareness_skills = []
+    if monster.tiers["MIND"]["Awareness"] && monster.tiers["MIND"]["Awareness"]["skills"]
+      monster.tiers["MIND"]["Awareness"]["skills"].each do |skill, value|
+        next if value == 0
+        total = monster.get_skill_total("MIND", "Awareness", skill)
+        awareness_skills << "#{skill}: #{total}"
+      end
+    end
+
+    # Display skills in two columns
+    max_lines = [athletics_skills.length, awareness_skills.length].max
+    max_lines.times do |i|
+      line = "  "
+      line += athletics_skills[i] ? athletics_skills[i].ljust(30) : " " * 30
+      line += awareness_skills[i] || ""
+      output += line + "\n"
+    end
+
     # Spells if any
     if monster.spells && !monster.spells.empty?
       output += "\nSPELLS:\n"

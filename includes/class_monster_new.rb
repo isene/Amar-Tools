@@ -56,24 +56,28 @@ class MonsterNew
           "skills" => {}
         },
         "Athletics" => {
-          "level" => stats["base_body"] - 1,
+          "level" => stats["base_body"] + rand(-1..1),
           "skills" => {
-            "Dodge" => rand(1..3),
-            "Running" => rand(0..2),
-            "Move Quietly" => rand(0..2),
-            "Hide" => rand(0..2)
+            "Dodge" => @level + rand(0..2),
+            "Running" => @level + rand(-1..1),
+            "Move Quietly" => @level + rand(0..2),
+            "Hide" => @level + rand(0..2),
+            "Climbing" => rand(0..2),
+            "Swimming" => rand(0..1)
           }
         }
       },
       "MIND" => {
         "level" => stats["base_mind"] + (@level / 3),
         "Intelligence" => { "level" => stats["base_mind"] },
-        "Awareness" => { 
+        "Awareness" => {
           "level" => stats["base_mind"] + rand(0..1),
           "skills" => {
-            "Reaction speed" => rand(0..2),
-            "Tracking" => stats["skills"].include?("Tracking") ? rand(2..4) : 0,
-            "Alertness" => rand(0..2)
+            "Reaction speed" => @level + rand(0..2),
+            "Tracking" => stats["skills"].include?("Tracking") ? @level + rand(1..3) : rand(0..1),
+            "Alertness" => @level + rand(1..3),
+            "Search" => @level + rand(0..1),
+            "Sense ambush" => @level + rand(0..2)
           }
         }
       },
