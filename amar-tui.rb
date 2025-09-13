@@ -2067,32 +2067,89 @@ def generate_town_ui
   town_var = 6 if town_var > 6
   
   begin
-    # Show initial message - EXACTLY like CLI
-    output = "GENERATING TOWN\n" + "=" * 40 + "\n\n"
-    output += "Name: #{town_name.empty? ? 'Random' : town_name}\n"
-    output += "Size: #{town_size} houses\n"
-    output += "Variation: #{['Only humans', 'Few non-humans', 'Several non-humans',
-                            'Crazy place', 'Only Dwarves', 'Only Elves',
-                            'Only Lizardfolk'][town_var]}\n\n"
+    # Show initial message with colors
+    content_width = @cols - 35
+    output = ""
+    output += colorize_output("GENERATING TOWN", :header) + "\n"
+    output += colorize_output("=" * content_width, :header) + "\n\n"
+    output += colorize_output("Name: ", :label) + colorize_output(town_name.empty? ? 'Random' : town_name, :value) + "\n"
+    output += colorize_output("Size: ", :label) + colorize_output("#{town_size} houses", :value) + "\n"
+    variation_names = ['Only humans', 'Few non-humans', 'Several non-humans',
+                      'Crazy place', 'Only Dwarves', 'Only Elves', 'Only Lizardfolk']
+    output += colorize_output("Variation: ", :label) + colorize_output(variation_names[town_var], :value) + "\n\n"
+    output += colorize_output("Progress:", :label) + "\n"
+
+    base_output = output
     @content.text = output
     @content.refresh
 
-    # Generate the town - capture stdout EXACTLY like CLI does
-    captured = StringIO.new
+    # Generate the town with real-time progress
+    progress_lines = []
+
+    # Create a custom IO that captures and displays progress in real-time
     original_stdout = $stdout
-    $stdout = captured
+    $stdout = Object.new
+    def $stdout.puts(str)
+      if str && str =~ /House (\d+)/
+        # Store for later and update display
+        @parent_ui ||= ObjectSpace.each_object(self.class).first
+        house_num = $1
+        # We need access to the TUI instance to update display
+        # This is a bit hacky but works
+        Thread.current[:house_progress] ||= []
+        Thread.current[:house_progress] << str
+      end
+    end
+    def $stdout.write(str); str.to_s.length; end
+    def $stdout.respond_to?(m); [:puts, :write].include?(m) || super; end
+
+    # Store reference to self for the stdout to use
+    Thread.current[:tui_instance] = self
+    Thread.current[:base_output] = base_output
+    Thread.current[:house_progress] = []
+
+    # Redefine stdout.puts to update display
+    $stdout = Object.new
+    class << $stdout
+      def puts(str)
+        if str && str =~ /House (\d+)/
+          Thread.current[:house_progress] << str
+          # Update display
+          tui = Thread.current[:tui_instance]
+          base = Thread.current[:base_output]
+          if tui && base
+            output = base
+            Thread.current[:house_progress].each do |line|
+              output += "  " + tui.colorize_output(line.strip, :success) + "\n"
+            end
+            tui.instance_eval do
+              @content.text = output
+              @content.refresh
+            end
+          end
+        end
+      end
+      def write(str); str.to_s.length; end
+      def respond_to?(m); [:puts, :write].include?(m) || super; end
+    end
 
     town = Town.new(town_name, town_size, town_var)
 
     $stdout = original_stdout
 
-    # Show the captured progress
-    progress = captured.string
-    if progress && !progress.empty?
-      output += "Progress:\n" + progress
-      @content.text = output
-      @content.refresh
+    # Final display with all progress
+    output = base_output
+    Thread.current[:house_progress].each do |line|
+      output += "  " + colorize_output(line.strip, :success) + "\n"
     end
+    output += "\n" + colorize_output("Generation complete!", :success) + "\n"
+    @content.text = output
+    @content.refresh
+
+    # Clean up thread variables
+    Thread.current[:tui_instance] = nil
+    Thread.current[:base_output] = nil
+    Thread.current[:house_progress] = nil
 
     # Suppress file saving output
     output_io = StringIO.new
@@ -2110,25 +2167,37 @@ def generate_town_ui
     $stdout = original_stdout
     $editor = original_editor if original_editor
 
-    # Build the output from the town object directly
+    # Build the output with colors
     output = ""
-    case town.town_size
-    when 1..4
-      output += "Castle"
-    when 5..25
-      output += "Village"
-    when 26..99
-      output += "Town"
-    else
-      output += "City"
-    end
-    output += " Of #{town.town_name}"
-    output += " - Houses: #{town.town.size} - Residents: #{town.town_residents}\n\n"
+    town_type = case town.town_size
+                when 1..4 then "Castle"
+                when 5..25 then "Village"
+                when 26..99 then "Town"
+                else "City"
+                end
+
+    output += colorize_output(town_type.upcase, :header) + " OF " + colorize_output(town.town_name.upcase, :success) + "\n"
+    output += colorize_output("=" * (@cols - 35), :header) + "\n"
+    output += colorize_output("Houses: ", :label) + colorize_output(town.town.size.to_s, :value)
+    output += "  " + colorize_output("Residents: ", :label) + colorize_output(town.town_residents.to_s, :value) + "\n\n"
 
     town.town.each_with_index do |house, idx|
-      output += "##{idx}: #{house[0]}\n"
+      output += colorize_output("##{idx}: #{house[0]}", :subheader) + "\n"
       house[1..-1].each do |resident|
-        output += "   #{resident}\n"
+        if resident =~ /(.+?) \(([MF] \d+)\) (.+?) \[(\d+)\] (.+)/
+          name = $1
+          details = $2
+          race = $3
+          level = $4
+          personality = $5
+          output += "  " + colorize_output(name, :name)
+          output += " (" + colorize_output(details, :label) + ")"
+          output += " " + race
+          output += " [" + colorize_output(level, :dice) + "]"
+          output += " " + colorize_output(personality, :label) + "\n"
+        else
+          output += "   #{resident}\n"
+        end
       end
       output += "\n"
     end
@@ -2175,7 +2244,11 @@ def generate_town_ui
         @footer.say(" Re-generating town with #{town_size} houses...".ljust(@cols))
         @footer.refresh
 
-        # Generate new town - EXACTLY like CLI
+        # Show re-generating message
+        @content.text = colorize_output("Re-generating town...", :label) + "\n"
+        @content.refresh
+
+        # Generate new town
         captured = StringIO.new
         original_stdout = $stdout
         $stdout = captured
@@ -2184,25 +2257,37 @@ def generate_town_ui
 
         $stdout = original_stdout
 
-        # Build the output from the town object directly
+        # Build the output with colors
         output = ""
-        case town.town_size
-        when 1..4
-          output += "Castle"
-        when 5..25
-          output += "Village"
-        when 26..99
-          output += "Town"
-        else
-          output += "City"
-        end
-        output += " Of #{town.town_name}"
-        output += " - Houses: #{town.town.size} - Residents: #{town.town_residents}\n\n"
+        town_type = case town.town_size
+                    when 1..4 then "Castle"
+                    when 5..25 then "Village"
+                    when 26..99 then "Town"
+                    else "City"
+                    end
+
+        output += colorize_output(town_type.upcase, :header) + " OF " + colorize_output(town.town_name.upcase, :success) + "\n"
+        output += colorize_output("=" * (@cols - 35), :header) + "\n"
+        output += colorize_output("Houses: ", :label) + colorize_output(town.town.size.to_s, :value)
+        output += "  " + colorize_output("Residents: ", :label) + colorize_output(town.town_residents.to_s, :value) + "\n\n"
 
         town.town.each_with_index do |house, idx|
-          output += "##{idx}: #{house[0]}\n"
+          output += colorize_output("##{idx}: #{house[0]}", :subheader) + "\n"
           house[1..-1].each do |resident|
-            output += "   #{resident}\n"
+            if resident =~ /(.+?) \(([MF] \d+)\) (.+?) \[(\d+)\] (.+)/
+              name = $1
+              details = $2
+              race = $3
+              level = $4
+              personality = $5
+              output += "  " + colorize_output(name, :name)
+              output += " (" + colorize_output(details, :label) + ")"
+              output += " " + race
+              output += " [" + colorize_output(level, :dice) + "]"
+              output += " " + colorize_output(personality, :label) + "\n"
+            else
+              output += "   #{resident}\n"
+            end
           end
           output += "\n"
         end
