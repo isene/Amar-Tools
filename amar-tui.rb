@@ -493,9 +493,8 @@ end
 
 def show_help
   content_width = @cols - 35
-  help_text = "═" * content_width + "\n"
-  help_text += "AMAR RPG TOOLS - HELP\n"
-  help_text += "═" * content_width + "\n\n"
+  help_text = "AMAR RPG TOOLS - HELP\n"
+  help_text += "─" * content_width + "\n\n"
   help_text += @help
   help_text += "\n\n" + "─" * content_width + "\n"
   help_text += "SCROLLING:\n"
@@ -704,11 +703,9 @@ def roll_o6
   end
   
   content_width = @cols - 35
-  output = colorize_output("═" * content_width, :header) + "\n"
-  output += colorize_output("OPEN ENDED D6 ROLLS (O6)", :header) + "\n"
+  output = colorize_output("OPEN ENDED D6 ROLLS (O6)", :header) + "\n"
   output += colorize_output("─" * content_width, :header) + "\n\n"
   results.each { |r| output += "#{r}\n" }
-  output += "\n" + colorize_output("═" * content_width, :header) + "\n"
   output += "\nPress any key to continue..."
   
   show_content(output)
@@ -1250,8 +1247,7 @@ end
 
 def format_npc_new(npc)
   content_width = @cols - 35
-  output = "═" * content_width + "\n"
-  output += "NPC: #{npc.name} (#{npc.sex}, #{npc.age})\n"
+  output = "NPC: #{npc.name} (#{npc.sex}, #{npc.age})\n"
   output += "Type: #{npc.type} | Level: #{npc.level}\n"
   output += "─" * content_width + "\n\n"
   
@@ -1284,8 +1280,7 @@ end
 
 def format_encounter_new(enc)
   content_width = @cols - 35
-  output = "═" * content_width + "\n"
-  output += "ENCOUNTER: #{enc.enc_attitude}\n"
+  output = "ENCOUNTER: #{enc.enc_attitude}\n"
   output += "#{enc.summary}\n"
   output += "─" * content_width + "\n\n"
   
@@ -1534,7 +1529,6 @@ def format_monster_new(monster)
   content_width = @cols - 35  # Same as content pane width
 
   if @config[:color_mode]
-    output += colorize_output("═" * content_width, :header) + "\n"
     output += colorize_output("MONSTER: ", :label) + colorize_output("#{monster.name}", :success) + colorize_output(" (Level #{monster.level})", :value) + "\n"
     output += colorize_output("Type: ", :label) + colorize_output(monster.type, :name) + "\n"
     output += colorize_output("─" * content_width, :header) + "\n\n"
@@ -1570,7 +1564,6 @@ def format_monster_new(monster)
     end
   else
     # Non-colored version
-    output += "═" * content_width + "\n"
     output += "MONSTER: #{monster.name} (Level #{monster.level})\n"
     output += "Type: #{monster.type}\n"
     output += "─" * content_width + "\n\n"
@@ -2221,8 +2214,7 @@ def generate_name_ui
   begin
     # Generate multiple names with colors using the naming function
     content_width = @cols - 35
-    output = colorize_output("═" * content_width, :header) + "\n"
-    output += colorize_output($Names[idx][0].upcase + " NAMES", :header) + "\n"
+    output = colorize_output($Names[idx][0].upcase + " NAMES", :header) + "\n"
     output += colorize_output("─" * content_width, :header) + "\n\n"
     
     # Generate 20 names of the selected type

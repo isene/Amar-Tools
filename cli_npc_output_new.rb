@@ -48,9 +48,6 @@ def npc_output_new(n, cli, custom_width = nil)
     @stat_color = @weapon_color = @spell_color = @desc_color = @reset = ""
   end
   
-  # Header (no side borders) with better alignment
-  f += "═" * width + "\n"
-  
   # Compact header: Name (sex age) H/W: height/weight with right-justified type
   name_hw_part = "#{n.name} (#{n.sex} #{n.age}) H/W: #{n.height}cm/#{n.weight}kg"
   type_part = "#{n.type} (#{n.level})"
@@ -355,9 +352,7 @@ def npc_output_new(n, cli, custom_width = nil)
       end
     end
   end
-  
-  f += "═" * width + "\n"
-  
+
   # Output handling
   if cli == "cli_direct"
     # This is the direct CLI mode - print and handle editing

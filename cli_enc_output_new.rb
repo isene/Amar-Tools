@@ -51,9 +51,6 @@ def enc_output_new(e, cli, custom_width = nil)
     @stat_color = @special_color = @name_color = @gray = @reset = ""
   end
   
-  # Header with box characters (white)
-  f += "═" * width + "\n"
-  
   # Day/Night and Terrain
   day_str = $Day == 1 ? "Day:   " : "Night: "
   terrain_str = case $Terrain
@@ -77,7 +74,6 @@ def enc_output_new(e, cli, custom_width = nil)
   # Check for no encounter
   if e.is_no_encounter?
     f += "\n#{@desc_color}NO ENCOUNTER#{@reset}\n\n"
-    f += "═" * width + "\n"
   else
     # Show attitude and summary with color based on attitude
     attitude_color = case e.enc_attitude
