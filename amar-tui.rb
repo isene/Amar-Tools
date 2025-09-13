@@ -2072,73 +2072,48 @@ def generate_town_ui
     output = ""
 
     begin
-      # Show progress header with colors
+      # Show colored header
       content_width = @cols - 35
-      base_output = colorize_output("GENERATING TOWN", :header) + "\n"
-      base_output += colorize_output("─" * content_width, :header) + "\n\n"
-      base_output += colorize_output("Name: ", :label) + colorize_output(town_name.empty? ? "Random" : town_name, :value) + "\n"
-      base_output += colorize_output("Houses: ", :label) + colorize_output(town_size.to_s, :value) + "\n"
+      output = colorize_output("GENERATING TOWN", :header) + "\n"
+      output += colorize_output("─" * content_width, :header) + "\n\n"
+      output += colorize_output("Name: ", :label) + colorize_output(town_name.empty? ? "Random" : town_name, :value) + "\n"
+      output += colorize_output("Houses: ", :label) + colorize_output(town_size.to_s, :value) + "\n"
       variation_names = ["Only humans", "Few non-humans", "Several non-humans",
                         "Crazy place", "Only Dwarves", "Only Elves",
                         "Only Lizardfolk"]
-      base_output += colorize_output("Variation: ", :label) + colorize_output(variation_names[town_var], :value) + "\n\n"
-
-      # Show initial state
-      output = base_output + colorize_output("Status: ", :label) + colorize_output("Initializing...", :value) + "\n"
+      output += colorize_output("Variation: ", :label) + colorize_output(variation_names[town_var], :value) + "\n\n"
+      output += colorize_output("Generating...", :label) + "\n"
       show_content(output)
 
-      # Create a custom IO that updates the display
-      house_count = 0
-      progress_io = StringIO.new
+      # Simple capture with StringIO
+      captured = StringIO.new
       original_stdout = $stdout
+      $stdout = captured
 
-      # Replace stdout with one that captures and shows progress
-      $stdout = Class.new(StringIO) do
-        def initialize(parent_ui, base_output, total_houses)
-          super()
-          @ui = parent_ui
-          @base = base_output
-          @total = total_houses
-          @current = 0
-        end
-
-        def puts(str = "")
-          super(str)  # Call StringIO's puts
-          if str.to_s =~ /House (\d+)/
-            @current = $1.to_i
-            # Update display with progress
-            output = @base + @ui.colorize_output("Progress: ", :label)
-            output += "House " + @ui.colorize_output(@current.to_s, :success)
-            output += " of " + @ui.colorize_output(@total.to_s, :value) + "\n"
-
-            # Add progress bar
-            progress_pct = (@current.to_f / @total * 100).to_i
-            bar_width = 30
-            filled = (bar_width * @current / @total).to_i
-            bar = "["
-            bar += @ui.colorize_output("█" * filled, :success)
-            bar += "░" * (bar_width - filled)
-            bar += "] #{progress_pct}%\n"
-            output += bar
-
-            @ui.show_content(output)
-          end
-        end
-      end.new(self, base_output, town_size)
-
-      # Generate the town with progress updates
+      # Generate the town
       town = Town.new(town_name, town_size, town_var)
 
       # Restore stdout
       $stdout = original_stdout
 
-      # Show completion
-      output = base_output
-      output += colorize_output("Status: ", :label) + colorize_output("✓ Complete!", :success) + "\n\n"
-      output += colorize_output("Generated: ", :label) + colorize_output("#{town.town.size} houses", :value) + "\n"
-      output += colorize_output("Residents: ", :label) + colorize_output("#{town.town_residents} people", :value) + "\n"
+      # Get captured progress
+      progress_lines = captured.string.lines
+      house_lines = progress_lines.select { |l| l =~ /House \d+/ }
+
+      # Show completion with captured progress
+      output += "\n" + colorize_output("Progress:", :label) + "\n"
+      house_lines.each_with_index do |line, i|
+        if line =~ /House (\d+)/
+          num = $1
+          output += "  " + colorize_output("House #{num}", :success) + "\n"
+        end
+      end
+
+      output += "\n" + colorize_output("✓ Generation Complete!", :success) + "\n\n"
+      output += colorize_output("Total houses: ", :label) + colorize_output(town.town.size.to_s, :value) + "\n"
+      output += colorize_output("Total residents: ", :label) + colorize_output(town.town_residents.to_s, :value) + "\n"
       show_content(output)
-      sleep(1)
+      sleep(0.5)
 
     rescue => e
       debug "Error generating town: #{e.message}"

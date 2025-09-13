@@ -1,13 +1,13 @@
-2025-09-13 17:41:46 +0200: Input/output error @ io_write - <STDOUT>
+2025-09-13 21:24:34 +0200: Input/output error @ io_write - <STDOUT>
 /var/lib/gems/3.3.0/gems/rcurses-6.0.2/lib/rcurses/pane.rb:212:in `write'
 /var/lib/gems/3.3.0/gems/rcurses-6.0.2/lib/rcurses/pane.rb:212:in `print'
 /var/lib/gems/3.3.0/gems/rcurses-6.0.2/lib/rcurses/pane.rb:212:in `refresh'
 /home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:378:in `show_content'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2310:in `rescue in generate_town_ui'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2399:in `rescue in generate_town_ui'
 /home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2069:in `generate_town_ui'
 /home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:665:in `execute_menu_item'
 /home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:604:in `handle_menu_navigation'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2411:in `main_loop'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2568:in `<top (required)>'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2500:in `main_loop'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2657:in `<top (required)>'
 ./amar-tui:7:in `require_relative'
 ./amar-tui:7:in `<main>'
