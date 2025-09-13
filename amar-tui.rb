@@ -2067,76 +2067,29 @@ def generate_town_ui
   town_var = 6 if town_var > 6
   
   begin
-    show_content("\nGenerating town...\n")
+    # Show generating message
+    show_content("Generating town...\n\nPlease wait...")
 
-    # Create a thread to monitor progress
-    progress_io = StringIO.new
-    original_stdout = $stdout
-    error_occurred = false
+    # Generate the town directly - exactly like CLI version
     town = nil
-
-    thread = Thread.new do
-      begin
-        $stdout = progress_io
-        town = Town.new(town_name, town_size, town_var)
-      rescue => e
-        error_occurred = true
-        debug "Error in town generation: #{e.message}"
-        debug e.backtrace.join("\n")
-      ensure
-        $stdout = original_stdout
-      end
-    end
-
-    # Monitor progress while thread is running
-    last_progress = ""
-    timeout_counter = 0
-    # Increase timeout based on town size (larger towns need more time)
-    base_timeout = 400  # 20 seconds base
-    size_timeout = town_size * 10  # Add 0.5 seconds per house
-    max_timeout = base_timeout + size_timeout
-
-    while thread.alive? && timeout_counter < max_timeout
-      current_output = progress_io.string
-      lines = current_output.split("\n")
-      if lines.last && lines.last != last_progress
-        @footer.clear
-        @footer.say(" #{lines.last}".ljust(@cols))
-        @footer.refresh
-        last_progress = lines.last
-        # Reset timeout when we see progress
-        timeout_counter = [timeout_counter - 20, 0].max
-      end
-      sleep 0.05
-      timeout_counter += 1
-    end
-
-    # Kill thread if it's still running (hung)
-    if thread.alive?
-      thread.kill
-      $stdout = original_stdout
-      show_content("Error: Town generation timed out after #{(max_timeout * 0.05).round} seconds.\nThis usually happens with very large towns.\nPlease try a smaller town size.")
-      return
-    end
-    
-    thread.join
-    $stdout = original_stdout
-
-    # Check for errors
-    if error_occurred || town.nil?
-      show_content("Error: Failed to generate town. Please try again.")
+    begin
+      town = Town.new(town_name, town_size, town_var)
+    rescue => e
+      debug "Error generating town: #{e.message}"
+      debug e.backtrace.join("\n")
+      show_content("Error generating town: #{e.message}\n\n#{e.backtrace[0..5].join("\n")}\n\nPress any key to continue...")
+      getchr
       return
     end
 
-    # Show completion but don't immediately overwrite
-    @footer.clear
-    @footer.say(" Town generated! Processing output...".ljust(@cols))
-    @footer.refresh
-    sleep(0.5)  # Give user time to see the message
-    
-    # Get the progress output for debugging if needed
-    progress_output = progress_io.string
-    debug "Town generation progress: #{progress_output}"
+    # Check if town was generated
+    if town.nil?
+      show_content("Error: Failed to generate town. Please try again.\n\nPress any key to continue...")
+      getchr
+      return
+    end
+
+    show_content("Town generated successfully!\n\nProcessing output...")
     
     # Get the town output
     output = ""
