@@ -167,6 +167,11 @@ class Town
 		@town = []
 		@h_index = 0
 
+		# Load town table if not loaded
+		unless defined?($Town)
+			load File.join($pgmdir, "includes/tables/town.rb")
+		end
+
 		$Town[1..-1].each do | h_type |
 			#Iterate over the whole $Town array picking houses as we go and populating @town
 			h_number = ((rand(h_type[2]) + rand(h_type[2]) + rand()) * town_size / 100).to_i
