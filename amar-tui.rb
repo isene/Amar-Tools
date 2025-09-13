@@ -2074,21 +2074,58 @@ def generate_town_ui
     begin
       # Show progress header
       content_width = @cols - 35
-      output = colorize_output("GENERATING TOWN", :header) + "\n"
-      output += colorize_output("─" * content_width, :header) + "\n\n"
-      output += "Name: " + colorize_output(town_name.empty? ? "Random" : town_name, :success) + "\n"
-      output += "Houses: " + colorize_output(town_size.to_s, :label) + "\n"
-      output += "Variation: " + colorize_output(["Only humans", "Few non-humans", "Several non-humans",
-                                                  "Crazy place", "Only Dwarves", "Only Elves",
-                                                  "Only Lizardfolk"][town_var], :value) + "\n\n"
-      output += "Generating houses and residents...\n"
+      output = "GENERATING TOWN\n"
+      output += "─" * content_width + "\n\n"
+      output += "Name: #{town_name.empty? ? "Random" : town_name}\n"
+      output += "Houses: #{town_size}\n"
+      output += "Variation: #{["Only humans", "Few non-humans", "Several non-humans",
+                               "Crazy place", "Only Dwarves", "Only Elves",
+                               "Only Lizardfolk"][town_var]}\n\n"
       show_content(output)
+
+      # Capture progress output
+      progress_output = output
+      house_count = 0
+
+      # Create custom stdout to capture house progress
+      original_stdout = $stdout
+      progress_capture = []
+
+      $stdout = Class.new do
+        def initialize(capture_array, parent_ui, base_output, total_houses)
+          @capture = capture_array
+          @parent_ui = parent_ui
+          @base_output = base_output
+          @total_houses = total_houses
+        end
+
+        def puts(str)
+          if str && str.to_s.match(/House (\d+)/)
+            house_num = $1.to_i
+            @capture << house_num
+            # Update display with house progress
+            current_output = @base_output.dup
+            current_output += "Generating house #{house_num} of #{@total_houses}...\n"
+            @parent_ui.show_content(current_output)
+          end
+        end
+
+        def respond_to?(method)
+          [:puts, :write].include?(method) || super
+        end
+
+        def write(str)
+          str.to_s.length
+        end
+      end.new(progress_capture, self, progress_output, town_size)
 
       # Generate the town
       town = Town.new(town_name, town_size, town_var)
 
-      output += colorize_output("\n✓ Town generated successfully!", :success) + "\n"
-      show_content(output)
+      $stdout = original_stdout
+
+      progress_output += "\n✓ Town generated successfully! Created #{progress_capture.last || 0} houses.\n"
+      show_content(progress_output)
       sleep(0.5)
 
     rescue => e
@@ -2134,61 +2171,59 @@ def generate_town_ui
       end
       
       # Format and color the town output
-      if @config[:color_mode]
-        content_width = @cols - 35
-        formatted_output = ""
+      content_width = @cols - 35
+      formatted_output = ""
 
-        # Parse and reformat the output
-        lines = output.split("\n")
+      # Parse and reformat the output
+      lines = output.split("\n")
 
-        # Find and format the header
-        if lines[0] =~ /(Castle|Village|Town|City) Of (.+?) - Houses: (\d+) - Residents: (\d+)/
-          type = $1
-          name = $2
-          houses = $3
-          residents = $4
+      # Find and format the header
+      if lines[0] =~ /(Castle|Village|Town|City) Of (.+?) - Houses: (\d+) - Residents: (\d+)/
+        type = $1
+        name = $2
+        houses = $3
+        residents = $4
 
-          formatted_output += colorize_output(type.upcase + " OF " + name.upcase, :header) + "\n"
-          formatted_output += colorize_output("─" * content_width, :header) + "\n"
-          formatted_output += "Houses: " + colorize_output(houses, :success) +
-                             "  Residents: " + colorize_output(residents, :success) + "\n\n"
+        # Build the formatted output using colorize_output
+        formatted_output = colorize_output(type.upcase, :header) + " OF " + colorize_output(name.upcase, :success) + "\n"
+        formatted_output += colorize_output("─" * content_width, :header) + "\n"
+        formatted_output += colorize_output("Houses: ", :label) + colorize_output(houses, :value) +
+                           "  " + colorize_output("Residents: ", :label) + colorize_output(residents, :value) + "\n\n"
 
-          # Process the rest of the lines
-          lines[1..-1].each do |line|
-            if line =~ /^#(\d+): (.+)$/
-              # House header
-              num = $1
-              desc = $2
-              formatted_output += colorize_output("House ##{num}", :subheader) + " - " +
-                                 colorize_output(desc, :value) + "\n"
-            elsif line =~ /^   (.+?) \(([MF]) (\d+)\) (.+?) \[(\d+)\] (.+)$/
-              # Resident with full details
-              name = $1
-              sex = $2
-              age = $3
-              race = $4
-              level = $5
-              personality = $6
+        # Process the rest of the lines
+        lines[1..-1].each do |line|
+          if line =~ /^#(\d+): (.+)$/
+            # House header
+            num = $1
+            desc = $2
+            formatted_output += colorize_output("House ##{num}", :subheader) + " - " + desc + "\n"
+          elsif line =~ /^   (.+?) \(([MF]) (\d+)\) (.+?) \[(\d+)\] (.+)$/
+            # Resident with full details
+            name = $1
+            sex = $2
+            age = $3
+            race = $4
+            level = $5
+            personality = $6
 
-              formatted_output += "  • " + colorize_output(name, :name)
-              formatted_output += " (" + colorize_output("#{sex} #{age}", :label) + ")"
-              formatted_output += " " + colorize_output(race, :value)
-              formatted_output += " [" + colorize_output(level, :dice) + "]"
-              formatted_output += " " + colorize_output(personality, :label) + "\n"
-            elsif line.strip.empty?
-              formatted_output += "\n"
-            else
-              # Keep other lines as-is
-              formatted_output += line + "\n"
-            end
+            formatted_output += "  • " + colorize_output(name, :name)
+            formatted_output += " (" + colorize_output("#{sex} #{age}", :label) + ")"
+            formatted_output += " " + race
+            formatted_output += " [" + colorize_output(level, :dice) + "]"
+            formatted_output += " " + colorize_output(personality, :label) + "\n"
+          elsif line.strip.empty?
+            formatted_output += "\n"
+          else
+            # Keep other lines as-is
+            formatted_output += line + "\n"
           end
-        else
-          # Fallback to original output if parsing fails
-          formatted_output = output
         end
-
-        output = formatted_output.strip
+      else
+        # Fallback to original output if parsing fails
+        formatted_output = output
       end
+
+      output = formatted_output.strip
     rescue => e
       debug "Error getting town output: #{e.message}"
       output = "Error generating town output: #{e.message}"
@@ -2267,11 +2302,60 @@ def generate_town_ui
             output = output_io.string
           end
           
-          # Convert the output to use colors
-          if @config[:color_mode]
-            output = convert_ansi_to_rcurses(output)
+          # Format and color the town output using same logic as initial generation
+          content_width = @cols - 35
+          formatted_output = ""
+
+          # Parse and reformat the output
+          lines = output.split("\n")
+
+          # Find and format the header
+          if lines[0] =~ /(Castle|Village|Town|City) Of (.+?) - Houses: (\d+) - Residents: (\d+)/
+            type = $1
+            name = $2
+            houses = $3
+            residents = $4
+
+            # Build the formatted output using colorize_output
+            formatted_output = colorize_output(type.upcase, :header) + " OF " + colorize_output(name.upcase, :success) + "\n"
+            formatted_output += colorize_output("─" * content_width, :header) + "\n"
+            formatted_output += colorize_output("Houses: ", :label) + colorize_output(houses, :value) +
+                               "  " + colorize_output("Residents: ", :label) + colorize_output(residents, :value) + "\n\n"
+
+            # Process the rest of the lines
+            lines[1..-1].each do |line|
+              if line =~ /^#(\d+): (.+)$/
+                # House header
+                num = $1
+                desc = $2
+                formatted_output += colorize_output("House ##{num}", :subheader) + " - " + desc + "\n"
+              elsif line =~ /^   (.+?) \(([MF]) (\d+)\) (.+?) \[(\d+)\] (.+)$/
+                # Resident with full details
+                name = $1
+                sex = $2
+                age = $3
+                race = $4
+                level = $5
+                personality = $6
+
+                formatted_output += "  • " + colorize_output(name, :name)
+                formatted_output += " (" + colorize_output("#{sex} #{age}", :label) + ")"
+                formatted_output += " " + race
+                formatted_output += " [" + colorize_output(level, :dice) + "]"
+                formatted_output += " " + colorize_output(personality, :label) + "\n"
+              elsif line.strip.empty?
+                formatted_output += "\n"
+              else
+                # Keep other lines as-is
+                formatted_output += line + "\n"
+              end
+            end
+          else
+            # Fallback to original output if parsing fails
+            formatted_output = output
           end
-          
+
+          output = formatted_output.strip
           show_content(output)
           
           # Restore navigation help
