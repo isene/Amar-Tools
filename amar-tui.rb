@@ -2072,7 +2072,7 @@ def generate_town_ui
     output = ""
 
     begin
-      # Show progress header with colors
+      # Show progress header with colors - just like CLI
       content_width = @cols - 35
       output = colorize_output("GENERATING TOWN", :header) + "\n"
       output += colorize_output("─" * content_width, :header) + "\n\n"
@@ -2082,66 +2082,34 @@ def generate_town_ui
                         "Crazy place", "Only Dwarves", "Only Elves",
                         "Only Lizardfolk"]
       output += colorize_output("Variation: ", :label) + colorize_output(variation_names[town_var], :value) + "\n\n"
-
-      # Store the base output for progress updates
-      base_output = output
-      ui_ref = self  # Store reference to self for the custom stdout
-
-      # Show initial state
-      output = base_output + colorize_output("Status: ", :label) + "Starting generation...\n"
+      output += colorize_output("Generating...\n", :label)
       show_content(output)
 
-      # Create a StringIO-based stdout that captures house progress
+      # Capture stdout output like CLI does
+      captured_output = StringIO.new
       original_stdout = $stdout
-      house_count = 0
-      last_update = Time.now
+      $stdout = captured_output
 
-      # Use StringIO as base and extend it
-      $stdout = StringIO.new
-      class << $stdout
-        attr_accessor :ui, :base_output, :total_houses, :house_count, :last_update
-
-        alias_method :original_puts, :puts
-
-        def puts(str = "")
-          if str && str.to_s.match(/House (\d+)/)
-            @house_count = $1.to_i
-            # Update display every few houses or every 0.1 seconds to avoid too many refreshes
-            now = Time.now
-            if @house_count % 5 == 0 || @house_count == @total_houses || (now - @last_update) > 0.1
-              progress_output = @base_output
-              progress_output += @ui.colorize_output("Progress: ", :label)
-              progress_output += "Generating house " + @ui.colorize_output(@house_count.to_s, :success)
-              progress_output += " of " + @ui.colorize_output(@total_houses.to_s, :value) + "...\n"
-              @ui.show_content(progress_output)
-              @last_update = now
-            end
-          end
-          # Call original puts to maintain StringIO functionality
-          original_puts(str)
-        end
-      end
-
-      $stdout.ui = self
-      $stdout.base_output = base_output
-      $stdout.total_houses = town_size
-      $stdout.house_count = 0
-      $stdout.last_update = Time.now
-
-      # Generate the town - this will trigger progress updates via puts
+      # Generate the town - just like CLI
       town = Town.new(town_name, town_size, town_var)
-
-      # Get the final house count
-      final_house_count = $stdout.house_count || town.town.size
 
       # Restore stdout
       $stdout = original_stdout
 
-      # Show completion with colors
-      output = base_output
-      output += colorize_output("Status: ", :label) + colorize_output("✓ Complete!", :success) + "\n\n"
-      output += "Generated " + colorize_output(final_house_count.to_s, :value) + " houses\n"
-      output += "Total residents: " + colorize_output(town.town_residents.to_s, :value) + "\n"
+      # Get the house progress from captured output
+      progress_lines = captured_output.string.split("\n")
+      house_nums = progress_lines.select { |l| l =~ /House \d+/ }
+
+      # Show the progress that was captured
+      if house_nums.any?
+        output += "\n" + colorize_output("Progress captured:", :label) + "\n"
+        house_nums.each { |h| output += h + "\n" }
+      end
+
+      # Show completion
+      output += "\n" + colorize_output("✓ Complete!", :success) + "\n\n"
+      output += colorize_output("Generated ", :label) + colorize_output(town.town.size.to_s, :value) + " houses\n"
+      output += colorize_output("Total residents: ", :label) + colorize_output(town.town_residents.to_s, :value) + "\n"
       show_content(output)
       sleep(0.5)
 
