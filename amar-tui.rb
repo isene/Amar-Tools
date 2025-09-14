@@ -343,14 +343,12 @@ def draw_footer
   end
   
   @footer.say(footer_text)
-  @footer.refresh
 end
 
 def show_footer_message(message, duration = 0)
   # Show a temporary footer message without it being immediately overwritten
   @footer.clear
   @footer.say(" #{message}".ljust(@cols))
-  @footer.refresh
   sleep(duration) if duration > 0
 end
 
@@ -374,9 +372,8 @@ def show_content(text)
     # Text is already in the right format (plain or rcurses styled)
   end
   
-  @content.text = text
+  @content.say(text)
   @content.ix = 0
-  @content.refresh
 rescue => e
   debug "Error in show_content: #{e.message}"
   debug e.backtrace.join("\n") if e.backtrace
@@ -931,8 +928,7 @@ def get_text_input(prompt)
   cursor_pos = 0
   
   # Show prompt and input field
-  @content.text = @content.text + "\n" + prompt
-  @content.refresh
+  @content.say(@content.text + "\n" + prompt)
   
   loop do
     key = getchr
@@ -957,8 +953,7 @@ def get_text_input(prompt)
     # Update display
     lines = @content.text.lines
     lines[-1] = prompt + input + "_"
-    @content.text = lines.join
-    @content.refresh
+    @content.say(lines.join)
   end
 end
 
@@ -1993,7 +1988,6 @@ def generate_weather_ui
     # Navigation
     @footer.clear
     @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [ESC/q] Back ".ljust(@cols))
-    @footer.refresh
     
     loop do
       key = getchr
@@ -2012,11 +2006,9 @@ def generate_weather_ui
         copy_to_clipboard(output)
         @footer.clear
         @footer.say(" Copied to clipboard! ".ljust(@cols))
-        @footer.refresh
         sleep(1)
         @footer.clear
         @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [ESC/q] Back ".ljust(@cols))
-        @footer.refresh
       when "e"
         edit_in_editor(output)
         show_content(output)
@@ -2134,8 +2126,7 @@ def generate_town_ui
     output += colorize_output("Progress: ", :label) + colorize_output("0 / #{town_size}", :warning) + "\n\n"
     output += "[" + "-" * 30 + "] 0%\n\n"
     output += colorize_output("Starting generation...", :label) + "\n"
-    @content.text = output
-    @content.refresh
+    @content.say(output)
 
     # Make progress pipe non-blocking
     progress_read.fcntl(Fcntl::F_SETFL, Fcntl::O_NONBLOCK)
@@ -2150,8 +2141,7 @@ def generate_town_ui
           line = line.strip
           if line.start_with?("ERROR:")
             # Error from child process
-            @content.text = "Error: #{line.sub('ERROR: ', '')}"
-            @content.refresh
+            @content.say("Error: #{line.sub('ERROR: ', '')}")
             Process.kill("TERM", pid) rescue nil
             break
           else
@@ -2191,8 +2181,7 @@ def generate_town_ui
 
       output += colorize_output("Time elapsed: ", :label) + "#{elapsed.to_i}s\n"
 
-      @content.text = output
-      @content.refresh
+      @content.say(output)
 
       sleep 0.05
     end
@@ -2207,8 +2196,7 @@ def generate_town_ui
     # Make sure stdout is restored even on error
     $stdout = original_stdout if defined?(original_stdout)
     $stderr = original_stderr if defined?(original_stderr)
-    @content.text = "Error: #{e.message}\n\n#{e.backtrace.first(5).join("\n")}"
-    @content.refresh
+    @content.say("Error: #{e.message}\n\n#{e.backtrace.first(5).join("\n")}")
     return
   end
 
@@ -2282,13 +2270,11 @@ def generate_town_ui
     end
 
   # Set the text directly to the content pane
-  @content.text = output
-  @content.refresh
+  @content.say(output)
     
   # Show navigation help
   @footer.clear
   @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-  @footer.refresh
 
   # Navigation
   loop do
@@ -2309,7 +2295,6 @@ def generate_town_ui
       begin
         @footer.clear
         @footer.say(" Re-generating town with #{town_size} houses...".ljust(@cols))
-        @footer.refresh
 
         # Capture output in a StringIO
         captured = StringIO.new
@@ -2357,8 +2342,7 @@ def generate_town_ui
           output += "-" * (bar_width - filled)
           output += "] #{progress_pct}%\n"
 
-          @content.text = output
-          @content.refresh
+          @content.say(output)
 
           sleep 0.1
         end
@@ -2402,13 +2386,11 @@ def generate_town_ui
         end
 
         # Set the text directly to the content pane
-        @content.text = output
-        @content.refresh
+        @content.say(output)
 
         # Restore navigation help
         @footer.clear
         @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-        @footer.refresh
       rescue => e
         show_content("Error re-rolling town: #{e.message}")
       end
@@ -2417,15 +2399,13 @@ def generate_town_ui
         copy_to_clipboard(@content.text)
         @footer.clear
         @footer.say(" Copied to clipboard! ".ljust(@cols))
-        @footer.refresh
         sleep(1)
         @footer.clear
         @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-        @footer.refresh
       when "e"
         # Edit in editor
         edit_in_editor(@content.text)
-        @content.refresh
+        @content.say(@content.text)
       when "s"
         save_to_file(@content.text, :town)
     end
@@ -2608,7 +2588,6 @@ def generate_town_relations
     # Navigation
     @footer.clear
     @footer.say(" [j/↓] Down | [k/↑] Up | [ESC/q] Back ".ljust(@cols))
-    @footer.refresh
     
     loop do
       key = getchr
