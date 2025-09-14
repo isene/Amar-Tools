@@ -2083,32 +2083,51 @@ def generate_town_ui
     @content.text = output
     @content.refresh
 
-    # Update to show generating
-    output += colorize_output("Generating...", :label) + "\n"
-    @content.text = output
-    @content.refresh
-
-    # Generate the town - simple capture
+    # Prepare to capture output
     captured = StringIO.new
     original_stdout = $stdout
     $stdout = captured
 
-    town = Town.new(town_name, town_size, town_var)
+    # Start generation in a thread so we can update display
+    town = nil
+    generation_thread = Thread.new do
+      town = Town.new(town_name, town_size, town_var)
+    end
 
+    # Update display while generation is running
+    last_line_count = 0
+    while generation_thread.alive?
+      current_output = captured.string
+      current_lines = current_output.lines
+
+      # Check if we have new lines
+      if current_lines.size > last_line_count
+        # Update the display with current progress
+        display_output = base_output
+        house_lines = current_lines.select { |l| l =~ /House \d+/ }
+        house_lines.each do |line|
+          display_output += "  " + colorize_output(line.strip, :success) + "\n"
+        end
+        @content.text = display_output
+        @content.refresh
+        last_line_count = current_lines.size
+      end
+
+      sleep(0.05)  # Small sleep to not overwhelm the UI
+    end
+
+    # Wait for generation to complete
+    generation_thread.join
     $stdout = original_stdout
 
-    # Get progress lines
-    progress_lines = captured.string.lines.select { |l| l =~ /House \d+/ }
-
-    # Show complete output with progress
-    output = base_output
-    if progress_lines.any?
-      progress_lines.each do |line|
-        output += "  " + colorize_output(line.strip, :success) + "\n"
-      end
+    # Show final progress
+    final_output = base_output
+    house_lines = captured.string.lines.select { |l| l =~ /House \d+/ }
+    house_lines.each do |line|
+      final_output += "  " + colorize_output(line.strip, :success) + "\n"
     end
-    output += "\n" + colorize_output("✓ Generation complete!", :success) + "\n"
-    @content.text = output
+    final_output += "\n" + colorize_output("✓ Generation complete!", :success) + "\n"
+    @content.text = final_output
     @content.refresh
     sleep(0.5)
 
