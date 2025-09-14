@@ -387,6 +387,16 @@ def update_border_colors
   @content.border_refresh
 end
 
+def return_to_menu
+  # Return focus to menu and clear content
+  if @focus != :menu
+    @focus = :menu
+    update_border_colors if @config[:show_borders]
+  end
+  show_content("")
+  draw_footer
+end
+
 def draw_footer
   # Build footer with left-aligned help and right-aligned version
   help = " [↑↓] Navigate | [Enter] Select | [TAB] Switch Focus | [r] Refresh | [q] Quit"
@@ -417,7 +427,13 @@ end
 def show_content(text)
   debug "show_content called with #{text.to_s.length} chars"
   debug "Color mode enabled: #{@config[:color_mode]}"
-  
+
+  # Switch focus to content pane when showing content
+  if @focus != :content
+    @focus = :content
+    update_border_colors if @config[:show_borders]
+  end
+
   # Check if text contains ANSI codes
   if text =~ /\e\[[0-9;]*m/
     debug "Text contains ANSI color codes"
@@ -433,7 +449,7 @@ def show_content(text)
     debug "No ANSI codes in input"
     # Text is already in the right format (plain or rcurses styled)
   end
-  
+
   @content.say(text)
   @content.ix = 0
 rescue => e
@@ -1067,12 +1083,13 @@ end
 def handle_npc_view(npc, output)
   # Show instructions including clipboard copy
   @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-  
+
   loop do
     key = getchr
-    
+
     case key
     when "ESC", "\e", "q"
+      return_to_menu
       break
     when "j", "DOWN"
       @content.linedown
@@ -1317,6 +1334,7 @@ def handle_encounter_view(enc, output)
     
     case key
     when "ESC", "\e", "q"
+      return_to_menu
       break
     when "j", "DOWN"
       @content.linedown
@@ -1420,6 +1438,7 @@ def handle_content_view(object, type)
     
     case key
     when "ESC", "\e", "q"  # ESC or q to go back
+      return_to_menu
       break
     when "j", "DOWN"  # Scroll down
       @content.linedown
@@ -1611,6 +1630,7 @@ def handle_monster_view(monster, output)
     
     case key
     when "ESC", "\e", "q"
+      return_to_menu
       break
     when "j", "DOWN"
       @content.linedown
@@ -1858,6 +1878,7 @@ def generate_npc_old
       key = getchr
       case key
       when "\e", "q"
+        return_to_menu
         break
       when "j", "\e[B"
         @content.linedown
@@ -1911,6 +1932,7 @@ def generate_encounter_old
       key = getchr
       case key
       when "\e", "q"
+        return_to_menu
         break
       when "j", "\e[B"
         @content.linedown
@@ -2140,6 +2162,7 @@ def generate_weather_ui
       key = getchr
       case key
       when "\e", "q"
+        return_to_menu
         break
       when "j", "DOWN"
         @content.linedown
@@ -2623,6 +2646,7 @@ def generate_name_ui
       key = getchr
       case key
       when "\e", "q"
+        return_to_menu
         break
       when "j", "\e[B"
         @content.linedown
@@ -2759,6 +2783,7 @@ def generate_town_relations
       key = getchr
       case key
       when "\e", "q"
+        return_to_menu
         break
       when "j", "DOWN"
         @content.linedown
