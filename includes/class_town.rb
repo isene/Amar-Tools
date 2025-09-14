@@ -218,30 +218,8 @@ class Town
 				((town_size / 40) + 1).to_i.times {add_resident(2)} if /Stronghold/ =~ @town[@h_index][0] 
 				(rand(h_type[6]) + rand(h_type[6])).to_i.times {add_resident(3)}
 				@h_index += 1
-				# Debug log
-				File.open("amar_tui_debug.log", "a") do |f|
-					f.puts "#{Time.now}: House #{@h_index} created"
-					f.puts "#{Time.now}: $tui_content defined? #{defined?($tui_content)}"
-					f.puts "#{Time.now}: $tui_content value: #{$tui_content.inspect}" if defined?($tui_content)
-				end
-				# If we have a TUI content pane, update it
-				if defined?($tui_content) && $tui_content
-					begin
-						output = "GENERATING TOWN\n"
-						output += "─" * 40 + "\n\n"
-						output += "Houses created: #{@h_index} / #{town_size}\n"
-						$tui_content.text = output
-						$tui_content.refresh
-						File.open("amar_tui_debug.log", "a") do |f|
-							f.puts "#{Time.now}: Updated TUI for house #{@h_index}"
-						end
-					rescue => e
-						# If there's an error updating TUI, log it
-						File.open("amar_tui_debug.log", "a") do |f|
-							f.puts "#{Time.now}: Error updating TUI: #{e.message}"
-						end
-					end
-				end
+				# Output progress for CLI
+				$stdout.puts "House #{@h_index}" if defined?($stdout) && $stdout.respond_to?(:puts)
 				break if @h_index > town_size
 			end
 			break if @h_index > town_size

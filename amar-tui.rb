@@ -2073,39 +2073,38 @@ def generate_town_ui
     # Show initial message
     output = colorize_output("GENERATING TOWN", :header) + "\n"
     output += colorize_output("─" * (@cols - 35), :header) + "\n\n"
-    output += colorize_output("Starting generation...", :label) + "\n"
+    output += colorize_output("Generating ", :label) + colorize_output("#{town_size} houses", :value) + colorize_output("...", :label) + "\n"
     @content.text = output
     @content.refresh
 
-    # Set global variable for the Town class to use
-    $tui_content = @content
-
-    # Capture output in a StringIO to suppress normal output
+    # Capture output in a StringIO
     captured = StringIO.new
     original_stdout = $stdout
     original_stderr = $stderr
     $stdout = captured
     $stderr = captured
 
-    # Add debug to file
-    File.open("amar_tui_debug.log", "a") do |f|
-      f.puts "#{Time.now}: About to generate town with size #{town_size}"
-    end
-
-    # Generate the town - it will update the display directly
+    # Generate the town
     town = Town.new(town_name, town_size, town_var)
-
-    # Add debug to file
-    File.open("amar_tui_debug.log", "a") do |f|
-      f.puts "#{Time.now}: Town generation completed"
-    end
-
-    # Clear the global variable
-    $tui_content = nil
 
     # Restore stdout/stderr
     $stdout = original_stdout
     $stderr = original_stderr
+
+    # Show progress from captured output
+    progress_output = captured.string
+    if progress_output && !progress_output.empty?
+      output += "\n" + colorize_output("Generation Log:", :subheader) + "\n"
+      progress_output.lines.each do |line|
+        if line.strip =~ /^House (\d+)$/
+          output += "  " + colorize_output("✓", :success) + " " + line
+        else
+          output += "  " + line
+        end
+      end
+      @content.text = output
+      @content.refresh
+    end
   rescue => e
     # Make sure stdout is restored even on error
     $stdout = original_stdout if defined?(original_stdout)
@@ -2218,9 +2217,6 @@ def generate_town_ui
         @content.text = colorize_output("Re-generating town...", :label) + "\n"
         @content.refresh
 
-        # Set global variable for the Town class to use
-        $tui_content = @content
-
         # Generate new town
         captured = StringIO.new
         original_stdout = $stdout
@@ -2229,9 +2225,6 @@ def generate_town_ui
         $stderr = captured
 
         town = Town.new(town_name, town_size, town_var)
-
-        # Clear the global variable
-        $tui_content = nil
 
         $stdout = original_stdout
         $stderr = original_stderr
