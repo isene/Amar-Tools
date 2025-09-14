@@ -2087,8 +2087,18 @@ def generate_town_ui
     $stdout = captured
     $stderr = captured
 
+    # Add debug to file
+    File.open("amar_tui_debug.log", "a") do |f|
+      f.puts "#{Time.now}: About to generate town with size #{town_size}"
+    end
+
     # Generate the town - it will update the display directly
     town = Town.new(town_name, town_size, town_var)
+
+    # Add debug to file
+    File.open("amar_tui_debug.log", "a") do |f|
+      f.puts "#{Time.now}: Town generation completed"
+    end
 
     # Clear the global variable
     $tui_content = nil
