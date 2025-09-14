@@ -293,6 +293,40 @@ def refresh_all
   draw_footer
 end
 
+def recreate_panes
+  # Store current content
+  old_content = @content.text if @content
+
+  # Get new dimensions
+  @rows = Curses.rows
+  @cols = Curses.cols
+
+  # Clear screen
+  Curses.clear
+
+  # Recreate panes with new dimensions
+  @header = Pane.new(   1,  1,  @cols,       1,          255,            234)  # Dark grey background
+  @menu   = Pane.new(   2,  3,  30,          @rows - 4,  255,            232)  # Black background
+  @content= Pane.new(   34, 3,  @cols - 35,  @rows - 4,  255,            @colors[:content])
+  @footer = Pane.new(   1,  @rows, @cols,    1,          255,            234)  # Dark grey background
+
+  # Set borders
+  if @config[:show_borders]
+    @menu.border = true
+    @content.border = true
+  end
+
+  # Redraw everything
+  draw_header
+  draw_menu
+  draw_footer
+
+  # Restore content
+  @content.say(old_content) if old_content
+
+  refresh_all
+end
+
 def draw_header
   # Left justify the title text with padding
   title = " AMAR RPG TOOLS - The Ultimate Amar RPG Toolkit | [?] Help"
@@ -306,14 +340,23 @@ def draw_menu
     if item.empty? || item.start_with?("──")
       # Section header or blank
       if item.start_with?("──") && @config[:color_mode]
-        menu_text += "\e[1;36m#{item}\e[0m\n"  # Cyan bold
+        # Different colors for different sections
+        color = case item
+                when /NEW 3-TIER/ then 42   # Green
+                when /LEGACY/ then 23        # Dark cyan
+                when /WORLD BUILDING/ then 131  # Brown/orange
+                when /AI TOOLS/ then 103     # Light purple
+                when /UTILITIES/ then 133    # Light magenta
+                else 36  # Default cyan
+                end
+        menu_text += "\e[1;38;5;#{color}m#{item}\e[0m\n"
       else
         menu_text += item + "\n"
       end
     elsif idx == @menu_index
-      # Highlighted item - RTFM style (bold, underlined with arrow)
+      # Highlighted item - RTFM style (bold with arrow)
       if @config[:color_mode]
-        menu_text += "\e[1;4m→ #{item}\e[0m\n"  # Bold and underlined
+        menu_text += "\e[1m→ #{item}\e[0m\n"  # Bold only
       else
         menu_text += "→ #{item}\n"
       end
@@ -327,7 +370,7 @@ end
 
 def draw_footer
   # Build footer with left-aligned help and right-aligned version
-  help = " [↑↓] Navigate | [Enter] Select | [q] Quit"
+  help = " [↑↓] Navigate | [Enter] Select | [r] Refresh | [q] Quit"
   version_text = "v#{@version} "
   
   # Calculate padding
@@ -639,6 +682,8 @@ def handle_menu_navigation
     toggle_colors
   when "h", "H"
     show_help
+  when "r", "R"
+    recreate_panes
   end
   
   true
@@ -1939,9 +1984,18 @@ def generate_weather_ui
       line += colorize_output((i+1).to_s.rjust(2), :label)
       line += ": "
       
-      # Weather description with symbol
+      # Weather description with appropriate coloring
       weather_text = $Weather[d.weather]
-      line += colorize_output(weather_text, :value)
+      weather_color = case weather_text
+                      when /rain|drizzle/i then :name  # Blue
+                      when /snow|blizzard/i then :value  # White
+                      when /storm|thunder/i then :warning  # Red
+                      when /fog|mist/i then :label  # Gray/magenta
+                      when /sunny|clear/i then :dice  # Yellow
+                      when /cloud/i then :label  # Gray
+                      else :value
+                      end
+      line += colorize_output(weather_text, weather_color)
       
       # Add weather symbol
       weather_symbols.each do |key, sym|
@@ -1953,12 +2007,18 @@ def generate_weather_ui
       
       line += ". "
       
-      # Wind
-      line += colorize_output($Wind_str[d.wind_str], :name)
-      
+      # Wind with shades of blue based on strength
+      wind_color = case d.wind_str
+                   when 0..7 then 117    # Light blue
+                   when 8..15 then 75    # Medium blue
+                   when 16..23 then 33   # Darker blue
+                   else 21               # Deep blue
+                   end
+      line += "\e[38;5;#{wind_color}m#{$Wind_str[d.wind_str]}\e[0m"
+
       if d.wind_str != 0
         line += " "
-        line += colorize_output("(#{$Wind_dir[d.wind_dir]})", :name)
+        line += "\e[38;5;#{wind_color}m(#{$Wind_dir[d.wind_dir]})\e[0m"
       end
       
       # Calculate remaining space for special/moon (use pure for length calculation)
@@ -2505,7 +2565,7 @@ debug "All methods defined"
 # MAIN LOOP
 def main_loop
   debug "Starting main loop"
-  
+
   begin
     debug "Loading config..."
     load_config
@@ -2513,7 +2573,7 @@ def main_loop
   rescue => e
     debug "Error loading config: #{e.message}"
   end
-  
+
   begin
     debug "Initializing screen..."
     init_screen
@@ -2522,6 +2582,11 @@ def main_loop
     debug "Error in init_screen: #{e.message}"
     debug e.backtrace.join("\n")
     raise
+  end
+
+  # Set up signal handler for terminal resize
+  Signal.trap('WINCH') do
+    recreate_panes
   end
   
   running = true
@@ -2593,18 +2658,22 @@ def generate_town_relations
     $stdout = original_stdout
     output = output_io.string
     
-    # Show the text output
+    # Show the text output with coloring
     txt_file = town_file.sub(/\.npc$/, '.txt')
     if File.exist?(txt_file)
-      output = File.read(txt_file)
-      show_content("\nRelationship Map:\n\n" + output)
+      raw_output = File.read(txt_file)
+      # Add coloring to relationship map
+      colored_output = colorize_output("RELATIONSHIP MAP", :header) + "\n"
+      colored_output += colorize_output("─" * content_width, :header) + "\n\n"
+      colored_output += raw_output
+      show_content(colored_output)
     else
       show_content("\nRelationship map generated.\n")
     end
-    
+
     # Navigation
     @footer.clear
-    @footer.say(" [j/↓] Down | [k/↑] Up | [ESC/q] Back ".ljust(@cols))
+    @footer.say(" [j/↓] Down | [k/↑] Up | [e] Edit | [ESC/q] Back ".ljust(@cols))
     
     loop do
       key = getchr
@@ -2619,6 +2688,11 @@ def generate_town_relations
         @content.pagedown
       when "PgUP"
         @content.pageup
+      when "e"
+        # Edit in editor - strip ANSI codes first
+        clean_text = @content.text.respond_to?(:pure) ? @content.text.pure : @content.text.gsub(/\e\[\d+(?:;\d+)*m/, '')
+        edit_in_editor(clean_text)
+        show_content(@content.text)
       end
     end
     
