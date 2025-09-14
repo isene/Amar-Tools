@@ -2113,6 +2113,16 @@ def generate_town_ui
     houses_created = 0
     start_time = Time.now
 
+    # Show initial progress display
+    output = colorize_output("GENERATING TOWN", :header) + "\n"
+    output += colorize_output("─" * (@cols - 35), :header) + "\n\n"
+    output += colorize_output("Total houses: ", :label) + colorize_output(town_size.to_s, :value) + "\n"
+    output += colorize_output("Progress: ", :label) + colorize_output("0 / #{town_size}", :warning) + "\n\n"
+    output += "[" + "-" * 30 + "] 0%\n\n"
+    output += colorize_output("Starting generation...", :label) + "\n"
+    @content.text = output
+    @content.refresh
+
     # Make progress pipe non-blocking
     progress_read.fcntl(Fcntl::F_SETFL, Fcntl::O_NONBLOCK)
 
@@ -2122,7 +2132,7 @@ def generate_town_ui
       begin
         while line = progress_read.gets
           num = line.to_i
-          houses_created = num if num > houses_created
+          houses_created = num if num > houses_created && num > 0
         end
       rescue Errno::EAGAIN, EOFError
         # No data available, that's OK
@@ -2137,12 +2147,15 @@ def generate_town_ui
       output += colorize_output("Total houses: ", :label) + colorize_output(town_size.to_s, :value) + "\n"
       output += colorize_output("Progress: ", :label) + colorize_output("#{houses_created} / #{town_size}", :success)
 
-      # Add progress bar
-      progress_pct = (houses_created.to_f / town_size * 100).to_i
+      # Add progress bar (ensure filled is never negative)
+      progress_pct = town_size > 0 ? (houses_created.to_f / town_size * 100).to_i : 0
       bar_width = 30
-      filled = (bar_width * houses_created / town_size).to_i
+      filled = town_size > 0 ? (bar_width * houses_created / town_size).to_i : 0
+      filled = [filled, 0].max  # Ensure never negative
+      filled = [filled, bar_width].min  # Ensure never exceeds bar width
+
       output += "\n\n["
-      output += colorize_output("█" * filled, :success)
+      output += colorize_output("█" * filled, :success) if filled > 0
       output += "-" * (bar_width - filled)
       output += "] #{progress_pct}%\n\n"
 
