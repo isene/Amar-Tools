@@ -2067,68 +2067,36 @@ def generate_town_ui
   town_var = 6 if town_var > 6
   
   begin
-    # Show initial message with colors
-    content_width = @cols - 35
-    output = ""
-    output += colorize_output("GENERATING TOWN", :header) + "\n"
-    output += colorize_output("=" * content_width, :header) + "\n\n"
-    output += colorize_output("Name: ", :label) + colorize_output(town_name.empty? ? 'Random' : town_name, :value) + "\n"
-    output += colorize_output("Size: ", :label) + colorize_output("#{town_size} houses", :value) + "\n"
-    variation_names = ['Only humans', 'Few non-humans', 'Several non-humans',
-                      'Crazy place', 'Only Dwarves', 'Only Elves', 'Only Lizardfolk']
-    output += colorize_output("Variation: ", :label) + colorize_output(variation_names[town_var], :value) + "\n\n"
-    output += colorize_output("Progress:", :label) + "\n"
-
-    base_output = output
-    @content.text = output
+    # Show generating message
+    @content.text = "Generating town...\n\nSize: #{town_size} houses\n\n"
     @content.refresh
 
-    # Set initial output
-    @content.text = base_output
-    @content.refresh
-
-    # Redirect stdout to append to content pane
+    # Capture stdout - SIMPLE
+    captured = StringIO.new
     original_stdout = $stdout
-    current_output = base_output
+    $stdout = captured
 
-    # Create a simple IO that appends to our output and updates display
-    $stdout = StringIO.new
-    class << $stdout
-      attr_accessor :content_pane, :current_text
-
-      def puts(str = "")
-        super  # Let StringIO handle it
-        if str && str.to_s =~ /House (\d+)/
-          # Append to current text and update display
-          @current_text ||= ""
-          @current_text += "  House #{$1}\n"
-          if @content_pane
-            @content_pane.text = @base_text + @current_text
-            @content_pane.refresh
-          end
-        end
-      end
-
-      def set_context(pane, base)
-        @content_pane = pane
-        @base_text = base
-        @current_text = ""
-      end
-    end
-
-    $stdout.set_context(@content, base_output)
-
-    # Generate the town - output will update display as it goes
+    # Generate town - EXACTLY like CLI
     town = Town.new(town_name, town_size, town_var)
 
     # Restore stdout
     $stdout = original_stdout
 
-    # Add completion message
-    sleep(0.3)
-    @content.text = @content.text + "\n" + colorize_output("✓ Generation complete!", :success) + "\n"
+    # Get what was captured
+    progress_output = captured.string
+
+    # Show it
+    output = "TOWN GENERATION\n" + "=" * 40 + "\n\n"
+    output += "Name: #{town.town_name}\n"
+    output += "Size: #{town.town.size} houses\n"
+    output += "Residents: #{town.town_residents}\n\n"
+    if progress_output && !progress_output.empty?
+      output += "Progress captured:\n"
+      output += progress_output
+    end
+    output += "\nGeneration complete!\n"
+    @content.text = output
     @content.refresh
-    sleep(0.5)
 
     # Suppress file saving output
     output_io = StringIO.new
