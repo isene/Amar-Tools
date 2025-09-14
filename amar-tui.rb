@@ -2070,41 +2070,68 @@ def generate_town_ui
   town = nil
 
   begin
-    # Show initial message
-    output = colorize_output("GENERATING TOWN", :header) + "\n"
-    output += colorize_output("─" * (@cols - 35), :header) + "\n\n"
-    output += colorize_output("Generating ", :label) + colorize_output("#{town_size} houses", :value) + colorize_output("...", :label) + "\n"
-    @content.text = output
-    @content.refresh
-
     # Capture output in a StringIO
     captured = StringIO.new
-    original_stdout = $stdout
-    original_stderr = $stderr
-    $stdout = captured
-    $stderr = captured
 
-    # Generate the town
-    town = Town.new(town_name, town_size, town_var)
+    # Start generation in background thread
+    generation_thread = Thread.new do
+      Thread.current[:stdout] = $stdout
+      Thread.current[:stderr] = $stderr
+      $stdout = captured
+      $stderr = captured
 
-    # Restore stdout/stderr
-    $stdout = original_stdout
-    $stderr = original_stderr
+      result = Town.new(town_name, town_size, town_var)
 
-    # Show progress from captured output
-    progress_output = captured.string
-    if progress_output && !progress_output.empty?
-      output += "\n" + colorize_output("Generation Log:", :subheader) + "\n"
-      progress_output.lines.each do |line|
-        if line.strip =~ /^House (\d+)$/
-          output += "  " + colorize_output("✓", :success) + " " + line
-        else
-          output += "  " + line
-        end
+      $stdout = Thread.current[:stdout]
+      $stderr = Thread.current[:stderr]
+      result
+    end
+
+    # Update display while generating
+    houses_created = 0
+    start_time = Time.now
+
+    while generation_thread.alive?
+      # Check for new house numbers in captured output
+      output_so_far = captured.string
+      output_so_far.scan(/House (\d+)/).each do |match|
+        num = match[0].to_i
+        houses_created = num if num > houses_created
       end
+
+      # Calculate elapsed time and estimate
+      elapsed = Time.now - start_time
+      rate = houses_created > 0 ? houses_created / elapsed : 0
+      eta = rate > 0 ? ((town_size - houses_created) / rate).to_i : 0
+
+      # Update display
+      output = colorize_output("GENERATING TOWN", :header) + "\n"
+      output += colorize_output("─" * (@cols - 35), :header) + "\n\n"
+      output += colorize_output("Total houses: ", :label) + colorize_output(town_size.to_s, :value) + "\n"
+      output += colorize_output("Progress: ", :label) + colorize_output("#{houses_created} / #{town_size}", :success)
+
+      # Add progress bar
+      progress_pct = (houses_created.to_f / town_size * 100).to_i
+      bar_width = 30
+      filled = (bar_width * houses_created / town_size).to_i
+      output += "\n\n["
+      output += colorize_output("█" * filled, :success)
+      output += "-" * (bar_width - filled)
+      output += "] #{progress_pct}%\n\n"
+
+      if houses_created > 0 && eta > 0
+        output += colorize_output("Time elapsed: ", :label) + "#{elapsed.to_i}s\n"
+        output += colorize_output("Estimated remaining: ", :label) + "#{eta}s\n"
+      end
+
       @content.text = output
       @content.refresh
+
+      sleep 0.1
     end
+
+    # Get the generated town
+    town = generation_thread.value
   rescue => e
     # Make sure stdout is restored even on error
     $stdout = original_stdout if defined?(original_stdout)
@@ -2213,21 +2240,60 @@ def generate_town_ui
         @footer.say(" Re-generating town with #{town_size} houses...".ljust(@cols))
         @footer.refresh
 
-        # Show re-generating message
-        @content.text = colorize_output("Re-generating town...", :label) + "\n"
-        @content.refresh
-
-        # Generate new town
+        # Capture output in a StringIO
         captured = StringIO.new
-        original_stdout = $stdout
-        original_stderr = $stderr
-        $stdout = captured
-        $stderr = captured
 
-        town = Town.new(town_name, town_size, town_var)
+        # Start generation in background thread
+        generation_thread = Thread.new do
+          Thread.current[:stdout] = $stdout
+          Thread.current[:stderr] = $stderr
+          $stdout = captured
+          $stderr = captured
 
-        $stdout = original_stdout
-        $stderr = original_stderr
+          result = Town.new(town_name, town_size, town_var)
+
+          $stdout = Thread.current[:stdout]
+          $stderr = Thread.current[:stderr]
+          result
+        end
+
+        # Update display while re-generating
+        houses_created = 0
+        start_time = Time.now
+
+        while generation_thread.alive?
+          # Check for new house numbers in captured output
+          output_so_far = captured.string
+          output_so_far.scan(/House (\d+)/).each do |match|
+            num = match[0].to_i
+            houses_created = num if num > houses_created
+          end
+
+          # Calculate elapsed time
+          elapsed = Time.now - start_time
+
+          # Update display
+          output = colorize_output("RE-GENERATING TOWN", :header) + "\n"
+          output += colorize_output("─" * (@cols - 35), :header) + "\n\n"
+          output += colorize_output("Progress: ", :label) + colorize_output("#{houses_created} / #{town_size}", :success)
+
+          # Add progress bar
+          progress_pct = (houses_created.to_f / town_size * 100).to_i
+          bar_width = 30
+          filled = (bar_width * houses_created / town_size).to_i
+          output += "\n\n["
+          output += colorize_output("█" * filled, :success)
+          output += "-" * (bar_width - filled)
+          output += "] #{progress_pct}%\n"
+
+          @content.text = output
+          @content.refresh
+
+          sleep 0.1
+        end
+
+        # Get the generated town
+        town = generation_thread.value
 
         # Build the output with colors
         output = ""
