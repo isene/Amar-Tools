@@ -354,11 +354,11 @@ def draw_menu
         menu_text += item + "\n"
       end
     elsif idx == @menu_index
-      # Highlighted item - RTFM style (bold with arrow)
+      # Highlighted item - RTFM style (bold arrow, underlined item)
       if @config[:color_mode]
-        menu_text += "\e[1m→ #{item}\e[0m\n"  # Bold only
+        menu_text += "\e[1m→ \e[0m\e[4m#{item}\e[0m\n"  # Bold arrow, underlined item
       else
-        menu_text += "→ #{item}\n"
+        menu_text += "→ \e[4m#{item}\e[0m\n"  # Underlined item
       end
     else
       menu_text += "  #{item}\n"
