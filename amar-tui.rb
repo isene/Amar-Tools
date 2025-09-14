@@ -298,11 +298,10 @@ def recreate_panes
   old_content = @content.text if @content
 
   # Get new dimensions
-  @rows = Curses.rows
-  @cols = Curses.cols
+  @rows, @cols = IO.console.winsize
 
   # Clear screen
-  Curses.clear
+  print "\e[2J\e[H"  # Clear screen and move cursor home
 
   # Recreate panes with new dimensions
   @header = Pane.new(   1,  1,  @cols,       1,          255,            234)  # Dark grey background
@@ -731,17 +730,41 @@ end
 
 # O6 - Open Ended d6 roll
 def roll_o6
-  # Roll 10 O6 dice like the original with colors
+  # Roll 10 O6 dice with gradient coloring based on result
   results = []
   10.times do
     roll = oD6
-    roll_str = colorize_output(roll.to_s, :dice)
+
+    # Gradient coloring based on roll value
+    # Range from -5 to 15+, using colors from red through yellow to green
+    roll_color = case roll
+                 when -99..-4 then 88   # Dark red for terrible fumbles
+                 when -3 then 124        # Red for fumbles
+                 when -2 then 160        # Light red
+                 when -1 then 166        # Orange-red
+                 when 0 then 172         # Orange
+                 when 1 then 178         # Light orange
+                 when 2 then 184         # Yellow-orange
+                 when 3 then 190         # Light yellow
+                 when 4 then 226         # Yellow
+                 when 5 then 154         # Yellow-green
+                 when 6 then 118         # Light green
+                 when 7 then 82          # Green
+                 when 8 then 46          # Bright green
+                 when 9 then 40          # Brighter green
+                 when 10..11 then 34     # Deep green for criticals
+                 when 12..14 then 28     # Darker green for high criticals
+                 else 22                 # Very dark green for extreme criticals
+                 end
+
+    roll_str = "\e[38;5;#{roll_color}m#{roll.to_s.rjust(3)}\e[0m"
+
     if roll >= 10
-      results << "  #{roll_str} " + colorize_output("(Critical!)", :success)
+      results << "#{roll_str} " + "\e[38;5;46;1m(Critical!)\e[0m"
     elsif roll <= -3
-      results << "  #{roll_str} " + colorize_output("(Fumble!)", :label)
+      results << "#{roll_str} " + "\e[38;5;196;1m(Fumble!)\e[0m"
     else
-      results << "  #{roll_str}"
+      results << "#{roll_str}"
     end
   end
   
@@ -806,8 +829,12 @@ def npc_input_new_tui
   
   # Name input
   debug "Getting name input"
-  show_content("NEW SYSTEM NPC GENERATION (3-Tier)\n" + "=" * 60 + "\n\nEnter NPC name (or ENTER for random):\n\nPress ESC to cancel")
-  name = get_text_input("Name: ")
+  header = colorize_output("NEW SYSTEM NPC GENERATION (3-Tier)", :header) + "\n"
+  header += colorize_output("=" * 60, :header) + "\n\n"
+  header += colorize_output("Enter NPC name", :label) + " (or ENTER for random):\n\n"
+  header += colorize_output("Press ESC to cancel", :info) + "\n\n"
+  show_content(header)
+  name = get_text_input(colorize_output("Name: ", :prompt))
   return nil if name == :cancelled
   inputs << (name || "")
   debug "Name input: #{name.inspect}"
@@ -818,11 +845,12 @@ def npc_input_new_tui
     "Centaur", "Ogre", "Troll", "Araxi", "Faerie"
   ]
   
-  race_text = "Select Race:\n\n0: Human (default)\n"
+  race_text = colorize_output("Select Race:", :header) + "\n\n"
+  race_text += colorize_output("0", :dice) + ": " + colorize_output("Human", :value) + " (default)\n"
   races.each_with_index do |race, index|
-    race_text += "#{index + 1}: #{race}\n"
+    race_text += colorize_output((index + 1).to_s, :dice) + ": " + colorize_output(race, :value) + "\n"
   end
-  race_text += "\nPress number key or ENTER for Human:"
+  race_text += "\n" + colorize_output("Press number key or ENTER for Human:", :prompt)
   
   show_content(race_text)
   key = getchr
@@ -967,11 +995,14 @@ end
 
 def get_text_input(prompt)
   debug "get_text_input called with prompt: #{prompt}"
-  @footer.say(" Type input | [ENTER] Confirm | [ESC] Cancel ".ljust(@cols))
-  
+  footer_text = colorize_output(" Type input", :label) + " | "
+  footer_text += colorize_output("[ENTER]", :success) + " Confirm | "
+  footer_text += colorize_output("[ESC]", :error) + " Cancel"
+  @footer.say(footer_text.ljust(@cols))
+
   input = ""
   cursor_pos = 0
-  
+
   # Show prompt and input field
   @content.say(@content.text + "\n" + prompt)
   
@@ -1984,18 +2015,30 @@ def generate_weather_ui
       line += colorize_output((i+1).to_s.rjust(2), :label)
       line += ": "
       
-      # Weather description with appropriate coloring
+      # Weather description with enhanced gradient coloring
       weather_text = $Weather[d.weather]
-      weather_color = case weather_text
-                      when /rain|drizzle/i then :name  # Blue
-                      when /snow|blizzard/i then :value  # White
-                      when /storm|thunder/i then :warning  # Red
-                      when /fog|mist/i then :label  # Gray/magenta
-                      when /sunny|clear/i then :dice  # Yellow
-                      when /cloud/i then :label  # Gray
-                      else :value
-                      end
-      line += colorize_output(weather_text, weather_color)
+      weather_ansi = case weather_text
+                     when /blizzard/i then "\e[38;5;231;1m"      # Bold white for blizzard
+                     when /snow/i then "\e[38;5;255m"             # White for snow
+                     when /hail/i then "\e[38;5;253m"             # Light gray for hail
+                     when /thunder|lightning/i then "\e[38;5;226;1m" # Bold yellow for thunder
+                     when /storm/i then "\e[38;5;202;1m"          # Bold orange for storm
+                     when /heavy rain/i then "\e[38;5;21m"        # Deep blue for heavy rain
+                     when /rain/i then "\e[38;5;33m"              # Blue for rain
+                     when /drizzle/i then "\e[38;5;111m"          # Light blue for drizzle
+                     when /fog/i then "\e[38;5;248m"              # Gray for fog
+                     when /mist/i then "\e[38;5;251m"             # Light gray for mist
+                     when /overcast/i then "\e[38;5;243m"         # Dark gray for overcast
+                     when /cloudy/i then "\e[38;5;247m"           # Medium gray for cloudy
+                     when /partly cloudy/i then "\e[38;5;250m"    # Light gray for partly cloudy
+                     when /sunny|clear/i then "\e[38;5;226m"      # Yellow for sunny
+                     when /warm/i then "\e[38;5;214m"             # Orange for warm
+                     when /hot/i then "\e[38;5;196m"              # Red for hot
+                     when /cold/i then "\e[38;5;51m"              # Cyan for cold
+                     when /cool/i then "\e[38;5;117m"             # Light cyan for cool
+                     else "\e[38;5;255m"                          # Default white
+                     end
+      line += weather_ansi + weather_text + "\e[0m"
       
       # Add weather symbol
       weather_symbols.each do |key, sym|
