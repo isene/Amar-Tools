@@ -1089,7 +1089,6 @@ def handle_npc_view(npc, output)
 
     case key
     when "ESC", "\e", "q"
-      return_to_menu
       break
     when "j", "DOWN"
       @content.linedown
@@ -1127,8 +1126,9 @@ def handle_npc_view(npc, output)
       break
     end
   end
-  
-  draw_footer
+
+  # Return focus to menu when done viewing
+  return_to_menu
 end
 
 def copy_to_clipboard(text)
@@ -1334,7 +1334,6 @@ def handle_encounter_view(enc, output)
     
     case key
     when "ESC", "\e", "q"
-      return_to_menu
       break
     when "j", "DOWN"
       @content.linedown
@@ -1372,8 +1371,9 @@ def handle_encounter_view(enc, output)
       break
     end
   end
-  
-  draw_footer
+
+  # Return focus to menu when done viewing
+  return_to_menu
 end
 
 def format_npc_new(npc)
@@ -1438,7 +1438,6 @@ def handle_content_view(object, type)
     
     case key
     when "ESC", "\e", "q"  # ESC or q to go back
-      return_to_menu
       break
     when "j", "DOWN"  # Scroll down
       @content.linedown
@@ -1630,7 +1629,6 @@ def handle_monster_view(monster, output)
     
     case key
     when "ESC", "\e", "q"
-      return_to_menu
       break
     when "j", "DOWN"
       @content.linedown
@@ -1653,8 +1651,9 @@ def handle_monster_view(monster, output)
       break
     end
   end
-  
-  draw_footer
+
+  # Return focus to menu when done viewing
+  return_to_menu
 end
 
 def format_monster_new(monster)
@@ -1878,7 +1877,6 @@ def generate_npc_old
       key = getchr
       case key
       when "\e", "q"
-        return_to_menu
         break
       when "j", "\e[B"
         @content.linedown
@@ -1932,7 +1930,6 @@ def generate_encounter_old
       key = getchr
       case key
       when "\e", "q"
-        return_to_menu
         break
       when "j", "\e[B"
         @content.linedown
@@ -2162,7 +2159,6 @@ def generate_weather_ui
       key = getchr
       case key
       when "\e", "q"
-        return_to_menu
         break
       when "j", "DOWN"
         @content.linedown
@@ -2646,7 +2642,6 @@ def generate_name_ui
       key = getchr
       case key
       when "\e", "q"
-        return_to_menu
         break
       when "j", "\e[B"
         @content.linedown
@@ -2783,7 +2778,6 @@ def generate_town_relations
       key = getchr
       case key
       when "\e", "q"
-        return_to_menu
         break
       when "j", "DOWN"
         @content.linedown
