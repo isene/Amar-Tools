@@ -2081,13 +2081,6 @@ def generate_town_ui
       progress_read.close
       result_read.close
 
-      # Detach from terminal completely
-      begin
-        Process.setsid  # Create new session
-      rescue
-        # Might fail if already in new session
-      end
-
       # Clear any TUI-related globals to prevent interference
       $tui_content = nil
       $tui_footer = nil
@@ -2095,9 +2088,6 @@ def generate_town_ui
       @content = nil
       @footer = nil
       @menu = nil
-
-      # Close all standard streams and redirect to /dev/null
-      STDIN.reopen("/dev/null", "r") rescue nil
 
       # Set global progress pipe
       $progress_pipe = progress_write
@@ -2152,9 +2142,12 @@ def generate_town_ui
 
     # Monitor child process
     while Process.waitpid(pid, Process::WNOHANG).nil?
-      # Try to read progress updates
+      # Try to read progress updates (non-blocking)
       begin
-        while line = progress_read.gets
+        # Read available data without blocking
+        data = progress_read.read_nonblock(1024)
+        data.each_line do |line|
+          line = line.strip
           if line.start_with?("ERROR:")
             # Error from child process
             @content.text = "Error: #{line.sub('ERROR: ', '')}"
@@ -2163,11 +2156,16 @@ def generate_town_ui
             break
           else
             num = line.to_i
-            houses_created = num if num > houses_created && num > 0
+            if num > 0 && num > houses_created
+              houses_created = num
+            end
           end
         end
-      rescue Errno::EAGAIN, EOFError
+      rescue IO::WaitReadable, Errno::EAGAIN
         # No data available, that's OK
+      rescue EOFError
+        # Pipe closed, child is done
+        break
       end
 
       # Calculate elapsed time
