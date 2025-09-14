@@ -388,12 +388,16 @@ def update_border_colors
 end
 
 def return_to_menu
-  # Return focus to menu and clear content
+  # Clear content first (without changing focus)
+  @content.say("")
+  @content.ix = 0
+
+  # Then return focus to menu
   if @focus != :menu
     @focus = :menu
     update_border_colors if @config[:show_borders]
   end
-  show_content("")
+
   draw_footer
 end
 
