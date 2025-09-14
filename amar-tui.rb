@@ -244,13 +244,12 @@ def init_screen
     raise
   end
   
-  # Set borders and initial focus colors
+  # Set initial focus and borders
+  @focus = :menu if !defined?(@focus)
   if @config[:show_borders]
-    @menu.border = true
-    @content.border = true
-    # Set initial focus to menu
-    @focus = :menu if !defined?(@focus)
-    update_border_colors
+    # Only show border on focused pane
+    @menu.border = (@focus == :menu)
+    @content.border = (@focus == :content)
   end
   
   # Initialize menu
@@ -313,13 +312,12 @@ def recreate_panes
   @content= Pane.new(   34, 3,  @cols - 35,  @rows - 4,  255,            @colors[:content])
   @footer = Pane.new(   1,  @rows, @cols,    1,          255,            234)  # Dark grey background
 
-  # Set borders and initial focus colors
+  # Set initial focus and borders
+  @focus = :menu if !defined?(@focus)
   if @config[:show_borders]
-    @menu.border = true
-    @content.border = true
-    # Set initial focus to menu
-    @focus = :menu if !defined?(@focus)
-    update_border_colors
+    # Only show border on focused pane
+    @menu.border = (@focus == :menu)
+    @content.border = (@focus == :content)
   end
 
   # Redraw everything
@@ -375,17 +373,18 @@ def draw_menu
 end
 
 def update_border_colors
-  # Update border colors based on focus
+  # Toggle borders based on focus (like RTFM)
+  # Only the focused pane gets a border
   if @focus == :menu
-    @menu.fg = 46     # Green for focused pane
-    @content.fg = 240 # Gray for unfocused pane
+    @menu.border = true
+    @content.border = false
   else
-    @menu.fg = 240    # Gray for unfocused pane
-    @content.fg = 46  # Green for focused pane
+    @menu.border = false
+    @content.border = true
   end
-  # Refresh only the borders (more efficient than full refresh)
-  @menu.border_refresh if @menu && @menu.border
-  @content.border_refresh if @content && @content.border
+  # Refresh borders to show/hide them
+  @menu.border_refresh
+  @content.border_refresh
 end
 
 def draw_footer
