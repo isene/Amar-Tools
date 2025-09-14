@@ -2082,38 +2082,23 @@ def generate_town_ui
     captured = StringIO.new
     original_stdout = $stdout
     original_stderr = $stderr
-
-    # Create thread to monitor progress
-    monitor_thread = Thread.new do
-      last_count = 0
-      while true
-        sleep 0.1
-        current = captured.string
-        if current =~ /House (\d+)/
-          new_count = $1.to_i
-          if new_count > last_count
-            last_count = new_count
-            # Update display with progress
-            output = colorize_output("GENERATING TOWN", :header) + "\n"
-            output += colorize_output("─" * (@cols - 35), :header) + "\n\n"
-            output += colorize_output("Size: ", :label) + colorize_output("#{town_size} houses", :value) + "\n"
-            output += colorize_output("Progress: ", :label) + colorize_output("House #{new_count} / #{town_size}", :success) + "\n\n"
-            @content.text = output
-            @content.refresh
-          end
-        end
-      end
-    end
-
-    # Redirect output
     $stdout = captured
     $stderr = captured
 
-    # Generate the town
-    town = Town.new(town_name, town_size, town_var)
+    # Create progress callback
+    progress_callback = lambda do |house_count|
+      output = colorize_output("GENERATING TOWN", :header) + "\n"
+      output += colorize_output("─" * (@cols - 35), :header) + "\n\n"
+      output += colorize_output("Size: ", :label) + colorize_output("#{town_size} houses", :value) + "\n"
+      output += colorize_output("Progress: ", :label) + colorize_output("House #{house_count} / #{town_size}", :success) + "\n\n"
+      @content.text = output
+      @content.refresh
+    end
 
-    # Stop monitor and restore stdout
-    monitor_thread.kill if monitor_thread.alive?
+    # Generate the town with progress callback
+    town = Town.new(town_name, town_size, town_var, progress_callback)
+
+    # Restore stdout/stderr
     $stdout = original_stdout
     $stderr = original_stderr
   rescue => e
@@ -2231,11 +2216,24 @@ def generate_town_ui
         # Generate new town
         captured = StringIO.new
         original_stdout = $stdout
+        original_stderr = $stderr
         $stdout = captured
+        $stderr = captured
 
-        town = Town.new(town_name, town_size, town_var)
+        # Create progress callback for re-roll
+        progress_callback = lambda do |house_count|
+          output = colorize_output("RE-GENERATING TOWN", :header) + "\n"
+          output += colorize_output("─" * (@cols - 35), :header) + "\n\n"
+          output += colorize_output("Size: ", :label) + colorize_output("#{town_size} houses", :value) + "\n"
+          output += colorize_output("Progress: ", :label) + colorize_output("House #{house_count} / #{town_size}", :success) + "\n\n"
+          @content.text = output
+          @content.refresh
+        end
+
+        town = Town.new(town_name, town_size, town_var, progress_callback)
 
         $stdout = original_stdout
+        $stderr = original_stderr
 
         # Build the output with colors
         output = ""
