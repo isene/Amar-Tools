@@ -220,6 +220,15 @@ class Town
 				@h_index += 1
 				# Output progress for CLI
 				$stdout.puts "House #{@h_index}" if defined?($stdout) && $stdout.respond_to?(:puts)
+				# Send progress through pipe if available
+				if defined?($progress_pipe) && $progress_pipe
+					begin
+						$progress_pipe.puts @h_index
+						$progress_pipe.flush
+					rescue
+						# Pipe may be closed, ignore
+					end
+				end
 				break if @h_index > town_size
 			end
 			break if @h_index > town_size

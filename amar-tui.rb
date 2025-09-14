@@ -23,6 +23,7 @@ require 'io/console'
 require 'fileutils'
 require 'json'  # Needed for config save/load
 require 'stringio'  # For suppressing output
+require 'fcntl'  # For non-blocking IO
 
 # GLOBAL VARS & CONSTANTS
 @version = "1.0.0"
@@ -2070,39 +2071,65 @@ def generate_town_ui
   town = nil
 
   begin
-    # Capture output in a StringIO
-    captured = StringIO.new
+    # Create pipes for IPC
+    progress_read, progress_write = IO.pipe
+    result_read, result_write = IO.pipe
 
-    # Start generation in background thread
-    generation_thread = Thread.new do
-      Thread.current[:stdout] = $stdout
-      Thread.current[:stderr] = $stderr
+    # Fork a process for generation
+    pid = fork do
+      # Child process - generate town
+      progress_read.close
+      result_read.close
+
+      # Set global progress pipe
+      $progress_pipe = progress_write
+
+      # Redirect stdout to capture output
+      captured = StringIO.new
+      original_stdout = $stdout
+      original_stderr = $stderr
       $stdout = captured
       $stderr = captured
 
-      result = Town.new(town_name, town_size, town_var)
+      # Generate the town
+      town = Town.new(town_name, town_size, town_var)
 
-      $stdout = Thread.current[:stdout]
-      $stderr = Thread.current[:stderr]
-      result
+      # Restore stdout
+      $stdout = original_stdout
+      $stderr = original_stderr
+
+      # Close progress pipe
+      progress_write.close
+
+      # Send town data through result pipe
+      Marshal.dump(town, result_write)
+      result_write.close
+      exit(0)
     end
 
-    # Update display while generating
+    # Parent process - monitor progress
+    progress_write.close
+    result_write.close
     houses_created = 0
     start_time = Time.now
 
-    while generation_thread.alive?
-      # Check for new house numbers in captured output
-      output_so_far = captured.string
-      output_so_far.scan(/House (\d+)/).each do |match|
-        num = match[0].to_i
-        houses_created = num if num > houses_created
+    # Make progress pipe non-blocking
+    progress_read.fcntl(Fcntl::F_SETFL, Fcntl::O_NONBLOCK)
+
+    # Monitor child process
+    while Process.waitpid(pid, Process::WNOHANG).nil?
+      # Try to read progress updates
+      begin
+        while line = progress_read.gets
+          num = line.to_i
+          houses_created = num if num > houses_created
+        end
+      rescue Errno::EAGAIN, EOFError
+        # No data available, that's OK
       end
 
-      # Calculate elapsed time and estimate
+      # Calculate elapsed time
       elapsed = Time.now - start_time
-      rate = houses_created > 0 ? houses_created / elapsed : 0
-      eta = rate > 0 ? ((town_size - houses_created) / rate).to_i : 0
 
       # Update display
       output = colorize_output("GENERATING TOWN", :header) + "\n"
@@ -2119,19 +2146,20 @@ def generate_town_ui
       output += "-" * (bar_width - filled)
       output += "] #{progress_pct}%\n\n"
 
-      if houses_created > 0 && eta > 0
-        output += colorize_output("Time elapsed: ", :label) + "#{elapsed.to_i}s\n"
-        output += colorize_output("Estimated remaining: ", :label) + "#{eta}s\n"
-      end
+      output += colorize_output("Time elapsed: ", :label) + "#{elapsed.to_i}s\n"
 
       @content.text = output
       @content.refresh
 
-      sleep 0.1
+      sleep 0.05
     end
 
-    # Get the generated town
-    town = generation_thread.value
+    # Close progress pipe
+    progress_read.close
+
+    # Read the town from result pipe
+    town = Marshal.load(result_read)
+    result_read.close
   rescue => e
     # Make sure stdout is restored even on error
     $stdout = original_stdout if defined?(original_stdout)
