@@ -2067,34 +2067,53 @@ def generate_town_ui
   town_var = 6 if town_var > 6
   
   begin
-    # Show generating message
-    @content.text = "Generating town...\n\nSize: #{town_size} houses\n\n"
+    # Show initial message
+    base_text = "GENERATING TOWN\n" + "=" * 40 + "\n\n"
+    base_text += "Name: #{town_name.empty? ? 'Random' : town_name}\n"
+    base_text += "Size: #{town_size} houses\n\n"
+    @content.text = base_text + "Progress: Starting...\n"
     @content.refresh
 
-    # Capture stdout - SIMPLE
-    captured = StringIO.new
+    # Create a custom stdout that updates display
     original_stdout = $stdout
-    $stdout = captured
+    house_count = 0
+    ui_ref = self
+    base_ref = base_text
 
-    # Generate town - EXACTLY like CLI
+    $stdout = StringIO.new
+    class << $stdout
+      attr_accessor :ui, :base_text, :house_count
+
+      def puts(str = "")
+        super(str)  # Call StringIO's puts
+        if str && str.to_s =~ /House (\d+)/
+          @house_count = $1.to_i
+          # Update the display immediately
+          if @ui && @base_text
+            @ui.instance_eval do
+              @content.text = @base_text + "Progress: Generated #{@house_count} houses...\n"
+              @content.refresh
+            end
+          end
+        end
+      end
+    end
+
+    $stdout.ui = ui_ref
+    $stdout.base_text = base_ref
+    $stdout.house_count = 0
+
+    # Generate town - display will update as houses are created
     town = Town.new(town_name, town_size, town_var)
 
     # Restore stdout
     $stdout = original_stdout
 
-    # Get what was captured
-    progress_output = captured.string
-
-    # Show it
-    output = "TOWN GENERATION\n" + "=" * 40 + "\n\n"
-    output += "Name: #{town.town_name}\n"
-    output += "Size: #{town.town.size} houses\n"
-    output += "Residents: #{town.town_residents}\n\n"
-    if progress_output && !progress_output.empty?
-      output += "Progress captured:\n"
-      output += progress_output
-    end
-    output += "\nGeneration complete!\n"
+    # Show final result
+    output = base_text
+    output += "Progress: COMPLETE\n\n"
+    output += "Generated #{town.town.size} houses\n"
+    output += "Total residents: #{town.town_residents}\n"
     @content.text = output
     @content.refresh
 
