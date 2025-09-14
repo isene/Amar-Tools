@@ -2068,62 +2068,75 @@ def generate_town_ui
   
   begin
     # Show initial message
-    base_text = "GENERATING TOWN\n" + "=" * 40 + "\n\n"
-    base_text += "Name: #{town_name.empty? ? 'Random' : town_name}\n"
-    base_text += "Size: #{town_size} houses\n\n"
+    @content.text = "Generating town...\n\nSize: #{town_size} houses\n"
+    @content.refresh
 
-    # Capture stdout
+    # Capture ALL output
     captured = StringIO.new
     original_stdout = $stdout
+    original_stderr = $stderr
     $stdout = captured
-
-    # Start generation
-    @content.text = base_text + "Progress: Starting...\n"
-    @content.refresh
+    $stderr = captured
 
     # Generate the town
     town = Town.new(town_name, town_size, town_var)
 
-    # Restore stdout
+    # Restore stdout/stderr IMMEDIATELY
     $stdout = original_stdout
+    $stderr = original_stderr
 
-    # Get captured lines and update display for each house
-    lines = captured.string.lines
-    house_count = 0
+    # Now show the results (AFTER stdout is restored)
+    output = "TOWN GENERATED\n" + "=" * 40 + "\n\n"
+    output += "Name: #{town.town_name}\n"
+    output += "Size: #{town.town.size} houses\n"
+    output += "Residents: #{town.town_residents}\n\n"
 
-    lines.each do |line|
-      if line =~ /House (\d+)/
-        house_count = $1.to_i
-        # Update the pane after each house
-        @content.text = base_text + "Progress: Generated #{house_count} houses...\n"
-        @content.refresh
-        sleep(0.05)  # Small delay so user can see progress
+    # Show captured progress
+    progress = captured.string
+    if progress && !progress.empty?
+      output += "Progress log:\n"
+      progress.lines.each do |line|
+        output += "  #{line}"
       end
     end
 
-    # Show final result
-    output = base_text
-    output += "Progress: COMPLETE\n\n"
-    output += "Generated #{town.town.size} houses\n"
-    output += "Total residents: #{town.town_residents}\n"
     @content.text = output
     @content.refresh
+  rescue => e
+    # Make sure stdout is restored even on error
+    $stdout = original_stdout if defined?(original_stdout)
+    $stderr = original_stderr if defined?(original_stderr)
+    @content.text = "Error: #{e.message}\n\n#{e.backtrace.first(5).join("\n")}"
+    @content.refresh
+    return
+  end
 
-    # Suppress file saving output
-    output_io = StringIO.new
+  # Suppress ALL file saving output
+  begin
+    save_capture = StringIO.new
     original_editor = $editor if defined?($editor)
-    $stdout = output_io
+    temp_stdout = $stdout
+    temp_stderr = $stderr
+    $stdout = save_capture
+    $stderr = save_capture
     $editor = "/bin/true"  # Use /bin/true to avoid editor output
 
     # Ensure saved directory exists
     saved_dir = File.join($pgmdir, "saved")
     FileUtils.mkdir_p(saved_dir) unless Dir.exist?(saved_dir)
 
-    # Call town_output to save files (suppress output)
+    # Call town_output to save files (ALL output suppressed)
     town_output(town, "tui")
 
-    $stdout = original_stdout
+    $stdout = temp_stdout
+    $stderr = temp_stderr
     $editor = original_editor if original_editor
+  rescue => e
+    # Ensure streams are restored
+    $stdout = temp_stdout if defined?(temp_stdout)
+    $stderr = temp_stderr if defined?(temp_stderr)
+    $editor = original_editor if defined?(original_editor)
+  end
 
     # Build the output with colors
     output = ""
@@ -2277,11 +2290,10 @@ def generate_town_ui
         @content.refresh
       when "s"
         save_to_file(@content.text, :town)
-      end
     end
+  end
   rescue => e
     show_content("Error generating town: #{e.message}")
-  end
 end
 
 # NAME GENERATOR
