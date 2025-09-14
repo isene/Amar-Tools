@@ -244,10 +244,13 @@ def init_screen
     raise
   end
   
-  # Set borders
+  # Set borders and initial focus colors
   if @config[:show_borders]
     @menu.border = true
     @content.border = true
+    # Set initial focus to menu
+    @focus = :menu if !defined?(@focus)
+    update_border_colors
   end
   
   # Initialize menu
@@ -279,7 +282,8 @@ def init_screen
     "Q. Quit"
   ]
   @menu_index = 1  # Start at first selectable item
-  
+  @focus = :menu   # Track which pane has focus (:menu or :content)
+
   refresh_all
 end
 
@@ -309,10 +313,13 @@ def recreate_panes
   @content= Pane.new(   34, 3,  @cols - 35,  @rows - 4,  255,            @colors[:content])
   @footer = Pane.new(   1,  @rows, @cols,    1,          255,            234)  # Dark grey background
 
-  # Set borders
+  # Set borders and initial focus colors
   if @config[:show_borders]
     @menu.border = true
     @content.border = true
+    # Set initial focus to menu
+    @focus = :menu if !defined?(@focus)
+    update_border_colors
   end
 
   # Redraw everything
@@ -367,9 +374,23 @@ def draw_menu
   @menu.say(menu_text)
 end
 
+def update_border_colors
+  # Update border colors based on focus
+  if @focus == :menu
+    @menu.fg = 46     # Green for focused pane
+    @content.fg = 240 # Gray for unfocused pane
+  else
+    @menu.fg = 240    # Gray for unfocused pane
+    @content.fg = 46  # Green for focused pane
+  end
+  # Redraw borders
+  @menu.draw_border if @menu.border
+  @content.draw_border if @content.border
+end
+
 def draw_footer
   # Build footer with left-aligned help and right-aligned version
-  help = " [↑↓] Navigate | [Enter] Select | [r] Refresh | [q] Quit"
+  help = " [↑↓] Navigate | [Enter] Select | [TAB] Switch Focus | [r] Refresh | [q] Quit"
   version_text = "v#{@version} "
   
   # Calculate padding
@@ -627,18 +648,26 @@ def handle_menu_navigation
   
   case key
   when "j", "DOWN"  # Down arrow
-    loop do
-      @menu_index = (@menu_index + 1) % @menu_items.length
-      break unless @menu_items[@menu_index].empty? || @menu_items[@menu_index].start_with?("──")
+    if @focus == :menu
+      loop do
+        @menu_index = (@menu_index + 1) % @menu_items.length
+        break unless @menu_items[@menu_index].empty? || @menu_items[@menu_index].start_with?("──")
+      end
+      draw_menu
+    else
+      @content.linedown
     end
-    draw_menu
-    
-  when "k", "UP"  # Up arrow  
-    loop do
-      @menu_index = (@menu_index - 1) % @menu_items.length
-      break unless @menu_items[@menu_index].empty? || @menu_items[@menu_index].start_with?("──")
+
+  when "k", "UP"  # Up arrow
+    if @focus == :menu
+      loop do
+        @menu_index = (@menu_index - 1) % @menu_items.length
+        break unless @menu_items[@menu_index].empty? || @menu_items[@menu_index].start_with?("──")
+      end
+      draw_menu
+    else
+      @content.lineup
     end
-    draw_menu
     
   when "\r", "ENTER"  # Enter
     result = execute_menu_item
@@ -683,6 +712,9 @@ def handle_menu_navigation
     show_help
   when "r", "R"
     recreate_panes
+  when "\t"  # Tab to switch focus
+    @focus = (@focus == :menu) ? :content : :menu
+    update_border_colors if @config[:show_borders]
   end
   
   true
@@ -1935,20 +1967,20 @@ def generate_weather_ui
   $mn = month
   
   # Get weather conditions
-  weather_text = "\nSelect weather conditions:\n\n"
-  weather_text += " 1: Arctic\n"
-  weather_text += " 2: Winter\n"
-  weather_text += " 3: Cold\n"
-  weather_text += " 4: Cool\n"
-  weather_text += " 5: Normal\n"
-  weather_text += " 6: Warm\n"
-  weather_text += " 7: Hot\n"
-  weather_text += " 8: Very hot\n"
-  weather_text += " 9: Extreme heat\n"
-  weather_text += "\nEnter weather condition (default=#{$weather_n}):"
-  
-  show_content(weather_text)
-  weather_input = get_text_input("Weather: ")
+  weather_text = "\n" + colorize_output("Select weather conditions:", :header) + "\n\n"
+  weather_text += colorize_output(" 1", :dice) + ": " + colorize_output("Arctic", :value) + "\n"
+  weather_text += colorize_output(" 2", :dice) + ": " + colorize_output("Winter", :value) + "\n"
+  weather_text += colorize_output(" 3", :dice) + ": " + colorize_output("Cold", :value) + "\n"
+  weather_text += colorize_output(" 4", :dice) + ": " + colorize_output("Cool", :value) + "\n"
+  weather_text += colorize_output(" 5", :dice) + ": " + colorize_output("Normal", :value) + " (default)\n"
+  weather_text += colorize_output(" 6", :dice) + ": " + colorize_output("Warm", :value) + "\n"
+  weather_text += colorize_output(" 7", :dice) + ": " + colorize_output("Hot", :value) + "\n"
+  weather_text += colorize_output(" 8", :dice) + ": " + colorize_output("Very hot", :value) + "\n"
+  weather_text += colorize_output(" 9", :dice) + ": " + colorize_output("Extreme heat", :value) + "\n"
+  weather_text += "\n" + colorize_output("Enter weather condition", :label) + " (default=#{$weather_n}):\n\n"
+
+  show_content(@content.text + weather_text)
+  weather_input = get_text_input(colorize_output("Weather: ", :prompt))
   return if weather_input == :cancelled
   
   weather = weather_input.to_i
@@ -1957,16 +1989,19 @@ def generate_weather_ui
   weather = 9 if weather > 9
   
   # Get wind
-  wind_text = "\nSelect wind conditions:\n\n"
-  wind_text += "Wind Direction:\n"
-  wind_text += " 0: N   1: NE   2: E   3: SE\n"
-  wind_text += " 4: S   5: SW   6: W   7: NW\n\n"
-  wind_text += "Wind Strength:\n"
-  wind_text += " 0: Calm   8: Light   16: Medium   24: Strong\n\n"
-  wind_text += "Enter combined value (0-31, default=#{$wind_dir_n + $wind_str_n * 8}):"
-  
-  show_content(wind_text)
-  wind_input = get_text_input("Wind: ")
+  wind_text = "\n" + colorize_output("Select wind conditions:", :header) + "\n\n"
+  wind_text += colorize_output("Wind Direction:", :subheader) + "\n"
+  wind_text += colorize_output(" 0", :dice) + ": N   " + colorize_output("1", :dice) + ": NE   "
+  wind_text += colorize_output("2", :dice) + ": E   " + colorize_output("3", :dice) + ": SE\n"
+  wind_text += colorize_output(" 4", :dice) + ": S   " + colorize_output("5", :dice) + ": SW   "
+  wind_text += colorize_output("6", :dice) + ": W   " + colorize_output("7", :dice) + ": NW\n\n"
+  wind_text += colorize_output("Wind Strength:", :subheader) + "\n"
+  wind_text += colorize_output(" 0", :dice) + ": Calm   " + colorize_output("8", :dice) + ": Light   "
+  wind_text += colorize_output("16", :dice) + ": Medium   " + colorize_output("24", :dice) + ": Strong\n\n"
+  wind_text += colorize_output("Enter combined value", :label) + " (0-31, default=#{$wind_dir_n + $wind_str_n * 8}):\n\n"
+
+  show_content(@content.text + wind_text)
+  wind_input = get_text_input(colorize_output("Wind: ", :prompt))
   return if wind_input == :cancelled
   
   wind = wind_input.to_i
@@ -2144,31 +2179,34 @@ def generate_town_ui
   debug "Starting generate_town_ui"
   
   # Get Town name
-  show_content("\nEnter Village/Town/City name (or ENTER for random):")
-  town_name = get_text_input("Name: ")
+  header = colorize_output("TOWN/CITY GENERATOR", :header) + "\n"
+  header += colorize_output("═" * 60, :header) + "\n\n"
+  header += colorize_output("Enter Village/Town/City name", :label) + " (or ENTER for random):\n\n"
+  show_content(header)
+  town_name = get_text_input(colorize_output("Name: ", :prompt))
   return if town_name == :cancelled
   town_name = "" if town_name.nil?
   
   # Get Town size
-  show_content("\nEnter number of houses (default=1):")
-  size_input = get_text_input("Houses: ")
+  prompt_text = "\n" + colorize_output("Enter number of houses", :label)
+  prompt_text += " (1-1000, default=1):\n\n"
+  show_content(@content.text + prompt_text)
+  size_input = get_text_input(colorize_output("Houses: ", :prompt))
   return if size_input == :cancelled
   town_size = size_input.to_i
   town_size = 1 if town_size < 1
   
   # Get Town variations
-  var_text = "\nSelect race variation:\n\n"
-  var_text += "0 = Only humans\n"
-  var_text += "1 = Few non-humans\n"
-  var_text += "2 = Several non-humans\n"
-  var_text += "3 = Crazy place\n"
-  var_text += "4 = Only Dwarves\n"
-  var_text += "5 = Only Elves\n"
-  var_text += "6 = Only Lizardfolk\n\n"
-  var_text += "Enter variation (default=0):"
-  
-  show_content(var_text)
-  var_input = get_text_input("Variation: ")
+  var_text = "\n" + colorize_output("Select race variation:", :header) + "\n\n"
+  var_text += colorize_output("0", :dice) + ": " + colorize_output("Only humans", :value) + " (default)\n"
+  var_text += colorize_output("1", :dice) + ": " + colorize_output("Few non-humans", :value) + "\n"
+  var_text += colorize_output("2", :dice) + ": " + colorize_output("Several non-humans", :value) + "\n"
+  var_text += colorize_output("3", :dice) + ": " + colorize_output("Crazy place", :value) + "\n"
+  var_text += colorize_output("4", :dice) + ": " + colorize_output("Only Dwarves", :value) + "\n"
+  var_text += colorize_output("5", :dice) + ": " + colorize_output("Only Elves", :value) + "\n"
+  var_text += colorize_output("6", :dice) + ": " + colorize_output("Only Lizardfolk", :value) + "\n\n"
+  show_content(@content.text + var_text)
+  var_input = get_text_input(colorize_output("Variation: ", :prompt))
   return if var_input == :cancelled
   town_var = var_input.to_i
   town_var = 0 if town_var < 0
