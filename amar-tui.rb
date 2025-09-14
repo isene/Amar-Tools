@@ -301,7 +301,7 @@ end
 
 def draw_menu
   menu_text = ""
-  
+
   @menu_items.each_with_index do |item, idx|
     if item.empty? || item.start_with?("──")
       # Section header or blank
@@ -311,17 +311,17 @@ def draw_menu
         menu_text += item + "\n"
       end
     elsif idx == @menu_index
-      # Highlighted item
+      # Highlighted item - RTFM style (bold, underlined with arrow)
       if @config[:color_mode]
-        menu_text += "\e[1;33;44m▸ #{item}\e[0m\n"  # Yellow on blue
+        menu_text += "\e[1;4m→ #{item}\e[0m\n"  # Bold and underlined
       else
-        menu_text += "▸ #{item}\n"
+        menu_text += "→ #{item}\n"
       end
     else
       menu_text += "  #{item}\n"
     end
   end
-  
+
   @menu.say(menu_text)
 end
 
@@ -922,7 +922,7 @@ end
 
 def get_text_input(prompt)
   debug "get_text_input called with prompt: #{prompt}"
-  @footer.say(" Type input | [ENTER] Confirm | [ESC] Cancel ".center(@cols))
+  @footer.say(" Type input | [ENTER] Confirm | [ESC] Cancel ".ljust(@cols))
   
   input = ""
   cursor_pos = 0
@@ -959,7 +959,7 @@ end
 
 def handle_npc_view(npc, output)
   # Show instructions including clipboard copy
-  @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [y] Copy to clipboard | [r] Re-roll | [ESC/q] Back ".center(@cols))
+  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
   
   loop do
     key = getchr
@@ -988,10 +988,15 @@ def handle_npc_view(npc, output)
       # Show confirmation in footer briefly
       footer_text = " ✓ Output copied to clipboard! Press any key to continue... "
       @footer.bg = 28  # Dark green background for success
-      @footer.say(footer_text.center(@cols))
+      @footer.say(footer_text.ljust(@cols))
       @footer.bg = 234  # Reset to dark grey
       sleep(1)
-      @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [y] Copy to clipboard | [r] Re-roll | [ESC/q] Back ".center(@cols))
+      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+    when "e"
+      # Edit in editor - strip ANSI codes first
+      clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
+      edit_in_editor(clean_text)
+      show_content(output)
     when "r"
       # Re-roll with same parameters
       generate_npc_new
@@ -1198,7 +1203,7 @@ end
 
 def handle_encounter_view(enc, output)
   # Show instructions including clipboard copy
-  @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [y] Copy to clipboard | [r] Re-roll | [ESC/q] Back ".center(@cols))
+  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
   
   loop do
     key = getchr
@@ -1227,10 +1232,15 @@ def handle_encounter_view(enc, output)
       # Show confirmation in footer briefly
       footer_text = " ✓ Output copied to clipboard! Press any key to continue... "
       @footer.bg = 28  # Dark green background for success
-      @footer.say(footer_text.center(@cols))
+      @footer.say(footer_text.ljust(@cols))
       @footer.bg = 234  # Reset to dark grey
       sleep(1)
-      @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [y] Copy to clipboard | [r] Re-roll | [ESC/q] Back ".center(@cols))
+      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+    when "e"
+      # Edit in editor - strip ANSI codes first
+      clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
+      edit_in_editor(clean_text)
+      show_content(output)
     when "r"
       # Re-roll with same parameters
       generate_encounter_new
@@ -1296,7 +1306,7 @@ end
 
 def handle_content_view(object, type)
   # Show scrolling instructions in footer
-  @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [b] PgUp | [g] Top | [G] Bottom | [ESC/q] Back ".center(@cols))
+  @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [b] PgUp | [g] Top | [G] Bottom | [ESC/q] Back ".ljust(@cols))
   
   loop do
     key = getchr
@@ -1373,7 +1383,7 @@ def colorize_output(text, type = :default)
   when :subheader
     text.fg(11).b  # Bright yellow bold
   when :label
-    text.fg(13).b  # Bright magenta bold
+    text.fg(13)  # Bright magenta (no bold)
   when :value
     text.fg(7)     # White
   when :success
@@ -1381,7 +1391,7 @@ def colorize_output(text, type = :default)
   when :dice
     text.fg(202)   # Orange
   when :name
-    text.fg(111)   # Light blue
+    text.fg(15).b  # Bright white bold
   else
     text
   end
@@ -1487,7 +1497,7 @@ def generate_monster_new
 end
 
 def handle_monster_view(monster, output)
-  @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [y] Copy to clipboard | [r] Re-roll | [ESC/q] Back ".center(@cols))
+  @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [y] Copy to clipboard | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
   
   loop do
     key = getchr
@@ -1507,10 +1517,10 @@ def handle_monster_view(monster, output)
       copy_to_clipboard(output)
       footer_text = " ✓ Output copied to clipboard! Press any key to continue... "
       @footer.bg = 28  # Dark green background for success
-      @footer.say(footer_text.center(@cols))
+      @footer.say(footer_text.ljust(@cols))
       @footer.bg = 234  # Reset to dark grey
       sleep(1)
-      @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [y] Copy to clipboard | [r] Re-roll | [ESC/q] Back ".center(@cols))
+      @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [y] Copy to clipboard | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     when "r"
       generate_monster_new
       break
@@ -1548,7 +1558,7 @@ def format_monster_new(monster)
     
     # Weapons/Attacks
     output += colorize_output("WEAPONS/ATTACKS:", :subheader) + "\n"
-    output += colorize_output("Attack", :label).ljust(20) + colorize_output("Skill  Init  Off  Def  Damage", :label) + "\n"
+    output += colorize_output("Attack".ljust(18), :label) + colorize_output("Skill  Init  Off  Def  Damage", :label) + "\n"
     monster.tiers["BODY"]["Melee Combat"]["skills"].each do |skill, value|
       next if value == 0
       total = monster.get_skill_total("BODY", "Melee Combat", skill)
@@ -1559,7 +1569,7 @@ def format_monster_new(monster)
         init = 3 + (monster.level / 2)
         off = total + 2
         def_val = total
-        damage = db + 1  # Natural attacks use DB + 1
+        damage = -4 + db  # Unarmed base damage is -4, plus DB
         attack_name = skill.capitalize.ljust(15)
       else
         # Other weapons
@@ -2010,7 +2020,9 @@ def generate_weather_ui
         @footer.clear
         @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [ESC/q] Back ".ljust(@cols))
       when "e"
-        edit_in_editor(output)
+        # Edit in editor - strip ANSI codes first
+        clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
+        edit_in_editor(clean_text)
         show_content(output)
       when "r"
         generate_weather_ui
@@ -2258,10 +2270,10 @@ def generate_town_ui
           level = $4
           personality = $5
           output += "  " + colorize_output(name, :name)
-          output += " (" + colorize_output(details, :label) + ")"
+          output += " (" + details + ")"
           output += " " + race
           output += " [" + colorize_output(level, :dice) + "]"
-          output += " " + colorize_output(personality, :label) + "\n"
+          output += " " + personality + "\n"
         else
           output += "   #{resident}\n"
         end
@@ -2271,7 +2283,11 @@ def generate_town_ui
 
   # Set the text directly to the content pane
   @content.say(output)
-    
+
+  # Refresh all panes to ensure UI is properly displayed
+  @menu.refresh
+  @content.refresh
+
   # Show navigation help
   @footer.clear
   @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
@@ -2374,10 +2390,10 @@ def generate_town_ui
               level = $4
               personality = $5
               output += "  " + colorize_output(name, :name)
-              output += " (" + colorize_output(details, :label) + ")"
+              output += " (" + details + ")"
               output += " " + race
               output += " [" + colorize_output(level, :dice) + "]"
-              output += " " + colorize_output(personality, :label) + "\n"
+              output += " " + personality + "\n"
             else
               output += "   #{resident}\n"
             end
@@ -2403,8 +2419,9 @@ def generate_town_ui
         @footer.clear
         @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
       when "e"
-        # Edit in editor
-        edit_in_editor(@content.text)
+        # Edit in editor - strip ANSI codes first
+        clean_text = @content.text.respond_to?(:pure) ? @content.text.pure : @content.text.gsub(/\e\[\d+(?:;\d+)*m/, '')
+        edit_in_editor(clean_text)
         @content.say(@content.text)
       when "s"
         save_to_file(@content.text, :town)
