@@ -2066,48 +2066,69 @@ def generate_town_ui
   town_var = 0 if town_var < 0
   town_var = 6 if town_var > 6
   
+  # Initialize town variable
+  town = nil
+
   begin
-    # Show initial message
-    @content.text = "Generating town...\n\nSize: #{town_size} houses\n"
+    # Show initial colored message
+    output = colorize_output("GENERATING TOWN", :header) + "\n"
+    output += colorize_output("─" * (@cols - 35), :header) + "\n\n"
+    output += colorize_output("Size: ", :label) + colorize_output("#{town_size} houses", :value) + "\n"
+    output += colorize_output("Status: ", :label) + colorize_output("Starting...", :warning) + "\n\n"
+    @content.text = output
     @content.refresh
 
-    # Capture ALL output
+    # Capture output in a StringIO
     captured = StringIO.new
     original_stdout = $stdout
     original_stderr = $stderr
+
+    # Create thread to monitor progress
+    monitor_thread = Thread.new do
+      last_count = 0
+      while true
+        sleep 0.1
+        current = captured.string
+        if current =~ /House (\d+)/
+          new_count = $1.to_i
+          if new_count > last_count
+            last_count = new_count
+            # Update display with progress
+            output = colorize_output("GENERATING TOWN", :header) + "\n"
+            output += colorize_output("─" * (@cols - 35), :header) + "\n\n"
+            output += colorize_output("Size: ", :label) + colorize_output("#{town_size} houses", :value) + "\n"
+            output += colorize_output("Progress: ", :label) + colorize_output("House #{new_count} / #{town_size}", :success) + "\n\n"
+            @content.text = output
+            @content.refresh
+          end
+        end
+      end
+    end
+
+    # Redirect output
     $stdout = captured
     $stderr = captured
 
     # Generate the town
     town = Town.new(town_name, town_size, town_var)
 
-    # Restore stdout/stderr IMMEDIATELY
+    # Stop monitor and restore stdout
+    monitor_thread.kill if monitor_thread.alive?
     $stdout = original_stdout
     $stderr = original_stderr
-
-    # Now show the results (AFTER stdout is restored)
-    output = "TOWN GENERATED\n" + "=" * 40 + "\n\n"
-    output += "Name: #{town.town_name}\n"
-    output += "Size: #{town.town.size} houses\n"
-    output += "Residents: #{town.town_residents}\n\n"
-
-    # Show captured progress
-    progress = captured.string
-    if progress && !progress.empty?
-      output += "Progress log:\n"
-      progress.lines.each do |line|
-        output += "  #{line}"
-      end
-    end
-
-    @content.text = output
-    @content.refresh
   rescue => e
     # Make sure stdout is restored even on error
     $stdout = original_stdout if defined?(original_stdout)
     $stderr = original_stderr if defined?(original_stderr)
     @content.text = "Error: #{e.message}\n\n#{e.backtrace.first(5).join("\n")}"
     @content.refresh
+    return
+  end
+
+  # Check if town was generated
+  if town.nil?
+    show_content("Error: Failed to generate town. Please try again.\n\nPress any key to continue...")
+    getchr
     return
   end
 
@@ -2173,21 +2194,9 @@ def generate_town_ui
       output += "\n"
     end
 
-    # Set the text directly to the content pane
-    @content.text = output
-    @content.refresh
-  rescue => e
-    show_content("Error generating town: #{e.message}\n\nPress any key to continue...")
-    getchr
-    return
-  end
-
-  # Check if town was generated
-  if town.nil?
-    show_content("Error: Failed to generate town. Please try again.\n\nPress any key to continue...")
-    getchr
-    return
-  end
+  # Set the text directly to the content pane
+  @content.text = output
+  @content.refresh
     
   # Show navigation help
   @footer.clear
@@ -2292,8 +2301,8 @@ def generate_town_ui
         save_to_file(@content.text, :town)
     end
   end
-  rescue => e
-    show_content("Error generating town: #{e.message}")
+rescue => e
+  show_content("Error generating town: #{e.message}")
 end
 
 # NAME GENERATOR
@@ -2561,4 +2570,5 @@ if file_without_ext == script_without_ext
 else
   debug "Not running as main script, skipping startup"
   debug "This happens when __FILE__ != File.expand_path($0)"
+end
 end
