@@ -949,7 +949,7 @@ def npc_input_new_tui
   type_text += "\nEnter type number:"
   
   show_content(type_text)
-  type_input = get_text_input("Type number: ")
+  type_input = get_text_input(colorize_output("Type number: ", :prompt))
   return nil if type_input == :cancelled
   
   type = ""
@@ -965,15 +965,15 @@ def npc_input_new_tui
   inputs << type
   
   # Level selection
-  level_text = "Select character level:\n\n"
-  level_text += "0: Random\n"
-  level_text += "1: Novice\n"
-  level_text += "2: Apprentice\n"
-  level_text += "3: Journeyman\n"
-  level_text += "4: Expert\n"
-  level_text += "5: Master\n"
-  level_text += "6: Grandmaster\n"
-  level_text += "\nPress number key:"
+  level_text = colorize_output("Select character level:", :header) + "\n\n"
+  level_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
+  level_text += colorize_output("1", :dice) + ": " + colorize_output("Novice", :value) + "\n"
+  level_text += colorize_output("2", :dice) + ": " + colorize_output("Apprentice", :value) + "\n"
+  level_text += colorize_output("3", :dice) + ": " + colorize_output("Journeyman", :value) + "\n"
+  level_text += colorize_output("4", :dice) + ": " + colorize_output("Expert", :value) + "\n"
+  level_text += colorize_output("5", :dice) + ": " + colorize_output("Master", :value) + "\n"
+  level_text += colorize_output("6", :dice) + ": " + colorize_output("Grandmaster", :value) + "\n"
+  level_text += "\n" + colorize_output("Press number key:", :prompt)
   
   show_content(level_text)
   key = getchr
@@ -983,17 +983,17 @@ def npc_input_new_tui
   inputs << level
   
   # Area selection
-  area_text = "Select area of origin:\n\n"
-  area_text += "0: Random\n"
-  area_text += "1: Amaronir\n"
-  area_text += "2: Merisir\n"
-  area_text += "3: Calaronir\n"
-  area_text += "4: Feronir\n"
-  area_text += "5: Aleresir\n"
-  area_text += "6: Rauinir\n"
-  area_text += "7: Outskirts\n"
-  area_text += "8: Other\n"
-  area_text += "\nPress number key:"
+  area_text = colorize_output("Select area of origin:", :header) + "\n\n"
+  area_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
+  area_text += colorize_output("1", :dice) + ": " + colorize_output("Amaronir", :value) + "\n"
+  area_text += colorize_output("2", :dice) + ": " + colorize_output("Merisir", :value) + "\n"
+  area_text += colorize_output("3", :dice) + ": " + colorize_output("Calaronir", :value) + "\n"
+  area_text += colorize_output("4", :dice) + ": " + colorize_output("Feronir", :value) + "\n"
+  area_text += colorize_output("5", :dice) + ": " + colorize_output("Aleresir", :value) + "\n"
+  area_text += colorize_output("6", :dice) + ": " + colorize_output("Rauinir", :value) + "\n"
+  area_text += colorize_output("7", :dice) + ": " + colorize_output("Outskirts", :value) + "\n"
+  area_text += colorize_output("8", :dice) + ": " + colorize_output("Other", :value) + "\n"
+  area_text += "\n" + colorize_output("Press number key:", :prompt)
   
   show_content(area_text)
   key = getchr
@@ -1004,7 +1004,12 @@ def npc_input_new_tui
   inputs << area
   
   # Sex selection
-  show_content("Select sex:\n\n0: Random\n1: Male\n2: Female\n\nPress number key:")
+  sex_text = colorize_output("Select sex:", :header) + "\n\n"
+  sex_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
+  sex_text += colorize_output("1", :dice) + ": " + colorize_output("Male", :value) + "\n"
+  sex_text += colorize_output("2", :dice) + ": " + colorize_output("Female", :value) + "\n\n"
+  sex_text += colorize_output("Press number key:", :prompt)
+  show_content(@content.text + sex_text)
   key = getchr
   return nil if key == "ESC" || key == "\e"
   
@@ -1016,28 +1021,32 @@ def npc_input_new_tui
   inputs << sex
   
   # Age input
-  show_content("Enter age (or ENTER/0 for random):")
-  age_input = get_text_input("Age: ")
+  age_text = "\n" + colorize_output("Enter age", :label) + " (or ENTER/0 for random):\n\n"
+  show_content(@content.text + age_text)
+  age_input = get_text_input(colorize_output("Age: ", :prompt))
   return nil if age_input == :cancelled
   age = age_input.to_i
   inputs << age
   
   # Physical attributes
-  show_content("Enter height in cm (or ENTER/0 for random):")
-  height_input = get_text_input("Height: ")
+  height_text = "\n" + colorize_output("Enter height in cm", :label) + " (or ENTER/0 for random):\n\n"
+  show_content(@content.text + height_text)
+  height_input = get_text_input(colorize_output("Height: ", :prompt))
   return nil if height_input == :cancelled
   height = height_input.to_i
   inputs << height
   
-  show_content("Enter weight in kg (or ENTER/0 for random):")
-  weight_input = get_text_input("Weight: ")
+  weight_text = "\n" + colorize_output("Enter weight in kg", :label) + " (or ENTER/0 for random):\n\n"
+  show_content(@content.text + weight_text)
+  weight_input = get_text_input(colorize_output("Weight: ", :prompt))
   return nil if weight_input == :cancelled
   weight = weight_input.to_i
   inputs << weight
   
   # Description
-  show_content("Enter description (optional, ENTER to skip):")
-  description = get_text_input("Description: ")
+  desc_text = "\n" + colorize_output("Enter description", :label) + " (optional, ENTER to skip):\n\n"
+  show_content(@content.text + desc_text)
+  description = get_text_input(colorize_output("Description: ", :prompt))
   return nil if description == :cancelled
   inputs << (description || "")
   
@@ -1710,8 +1719,25 @@ def format_monster_new(monster)
         attack_name = skill.capitalize.ljust(15)
       end
 
+      # Color code damage based on value
+      damage_color = case damage
+                     when -10..-5 then 88   # Dark red for very weak
+                     when -4..-2 then 124   # Red for weak
+                     when -1..0 then 166    # Orange for minimal
+                     when 1..2 then 226     # Yellow for light
+                     when 3..4 then 154     # Yellow-green for moderate
+                     when 5..6 then 118     # Light green for good
+                     when 7..9 then 82      # Green for strong
+                     when 10..14 then 46    # Bright green for very strong
+                     else 40                # Brighter green for extreme
+                     end
+
       output += colorize_output(attack_name, :value)
-      output += colorize_output("#{total.to_s.rjust(5)}  #{init.to_s.rjust(4)}  #{off.to_s.rjust(3)}  #{def_val.to_s.rjust(3)}  #{damage.to_s.rjust(6)}", :value) + "\n"
+      output += colorize_output(total.to_s.rjust(5), :dice)
+      output += colorize_output(init.to_s.rjust(5), :value)
+      output += colorize_output(off.to_s.rjust(4), :success)
+      output += colorize_output(def_val.to_s.rjust(4), :header)
+      output += "\e[38;5;#{damage_color}m#{damage.to_s.rjust(7)}\e[0m" + "\n"
     end
 
     # Skills
@@ -2566,6 +2592,11 @@ def generate_town_ui
 
         # Set the text directly to the content pane
         @content.say(output)
+
+        # Refresh all panes to ensure UI is properly displayed
+        @header.refresh
+        @menu.refresh
+        @content.refresh
 
         # Restore navigation help
         @footer.clear
