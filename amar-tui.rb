@@ -2083,49 +2083,35 @@ def generate_town_ui
     @content.text = output
     @content.refresh
 
-    # Prepare to capture output
+    # Show generating message
+    @content.text = base_output + colorize_output("Generating houses...", :label) + "\n"
+    @content.refresh
+
+    # Capture output
     captured = StringIO.new
     original_stdout = $stdout
     $stdout = captured
 
-    # Start generation in a thread so we can update display
-    town = nil
-    generation_thread = Thread.new do
-      town = Town.new(town_name, town_size, town_var)
-    end
+    # Generate the town (no threads!)
+    town = Town.new(town_name, town_size, town_var)
 
-    # Update display while generation is running
-    last_line_count = 0
-    while generation_thread.alive?
-      current_output = captured.string
-      current_lines = current_output.lines
-
-      # Check if we have new lines
-      if current_lines.size > last_line_count
-        # Update the display with current progress
-        display_output = base_output
-        house_lines = current_lines.select { |l| l =~ /House \d+/ }
-        house_lines.each do |line|
-          display_output += "  " + colorize_output(line.strip, :success) + "\n"
-        end
-        @content.text = display_output
-        @content.refresh
-        last_line_count = current_lines.size
-      end
-
-      sleep(0.05)  # Small sleep to not overwhelm the UI
-    end
-
-    # Wait for generation to complete
-    generation_thread.join
     $stdout = original_stdout
 
-    # Show final progress
+    # Display the progress that was captured
     final_output = base_output
     house_lines = captured.string.lines.select { |l| l =~ /House \d+/ }
-    house_lines.each do |line|
+
+    # Show each house line
+    house_lines.each_with_index do |line, idx|
       final_output += "  " + colorize_output(line.strip, :success) + "\n"
+      # Update display for each house (simulates real-time)
+      if idx % 3 == 0 || idx == house_lines.size - 1  # Update every 3 houses or on last
+        @content.text = final_output
+        @content.refresh
+        sleep(0.1)  # Small pause to show progress
+      end
     end
+
     final_output += "\n" + colorize_output("✓ Generation complete!", :success) + "\n"
     @content.text = final_output
     @content.refresh
