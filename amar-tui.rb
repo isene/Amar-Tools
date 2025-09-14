@@ -2070,53 +2070,28 @@ def generate_town_ui
   town = nil
 
   begin
-    # Show initial colored message
+    # Show initial message
     output = colorize_output("GENERATING TOWN", :header) + "\n"
     output += colorize_output("─" * (@cols - 35), :header) + "\n\n"
-    output += colorize_output("Size: ", :label) + colorize_output("#{town_size} houses", :value) + "\n"
-    output += colorize_output("Status: ", :label) + colorize_output("Starting...", :warning) + "\n\n"
+    output += colorize_output("Starting generation...", :label) + "\n"
     @content.text = output
     @content.refresh
 
-    # Capture output in a StringIO
+    # Set global variable for the Town class to use
+    $tui_content = @content
+
+    # Capture output in a StringIO to suppress normal output
     captured = StringIO.new
     original_stdout = $stdout
     original_stderr = $stderr
     $stdout = captured
     $stderr = captured
 
-    # Start town generation in a thread
-    town_thread = Thread.new do
-      town = Town.new(town_name, town_size, town_var)
-      town
-    end
+    # Generate the town - it will update the display directly
+    town = Town.new(town_name, town_size, town_var)
 
-    # Refresh display every 0.5 seconds while generating
-    last_number = 0
-    while town_thread.alive?
-      sleep 0.5
-
-      # Check captured output for numbers
-      output_lines = captured.string.lines
-      output_lines.each do |line|
-        if line.strip =~ /^\d+$/
-          num = line.strip.to_i
-          if num > last_number
-            last_number = num
-            # Update display
-            output = colorize_output("GENERATING TOWN", :header) + "\n"
-            output += colorize_output("─" * (@cols - 35), :header) + "\n\n"
-            output += colorize_output("Size: ", :label) + colorize_output("#{town_size} houses", :value) + "\n"
-            output += colorize_output("Progress: ", :label) + colorize_output("House #{last_number} / #{town_size}", :success) + "\n\n"
-            @content.text = output
-            @content.refresh
-          end
-        end
-      end
-    end
-
-    # Get the town from the thread
-    town = town_thread.value
+    # Clear the global variable
+    $tui_content = nil
 
     # Restore stdout/stderr
     $stdout = original_stdout
@@ -2233,6 +2208,9 @@ def generate_town_ui
         @content.text = colorize_output("Re-generating town...", :label) + "\n"
         @content.refresh
 
+        # Set global variable for the Town class to use
+        $tui_content = @content
+
         # Generate new town
         captured = StringIO.new
         original_stdout = $stdout
@@ -2240,38 +2218,10 @@ def generate_town_ui
         $stdout = captured
         $stderr = captured
 
-        # Start town generation in a thread
-        town_thread = Thread.new do
-          town = Town.new(town_name, town_size, town_var)
-          town
-        end
+        town = Town.new(town_name, town_size, town_var)
 
-        # Refresh display every 0.5 seconds while generating
-        last_number = 0
-        while town_thread.alive?
-          sleep 0.5
-
-          # Check captured output for numbers
-          output_lines = captured.string.lines
-          output_lines.each do |line|
-            if line.strip =~ /^\d+$/
-              num = line.strip.to_i
-              if num > last_number
-                last_number = num
-                # Update display
-                output = colorize_output("RE-GENERATING TOWN", :header) + "\n"
-                output += colorize_output("─" * (@cols - 35), :header) + "\n\n"
-                output += colorize_output("Size: ", :label) + colorize_output("#{town_size} houses", :value) + "\n"
-                output += colorize_output("Progress: ", :label) + colorize_output("House #{last_number} / #{town_size}", :success) + "\n\n"
-                @content.text = output
-                @content.refresh
-              end
-            end
-          end
-        end
-
-        # Get the town from the thread
-        town = town_thread.value
+        # Clear the global variable
+        $tui_content = nil
 
         $stdout = original_stdout
         $stderr = original_stderr

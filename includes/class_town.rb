@@ -218,8 +218,14 @@ class Town
 				((town_size / 40) + 1).to_i.times {add_resident(2)} if /Stronghold/ =~ @town[@h_index][0] 
 				(rand(h_type[6]) + rand(h_type[6])).to_i.times {add_resident(3)}
 				@h_index += 1
-				# Output just the number of houses created so far
-				$stdout.puts @h_index if defined?($stdout) && $stdout.respond_to?(:puts)
+				# If we have a TUI content pane, update it
+				if defined?($tui_content) && $tui_content
+					output = "GENERATING TOWN\n"
+					output += "─" * 40 + "\n\n"
+					output += "Houses created: #{@h_index} / #{town_size}\n"
+					$tui_content.text = output
+					$tui_content.refresh
+				end
 				break if @h_index > town_size
 			end
 			break if @h_index > town_size
