@@ -2083,37 +2083,50 @@ def generate_town_ui
     @content.text = output
     @content.refresh
 
-    # Show generating message
-    @content.text = base_output + colorize_output("Generating houses...", :label) + "\n"
+    # Set initial output
+    @content.text = base_output
     @content.refresh
 
-    # Capture output
-    captured = StringIO.new
+    # Redirect stdout to append to content pane
     original_stdout = $stdout
-    $stdout = captured
+    current_output = base_output
 
-    # Generate the town (no threads!)
-    town = Town.new(town_name, town_size, town_var)
+    # Create a simple IO that appends to our output and updates display
+    $stdout = StringIO.new
+    class << $stdout
+      attr_accessor :content_pane, :current_text
 
-    $stdout = original_stdout
+      def puts(str = "")
+        super  # Let StringIO handle it
+        if str && str.to_s =~ /House (\d+)/
+          # Append to current text and update display
+          @current_text ||= ""
+          @current_text += "  House #{$1}\n"
+          if @content_pane
+            @content_pane.text = @base_text + @current_text
+            @content_pane.refresh
+          end
+        end
+      end
 
-    # Display the progress that was captured
-    final_output = base_output
-    house_lines = captured.string.lines.select { |l| l =~ /House \d+/ }
-
-    # Show each house line
-    house_lines.each_with_index do |line, idx|
-      final_output += "  " + colorize_output(line.strip, :success) + "\n"
-      # Update display for each house (simulates real-time)
-      if idx % 3 == 0 || idx == house_lines.size - 1  # Update every 3 houses or on last
-        @content.text = final_output
-        @content.refresh
-        sleep(0.1)  # Small pause to show progress
+      def set_context(pane, base)
+        @content_pane = pane
+        @base_text = base
+        @current_text = ""
       end
     end
 
-    final_output += "\n" + colorize_output("✓ Generation complete!", :success) + "\n"
-    @content.text = final_output
+    $stdout.set_context(@content, base_output)
+
+    # Generate the town - output will update display as it goes
+    town = Town.new(town_name, town_size, town_var)
+
+    # Restore stdout
+    $stdout = original_stdout
+
+    # Add completion message
+    sleep(0.3)
+    @content.text = @content.text + "\n" + colorize_output("✓ Generation complete!", :success) + "\n"
     @content.refresh
     sleep(0.5)
 
