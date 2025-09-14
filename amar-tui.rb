@@ -383,9 +383,9 @@ def update_border_colors
     @menu.fg = 240    # Gray for unfocused pane
     @content.fg = 46  # Green for focused pane
   end
-  # Refresh panes to redraw with new border colors
-  @menu.refresh if @menu
-  @content.refresh if @content
+  # Refresh only the borders (more efficient than full refresh)
+  @menu.border_refresh if @menu && @menu.border
+  @content.border_refresh if @content && @content.border
 end
 
 def draw_footer
