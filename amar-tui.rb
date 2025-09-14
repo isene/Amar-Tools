@@ -2071,43 +2071,35 @@ def generate_town_ui
     base_text = "GENERATING TOWN\n" + "=" * 40 + "\n\n"
     base_text += "Name: #{town_name.empty? ? 'Random' : town_name}\n"
     base_text += "Size: #{town_size} houses\n\n"
+
+    # Capture stdout
+    captured = StringIO.new
+    original_stdout = $stdout
+    $stdout = captured
+
+    # Start generation
     @content.text = base_text + "Progress: Starting...\n"
     @content.refresh
 
-    # Create a custom stdout that updates display
-    original_stdout = $stdout
-    house_count = 0
-    ui_ref = self
-    base_ref = base_text
-
-    $stdout = StringIO.new
-    class << $stdout
-      attr_accessor :ui, :base_text, :house_count
-
-      def puts(str = "")
-        super(str)  # Call StringIO's puts
-        if str && str.to_s =~ /House (\d+)/
-          @house_count = $1.to_i
-          # Update the display immediately
-          if @ui && @base_text
-            @ui.instance_eval do
-              @content.text = @base_text + "Progress: Generated #{@house_count} houses...\n"
-              @content.refresh
-            end
-          end
-        end
-      end
-    end
-
-    $stdout.ui = ui_ref
-    $stdout.base_text = base_ref
-    $stdout.house_count = 0
-
-    # Generate town - display will update as houses are created
+    # Generate the town
     town = Town.new(town_name, town_size, town_var)
 
     # Restore stdout
     $stdout = original_stdout
+
+    # Get captured lines and update display for each house
+    lines = captured.string.lines
+    house_count = 0
+
+    lines.each do |line|
+      if line =~ /House (\d+)/
+        house_count = $1.to_i
+        # Update the pane after each house
+        @content.text = base_text + "Progress: Generated #{house_count} houses...\n"
+        @content.refresh
+        sleep(0.05)  # Small delay so user can see progress
+      end
+    end
 
     # Show final result
     output = base_text
