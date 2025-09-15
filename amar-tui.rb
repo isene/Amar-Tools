@@ -149,14 +149,18 @@ debug "Colors defined"
 debug "Defining help text"
 @help = <<~HELP
   AMAR RPG TOOLS - TUI Version #{@version}
-  
+
   MAIN MENU NAVIGATION:
     j/↓    Move down in menu
     k/↑    Move up in menu
     Enter  Select menu item
     q      Quit application
     ?      Show this help
-    
+
+  INPUT WIZARDS:
+    ESC    Cancel wizard at any prompt
+    Enter  Accept current input/default
+
   NPC/ENCOUNTER VIEW:
     j/↓    Scroll down
     k/↑    Scroll up
@@ -166,7 +170,7 @@ debug "Defining help text"
     s      Save to file
     r      Regenerate
     ESC    Back to menu
-    
+
   SHORTCUTS FROM MENU:
     1-9    Quick select menu items
     A      Generate Adventure (AI)
@@ -919,7 +923,6 @@ def npc_input_new_tui
   debug "Getting name input"
   header = colorize_output("NEW SYSTEM NPC GENERATION (3-Tier)", :header) + "\n\n"
   header += colorize_output("Enter NPC name", :label) + " (or ENTER for random): "
-  header += colorize_output("Press ESC to cancel", :info) + "\n\n"
   show_content(header)
   name = get_text_input("")
   return nil if name == :cancelled
