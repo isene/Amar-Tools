@@ -176,6 +176,7 @@ debug "Defining help text"
     A      Generate Adventure (AI)
     D      Describe Encounter (AI)
     N      Describe NPC (AI)
+    I      Generate NPC Image (AI)
     O      Roll Open Ended d6
     H      Show this help
     Q      Quit application
@@ -273,6 +274,7 @@ def init_screen
     "A. Generate Adventure",
     "D. Describe Encounter",
     "N. Describe NPC",
+    "I. Generate NPC Image",
     "",
     "── UTILITIES ──",
     "O. Roll Open Ended d6",
@@ -761,6 +763,8 @@ def handle_menu_navigation
     describe_encounter_ai
   when "n", "N"
     describe_npc_ai
+  when "i", "I"
+    generate_npc_image
   when "o", "O"
     roll_o6
   when "h", "H"
@@ -804,6 +808,8 @@ def execute_menu_item
     describe_encounter_ai
   when /N\. Describe NPC/
     describe_npc_ai
+  when /I\. Generate NPC Image/
+    generate_npc_image
   when /O\. Roll Open Ended/
     roll_o6
   when /H\. Help/
@@ -1451,15 +1457,45 @@ def handle_encounter_view(enc, output)
   latest_file = File.join(save_dir, "encounter_latest.txt")
   File.write(latest_file, clean_output)
 
-  # Show instructions including clipboard copy
-  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-  
+  # Show instructions including clipboard copy and selection
+  if enc.npcs && enc.npcs.length > 0
+    @footer.say(" [1-9] View NPC | [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [ESC/q] Back ".ljust(@cols))
+  else
+    @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+  end
+
   loop do
     key = getchr
-    
+
     case key
     when "ESC", "\e", "q"
       break
+    when /[1-9]/
+      # View individual NPC from encounter
+      if enc.npcs && enc.npcs.length > 0
+        npc_idx = key.to_i - 1
+        if npc_idx < enc.npcs.length
+          # Get the NPC
+          selected_npc = enc.get_npc(npc_idx)
+
+          # Generate NPC output
+          npc_out = npc_output_new(selected_npc, "cli", @cols - 35)
+
+          # Show NPC
+          show_content(npc_out)
+
+          # Handle NPC view (with nested navigation)
+          handle_npc_view(selected_npc, npc_out)
+
+          # Return to encounter view
+          show_content(output)
+          if enc.npcs && enc.npcs.length > 0
+            @footer.say(" [1-9] View NPC | [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [ESC/q] Back ".ljust(@cols))
+          else
+            @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+          end
+        end
+      end
     when "j", "DOWN"
       @content.linedown
     when "k", "UP"
@@ -3627,8 +3663,11 @@ def describe_npc_ai
 
       show_content(output)
 
-      # Navigation with ESC/q support
-      @footer.say(" [j/↓] Down | [k/↑] Up | [s] Save | [ESC/q] Back ".ljust(@cols))
+      # Store description for potential image generation
+      @last_npc_description = response
+
+      # Navigation with ESC/q support and image generation
+      @footer.say(" [j/↓] Down | [k/↑] Up | [i] Generate Image | [s] Save | [ESC/q] Back ".ljust(@cols))
 
       loop do
         key = getchr
@@ -3646,6 +3685,12 @@ def describe_npc_ai
           @content.pageup
         when "s"
           save_to_file(response, :npc_desc)
+        when "i", "I"
+          # Generate DALL-E image from description
+          generate_npc_image(response)
+          # Return to description view
+          show_content(output)
+          @footer.say(" [j/↓] Down | [k/↑] Up | [i] Generate Image | [s] Save | [ESC/q] Back ".ljust(@cols))
         end
       end
     else
@@ -3662,6 +3707,153 @@ def describe_npc_ai
   end
 
   return_to_menu
+end
+
+def generate_npc_image(description = nil)
+  debug "Starting generate_npc_image"
+  content_width = @cols - 35
+
+  # Setup OpenAI config
+  setup_openai_config
+
+  # Check if API key is configured
+  unless @ai && @ai != "your-openai-api-key-here" && !@ai.empty?
+    output = colorize_output("OpenAI NOT CONFIGURED", :header) + "\n\n"
+    output += "Please configure your OpenAI API key in: ~/.amar-tools/conf\n\n"
+    output += "Press any key to continue..."
+    show_content(output)
+    getchr
+    return
+  end
+
+  # Get or use provided description
+  if description.nil? || description.empty?
+    # Ask for NPC description
+    prompt_text = colorize_output("GENERATE NPC IMAGE", :header) + "\n\n"
+    prompt_text += colorize_output("Enter character description:", :label) + "\n\n"
+    show_content(prompt_text)
+    description = get_text_input("")
+    return if description == :cancelled
+  end
+
+  # Allow editing the description
+  edit_text = colorize_output("CHARACTER DESCRIPTION FOR IMAGE", :header) + "\n\n"
+  edit_text += description + "\n\n"
+  edit_text += colorize_output("Press [e] to edit, [Enter] to generate, [ESC] to cancel", :info)
+  show_content(edit_text)
+
+  loop do
+    key = getchr
+    case key
+    when "\e", "q"
+      return
+    when "e", "E"
+      description = edit_in_editor(description)
+      edit_text = colorize_output("CHARACTER DESCRIPTION FOR IMAGE", :header) + "\n\n"
+      edit_text += description + "\n\n"
+      edit_text += colorize_output("Press [e] to edit, [Enter] to generate, [ESC] to cancel", :info)
+      show_content(edit_text)
+    when "ENTER", "\r"
+      break
+    end
+  end
+
+  # Load Amar background for context
+  amar_background = ""
+  gen_file = File.join($pgmdir, "gen.txt")
+  if File.exist?(gen_file)
+    amar_background = File.read(gen_file)
+  end
+
+  # Create enhanced prompt for DALL-E
+  dalle_prompt = <<~PROMPT
+    Create a photorealistic fantasy character portrait:
+
+    #{description}
+
+    Style: Photorealistic, cinematic lighting, medieval fantasy setting, highly detailed, 8k resolution
+    Background: #{amar_background[0..500]}
+
+    The image should be a character portrait showing the person from mid-torso up, with appropriate medieval/fantasy clothing and equipment visible.
+  PROMPT
+
+  show_content(colorize_output("GENERATING IMAGE", :header) + "\n" +
+              colorize_output("─" * content_width, :header) + "\n\n" +
+              "Creating DALL-E 3 image...\n\n" +
+              "This may take up to 30 seconds...\n\n" +
+              "(Photorealistic fantasy portrait)".fg(240))
+
+  begin
+    require 'ruby/openai'
+    require 'net/http'
+    require 'fileutils'
+
+    client = openai_client
+
+    # Generate image with DALL-E 3
+    api_response = client.images.generate(
+      parameters: {
+        model: "dall-e-3",
+        prompt: dalle_prompt,
+        size: "1792x1024",  # 16:9 aspect ratio
+        quality: "standard",
+        n: 1
+      }
+    ) rescue nil
+
+    if api_response && api_response["data"] && api_response["data"][0]["url"]
+      image_url = api_response["data"][0]["url"]
+
+      # Download image
+      save_dir = File.join($pgmdir, "saved", "images")
+      FileUtils.mkdir_p(save_dir)
+
+      timestamp = Time.now.strftime("%Y%m%d_%H%M%S")
+      image_file = File.join(save_dir, "npc_#{timestamp}.png")
+
+      # Download the image
+      uri = URI(image_url)
+      response = Net::HTTP.get_response(uri)
+
+      if response.code == "200"
+        File.open(image_file, "wb") do |file|
+          file.write(response.body)
+        end
+
+        output = colorize_output("IMAGE GENERATED SUCCESSFULLY", :header) + "\n"
+        output += colorize_output("─" * content_width, :header) + "\n\n"
+        output += "Image saved to: #{image_file}\n\n"
+
+        # Try to display image using terminal image viewer if available
+        if system("which imgcat > /dev/null 2>&1")
+          output += "Displaying image in terminal...\n\n"
+          show_content(output)
+          system("imgcat \"#{image_file}\"")
+        elsif system("which kitty > /dev/null 2>&1")
+          output += "Displaying image in terminal...\n\n"
+          show_content(output)
+          system("kitty +kitten icat \"#{image_file}\"")
+        else
+          output += "To view the image, open: #{image_file}\n\n"
+          output += "(Install imgcat or use kitty terminal for inline viewing)\n\n"
+          show_content(output)
+        end
+
+        output += "\n" + colorize_output("Press any key to continue...", :info)
+        show_content(output)
+        getchr
+      else
+        show_content("Error downloading image: #{response.code}\n\nPress any key to continue...")
+        getchr
+      end
+    else
+      show_content("Failed to generate image.\n\nPress any key to continue...")
+      getchr
+    end
+  rescue => e
+    show_content("Error: #{e.message}\n\nPress any key to continue...")
+    getchr
+  end
 end
 
 debug "About to check if running as main"
