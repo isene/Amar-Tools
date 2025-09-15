@@ -3775,12 +3775,98 @@ def generate_npc_image(description = nil)
 
   # Get or use provided description
   if description.nil? || description.empty?
-    # Ask for NPC description
+    # Ask user: use last NPC or specify file
     prompt_text = colorize_output("GENERATE NPC IMAGE", :header) + "\n\n"
-    prompt_text += colorize_output("Enter character description:", :label) + "\n\n"
+    prompt_text += "Enter NPC filename (default: last generated NPC)\n"
+    prompt_text += "or press Enter to use the last NPC: "
     show_content(prompt_text)
-    description = get_text_input("")
-    return if description == :cancelled
+
+    file_input = get_text_input("")
+    return if file_input == :cancelled
+
+    save_dir = File.join($pgmdir, "saved")
+    npc_file = nil
+
+    if file_input.nil? || file_input.empty?
+      # Use last generated NPC
+      npc_file = File.join(save_dir, "temp_new.npc")
+      unless File.exist?(npc_file)
+        show_content("No recent NPC found. Please generate an NPC first.\n\nPress any key to continue...")
+        getchr
+        return
+      end
+    else
+      # Use specified file
+      if !file_input.match?(/\.npc$/)
+        file_input += ".npc"
+      end
+      npc_file = File.join(save_dir, file_input)
+      unless File.exist?(npc_file)
+        show_content("NPC file not found: #{npc_file}\n\nPress any key to continue...")
+        getchr
+        return
+      end
+    end
+
+    # Extract character name from NPC file
+    npc_content = File.read(npc_file)
+    character_name = nil
+    if match = npc_content.match(/^([A-Za-z\s]+)\s+\([MF]\s+\d+\)/)
+      character_name = match[1].strip
+      safe_name = character_name.gsub(/[^A-Za-z0-9]/, '')
+      @last_npc_name = safe_name
+    end
+
+    # Check if we already have a description for this NPC
+    desc_file = nil
+    if @last_npc_name && !@last_npc_name.empty?
+      desc_file = File.join(save_dir, "#{@last_npc_name}.txt")
+    end
+
+    if desc_file && File.exist?(desc_file)
+      # Use existing description
+      show_content(colorize_output("Using existing description for #{character_name || 'NPC'}...", :info) + "\n\n")
+      description = File.read(desc_file)
+    else
+      # Generate description for this NPC
+      show_content(colorize_output("Generating AI description for #{character_name || 'NPC'}...", :header) + "\n\n" +
+                  "Please wait, this may take a moment...\n\n")
+
+      # Load NPC prompt
+      npc_prompt = File.join($pgmdir, "npc.txt")
+      unless File.exist?(npc_prompt)
+        show_content("NPC prompt file not found.\n\nPress any key to continue...")
+        getchr
+        return
+      end
+
+      prompt_text = File.read(npc_prompt)
+      combined = "#{prompt_text}\n\n#{npc_content}"
+
+      # Generate description
+      client = openai_client
+      api_response = client.chat(
+        parameters: {
+          model: @aimodel,
+          messages: [{ role: 'user', content: combined }],
+          max_tokens: 2000
+        }
+      ) rescue nil
+
+      description = api_response&.dig('choices', 0, 'message', 'content')
+
+      if description.nil? || description.empty?
+        show_content("Failed to generate description.\n\nPress any key to continue...")
+        getchr
+        return
+      end
+
+      # Save the generated description
+      if @last_npc_name && !@last_npc_name.empty?
+        File.write(File.join(save_dir, "#{@last_npc_name}.txt"), description)
+      end
+      File.write(File.join(save_dir, "openai.txt"), description)
+    end
   end
 
   # Allow editing the description
