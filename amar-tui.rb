@@ -120,7 +120,6 @@ debug "About to define configuration"
 # CONFIGURATION
 @config = {
   show_borders: true,
-  color_mode: true,
   auto_save: true,
   last_npc: nil,
   last_encounter: nil
@@ -168,13 +167,14 @@ debug "Defining help text"
     r      Regenerate
     ESC    Back to menu
     
-  SHORTCUTS:
-    n      Quick NPC generation
-    e      Quick encounter generation
-    m      Quick monster generation
-    d      Roll dice
-    w      Weather generation
-    t      Town generation
+  SHORTCUTS FROM MENU:
+    1-9    Quick select menu items
+    A      Generate Adventure (AI)
+    D      Describe Encounter (AI)
+    N      Describe NPC (AI)
+    O      Roll Open Ended d6
+    H      Show this help
+    Q      Quit application
 HELP
 debug "Help text defined"
 
@@ -256,12 +256,8 @@ def init_screen
   @menu_items = [
     "── NEW 3-TIER SYSTEM ──",
     "1. Generate NPC",
-    "2. Generate Encounter", 
+    "2. Generate Encounter",
     "3. Generate Monster",
-    "",
-    "── LEGACY SYSTEM ──",
-    "4. Old NPC Generator",
-    "5. Old Encounter",
     "",
     "── WORLD BUILDING ──",
     "6. Town/City Generator",
@@ -276,8 +272,12 @@ def init_screen
     "",
     "── UTILITIES ──",
     "O. Roll Open Ended d6",
-    "C. Color Mode",
     "H. Help",
+    "",
+    "── LEGACY SYSTEM ──",
+    "4. Old NPC Generator",
+    "5. Old Encounter",
+    "",
     "Q. Quit"
   ]
   @menu_index = 1  # Start at first selectable item
@@ -304,7 +304,7 @@ def recreate_panes
   @rows, @cols = IO.console.winsize
 
   # Clear screen
-  print "\e[2J\e[H"  # Clear screen and move cursor home
+  Rcurses.clear_screen  # Clear screen and move cursor home
 
   # Recreate panes with new dimensions
   @header = Pane.new(   1,  1,  @cols,       1,          255,            234)  # Dark grey background
@@ -343,29 +343,34 @@ def draw_menu
   @menu_items.each_with_index do |item, idx|
     if item.empty? || item.start_with?("──")
       # Section header or blank
-      if item.start_with?("──") && @config[:color_mode]
+      if item.start_with?("──") && true
         # Different colors for different sections
         color = case item
                 when /NEW 3-TIER/ then 42   # Green
-                when /LEGACY/ then 23        # Dark cyan
+                when /LEGACY/ then 240       # Grey for legacy
                 when /WORLD BUILDING/ then 131  # Brown/orange
                 when /AI TOOLS/ then 103     # Light purple
                 when /UTILITIES/ then 133    # Light magenta
                 else 36  # Default cyan
                 end
-        menu_text += "\e[1;38;5;#{color}m#{item}\e[0m\n"
+        menu_text += item.fg(color).b + "\n"
       else
         menu_text += item + "\n"
       end
     elsif idx == @menu_index
       # Highlighted item - RTFM style (bold arrow, underlined item)
-      if @config[:color_mode]
-        menu_text += "\e[1m→ \e[0m\e[4m#{item}\e[0m\n"  # Bold arrow, underlined item
+      if true
+        menu_text += "→ ".b + item.u + "\n"  # Bold arrow, underlined item
       else
-        menu_text += "→ \e[4m#{item}\e[0m\n"  # Underlined item
+        menu_text += "→ " + item.u + "\n"  # Underlined item
       end
     else
-      menu_text += "  #{item}\n"
+      # Grey out legacy items
+      if item =~ /^[45]\. Old/
+        menu_text += "  " + item.fg(240) + "\n"  # Grey for legacy
+      else
+        menu_text += "  #{item}\n"
+      end
     end
   end
 
@@ -428,9 +433,24 @@ def show_footer_message(message, duration = 0)
   sleep(duration) if duration > 0
 end
 
+def grey_out_content
+  # Grey out existing content by converting it to grey color
+  if @content.text && !@content.text.empty?
+    # Add spacing if last prompt ended
+    current_text = @content.text
+    if @last_prompt_ended
+      current_text = current_text + "\n"
+      @last_prompt_ended = false
+    end
+    # Strip all existing ANSI codes and recolor in grey
+    greyed = current_text.pure.fg(240)
+    @content.say(greyed)
+  end
+end
+
 def show_content(text)
   debug "show_content called with #{text.to_s.length} chars"
-  debug "Color mode enabled: #{@config[:color_mode]}"
+  debug "Color mode enabled: #{true}"
 
   # Switch focus to content pane when showing content
   if @focus != :content
@@ -438,21 +458,15 @@ def show_content(text)
     update_border_colors if @config[:show_borders]
   end
 
-  # Check if text contains ANSI codes
-  if text =~ /\e\[[0-9;]*m/
-    debug "Text contains ANSI color codes"
-    # Convert ANSI codes to rcurses color extensions if in color mode
-    if @config[:color_mode]
-      text = convert_ansi_to_rcurses(text)
-      debug "After conversion: text has #{text.length} chars"
-    else
-      # Strip all ANSI codes if not in color mode
-      text = text.gsub(/\e\[[0-9;]*m/, '')
-    end
-  else
-    debug "No ANSI codes in input"
-    # Text is already in the right format (plain or rcurses styled)
+  # Add spacing if last prompt ended
+  if @last_prompt_ended && !text.start_with?("\n")
+    text = "\n" + text
+    @last_prompt_ended = false
   end
+
+  # Don't convert ANSI codes - rcurses handles them natively
+  # The .fg() methods produce proper ANSI codes that rcurses understands
+  debug "Displaying text with ANSI codes intact"
 
   @content.say(text)
   @content.ix = 0
@@ -573,18 +587,38 @@ end
 
 def show_help
   content_width = @cols - 35
-  help_text = "AMAR RPG TOOLS - HELP\n"
-  help_text += "─" * content_width + "\n\n"
-  help_text += @help
-  help_text += "\n\n" + "─" * content_width + "\n"
-  help_text += "SCROLLING:\n"
-  help_text += "  j / DOWN    - Scroll down\n"
-  help_text += "  k / UP      - Scroll up\n"
-  help_text += "  SPACE/PgDn  - Page down\n"
-  help_text += "  b / PgUp    - Page up\n"
-  help_text += "  g / HOME    - Go to top\n"
-  help_text += "  G / END     - Go to bottom\n"
-  help_text += "  ESC/q       - Return to menu\n"
+  help_text = colorize_output("AMAR RPG TOOLS - HELP", :header) + "\n"
+  help_text += colorize_output("─" * content_width, :header) + "\n\n"
+
+  # Add subtle coloring to help content
+  help_lines = @help.split("\n")
+  help_lines.each do |line|
+    if line.start_with?("  ")
+      # Indented lines - commands/items
+      if line.include?(" - ")
+        parts = line.split(" - ", 2)
+        help_text += colorize_output(parts[0], :value) + " - " + parts[1].fg(240) + "\n"
+      else
+        help_text += colorize_output(line, :value) + "\n"
+      end
+    elsif line.end_with?(":")
+      # Section headers
+      help_text += colorize_output(line, :subheader) + "\n"
+    else
+      # Regular text
+      help_text += line.fg(7) + "\n"
+    end
+  end
+
+  help_text += "\n" + colorize_output("─" * content_width, :header) + "\n"
+  help_text += colorize_output("SCROLLING:", :subheader) + "\n"
+  help_text += colorize_output("  j / DOWN", :value) + "    - Scroll down".fg(240) + "\n"
+  help_text += colorize_output("  k / UP", :value) + "      - Scroll up".fg(240) + "\n"
+  help_text += colorize_output("  SPACE/PgDn", :value) + "  - Page down".fg(240) + "\n"
+  help_text += colorize_output("  b / PgUp", :value) + "    - Page up".fg(240) + "\n"
+  help_text += colorize_output("  g / HOME", :value) + "    - Go to top".fg(240) + "\n"
+  help_text += colorize_output("  G / END", :value) + "     - Go to bottom".fg(240) + "\n"
+  help_text += colorize_output("  ESC/q", :value) + "       - Return to menu".fg(240) + "\n"
   
   show_content(help_text)
   
@@ -613,8 +647,8 @@ def show_help
     end
   end
   
-  # Clear content when done
-  show_content("")
+  # Return focus to menu when done
+  return_to_menu
 end
 
 def show_popup(title, content, width = 60, height = 20)
@@ -640,13 +674,13 @@ def show_popup(title, content, width = 60, height = 20)
     break if key == "\e" || key == "q" || key == "\r"
     
     case key
-    when "j", "\e[B"  # Down
+    when "j", "DOWN"  # Down
       popup.linedown
-    when "k", "\e[A"  # Up
+    when "k", "UP"  # Up
       popup.lineup
-    when "\e[6~"  # PgDn
+    when "PgDOWN"  # PgDn
       popup.pagedown
-    when "\e[5~"  # PgUp
+    when "PgUP"  # PgUp
       popup.pageup
     end
   end
@@ -725,8 +759,6 @@ def handle_menu_navigation
     describe_npc_ai
   when "o", "O"
     roll_o6
-  when "c", "C"
-    toggle_colors
   when "h", "H"
     show_help
   when "r", "R"
@@ -770,8 +802,6 @@ def execute_menu_item
     describe_npc_ai
   when /O\. Roll Open Ended/
     roll_o6
-  when /C\. Color Mode/
-    toggle_colors
   when /H\. Help/
     show_help
   when /Q\. Quit/
@@ -808,12 +838,12 @@ def roll_o6
                  else 22                 # Very dark green for extreme criticals
                  end
 
-    roll_str = "\e[38;5;#{roll_color}m#{roll.to_s.rjust(3)}\e[0m"
+    roll_str = roll.to_s.rjust(3).fg(roll_color)
 
     if roll >= 10
-      results << "#{roll_str} " + "\e[38;5;46;1m(Critical!)\e[0m"
+      results << "#{roll_str} " + "(Critical!)".fg(46).b
     elsif roll <= -3
-      results << "#{roll_str} " + "\e[38;5;196;1m(Fumble!)\e[0m"
+      results << "#{roll_str} " + "(Fumble!)".fg(196).b
     else
       results << "#{roll_str}"
     end
@@ -826,15 +856,21 @@ def roll_o6
   output += "\nPress any key to continue..."
   
   show_content(output)
-  getchr
-  show_content("")
+
+  # Handle ESC and q to return to menu
+  loop do
+    key = getchr
+    if key == "ESC" || key == "\e" || key == "q"
+      return_to_menu
+      break
+    else
+      # Any other key also returns to menu
+      return_to_menu
+      break
+    end
+  end
 end
 
-def toggle_colors
-  @config[:color_mode] = !@config[:color_mode]
-  refresh_all
-  show_content("Color mode #{@config[:color_mode] ? 'enabled' : 'disabled'}")
-end
 
 # NPC GENERATION (NEW SYSTEM)
 def generate_npc_new
@@ -844,6 +880,7 @@ def generate_npc_new
   ia = npc_input_new_tui
   if ia.nil?
     debug "User cancelled NPC generation"
+    return_to_menu
     return
   end
   
@@ -881,10 +918,10 @@ def npc_input_new_tui
   # Name input
   debug "Getting name input"
   header = colorize_output("NEW SYSTEM NPC GENERATION (3-Tier)", :header) + "\n\n"
-  header += colorize_output("Enter NPC name", :label) + " (or ENTER for random):\n\n"
+  header += colorize_output("Enter NPC name", :label) + " (or ENTER for random): "
   header += colorize_output("Press ESC to cancel", :info) + "\n\n"
   show_content(header)
-  name = get_text_input(colorize_output("Name: ", :prompt))
+  name = get_text_input("")
   return nil if name == :cancelled
   inputs << (name || "")
   debug "Name input: #{name.inspect}"
@@ -900,7 +937,7 @@ def npc_input_new_tui
   races.each_with_index do |race, index|
     race_text += colorize_output((index + 1).to_s, :dice) + ": " + colorize_output(race, :value) + "\n"
   end
-  race_text += "\n" + "\e[38;5;240mPress number key or ENTER for Human:\e[0m"
+  race_text += "\n" + "Press number key or ENTER for Human:".fg(240)
   
   show_content(race_text)
   key = getchr
@@ -968,7 +1005,7 @@ def npc_input_new_tui
   type_text += "\n"
 
   show_content(type_text)
-  type_input = get_text_input(colorize_output("Type number: ", :prompt))
+  type_input = get_text_input("")
   return nil if type_input == :cancelled
   
   type = ""
@@ -992,7 +1029,7 @@ def npc_input_new_tui
   level_text += colorize_output("4", :dice) + ": " + colorize_output("Expert", :value) + "\n"
   level_text += colorize_output("5", :dice) + ": " + colorize_output("Master", :value) + "\n"
   level_text += colorize_output("6", :dice) + ": " + colorize_output("Grandmaster", :value) + "\n"
-  level_text += "\n" + "\e[38;5;240mPress number key:\e[0m"
+  level_text += "\n" + "Press number key:".fg(240)
   
   show_content(level_text)
   key = getchr
@@ -1012,7 +1049,7 @@ def npc_input_new_tui
   area_text += colorize_output("6", :dice) + ": " + colorize_output("Rauinir", :value) + "\n"
   area_text += colorize_output("7", :dice) + ": " + colorize_output("Outskirts", :value) + "\n"
   area_text += colorize_output("8", :dice) + ": " + colorize_output("Other", :value) + "\n"
-  area_text += "\n" + "\e[38;5;240mPress number key:\e[0m"
+  area_text += "\n" + "Press number key:".fg(240)
   
   show_content(area_text)
   key = getchr
@@ -1027,8 +1064,9 @@ def npc_input_new_tui
   sex_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
   sex_text += colorize_output("1", :dice) + ": " + colorize_output("Male", :value) + "\n"
   sex_text += colorize_output("2", :dice) + ": " + colorize_output("Female", :value) + "\n\n"
-  sex_text += "\e[38;5;240mPress number key:\e[0m"
-  show_content(@content.text + sex_text)
+  sex_text += "Press number key:".fg(240)
+  grey_out_content
+  show_content(@content.text + "\n" + sex_text)
   key = getchr
   return nil if key == "ESC" || key == "\e"
   
@@ -1040,32 +1078,36 @@ def npc_input_new_tui
   inputs << sex
   
   # Age input
-  age_text = "\n" + colorize_output("Enter age", :label) + " (or ENTER/0 for random):\n\n"
-  show_content(@content.text + age_text)
-  age_input = get_text_input(colorize_output("Age: ", :prompt))
+  age_text = "\n" + colorize_output("Enter age", :label) + " (or ENTER/0 for random): "
+  grey_out_content
+  show_content(@content.text + "\n" + age_text)
+  age_input = get_text_input("")
   return nil if age_input == :cancelled
   age = age_input.to_i
   inputs << age
   
   # Physical attributes
-  height_text = "\n" + colorize_output("Enter height in cm", :label) + " (or ENTER/0 for random):\n\n"
-  show_content(@content.text + height_text)
-  height_input = get_text_input(colorize_output("Height: ", :prompt))
+  height_text = "\n" + colorize_output("Enter height in cm", :label) + " (or ENTER/0 for random): "
+  grey_out_content
+  show_content(@content.text + "\n" + height_text)
+  height_input = get_text_input("")
   return nil if height_input == :cancelled
   height = height_input.to_i
   inputs << height
   
-  weight_text = "\n" + colorize_output("Enter weight in kg", :label) + " (or ENTER/0 for random):\n\n"
-  show_content(@content.text + weight_text)
-  weight_input = get_text_input(colorize_output("Weight: ", :prompt))
+  weight_text = "\n" + colorize_output("Enter weight in kg", :label) + " (or ENTER/0 for random): "
+  grey_out_content
+  show_content(@content.text + "\n" + weight_text)
+  weight_input = get_text_input("")
   return nil if weight_input == :cancelled
   weight = weight_input.to_i
   inputs << weight
   
   # Description
-  desc_text = "\n" + colorize_output("Enter description", :label) + " (optional, ENTER to skip):\n\n"
-  show_content(@content.text + desc_text)
-  description = get_text_input(colorize_output("Description: ", :prompt))
+  desc_text = "\n" + colorize_output("Enter description", :label) + " (optional, ENTER to skip): "
+  grey_out_content
+  show_content(@content.text + "\n" + desc_text)
+  description = get_text_input("")
   return nil if description == :cancelled
   inputs << (description || "")
   
@@ -1081,18 +1123,30 @@ def get_text_input(prompt)
 
   input = ""
   cursor_pos = 0
+  @original_content = nil  # Reset for each new input
+  @last_prompt_ended = false  # Track prompt endings
 
-  # Show prompt and input field
-  @content.say(@content.text + "\n" + prompt)
-  
+  # Don't add newline if prompt is empty, otherwise ensure we're on the same line
+  if prompt && !prompt.empty?
+    @content.say(@content.text + prompt)
+  end
+
   loop do
     key = getchr
-    
+
     case key
     when "ESC", "\e"
+      @original_content = nil  # Clean up
       draw_footer
       return :cancelled
     when "ENTER", "\r"
+      # Display the final input in cyan without underscore
+      if !input.empty?
+        final_display = @original_content + input.fg(51)  # Cyan for user input
+        @content.say(final_display)
+      end
+      @original_content = nil  # Clean up
+      @last_prompt_ended = true  # Mark that prompt ended
       draw_footer
       return input.empty? ? nil : input
     when "BACK", "\u007F"
@@ -1104,15 +1158,26 @@ def get_text_input(prompt)
       input = input[0...cursor_pos] + key + input[cursor_pos..-1]
       cursor_pos += 1
     end
-    
-    # Update display
-    lines = @content.text.lines
-    lines[-1] = prompt + input + "_"
-    @content.say(lines.join)
+
+    # Update display - show input on same line as prompt
+    current_text = @content.text
+
+    # Store the original content if this is the first keystroke
+    @original_content ||= current_text
+
+    # Always use the original content as base and append current input
+    display_text = @original_content + input + "_"
+    @content.say(display_text)
   end
 end
 
 def handle_npc_view(npc, output)
+  # Save NPC to temp file for AI description
+  save_dir = File.join($pgmdir, "saved")
+  Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
+  temp_file = File.join(save_dir, "temp_new.npc")
+  File.write(temp_file, output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, ''))
+
   # Show instructions including clipboard copy
   @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
 
@@ -1248,6 +1313,7 @@ def generate_encounter_new
   ia = enc_input_new_tui
   if ia.nil?
     debug "User cancelled encounter generation"
+    return_to_menu
     return
   end
   
@@ -1291,7 +1357,7 @@ def enc_input_new_tui
   time_text += colorize_output("Select time:", :header) + "\n\n"
   time_text += colorize_output("0", :dice) + ": " + colorize_output("Night", :value) + "\n"
   time_text += colorize_output("1", :dice) + ": " + colorize_output("Day", :value) + " (default)\n\n"
-  time_text += "\e[38;5;240mPress number key:\e[0m"
+  time_text += "Press number key:".fg(240)
   show_content(time_text)
   key = getchr
   return nil if key == "ESC" || key == "\e"
@@ -1309,7 +1375,7 @@ def enc_input_new_tui
   terrain_text += colorize_output("5", :dice) + ": " + colorize_output("Mountains", :value) + "\n"
   terrain_text += colorize_output("6", :dice) + ": " + colorize_output("Woods", :value) + "\n"
   terrain_text += colorize_output("7", :dice) + ": " + colorize_output("Wilderness", :value) + "\n\n"
-  terrain_text += "\e[38;5;240mPress number key:\e[0m"
+  terrain_text += "Press number key:".fg(240)
   
   show_content(terrain_text)
   key = getchr
@@ -1320,12 +1386,13 @@ def enc_input_new_tui
   debug "Terrain: #{$Terrain}, Terraintype: #{$Terraintype}"
   
   # Get level modifier
-  level_text = colorize_output("Enter level modifier (+/-)", :header) + "\n\n"
+  level_text = "\n" + colorize_output("Enter level modifier (+/-)", :header) + "\n\n"
   level_text += colorize_output("0-9", :dice) + ": Positive modifier\n"
   level_text += colorize_output("-", :dice) + " then number: Negative modifier\n"
   level_text += colorize_output("ENTER", :dice) + ": No modifier (0)\n\n"
+  grey_out_content
   show_content(@content.text + "\n" + level_text)
-  level_input = get_text_input(colorize_output("Level modifier: ", :prompt))
+  level_input = get_text_input("")
   return nil if level_input == :cancelled
   
   $Level = level_input.to_i if level_input
@@ -1342,7 +1409,7 @@ def enc_input_new_tui
   races.each_with_index do |race, index|
     race_text += "#{index + 1}: #{race}\n"
   end
-  race_text += "\n" + "\e[38;5;240mPress number key:\e[0m"
+  race_text += "\n" + "Press number key:".fg(240)
   
   show_content(race_text)
   key = getchr
@@ -1365,17 +1432,17 @@ def enc_input_new_tui
     load File.join($pgmdir, "includes/tables/encounters.rb")
   end
   
-  # For simplicity in TUI, we'll just use random for now
-  # Full implementation would show encounter list like CLI
-  
-  show_content("Generate random encounter?\n\nPress ENTER for yes, ESC to cancel")
-  key = getchr
-  return nil if key == "ESC" || key == "\e"
-  
+  # Return the encounter settings
   [encounter, enc_number, $Terraintype, $Level]
 end
 
 def handle_encounter_view(enc, output)
+  # Save encounter to temp file for AI description
+  save_dir = File.join($pgmdir, "saved")
+  Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
+  temp_file = File.join(save_dir, "temp_new.enc")
+  File.write(temp_file, output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, ''))
+
   # Show instructions including clipboard copy
   @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
   
@@ -1434,7 +1501,9 @@ def format_npc_new(npc)
   
   # Stats
   output += "CHARACTERISTICS:\n"
-  output += "  SIZE: #{npc.SIZE}\n"
+  # Format SIZE for display
+  size_display = npc.SIZE % 1 == 0.5 ? "#{npc.SIZE.floor}½" : npc.SIZE.to_s
+  output += "  SIZE: #{size_display}\n"
   output += "  BODY: #{npc.get_characteristic('BODY')}\n"
   output += "  MIND: #{npc.get_characteristic('MIND')}\n"
   output += "  SPIRIT: #{npc.get_characteristic('SPIRIT')}\n\n"
@@ -1550,8 +1619,7 @@ end
 
 # COLOR FORMATTING HELPERS
 def colorize_output(text, type = :default)
-  return text unless @config[:color_mode]
-  
+  # Always apply colors
   case type
   when :header
     text.fg(14).b  # Bright cyan bold
@@ -1562,9 +1630,13 @@ def colorize_output(text, type = :default)
   when :value
     text.fg(7)     # White
   when :success
-    text.fg(10).b  # Bright green bold
+    text.fg(10)    # Bright green (for Off values)
+  when :warning
+    text.fg(11)    # Bright yellow (for Def values)
+  when :error
+    text.fg(9)     # Bright red
   when :dice
-    text.fg(202)   # Orange
+    text.fg(202)   # Orange (for dice/skill values)
   when :name
     text.fg(15).b  # Bright white bold
   else
@@ -1622,19 +1694,23 @@ def generate_monster_new
   
   monster_text = colorize_output("NEW SYSTEM MONSTER GENERATION", :header) + "\n\n"
   monster_text += colorize_output("Select monster type:", :header) + "\n\n"
-  monster_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
+  monster_text += " " + colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
   
-  # Display in columns for better readability
+  # Display in columns for better readability with proper coloring
   monster_list.each_with_index do |monster, index|
-    monster_text += "#{(index + 1).to_s.rjust(2)}: #{monster.capitalize.ljust(20)}"
+    num = (index + 1).to_s.rjust(2)
+    monster_text += colorize_output(num, :dice) + ": " + colorize_output(monster.capitalize.ljust(18), :value) + "  "
     monster_text += "\n" if (index + 1) % 3 == 0
   end
   monster_text += "\n" if monster_list.length % 3 != 0
-  monster_text += "\nPress number or ENTER for random:"
+  monster_text += "\n" + "Press number or ENTER for random:".fg(240)
   
   show_content(monster_text)
-  monster_input = get_text_input("Monster number: ")
-  return if monster_input == :cancelled
+  monster_input = get_text_input("")
+  if monster_input == :cancelled
+    return_to_menu
+    return
+  end
   
   # Select monster
   monster_type = ""
@@ -1650,10 +1726,14 @@ def generate_monster_new
   level_text = colorize_output("Select monster level:", :header) + "\n\n"
   level_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
   level_text += colorize_output("1-6", :dice) + ": " + colorize_output("Specific level", :value) + "\n\n"
-  level_text += "\e[38;5;240mPress number key:\e[0m"
+  level_text += "Press number key:".fg(240)
+  grey_out_content
   show_content(@content.text + "\n" + level_text)
   key = getchr
-  return if key == "ESC" || key == "\e"
+  if key == "ESC" || key == "\e"
+    return_to_menu
+    return
+  end
   
   level = key =~ /[1-6]/ ? key.to_i : rand(1..6)
   debug "Monster level: #{level}"
@@ -1720,21 +1800,24 @@ def format_monster_new(monster)
   output = ""
   content_width = @cols - 35  # Same as content pane width
 
-  if @config[:color_mode]
+  if true
     output += colorize_output("#{monster.name}", :success) + colorize_output(" (#{monster.type}, Level #{monster.level})", :value) + "\n"
     output += colorize_output("─" * content_width, :header) + "\n\n"
 
     # Physical stats - ensure integers
-    size_val = monster.SIZE.is_a?(Float) ? monster.SIZE.round : monster.SIZE
+    # Use the SIZE calculated by the class (includes half-sizes)
+    size_val = monster.SIZE
+    # Format SIZE for display (3.5 becomes "3½")
+    size_display = size_val % 1 == 0.5 ? "#{size_val.floor}½" : size_val.to_s
     bp_val = monster.BP.is_a?(Float) ? monster.BP.round : monster.BP
     db_val = monster.DB.is_a?(Float) ? monster.DB.round : monster.DB
     md_val = monster.MD.is_a?(Float) ? monster.MD.round : monster.MD
 
-    output += colorize_output("SIZE: ", :label) + colorize_output(size_val.to_s, :value)
-    output += "  " + colorize_output("BP: ", :label) + colorize_output(bp_val.to_s, :dice)
-    output += "  " + colorize_output("DB: ", :label) + colorize_output(db_val.to_s, :dice)
-    output += "  " + colorize_output("MD: ", :label) + colorize_output(md_val.to_s, :dice) + "\n"
-    output += colorize_output("Weight: ", :label) + colorize_output("#{monster.weight.round} kg", :value) + "\n\n"
+    output += colorize_output("SIZE: ", :label) + colorize_output(size_display, :value)
+    output += colorize_output(" (#{monster.weight.round}kg)", :value)
+    output += "  " + colorize_output("BP: ", :label) + colorize_output(bp_val.to_s, :value)
+    output += "  " + colorize_output("DB: ", :label) + colorize_output(db_val.to_s, :value)
+    output += "  " + colorize_output("MD: ", :label) + colorize_output(md_val.to_s, :value) + "\n\n"
     
     # Special abilities
     if monster.special_abilities && !monster.special_abilities.empty?
@@ -1744,7 +1827,12 @@ def format_monster_new(monster)
     
     # Weapons/Attacks
     output += colorize_output("WEAPONS/ATTACKS:", :subheader) + "\n"
-    output += colorize_output("Attack".ljust(18), :label) + colorize_output("Skill  Init  Off  Def  Damage", :label) + "\n"
+    output += "  " + colorize_output("Attack".ljust(20), :label)
+    output += colorize_output("Skill".rjust(6), :label)
+    output += colorize_output("Init".rjust(6), :label)
+    output += colorize_output("Off".rjust(5), :label)
+    output += colorize_output("Def".rjust(5), :label)
+    output += colorize_output("Damage".rjust(8), :label) + "\n"
     monster.tiers["BODY"]["Melee Combat"]["skills"].each do |skill, value|
       next if value == 0
       total = monster.get_skill_total("BODY", "Melee Combat", skill)
@@ -1756,14 +1844,14 @@ def format_monster_new(monster)
         off = total + 2
         def_val = total
         damage = -4 + db  # Unarmed base damage is -4, plus DB
-        attack_name = skill.capitalize.ljust(15)
+        attack_name = skill.capitalize
       else
         # Other weapons
         init = 4
         off = total + 1
         def_val = total + 1
         damage = db + 2
-        attack_name = skill.capitalize.ljust(15)
+        attack_name = skill.capitalize
       end
 
       # Color code damage based on value
@@ -1779,12 +1867,12 @@ def format_monster_new(monster)
                      else 40                # Brighter green for extreme
                      end
 
-      output += colorize_output(attack_name, :value)
-      output += colorize_output(total.to_s.rjust(5), :dice)
-      output += colorize_output(init.to_s.rjust(5), :value)
-      output += colorize_output(off.to_s.rjust(4), :success)
-      output += colorize_output(def_val.to_s.rjust(4), :header)
-      output += "\e[38;5;#{damage_color}m#{damage.to_s.rjust(7)}\e[0m" + "\n"
+      output += "  " + colorize_output(attack_name.ljust(20), :value)
+      output += colorize_output(total.to_s.rjust(6), :dice)
+      output += colorize_output(init.to_s.rjust(6), :value)
+      output += colorize_output(off.to_s.rjust(5), :success)
+      output += colorize_output(def_val.to_s.rjust(5), :warning)
+      output += damage.to_s.rjust(8).fg(damage_color) + "\n"
     end
 
     # Skills
@@ -1838,12 +1926,15 @@ def format_monster_new(monster)
     output += "─" * content_width + "\n\n"
 
     # Physical stats - ensure integers
-    size_val = monster.SIZE.is_a?(Float) ? monster.SIZE.round : monster.SIZE
+    # Use the SIZE calculated by the class (includes half-sizes)
+    size_val = monster.SIZE
+    # Format SIZE for display (3.5 becomes "3½")
+    size_display = size_val % 1 == 0.5 ? "#{size_val.floor}½" : size_val.to_s
     bp_val = monster.BP.is_a?(Float) ? monster.BP.round : monster.BP
     db_val = monster.DB.is_a?(Float) ? monster.DB.round : monster.DB
     md_val = monster.MD.is_a?(Float) ? monster.MD.round : monster.MD
 
-    output += "SIZE: #{size_val}  BP: #{bp_val}  DB: #{db_val}  MD: #{md_val}\n"
+    output += "SIZE: #{size_display}  BP: #{bp_val}  DB: #{db_val}  MD: #{md_val}\n"
     output += "Weight: #{monster.weight.round} kg\n\n"
     
     # Special abilities
@@ -1866,13 +1957,13 @@ def format_monster_new(monster)
         off = total + 2
         def_val = total
         damage = db + 1
-        attack_name = skill.capitalize.ljust(15)
+        attack_name = skill.capitalize
       else
         init = 4
         off = total + 1
         def_val = total + 1
         damage = db + 2
-        attack_name = skill.capitalize.ljust(15)
+        attack_name = skill.capitalize
       end
 
       output += "#{attack_name} #{total.to_s.rjust(5)}  #{init.to_s.rjust(4)}  #{off.to_s.rjust(3)}  #{def_val.to_s.rjust(3)}  #{damage.to_s.rjust(6)}\n"
@@ -1924,44 +2015,138 @@ end
 
 # NPC GENERATION (OLD SYSTEM)
 def generate_npc_old
-  show_content("Generating NPC (Old System)...\n\nPress any key to continue\nOr ESC to cancel")
-  
-  key = getchr
-  return if key == "\e"
-  
+  # Get inputs for old system NPC
+  header = colorize_output("OLD SYSTEM NPC GENERATION", :header) + "\n\n"
+  header += "Enter name (or ENTER for random): "
+  show_content(header)
+  name = get_text_input("")
+  return if name == :cancelled
+  name = "" if name.nil?
+
+  # Type selection
+  type_text = "\n" + colorize_output("Select type (0 for random):", :header) + "\n\n"
+  types = [""] + $Chartype.keys.sort
+  types.each_with_index do |t, i|
+    next if i == 0
+    type_text += colorize_output(i.to_s.rjust(2), :dice) + ": " + colorize_output(t, :value).ljust(25)
+    type_text += "\n" if i % 3 == 0
+  end
+  grey_out_content
+  show_content(@content.text + type_text + "\n\nEnter number: ")
+  type_input = get_text_input("")
+  return if type_input == :cancelled
+  type = type_input.to_i > 0 ? types[type_input.to_i] : ""
+
+  # Level
+  level_text = "\n" + colorize_output("Level:", :header) + "\n"
+  level_text += "1: Untrained  2: Trained some  3: Trained  4: Well trained  5: Master\n\n"
+  grey_out_content
+  show_content(@content.text + level_text + "Enter level (0-5): ")
+  level_input = get_text_input("")
+  return if level_input == :cancelled
+  level = level_input.to_i
+
+  # Area
+  area_text = "\n" + colorize_output("Area:", :header) + "\n"
+  area_text += "1: Amaronir  2: Merisir  3: Calaronir  4: Feronir\n"
+  area_text += "5: Alerisir  6: Rauinir  7: Outskirts\n\n"
+  grey_out_content
+  show_content(@content.text + area_text + "Enter area (0 for random): ")
+  area_input = get_text_input("")
+  return if area_input == :cancelled
+  area = case area_input.to_i
+         when 1 then "Amaronir"
+         when 2 then "Merisir"
+         when 3 then "Calaronir"
+         when 4 then "Feronir"
+         when 5 then "Alerisir"
+         when 6 then "Rauinir"
+         when 7 then "Outskirts"
+         else ""
+         end
+
+  # Sex
+  sex_text = "\n" + colorize_output("Sex (M/F or ENTER for random):", :header) + " "
+  grey_out_content
+  show_content(@content.text + sex_text)
+  sex_input = get_text_input("")
+  return if sex_input == :cancelled
+  sex = sex_input.upcase if sex_input && ["M", "F"].include?(sex_input.upcase)
+  sex ||= ""
+
+  # Age, height, weight
+  grey_out_content
+  show_content(@content.text + "\n" + colorize_output("Age (0 for random):", :header) + " ")
+  age = get_text_input("").to_i rescue 0
+  return if age == :cancelled
+
+  grey_out_content
+  show_content(@content.text + "\n" + colorize_output("Height in cm (0 for random):", :header) + " ")
+  height = get_text_input("").to_i rescue 0
+  return if height == :cancelled
+
+  grey_out_content
+  show_content(@content.text + "\n" + colorize_output("Weight in kg (0 for random):", :header) + " ")
+  weight = get_text_input("").to_i rescue 0
+  return if weight == :cancelled
+
+  # Description
+  grey_out_content
+  show_content(@content.text + "\n" + colorize_output("Description (ENTER for none):", :header) + " ")
+  description = get_text_input("") || ""
+  return if description == :cancelled
+
   begin
-    # Use the old system - with proper error handling
-    npc_string = ""
-    begin
-      # Try to run the external command with proper escaping
-      cmd = "ruby '#{File.join($pgmdir, "randomizer.rb")}' npc 2>/dev/null"
-      npc_string = `#{cmd}`
-      if npc_string.empty? || $?.exitstatus != 0
-        # Fallback if external command fails
-        npc_string = "Old NPC Generator\n" + "=" * 40 + "\n\n"
-        npc_string += "Error: Could not run external randomizer.\n"
-        npc_string += "Please ensure randomizer.rb exists in:\n"
-        npc_string += "#{$pgmdir}\n"
-      end
-    rescue => e
-      debug "Error running randomizer: #{e.message}"
-      npc_string = "Error generating NPC: #{e.message}"
+    # Generate using the old Npc class
+    npc = Npc.new(name, type, level, area, sex, age, height, weight, description)
+
+    # Format output
+    content_width = @cols - 35
+    output = colorize_output("OLD SYSTEM NPC", :header) + "\n"
+    output += colorize_output("─" * content_width, :header) + "\n\n"
+
+    # Basic info
+    output += colorize_output("Name: ", :label) + colorize_output(npc.name, :name) + "\n"
+    output += colorize_output("Type: ", :label) + colorize_output(npc.type, :value) + "\n"
+    output += colorize_output("Level: ", :label) + colorize_output(npc.level.to_s, :dice) + "\n"
+    output += colorize_output("Area: ", :label) + colorize_output(npc.area, :value) + "\n"
+    output += colorize_output("Sex: ", :label) + colorize_output(npc.sex, :value) + "\n"
+    output += colorize_output("Age: ", :label) + colorize_output(npc.age.to_s, :value) + "\n"
+    output += colorize_output("Height: ", :label) + colorize_output("#{npc.height} cm", :value) + "\n"
+    output += colorize_output("Weight: ", :label) + colorize_output("#{npc.weight} kg", :value) + "\n"
+
+    if npc.description && !npc.description.empty?
+      output += colorize_output("Description: ", :label) + colorize_output(npc.description, :value) + "\n"
     end
-    show_content(npc_string)
+
+    output += "\n"
+    output += colorize_output("Physical Stats:", :subheader) + "\n"
+    # Format SIZE for display
+    size_display = npc.SIZE % 1 == 0.5 ? "#{npc.SIZE.floor}½" : npc.SIZE.to_s
+    output += colorize_output("SIZE: ", :label) + colorize_output(size_display, :value)
+    output += "  " + colorize_output("BP: ", :label) + colorize_output(npc.BP.to_s, :value)
+    output += "  " + colorize_output("DB: ", :label) + colorize_output(npc.DB.to_s, :value)
+    output += "  " + colorize_output("MD: ", :label) + colorize_output(npc.MD.to_s, :value)
+    output += "  " + colorize_output("ENC: ", :label) + colorize_output(npc.ENC.to_s, :value) + "\n\n"
+
+    # Add more details as needed from the NPC object
+
+    show_content(output)
     
     # Simple navigation for old system output
     loop do
       key = getchr
       case key
       when "\e", "q"
+        return_to_menu
         break
-      when "j", "\e[B"
+      when "j", "DOWN"
         @content.linedown
-      when "k", "\e[A" 
+      when "k", "UP"
         @content.lineup
-      when "\e[6~"
+      when "PgDOWN"
         @content.pagedown
-      when "\e[5~"
+      when "PgUP"
         @content.pageup
       when "r"
         generate_npc_old
@@ -1977,44 +2162,84 @@ end
 
 # ENCOUNTER GENERATION (OLD SYSTEM)
 def generate_encounter_old
-  show_content("Generating Encounter (Old System)...\n\nPress any key to continue\nOr ESC to cancel")
-  
-  key = getchr
-  return if key == "\e"
-  
+  # Get inputs for old system encounter
+  header = colorize_output("OLD SYSTEM ENCOUNTER GENERATION", :header) + "\n\n"
+
+  # Day/Night
+  day_text = colorize_output("Time:", :header) + "\n"
+  day_text += colorize_output("0", :dice) + ": Night\n"
+  day_text += colorize_output("1", :dice) + ": Day\n\n"
+  show_content(header + day_text + "Enter choice (default=1): ")
+  day_input = get_text_input("")
+  return if day_input == :cancelled
+  $Day = day_input == "0" ? 0 : 1
+
+  # Terrain
+  terrain_text = "\n" + colorize_output("Terrain:", :header) + "\n"
+  terrain_text += "0: City  1: Rural  2: Road  3: Plains\n"
+  terrain_text += "4: Hills  5: Mountains  6: Woods  7: Wilderness\n\n"
+  grey_out_content
+  show_content(@content.text + terrain_text + "Enter terrain (default=1): ")
+  terrain_input = get_text_input("")
+  return if terrain_input == :cancelled
+  $Terrain = terrain_input.to_i if (0..7).include?(terrain_input.to_i)
+  $Terrain ||= 1
+  $Terraintype = $Terrain + (8 * $Day)
+
+  # Level modifier
+  grey_out_content
+  show_content(@content.text + "\n" + colorize_output("Level modifier (+/-, default=0):", :header) + " ")
+  level_input = get_text_input("")
+  return if level_input == :cancelled
+  $Level = level_input.to_i
+
   begin
-    # Use the old system - with proper error handling
-    enc_string = ""
-    begin
-      # Try to run the external command with proper escaping
-      cmd = "ruby '#{File.join($pgmdir, "randomizer.rb")}' enc 2>/dev/null"
-      enc_string = `#{cmd}`
-      if enc_string.empty? || $?.exitstatus != 0
-        # Fallback if external command fails
-        enc_string = "Old Encounter Generator\n" + "=" * 40 + "\n\n"
-        enc_string += "Error: Could not run external randomizer.\n"
-        enc_string += "Please ensure randomizer.rb exists in:\n"
-        enc_string += "#{$pgmdir}\n"
-      end
-    rescue => e
-      debug "Error running randomizer: #{e.message}"
-      enc_string = "Error generating encounter: #{e.message}"
+    # Generate using the old Enc class with proper parameters
+    # First parameter is encounter spec (empty for random), second is number
+    enc = Enc.new("", 0)
+
+    # Format output
+    content_width = @cols - 35
+    output = colorize_output("OLD SYSTEM ENCOUNTER", :header) + "\n"
+    output += colorize_output("─" * content_width, :header) + "\n\n"
+
+    # Display encounter details
+    if enc.encounter && !enc.encounter.empty?
+      # enc.encounter is an array of hashes, get the first one's string
+      enc_str = enc.encounter[0]["string"] rescue "Unknown"
+      output += colorize_output("Encounter: ", :label) + colorize_output(enc_str, :success) + "\n"
+    else
+      output += colorize_output("No encounter", :value) + "\n"
     end
-    show_content(enc_string)
+
+    if enc.enc_number && enc.enc_number > 0
+      output += colorize_output("Number: ", :label) + colorize_output(enc.enc_number.to_s, :dice) + "\n"
+    end
+
+    if enc.enc_attitude
+      output += colorize_output("Attitude: ", :label) + colorize_output(enc.enc_attitude, :value) + "\n"
+    end
+
+    output += "\n"
+    output += "Note: This is a basic random encounter using the old system.\n"
+    output += "For more detailed encounters, use the New System generator.\n"
+
+    show_content(output)
     
     # Simple navigation
     loop do
       key = getchr
       case key
       when "\e", "q"
+        return_to_menu
         break
-      when "j", "\e[B"
+      when "j", "DOWN"
         @content.linedown
-      when "k", "\e[A"
+      when "k", "UP"
         @content.lineup
-      when "\e[6~"
+      when "PgDOWN"
         @content.pagedown
-      when "\e[5~"
+      when "PgUP"
         @content.pageup
       when "r"
         generate_encounter_old
@@ -2031,32 +2256,35 @@ end
 # WEATHER GENERATOR
 def generate_weather_ui
   debug "Starting generate_weather_ui"
-  
+
   # Initialize weather globals if needed
   $weather_n = 1 if $weather_n.nil?
   $wind_dir_n = 0 if $wind_dir_n.nil?
   $wind_str_n = 0 if $wind_str_n.nil?
   $mn = 0 if $mn.nil?
-  
+
   if $mn != 0
     $mn = (($mn + 1) % 14)
     $mn = 1 if $mn == 0
   end
-  
-  # Get Month
-  mstring = colorize_output("WEATHER GENERATOR", :header) + "\n\n"
-  mstring += colorize_output("Select month:", :header) + "\n\n"
+
+  # Get Month - Always use colors for weather UI
+  mstring = "WEATHER GENERATOR".fg(14).b + "\n\n"
+  mstring += "Select month:".fg(14).b + "\n\n"
   7.times do |i|
-    mstring += colorize_output(i.to_s.rjust(2), :dice) + ": "
-    mstring += colorize_output($Month[i], :value).ljust(30)
-    mstring += colorize_output((i+7).to_s.rjust(2), :dice) + ": "
-    mstring += colorize_output($Month[i+7], :value) + "\n"
+    mstring += i.to_s.rjust(2).fg(202) + ": "  # Orange for numbers
+    mstring += $Month[i].fg(7).ljust(30)  # White for month names
+    mstring += (i+7).to_s.rjust(2).fg(202) + ": "
+    mstring += $Month[i+7].fg(7) + "\n"
   end
-  mstring += "\n" + colorize_output("Enter month", :label) + " (default=#{$mn}):\n\n"
+  mstring += "\n" + "Enter month".fg(13) + " (default=#{$mn}): "
 
   show_content(mstring)
-  month_input = get_text_input(colorize_output("Month: ", :prompt))
-  return if month_input == :cancelled
+  month_input = get_text_input("")
+  if month_input == :cancelled
+    return_to_menu
+    return
+  end
   
   month = month_input.to_i
   month = $mn if month_input.nil? || month_input.empty?
@@ -2064,43 +2292,51 @@ def generate_weather_ui
   month = 13 if month > 13
   $mn = month
   
-  # Get weather conditions
-  weather_text = "\n" + colorize_output("Select weather conditions:", :header) + "\n\n"
-  weather_text += colorize_output(" 1", :dice) + ": " + colorize_output("Arctic", :value) + "\n"
-  weather_text += colorize_output(" 2", :dice) + ": " + colorize_output("Winter", :value) + "\n"
-  weather_text += colorize_output(" 3", :dice) + ": " + colorize_output("Cold", :value) + "\n"
-  weather_text += colorize_output(" 4", :dice) + ": " + colorize_output("Cool", :value) + "\n"
-  weather_text += colorize_output(" 5", :dice) + ": " + colorize_output("Normal", :value) + " (default)\n"
-  weather_text += colorize_output(" 6", :dice) + ": " + colorize_output("Warm", :value) + "\n"
-  weather_text += colorize_output(" 7", :dice) + ": " + colorize_output("Hot", :value) + "\n"
-  weather_text += colorize_output(" 8", :dice) + ": " + colorize_output("Very hot", :value) + "\n"
-  weather_text += colorize_output(" 9", :dice) + ": " + colorize_output("Extreme heat", :value) + "\n"
-  weather_text += "\n" + colorize_output("Enter weather condition", :label) + " (default=#{$weather_n}):\n\n"
+  # Get weather conditions - Always use colors
+  weather_text = "\n" + "Select weather conditions:".fg(14).b + "\n\n"
+  weather_text += " 1".fg(202) + ": " + "Arctic".fg(51) + "\n"  # Cyan for cold
+  weather_text += " 2".fg(202) + ": " + "Winter".fg(195) + "\n"  # Light blue
+  weather_text += " 3".fg(202) + ": " + "Cold".fg(117) + "\n"  # Light cyan
+  weather_text += " 4".fg(202) + ": " + "Cool".fg(159) + "\n"  # Light blue
+  weather_text += " 5".fg(202) + ": " + "Normal".fg(7) + " (default)\n"  # White
+  weather_text += " 6".fg(202) + ": " + "Warm".fg(214) + "\n"  # Orange
+  weather_text += " 7".fg(202) + ": " + "Hot".fg(196) + "\n"  # Red
+  weather_text += " 8".fg(202) + ": " + "Very hot".fg(160) + "\n"  # Dark red
+  weather_text += " 9".fg(202) + ": " + "Extreme heat".fg(124) + "\n"  # Very dark red
+  weather_text += "\n" + "Enter weather condition".fg(13) + " (default=#{$weather_n}): "
 
-  show_content(@content.text + weather_text)
-  weather_input = get_text_input(colorize_output("Weather: ", :prompt))
-  return if weather_input == :cancelled
+  grey_out_content
+  show_content(@content.text + "\n" + weather_text)
+  weather_input = get_text_input("")
+  if weather_input == :cancelled
+    return_to_menu
+    return
+  end
   
   weather = weather_input.to_i
   weather = $weather_n if weather_input.nil? || weather_input.empty?
   weather = 1 if weather < 1
   weather = 9 if weather > 9
   
-  # Get wind
-  wind_text = "\n" + colorize_output("Select wind conditions:", :header) + "\n\n"
-  wind_text += colorize_output("Wind Direction:", :subheader) + "\n"
-  wind_text += colorize_output(" 0", :dice) + ": N   " + colorize_output("1", :dice) + ": NE   "
-  wind_text += colorize_output("2", :dice) + ": E   " + colorize_output("3", :dice) + ": SE\n"
-  wind_text += colorize_output(" 4", :dice) + ": S   " + colorize_output("5", :dice) + ": SW   "
-  wind_text += colorize_output("6", :dice) + ": W   " + colorize_output("7", :dice) + ": NW\n\n"
-  wind_text += colorize_output("Wind Strength:", :subheader) + "\n"
-  wind_text += colorize_output(" 0", :dice) + ": Calm   " + colorize_output("8", :dice) + ": Light   "
-  wind_text += colorize_output("16", :dice) + ": Medium   " + colorize_output("24", :dice) + ": Strong\n\n"
-  wind_text += colorize_output("Enter combined value", :label) + " (0-31, default=#{$wind_dir_n + $wind_str_n * 8}):\n\n"
+  # Get wind - Always use colors
+  wind_text = "\n" + "Select wind conditions:".fg(14).b + "\n\n"
+  wind_text += "Wind Direction:".fg(11).b + "\n"
+  wind_text += " 0".fg(202) + ": N   " + "1".fg(202) + ": NE   "
+  wind_text += "2".fg(202) + ": E   " + "3".fg(202) + ": SE\n"
+  wind_text += " 4".fg(202) + ": S   " + "5".fg(202) + ": SW   "
+  wind_text += "6".fg(202) + ": W   " + "7".fg(202) + ": NW\n\n"
+  wind_text += "Wind Strength:".fg(11).b + "\n"
+  wind_text += " 0".fg(202) + ": Calm   " + "8".fg(202) + ": Light   "
+  wind_text += "16".fg(202) + ": Medium   " + "24".fg(202) + ": Strong\n\n"
+  wind_text += "Enter combined value".fg(13) + " (0-31, default=#{$wind_dir_n + $wind_str_n * 8}): "
 
-  show_content(@content.text + wind_text)
-  wind_input = get_text_input(colorize_output("Wind: ", :prompt))
-  return if wind_input == :cancelled
+  grey_out_content
+  show_content(@content.text + "\n" + wind_text)
+  wind_input = get_text_input("")
+  if wind_input == :cancelled
+    return_to_menu
+    return
+  end
   
   wind = wind_input.to_i
   wind = $wind_dir_n + $wind_str_n * 8 if wind_input.nil? || wind_input.empty?
@@ -2116,7 +2352,17 @@ def generate_weather_ui
     
     # Create colorized weather output with symbols
     output = ""
-    output += "\n" + colorize_output("WEATHER FOR #{$Month[month].upcase}", :header) + "\n\n"
+    # Month-specific header colors
+    month_color = case month
+                  when 1..2 then 231   # White for winter months
+                  when 3..5 then 118   # Light green for spring
+                  when 6..8 then 226   # Yellow for summer
+                  when 9..11 then 208  # Orange for autumn
+                  when 12..13 then 195 # Light blue for winter
+                  else 255             # Default white
+                  end
+    output += "\n" + "☀ WEATHER FOR #{$Month[month].upcase} ☀".fg(month_color).b + "\n"
+    output += ("─" * 60).fg(240) + "\n\n"  # Grey divider
     
     # Weather symbols
     weather_symbols = {
@@ -2144,71 +2390,137 @@ def generate_weather_ui
       # Build line piece by piece to preserve colors
       line = ""
       
-      # Day number
-      line += colorize_output((i+1).to_s.rjust(2), :label)
+      # Day number - always use color for weather
+      line += (i+1).to_s.rjust(2).fg(13)  # Magenta for day numbers
       line += ": "
       
       # Weather description with enhanced gradient coloring
       weather_text = $Weather[d.weather]
-      weather_ansi = case weather_text
-                     when /blizzard/i then "\e[38;5;231;1m"      # Bold white for blizzard
-                     when /snow/i then "\e[38;5;255m"             # White for snow
-                     when /hail/i then "\e[38;5;253m"             # Light gray for hail
-                     when /thunder|lightning/i then "\e[38;5;226;1m" # Bold yellow for thunder
-                     when /storm/i then "\e[38;5;202;1m"          # Bold orange for storm
-                     when /heavy rain/i then "\e[38;5;21m"        # Deep blue for heavy rain
-                     when /rain/i then "\e[38;5;33m"              # Blue for rain
-                     when /drizzle/i then "\e[38;5;111m"          # Light blue for drizzle
-                     when /fog/i then "\e[38;5;248m"              # Gray for fog
-                     when /mist/i then "\e[38;5;251m"             # Light gray for mist
-                     when /overcast/i then "\e[38;5;243m"         # Dark gray for overcast
-                     when /cloudy/i then "\e[38;5;247m"           # Medium gray for cloudy
-                     when /partly cloudy/i then "\e[38;5;250m"    # Light gray for partly cloudy
-                     when /sunny|clear/i then "\e[38;5;226m"      # Yellow for sunny
-                     when /warm/i then "\e[38;5;214m"             # Orange for warm
-                     when /hot/i then "\e[38;5;196m"              # Red for hot
-                     when /cold/i then "\e[38;5;51m"              # Cyan for cold
-                     when /cool/i then "\e[38;5;117m"             # Light cyan for cool
-                     else "\e[38;5;255m"                          # Default white
-                     end
-      line += weather_ansi + weather_text + "\e[0m"
+      weather_colored = case weather_text
+                       when /blizzard/i then weather_text.fg(231).b       # Bold white for blizzard
+                       when /snow storm/i then weather_text.fg(255).b      # Bold white for snow storm
+                       when /heavy snow/i then weather_text.fg(195)        # Light blue-white for heavy snow
+                       when /snow/i then weather_text.fg(255)              # White for snow
+                       when /hail/i then weather_text.fg(253)              # Light gray for hail
+                       when /thunder/i then weather_text.fg(93).b          # Bold purple for thunder
+                       when /lightning/i then weather_text.fg(226).b       # Bold yellow for lightning
+                       when /storm/i then weather_text.fg(202).b           # Bold orange for storm
+                       when /heavy rain/i then weather_text.fg(21)         # Deep blue for heavy rain
+                       when /rain/i then weather_text.fg(33)               # Blue for rain
+                       when /drizzle/i then weather_text.fg(111)           # Light blue for drizzle
+                       when /sleet/i then weather_text.fg(109)             # Blue-gray for sleet
+                       when /fog/i then weather_text.fg(248)               # Gray for fog
+                       when /mist/i then weather_text.fg(251)              # Light gray for mist
+                       when /overcast/i then weather_text.fg(243)          # Dark gray for overcast
+                       when /gray/i then weather_text.fg(245)              # Medium-dark gray
+                       when /partly cloudy/i then weather_text.fg(250)     # Light gray for partly cloudy
+                       when /mainly cloudy/i then weather_text.fg(247)     # Medium gray
+                       when /cloudy/i then weather_text.fg(247)            # Medium gray for cloudy
+                       when /mainly clear/i then weather_text.fg(226)      # Yellow for mainly clear
+                       when /clear|sunny/i then weather_text.fg(226)       # Yellow for sunny/clear
+                       when /lucid/i then weather_text.fg(252)             # Very light gray
+                       when /warm/i then weather_text.fg(214)              # Orange for warm
+                       when /hot/i then weather_text.fg(196)               # Red for hot
+                       when /scorching/i then weather_text.fg(160).b       # Bold dark red for scorching
+                       when /freezing/i then weather_text.fg(45).b         # Bold cyan for freezing
+                       when /cold/i then weather_text.fg(51)               # Cyan for cold
+                       when /cool/i then weather_text.fg(117)              # Light cyan for cool
+                       when /breeze/i then weather_text.fg(159)            # Light blue for breeze
+                       else weather_text.fg(255)                           # Default white
+                       end
+      line += weather_colored
       
-      # Add weather symbol
-      weather_symbols.each do |key, sym|
-        if weather_text.include?(key)
-          line += colorize_output(" #{sym}", :dice)
-          break
-        end
+      # Add weather symbol with color matching the weather
+      symbol_added = false
+      if weather_text =~ /blizzard|snow storm/i
+        line += " " + "❄".fg(231).b
+        symbol_added = true
+      elsif weather_text =~ /snow/i
+        line += " " + "❄".fg(255)
+        symbol_added = true
+      elsif weather_text =~ /thunder|lightning|storm/i
+        line += " " + "⛈".fg(226).b
+        symbol_added = true
+      elsif weather_text =~ /rain/i
+        line += " " + "☂".fg(33)
+        symbol_added = true
+      elsif weather_text =~ /cloudy|overcast/i
+        line += " " + "☁".fg(247)
+        symbol_added = true
+      elsif weather_text =~ /sunny|clear/i
+        line += " " + "☀".fg(226)
+        symbol_added = true
+      elsif weather_text =~ /hot|warm/i
+        line += " " + "☀".fg(214)
+        symbol_added = true
+      elsif weather_text =~ /cold|freezing/i
+        line += " " + "❄".fg(51)
+        symbol_added = true
       end
       
       line += ". "
       
-      # Wind with shades of blue based on strength
+      # Wind with gradient coloring based on strength
       wind_color = case d.wind_str
-                   when 0..7 then 117    # Light blue
-                   when 8..15 then 75    # Medium blue
-                   when 16..23 then 33   # Darker blue
-                   else 21               # Deep blue
+                   when 0 then 250       # Light gray for calm
+                   when 1..7 then 159    # Light blue for light
+                   when 8..15 then 75    # Medium blue for moderate
+                   when 16..23 then 33   # Darker blue for strong
+                   when 24..30 then 129  # Purple for very strong
+                   else 201              # Magenta for extreme
                    end
-      line += "\e[38;5;#{wind_color}m#{$Wind_str[d.wind_str]}\e[0m"
+
+      # Add wind strength with icon
+      wind_icon = case d.wind_str
+                  when 0 then "○"      # Circle for calm
+                  when 1..7 then "◡"   # Light curve
+                  when 8..15 then "∼"  # Wave
+                  when 16..23 then "≈" # Double wave
+                  else "≋"             # Triple wave for extreme
+                  end
+
+      wind_text = "#{wind_icon} #{$Wind_str[d.wind_str]}"
+      line += ". " + wind_text.fg(wind_color)
 
       if d.wind_str != 0
-        line += " "
-        line += "\e[38;5;#{wind_color}m(#{$Wind_dir[d.wind_dir]})\e[0m"
+        # Direction arrows
+        dir_arrow = case d.wind_dir
+                    when 0 then "↑"  # N
+                    when 1 then "↗"  # NE
+                    when 2 then "→"  # E
+                    when 3 then "↘"  # SE
+                    when 4 then "↓"  # S
+                    when 5 then "↙"  # SW
+                    when 6 then "←"  # W
+                    when 7 then "↖"  # NW
+                    end
+        dir_text = " #{dir_arrow} #{$Wind_dir[d.wind_dir]}"
+        line += dir_text.fg(wind_color)
       end
       
       # Calculate remaining space for special/moon (use pure for length calculation)
       current_length = line.pure.length
       
-      # Add special days
+      # Add special days with magical colors
       if d.special && !d.special.empty?
         padding = [60 - current_length, 1].max
         line += " " * padding
-        line += colorize_output("★ #{d.special}", :success)
+        # Use different colors for different special days
+        special_text = "★ #{d.special}"
+        special_colored = case d.special
+                         when /new year/i then special_text.fg(226).b    # Bold yellow
+                         when /festival/i then special_text.fg(201).b    # Bold magenta
+                         when /harvest/i then special_text.fg(208)       # Orange
+                         when /moon/i then special_text.fg(195)          # Light blue
+                         when /solstice/i then special_text.fg(93).b     # Bold purple
+                         when /equinox/i then special_text.fg(118)       # Light green
+                         else special_text.fg(229)                       # Light yellow
+                         end
+        line += special_colored
         current_length = line.pure.length
       end
       
-      # Add moon phases with symbols
+      # Add moon phases with magical colors
       if month != 0 && moon_symbols.key?(i)
         moon_text = case i
                    when 0 then "#{moon_symbols[0]} New"
@@ -2218,7 +2530,14 @@ def generate_weather_ui
                    end
         padding = [78 - current_length, 1].max
         line += " " * padding
-        line += colorize_output(moon_text, :header)
+        # Moon phase colors
+        moon_colored = case i
+                      when 0 then moon_text.fg(238)    # Dark gray for new moon
+                      when 7 then moon_text.fg(252)    # Light gray for waxing
+                      when 14 then moon_text.fg(229).b # Bold light yellow for full
+                      when 21 then moon_text.fg(245)   # Medium gray for waning
+                      end
+        line += moon_colored
       end
       
       output += line + "\n"
@@ -2239,6 +2558,7 @@ def generate_weather_ui
       key = getchr
       case key
       when "\e", "q"
+        return_to_menu
         break
       when "j", "DOWN"
         @content.linedown
@@ -2267,6 +2587,9 @@ def generate_weather_ui
         save_to_file(output, :weather)
       end
     end
+
+    # Return focus to menu when done
+    return_to_menu
   rescue => e
     show_content("Error generating weather: #{e.message}")
   end
@@ -2278,18 +2601,25 @@ def generate_town_ui
   
   # Get Town name
   header = colorize_output("TOWN/CITY GENERATOR", :header) + "\n\n"
-  header += colorize_output("Enter Village/Town/City name", :label) + " (or ENTER for random):\n\n"
+  header += colorize_output("Enter Village/Town/City name", :label) + " (or ENTER for random): "
   show_content(header)
-  town_name = get_text_input(colorize_output("Name: ", :prompt))
-  return if town_name == :cancelled
+  town_name = get_text_input("")
+  if town_name == :cancelled
+    return_to_menu
+    return
+  end
   town_name = "" if town_name.nil?
   
   # Get Town size
   prompt_text = "\n" + colorize_output("Enter number of houses", :label)
-  prompt_text += " (1-1000, default=1):\n\n"
+  prompt_text += " (1-1000, default=1): "
+  grey_out_content
   show_content(@content.text + prompt_text)
-  size_input = get_text_input(colorize_output("Houses: ", :prompt))
-  return if size_input == :cancelled
+  size_input = get_text_input("")
+  if size_input == :cancelled
+    return_to_menu
+    return
+  end
   town_size = size_input.to_i
   town_size = 1 if town_size < 1
   
@@ -2302,9 +2632,13 @@ def generate_town_ui
   var_text += colorize_output("4", :dice) + ": " + colorize_output("Only Dwarves", :value) + "\n"
   var_text += colorize_output("5", :dice) + ": " + colorize_output("Only Elves", :value) + "\n"
   var_text += colorize_output("6", :dice) + ": " + colorize_output("Only Lizardfolk", :value) + "\n\n"
-  show_content(@content.text + var_text)
-  var_input = get_text_input(colorize_output("Variation: ", :prompt))
-  return if var_input == :cancelled
+  grey_out_content
+  show_content(@content.text + "\n" + var_text)
+  var_input = get_text_input("")
+  if var_input == :cancelled
+    return_to_menu
+    return
+  end
   town_var = var_input.to_i
   town_var = 0 if town_var < 0
   town_var = 6 if town_var > 6
@@ -2522,6 +2856,10 @@ def generate_town_ui
   # Set the text directly to the content pane
   @content.say(output)
 
+  # Redraw the header and menu after fork process
+  draw_header
+  draw_menu
+
   # Refresh all panes to ensure UI is properly displayed
   @header.refresh
   @menu.refresh
@@ -2538,13 +2876,13 @@ def generate_town_ui
     when "\e", "q", "ESC"
       return_to_menu
       break
-    when "j", "\e[B"
+    when "j", "DOWN"
       @content.linedown
-    when "k", "\e[A"
+    when "k", "UP"
       @content.lineup
-    when "\e[6~"
+    when "PgDOWN"
       @content.pagedown
-    when "\e[5~"
+    when "PgUP"
       @content.pageup
     when "r"
       # Re-roll with same parameters
@@ -2685,12 +3023,16 @@ def generate_name_ui
     menu_text += colorize_output(idx.to_s.rjust(2), :dice) + ": " + colorize_output(name_type[0], :value) + "\n"
   end
   menu_text += "\n"
+  menu_text += colorize_output("Enter name type number", :label) + " (or ENTER for random): "
 
   show_content(menu_text)
 
   # Use text input like other generators
-  name_input = get_text_input(colorize_output("Type number: ", :prompt))
-  return if name_input == :cancelled
+  name_input = get_text_input("")
+  if name_input == :cancelled
+    return_to_menu
+    return
+  end
 
   idx = name_input.to_i
   idx = rand($Names.length) if idx < 0 || idx >= $Names.length
@@ -2708,17 +3050,26 @@ def generate_name_ui
     end
     
     show_content(output)
-    
+
+    # Show navigation footer
+    @footer.clear
+    @footer.say(" [j/↓] Down | [k/↑] Up | [r] Re-generate | [s] Save | [ESC/q] Back ".ljust(@cols))
+
     # Navigation
     loop do
       key = getchr
       case key
       when "\e", "q"
+        return_to_menu
         break
-      when "j", "\e[B"
+      when "j", "DOWN"
         @content.linedown
-      when "k", "\e[A"
+      when "k", "UP"
         @content.lineup
+      when " ", "PgDOWN"
+        @content.pagedown
+      when "PgUP"
+        @content.pageup
       when "r"
         generate_name_ui
         break
@@ -2726,6 +3077,9 @@ def generate_name_ui
         save_to_file(output, :names)
       end
     end
+
+    # Return focus to menu when done
+    return_to_menu
   rescue => e
     show_content("Error generating names: #{e.message}")
   end
@@ -2800,7 +3154,10 @@ def generate_town_relations
   # Ask for town file
   show_content("Enter town file name (default is the latest town generated [town.npc]):")
   file_input = get_text_input("File name: ")
-  return if file_input == :cancelled
+  if file_input == :cancelled
+    return_to_menu
+    return
+  end
   
   if file_input.nil? || file_input.empty?
     town_file = default_file
@@ -2850,6 +3207,7 @@ def generate_town_relations
       key = getchr
       case key
       when "\e", "q"
+        return_to_menu
         break
       when "j", "DOWN"
         @content.linedown
@@ -2876,28 +3234,426 @@ def generate_town_relations
 end
 
 # AI FEATURES
+def setup_openai_config
+  config_dir = File.expand_path("~/.amar-tools")
+  config_file = File.join(config_dir, "conf")
+
+  # Create config directory if it doesn't exist
+  Dir.mkdir(config_dir) unless Dir.exist?(config_dir)
+
+  # Load config or create default
+  if File.exist?(config_file)
+    load config_file
+  else
+    # Create default config
+    default_config = <<~CONFIG
+      # Amar-Tools Configuration
+      # Add your OpenAI API key below:
+      @ai = "your-openai-api-key-here"
+      @aimodel = "gpt-4o-mini"  # You can change to gpt-4o or other models
+    CONFIG
+    File.write(config_file, default_config)
+    load config_file
+  end
+
+  # Default model if not set
+  @aimodel ||= "gpt-4o-mini"
+end
+
+def openai_client
+  require 'ruby/openai' unless defined?(OpenAI)
+  @openai_client ||= OpenAI::Client.new(access_token: @ai)
+end
+
 def generate_adventure_ai
+  debug "Starting generate_adventure_ai"
   content_width = @cols - 35
-  show_content("AI Adventure Generator\n\n" + "─" * content_width + "\n\n")
-  show_content("This feature would use OpenAI to generate adventures.\n\nRequires OpenAI API key configuration.\n\nNot yet implemented in TUI version.\n\nPress any key to continue...")
-  getchr
-  show_content("")
+
+  # Setup OpenAI config
+  setup_openai_config
+
+  # Check if API key is configured
+  unless @ai && @ai != "your-openai-api-key-here" && !@ai.empty?
+    output = colorize_output("OpenAI NOT CONFIGURED", :header) + "\n\n"
+    output += "Please configure your OpenAI API key in: ~/.amar-tools/conf\n\n"
+    output += "Add this line with your actual API key:\n"
+    output += "@ai = \"your-actual-api-key\"\n\n"
+    output += "If you already have a key in ~/.rtfm/conf, you can copy it.\n\n"
+    output += "Press any key to continue..."
+    show_content(output)
+    key = getchr
+    return_to_menu
+    return
+  end
+
+  # Check if adventure prompt file exists
+  adv_file = File.join($pgmdir, "adv.txt")
+  unless File.exist?(adv_file)
+    output = colorize_output("MISSING PROMPT FILE", :header) + "\n\n"
+    output += "Adventure prompt file not found:\n"
+    output += "#{adv_file}\n\n"
+    output += "Press any key to continue..."
+    show_content(output)
+    key = getchr
+    return_to_menu
+    return
+  end
+
+  show_content(colorize_output("AI ADVENTURE GENERATION", :header) + "\n" +
+              colorize_output("─" * content_width, :header) + "\n\n" +
+              "Getting response from OpenAI...\n\n" +
+              "This may take a moment...\n\n" +
+              "(quality may vary, use at your own discretion)".fg(240))
+
+  begin
+    # Load the adventure prompt
+    prompt_content = File.read(adv_file)
+
+    # Send to OpenAI using ruby-openai gem
+    show_content(colorize_output("Generating adventure...", :header) + "\n\n" +
+                "Please wait, this may take a moment...".fg(240))
+
+    begin
+      require 'ruby/openai'
+    rescue LoadError
+      show_content("Error: ruby-openai gem not found. Please install with: gem install ruby-openai")
+      getchr
+      return_to_menu
+      return
+    end
+
+    client = openai_client
+    api_response = client.chat(
+      parameters: {
+        model: @aimodel,
+        messages: [{ role: 'user', content: prompt_content }],
+        max_tokens: 1800
+      }
+    ) rescue nil
+
+    response = api_response&.dig('choices', 0, 'message', 'content')
+
+    if response && !response.empty?
+      # Format and display response
+      output = colorize_output("AI GENERATED ADVENTURE", :header) + "\n"
+      output += colorize_output("─" * content_width, :header) + "\n\n"
+      output += response
+
+      # Save to file
+      save_dir = File.join($pgmdir, "saved")
+      Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
+      save_file = File.join(save_dir, "openai.txt")
+      File.write(save_file, response)
+      output += "\n\n" + colorize_output("Saved to: saved/openai.txt", :success)
+
+      show_content(output)
+
+      # Navigation
+      @footer.say(" [j/↓] Down | [k/↑] Up | [s] Save | [ESC/q] Back ".ljust(@cols))
+
+      loop do
+        key = getchr
+        case key
+        when "\e", "q"
+          return_to_menu
+          break
+        when "j", "DOWN"
+          @content.linedown
+        when "k", "UP"
+          @content.lineup
+        when " ", "PgDOWN"
+          @content.pagedown
+        when "PgUP"
+          @content.pageup
+        when "s"
+          save_to_file(response, :adventure)
+        end
+      end
+    else
+      output = colorize_output("ERROR", :header) + "\n\n"
+      output += "Failed to get response from OpenAI.\n\n"
+      output += "Error: #{response}\n\n" unless response.empty?
+      output += "Press any key to continue..."
+      show_content(output)
+      getchr
+    end
+  rescue => e
+    show_content("Error: #{e.message}\n\nPress any key to continue...")
+    getchr
+  end
+
+  return_to_menu
 end
 
 def describe_encounter_ai
+  debug "Starting describe_encounter_ai"
   content_width = @cols - 35
-  show_content("AI Encounter Description\n\n" + "─" * content_width + "\n\n")
-  show_content("This feature would use OpenAI to describe encounters.\n\nRequires OpenAI API key configuration.\n\nNot yet implemented in TUI version.\n\nPress any key to continue...")
-  getchr
-  show_content("")
+
+  # Check if openai command exists
+  unless system("which openai > /dev/null 2>&1")
+    output = colorize_output("OpenAI NOT CONFIGURED", :header) + "\n\n"
+    output += "The 'openai' command is not installed.\n\n"
+    output += "Please install and configure OpenAI.\n\n"
+    output += "Press any key to continue..."
+    show_content(output)
+    key = getchr
+    return_to_menu
+    return
+  end
+
+  # Get encounter file name
+  prompt_text = colorize_output("DESCRIBE ENCOUNTER WITH AI", :header) + "\n\n"
+  prompt_text += colorize_output("Enter encounter file name", :label)
+  prompt_text += " (default: encounter_new.npc): "
+
+  show_content(prompt_text)
+  file_input = get_text_input("")
+  if file_input == :cancelled
+    return_to_menu
+    return
+  end
+
+  filename = file_input.nil? || file_input.empty? ? "encounter_new.npc" : file_input
+  filepath = File.join($pgmdir, "saved", filename)
+
+  unless File.exist?(filepath)
+    output = colorize_output("FILE NOT FOUND", :header) + "\n\n"
+    output += "Encounter file not found:\n"
+    output += "#{filepath}\n\n"
+    output += "Press any key to continue..."
+    show_content(output)
+    getchr
+    return_to_menu
+    return
+  end
+
+  # Check for prompt file
+  enc_prompt = File.join($pgmdir, "enc.txt")
+  unless File.exist?(enc_prompt)
+    output = colorize_output("MISSING PROMPT FILE", :header) + "\n\n"
+    output += "Encounter prompt file not found:\n"
+    output += "#{enc_prompt}\n\n"
+    output += "Press any key to continue..."
+    show_content(output)
+    getchr
+    return_to_menu
+    return
+  end
+
+  show_content(colorize_output("AI ENCOUNTER DESCRIPTION", :header) + "\n" +
+              colorize_output("─" * content_width, :header) + "\n\n" +
+              "Getting response from OpenAI...\n\n" +
+              "This may take a moment...")
+
+  begin
+    # Read prompt and run OpenAI
+    prompt_text = File.read(enc_prompt)
+    enc_content = File.read(filepath)
+    combined = "#{prompt_text}\n\n#{enc_content}"
+
+    # Send to OpenAI using ruby-openai gem
+    show_content(colorize_output("Generating encounter description...", :header) + "\n\n" +
+                "Please wait, this may take a moment...".fg(240))
+
+    client = openai_client
+    api_response = client.chat(
+      parameters: {
+        model: @aimodel,
+        messages: [{ role: 'user', content: combined }],
+        max_tokens: 2000
+      }
+    ) rescue nil
+
+    response = api_response&.dig('choices', 0, 'message', 'content')
+
+    if response && !response.empty?
+      # Format and display response
+      output = colorize_output("AI ENCOUNTER DESCRIPTION", :header) + "\n"
+      output += colorize_output("─" * content_width, :header) + "\n\n"
+      output += response
+
+      # Save to file
+      save_dir = File.join($pgmdir, "saved")
+      Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
+      save_file = File.join(save_dir, "openai.txt")
+      File.write(save_file, response)
+      output += "\n\n" + colorize_output("Saved to: saved/openai.txt", :success)
+
+      show_content(output)
+
+      # Navigation with ESC/q support
+      @footer.say(" [j/↓] Down | [k/↑] Up | [s] Save | [ESC/q] Back ".ljust(@cols))
+
+      loop do
+        key = getchr
+        case key
+        when "\e", "q"
+          return_to_menu
+          break
+        when "j", "DOWN"
+          @content.linedown
+        when "k", "UP"
+          @content.lineup
+        when " ", "PgDOWN"
+          @content.pagedown
+        when "PgUP"
+          @content.pageup
+        when "s"
+          save_to_file(response, :encounter_desc)
+        end
+      end
+    else
+      output = colorize_output("ERROR", :header) + "\n\n"
+      output += "Failed to get response from OpenAI.\n\n"
+      output += "Error: #{response}\n\n" unless response.empty?
+      output += "Press any key to continue..."
+      show_content(output)
+      getchr
+    end
+  rescue => e
+    show_content("Error: #{e.message}\n\nPress any key to continue...")
+    getchr
+  end
+
+  return_to_menu
 end
 
 def describe_npc_ai
+  debug "Starting describe_npc_ai"
   content_width = @cols - 35
-  show_content("AI NPC Description\n\n" + "─" * content_width + "\n\n")
-  show_content("This feature would use OpenAI to describe NPCs.\n\nRequires OpenAI API key configuration.\n\nNot yet implemented in TUI version.\n\nPress any key to continue...")
-  getchr
-  show_content("")
+
+  # Setup OpenAI config
+  setup_openai_config
+
+  # Check if API key is configured
+  unless @ai && @ai != "your-openai-api-key-here" && !@ai.empty?
+    output = colorize_output("OpenAI NOT CONFIGURED", :header) + "\n\n"
+    output += "Please configure your OpenAI API key in: ~/.amar-tools/conf\n\n"
+    output += "Add this line with your actual API key:\n"
+    output += "@ai = \"your-actual-api-key\"\n\n"
+    output += "If you already have a key in ~/.rtfm/conf, you can copy it.\n\n"
+    output += "Press any key to continue..."
+    show_content(output)
+    key = getchr
+    return_to_menu
+    return
+  end
+
+  # Get NPC file name
+  prompt_text = colorize_output("DESCRIBE NPC WITH AI", :header) + "\n\n"
+  prompt_text += colorize_output("Enter NPC file name", :label)
+  prompt_text += " (default: temp_new.npc): "
+
+  show_content(prompt_text)
+  file_input = get_text_input("")
+  if file_input == :cancelled
+    return_to_menu
+    return
+  end
+
+  filename = file_input.nil? || file_input.empty? ? "temp_new.npc" : file_input
+  filepath = File.join($pgmdir, "saved", filename)
+
+  unless File.exist?(filepath)
+    output = colorize_output("FILE NOT FOUND", :header) + "\n\n"
+    output += "NPC file not found:\n"
+    output += "#{filepath}\n\n"
+    output += "Press any key to continue..."
+    show_content(output)
+    getchr
+    return_to_menu
+    return
+  end
+
+  # Check for prompt file
+  npc_prompt = File.join($pgmdir, "npc.txt")
+  unless File.exist?(npc_prompt)
+    output = colorize_output("MISSING PROMPT FILE", :header) + "\n\n"
+    output += "NPC prompt file not found:\n"
+    output += "#{npc_prompt}\n\n"
+    output += "Press any key to continue..."
+    show_content(output)
+    getchr
+    return_to_menu
+    return
+  end
+
+  show_content(colorize_output("AI NPC DESCRIPTION", :header) + "\n" +
+              colorize_output("─" * content_width, :header) + "\n\n" +
+              "Getting response from OpenAI...\n\n" +
+              "This may take a moment...")
+
+  begin
+    # Read prompt and NPC file
+    prompt_text = File.read(npc_prompt)
+    npc_content = File.read(filepath)
+    combined = "#{prompt_text}\n\n#{npc_content}"
+
+    # Send to OpenAI using ruby-openai gem
+    show_content(colorize_output("Generating NPC description...", :header) + "\n\n" +
+                "Please wait, this may take a moment...".fg(240))
+
+    client = openai_client
+    api_response = client.chat(
+      parameters: {
+        model: @aimodel,
+        messages: [{ role: 'user', content: combined }],
+        max_tokens: 2000
+      }
+    ) rescue nil
+
+    response = api_response&.dig('choices', 0, 'message', 'content')
+
+    if response && !response.empty?
+      # Format and display response
+      output = colorize_output("AI NPC DESCRIPTION", :header) + "\n"
+      output += colorize_output("─" * content_width, :header) + "\n\n"
+      output += response
+
+      # Save to file
+      save_dir = File.join($pgmdir, "saved")
+      Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
+      save_file = File.join(save_dir, "openai.txt")
+      File.write(save_file, response)
+      output += "\n\n" + colorize_output("Saved to: saved/openai.txt", :success)
+
+      show_content(output)
+
+      # Navigation with ESC/q support
+      @footer.say(" [j/↓] Down | [k/↑] Up | [s] Save | [ESC/q] Back ".ljust(@cols))
+
+      loop do
+        key = getchr
+        case key
+        when "\e", "q"
+          return_to_menu
+          break
+        when "j", "DOWN"
+          @content.linedown
+        when "k", "UP"
+          @content.lineup
+        when " ", "PgDOWN"
+          @content.pagedown
+        when "PgUP"
+          @content.pageup
+        when "s"
+          save_to_file(response, :npc_desc)
+        end
+      end
+    else
+      output = colorize_output("ERROR", :header) + "\n\n"
+      output += "Failed to get response from OpenAI.\n\n"
+      output += "Error: #{response}\n\n" unless response.empty?
+      output += "Press any key to continue..."
+      show_content(output)
+      getchr
+    end
+  rescue => e
+    show_content("Error: #{e.message}\n\nPress any key to continue...")
+    getchr
+  end
+
+  return_to_menu
 end
 
 debug "About to check if running as main"
