@@ -1065,8 +1065,7 @@ def npc_input_new_tui
   sex_text += colorize_output("1", :dice) + ": " + colorize_output("Male", :value) + "\n"
   sex_text += colorize_output("2", :dice) + ": " + colorize_output("Female", :value) + "\n\n"
   sex_text += "Press number key:".fg(240)
-  grey_out_content
-  show_content(@content.text + "\n" + sex_text)
+  show_content(sex_text)
   key = getchr
   return nil if key == "ESC" || key == "\e"
   
@@ -1079,8 +1078,7 @@ def npc_input_new_tui
   
   # Age input
   age_text = "\n" + colorize_output("Enter age", :label) + " (or ENTER/0 for random): "
-  grey_out_content
-  show_content(@content.text + "\n" + age_text)
+  show_content(age_text)
   age_input = get_text_input("")
   return nil if age_input == :cancelled
   age = age_input.to_i
@@ -1088,16 +1086,14 @@ def npc_input_new_tui
   
   # Physical attributes
   height_text = "\n" + colorize_output("Enter height in cm", :label) + " (or ENTER/0 for random): "
-  grey_out_content
-  show_content(@content.text + "\n" + height_text)
+  show_content(height_text)
   height_input = get_text_input("")
   return nil if height_input == :cancelled
   height = height_input.to_i
   inputs << height
   
   weight_text = "\n" + colorize_output("Enter weight in kg", :label) + " (or ENTER/0 for random): "
-  grey_out_content
-  show_content(@content.text + "\n" + weight_text)
+  show_content(weight_text)
   weight_input = get_text_input("")
   return nil if weight_input == :cancelled
   weight = weight_input.to_i
@@ -1105,8 +1101,7 @@ def npc_input_new_tui
   
   # Description
   desc_text = "\n" + colorize_output("Enter description", :label) + " (optional, ENTER to skip): "
-  grey_out_content
-  show_content(@content.text + "\n" + desc_text)
+  show_content(desc_text)
   description = get_text_input("")
   return nil if description == :cancelled
   inputs << (description || "")
@@ -1390,8 +1385,7 @@ def enc_input_new_tui
   level_text += colorize_output("0-9", :dice) + ": Positive modifier\n"
   level_text += colorize_output("-", :dice) + " then number: Negative modifier\n"
   level_text += colorize_output("ENTER", :dice) + ": No modifier (0)\n\n"
-  grey_out_content
-  show_content(@content.text + "\n" + level_text)
+  show_content(level_text)
   level_input = get_text_input("")
   return nil if level_input == :cancelled
   
@@ -1727,8 +1721,7 @@ def generate_monster_new
   level_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
   level_text += colorize_output("1-6", :dice) + ": " + colorize_output("Specific level", :value) + "\n\n"
   level_text += "Press number key:".fg(240)
-  grey_out_content
-  show_content(@content.text + "\n" + level_text)
+  show_content(level_text)
   key = getchr
   if key == "ESC" || key == "\e"
     return_to_menu
@@ -2031,8 +2024,7 @@ def generate_npc_old
     type_text += colorize_output(i.to_s.rjust(2), :dice) + ": " + colorize_output(t, :value).ljust(25)
     type_text += "\n" if i % 3 == 0
   end
-  grey_out_content
-  show_content(@content.text + type_text + "\n\nEnter number: ")
+  show_content(type_text + "\n\nEnter number: ")
   type_input = get_text_input("")
   return if type_input == :cancelled
   type = type_input.to_i > 0 ? types[type_input.to_i] : ""
@@ -2040,8 +2032,7 @@ def generate_npc_old
   # Level
   level_text = "\n" + colorize_output("Level:", :header) + "\n"
   level_text += "1: Untrained  2: Trained some  3: Trained  4: Well trained  5: Master\n\n"
-  grey_out_content
-  show_content(@content.text + level_text + "Enter level (0-5): ")
+  show_content(level_text + "Enter level (0-5): ")
   level_input = get_text_input("")
   return if level_input == :cancelled
   level = level_input.to_i
@@ -2050,8 +2041,7 @@ def generate_npc_old
   area_text = "\n" + colorize_output("Area:", :header) + "\n"
   area_text += "1: Amaronir  2: Merisir  3: Calaronir  4: Feronir\n"
   area_text += "5: Alerisir  6: Rauinir  7: Outskirts\n\n"
-  grey_out_content
-  show_content(@content.text + area_text + "Enter area (0 for random): ")
+  show_content(area_text + "Enter area (0 for random): ")
   area_input = get_text_input("")
   return if area_input == :cancelled
   area = case area_input.to_i
@@ -2067,32 +2057,27 @@ def generate_npc_old
 
   # Sex
   sex_text = "\n" + colorize_output("Sex (M/F or ENTER for random):", :header) + " "
-  grey_out_content
-  show_content(@content.text + sex_text)
+  show_content(sex_text)
   sex_input = get_text_input("")
   return if sex_input == :cancelled
   sex = sex_input.upcase if sex_input && ["M", "F"].include?(sex_input.upcase)
   sex ||= ""
 
   # Age, height, weight
-  grey_out_content
-  show_content(@content.text + "\n" + colorize_output("Age (0 for random):", :header) + " ")
+  show_content(colorize_output("Age (0 for random):", :header) + " ")
   age = get_text_input("").to_i rescue 0
   return if age == :cancelled
 
-  grey_out_content
-  show_content(@content.text + "\n" + colorize_output("Height in cm (0 for random):", :header) + " ")
+  show_content(colorize_output("Height in cm (0 for random):", :header) + " ")
   height = get_text_input("").to_i rescue 0
   return if height == :cancelled
 
-  grey_out_content
-  show_content(@content.text + "\n" + colorize_output("Weight in kg (0 for random):", :header) + " ")
+  show_content(colorize_output("Weight in kg (0 for random):", :header) + " ")
   weight = get_text_input("").to_i rescue 0
   return if weight == :cancelled
 
   # Description
-  grey_out_content
-  show_content(@content.text + "\n" + colorize_output("Description (ENTER for none):", :header) + " ")
+  show_content(colorize_output("Description (ENTER for none):", :header) + " ")
   description = get_text_input("") || ""
   return if description == :cancelled
 
@@ -2178,8 +2163,7 @@ def generate_encounter_old
   terrain_text = "\n" + colorize_output("Terrain:", :header) + "\n"
   terrain_text += "0: City  1: Rural  2: Road  3: Plains\n"
   terrain_text += "4: Hills  5: Mountains  6: Woods  7: Wilderness\n\n"
-  grey_out_content
-  show_content(@content.text + terrain_text + "Enter terrain (default=1): ")
+  show_content(terrain_text + "Enter terrain (default=1): ")
   terrain_input = get_text_input("")
   return if terrain_input == :cancelled
   $Terrain = terrain_input.to_i if (0..7).include?(terrain_input.to_i)
@@ -2187,8 +2171,7 @@ def generate_encounter_old
   $Terraintype = $Terrain + (8 * $Day)
 
   # Level modifier
-  grey_out_content
-  show_content(@content.text + "\n" + colorize_output("Level modifier (+/-, default=0):", :header) + " ")
+  show_content(colorize_output("Level modifier (+/-, default=0):", :header) + " ")
   level_input = get_text_input("")
   return if level_input == :cancelled
   $Level = level_input.to_i
@@ -2305,8 +2288,7 @@ def generate_weather_ui
   weather_text += " 9".fg(202) + ": " + "Extreme heat".fg(124) + "\n"  # Very dark red
   weather_text += "\n" + "Enter weather condition".fg(13) + " (default=#{$weather_n}): "
 
-  grey_out_content
-  show_content(@content.text + "\n" + weather_text)
+  show_content(weather_text)
   weather_input = get_text_input("")
   if weather_input == :cancelled
     return_to_menu
@@ -2330,8 +2312,7 @@ def generate_weather_ui
   wind_text += "16".fg(202) + ": Medium   " + "24".fg(202) + ": Strong\n\n"
   wind_text += "Enter combined value".fg(13) + " (0-31, default=#{$wind_dir_n + $wind_str_n * 8}): "
 
-  grey_out_content
-  show_content(@content.text + "\n" + wind_text)
+  show_content(wind_text)
   wind_input = get_text_input("")
   if wind_input == :cancelled
     return_to_menu
@@ -2613,8 +2594,7 @@ def generate_town_ui
   # Get Town size
   prompt_text = "\n" + colorize_output("Enter number of houses", :label)
   prompt_text += " (1-1000, default=1): "
-  grey_out_content
-  show_content(@content.text + prompt_text)
+  show_content(prompt_text)
   size_input = get_text_input("")
   if size_input == :cancelled
     return_to_menu
@@ -2632,8 +2612,7 @@ def generate_town_ui
   var_text += colorize_output("4", :dice) + ": " + colorize_output("Only Dwarves", :value) + "\n"
   var_text += colorize_output("5", :dice) + ": " + colorize_output("Only Elves", :value) + "\n"
   var_text += colorize_output("6", :dice) + ": " + colorize_output("Only Lizardfolk", :value) + "\n\n"
-  grey_out_content
-  show_content(@content.text + "\n" + var_text)
+  show_content(var_text)
   var_input = get_text_input("")
   if var_input == :cancelled
     return_to_menu
