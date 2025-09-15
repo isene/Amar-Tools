@@ -880,8 +880,7 @@ def npc_input_new_tui
   
   # Name input
   debug "Getting name input"
-  header = colorize_output("NEW SYSTEM NPC GENERATION (3-Tier)", :header) + "\n"
-  header += colorize_output("=" * 60, :header) + "\n\n"
+  header = colorize_output("NEW SYSTEM NPC GENERATION (3-Tier)", :header) + "\n\n"
   header += colorize_output("Enter NPC name", :label) + " (or ENTER for random):\n\n"
   header += colorize_output("Press ESC to cancel", :info) + "\n\n"
   show_content(header)
@@ -901,7 +900,7 @@ def npc_input_new_tui
   races.each_with_index do |race, index|
     race_text += colorize_output((index + 1).to_s, :dice) + ": " + colorize_output(race, :value) + "\n"
   end
-  race_text += "\n" + colorize_output("Press number key or ENTER for Human:", :prompt)
+  race_text += "\n" + "\e[38;5;240mPress number key or ENTER for Human:\e[0m"
   
   show_content(race_text)
   key = getchr
@@ -942,12 +941,32 @@ def npc_input_new_tui
     types = ["#{race}: Warrior", "#{race}: Commoner"]
   end
   
-  type_text = "Character Types (#{types.length} available):\n\n0: Random\n"
+  # Type selection in columns
+  type_text = colorize_output("Character Types", :header) + " (#{types.length} available):\n\n"
+  type_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
+
+  # Display types in 2 columns if more than 20, or 3 columns if more than 40
+  cols = types.length > 40 ? 3 : (types.length > 20 ? 2 : 1)
+  col_width = 35
+
   types.each_with_index do |type_name, index|
-    type_text += "#{(index + 1).to_s.rjust(2)}: #{type_name}\n"
+    col = index % cols
+    if col == 0
+      type_text += colorize_output((index + 1).to_s.rjust(2), :dice) + ": "
+      type_text += colorize_output(type_name[0..30], :value).ljust(col_width)
+    elsif col == cols - 1
+      type_text += colorize_output((index + 1).to_s.rjust(2), :dice) + ": "
+      type_text += colorize_output(type_name[0..30], :value) + "\n"
+    else
+      type_text += colorize_output((index + 1).to_s.rjust(2), :dice) + ": "
+      type_text += colorize_output(type_name[0..30], :value).ljust(col_width)
+    end
   end
-  type_text += "\nEnter type number:"
-  
+
+  # Add newline if we didn't end on a full row
+  type_text += "\n" if types.length % cols != 0
+  type_text += "\n"
+
   show_content(type_text)
   type_input = get_text_input(colorize_output("Type number: ", :prompt))
   return nil if type_input == :cancelled
@@ -973,7 +992,7 @@ def npc_input_new_tui
   level_text += colorize_output("4", :dice) + ": " + colorize_output("Expert", :value) + "\n"
   level_text += colorize_output("5", :dice) + ": " + colorize_output("Master", :value) + "\n"
   level_text += colorize_output("6", :dice) + ": " + colorize_output("Grandmaster", :value) + "\n"
-  level_text += "\n" + colorize_output("Press number key:", :prompt)
+  level_text += "\n" + "\e[38;5;240mPress number key:\e[0m"
   
   show_content(level_text)
   key = getchr
@@ -993,7 +1012,7 @@ def npc_input_new_tui
   area_text += colorize_output("6", :dice) + ": " + colorize_output("Rauinir", :value) + "\n"
   area_text += colorize_output("7", :dice) + ": " + colorize_output("Outskirts", :value) + "\n"
   area_text += colorize_output("8", :dice) + ": " + colorize_output("Other", :value) + "\n"
-  area_text += "\n" + colorize_output("Press number key:", :prompt)
+  area_text += "\n" + "\e[38;5;240mPress number key:\e[0m"
   
   show_content(area_text)
   key = getchr
@@ -1008,7 +1027,7 @@ def npc_input_new_tui
   sex_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
   sex_text += colorize_output("1", :dice) + ": " + colorize_output("Male", :value) + "\n"
   sex_text += colorize_output("2", :dice) + ": " + colorize_output("Female", :value) + "\n\n"
-  sex_text += colorize_output("Press number key:", :prompt)
+  sex_text += "\e[38;5;240mPress number key:\e[0m"
   show_content(@content.text + sex_text)
   key = getchr
   return nil if key == "ESC" || key == "\e"
@@ -1267,7 +1286,13 @@ def enc_input_new_tui
   $Level = 0 if $Level.nil?
   
   # Get night/day
-  show_content("NEW SYSTEM ENCOUNTER GENERATION\n" + "=" * 60 + "\n\nSelect time:\n\n0: Night\n1: Day (default)\n\nPress number key:")
+  # Night/day selection
+  time_text = colorize_output("NEW SYSTEM ENCOUNTER GENERATION", :header) + "\n\n"
+  time_text += colorize_output("Select time:", :header) + "\n\n"
+  time_text += colorize_output("0", :dice) + ": " + colorize_output("Night", :value) + "\n"
+  time_text += colorize_output("1", :dice) + ": " + colorize_output("Day", :value) + " (default)\n\n"
+  time_text += "\e[38;5;240mPress number key:\e[0m"
+  show_content(time_text)
   key = getchr
   return nil if key == "ESC" || key == "\e"
   
@@ -1275,9 +1300,16 @@ def enc_input_new_tui
   debug "Day/Night: #{$Day}"
   
   # Get terrain
-  terrain_text = "Select terrain type:\n\n"
-  terrain_text += "0: City\n1: Rural\n2: Road\n3: Plains\n4: Hills\n"
-  terrain_text += "5: Mountains\n6: Woods\n7: Wilderness\n\nPress number key:"
+  terrain_text = colorize_output("Select terrain type:", :header) + "\n\n"
+  terrain_text += colorize_output("0", :dice) + ": " + colorize_output("City", :value) + "\n"
+  terrain_text += colorize_output("1", :dice) + ": " + colorize_output("Rural", :value) + "\n"
+  terrain_text += colorize_output("2", :dice) + ": " + colorize_output("Road", :value) + "\n"
+  terrain_text += colorize_output("3", :dice) + ": " + colorize_output("Plains", :value) + "\n"
+  terrain_text += colorize_output("4", :dice) + ": " + colorize_output("Hills", :value) + "\n"
+  terrain_text += colorize_output("5", :dice) + ": " + colorize_output("Mountains", :value) + "\n"
+  terrain_text += colorize_output("6", :dice) + ": " + colorize_output("Woods", :value) + "\n"
+  terrain_text += colorize_output("7", :dice) + ": " + colorize_output("Wilderness", :value) + "\n\n"
+  terrain_text += "\e[38;5;240mPress number key:\e[0m"
   
   show_content(terrain_text)
   key = getchr
@@ -1288,8 +1320,12 @@ def enc_input_new_tui
   debug "Terrain: #{$Terrain}, Terraintype: #{$Terraintype}"
   
   # Get level modifier
-  show_content("Enter level modifier (+/-):\n\nPress number key (0-9) for positive\nOr '-' then number for negative\nOr ENTER for 0:")
-  level_input = get_text_input("Level modifier: ")
+  level_text = colorize_output("Enter level modifier (+/-)", :header) + "\n\n"
+  level_text += colorize_output("0-9", :dice) + ": Positive modifier\n"
+  level_text += colorize_output("-", :dice) + " then number: Negative modifier\n"
+  level_text += colorize_output("ENTER", :dice) + ": No modifier (0)\n\n"
+  show_content(@content.text + "\n" + level_text)
+  level_input = get_text_input(colorize_output("Level modifier: ", :prompt))
   return nil if level_input == :cancelled
   
   $Level = level_input.to_i if level_input
@@ -1301,11 +1337,12 @@ def enc_input_new_tui
     "Centaur", "Ogre", "Troll", "Araxi", "Faerie"
   ]
   
-  race_text = "Select race (for humanoid encounters):\n\n0: Random (default)\n"
+  race_text = colorize_output("Select race (for humanoid encounters):", :header) + "\n\n"
+  race_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + " (default)\n"
   races.each_with_index do |race, index|
     race_text += "#{index + 1}: #{race}\n"
   end
-  race_text += "\nPress number key:"
+  race_text += "\n" + "\e[38;5;240mPress number key:\e[0m"
   
   show_content(race_text)
   key = getchr
@@ -1583,8 +1620,9 @@ def generate_monster_new
   # Get monster type selection
   monster_list = $MonsterStats.keys.reject { |k| k == "default" }.sort
   
-  monster_text = "NEW SYSTEM MONSTER GENERATION\n" + "=" * 60 + "\n\n"
-  monster_text += "Select monster type:\n\n0: Random\n"
+  monster_text = colorize_output("NEW SYSTEM MONSTER GENERATION", :header) + "\n\n"
+  monster_text += colorize_output("Select monster type:", :header) + "\n\n"
+  monster_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
   
   # Display in columns for better readability
   monster_list.each_with_index do |monster, index|
@@ -1609,7 +1647,11 @@ def generate_monster_new
   debug "Selected monster: #{monster_type}"
   
   # Get level
-  show_content("Select monster level:\n\n0: Random\n1-6: Specific level\n\nPress number key:")
+  level_text = colorize_output("Select monster level:", :header) + "\n\n"
+  level_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
+  level_text += colorize_output("1-6", :dice) + ": " + colorize_output("Specific level", :value) + "\n\n"
+  level_text += "\e[38;5;240mPress number key:\e[0m"
+  show_content(@content.text + "\n" + level_text)
   key = getchr
   return if key == "ESC" || key == "\e"
   
@@ -1635,11 +1677,11 @@ def generate_monster_new
 end
 
 def handle_monster_view(monster, output)
-  @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [y] Copy to clipboard | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-  
+  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+
   loop do
     key = getchr
-    
+
     case key
     when "ESC", "\e", "q"
       break
@@ -1658,7 +1700,12 @@ def handle_monster_view(monster, output)
       @footer.say(footer_text.ljust(@cols))
       @footer.bg = 234  # Reset to dark grey
       sleep(1)
-      @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [y] Copy to clipboard | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+    when "e"
+      # Edit in editor - strip ANSI codes first
+      clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
+      edit_in_editor(clean_text)
+      show_content(output)
     when "r"
       generate_monster_new
       break
@@ -1997,15 +2044,18 @@ def generate_weather_ui
   end
   
   # Get Month
-  mstring = "\nSelect month:\n\n"
+  mstring = colorize_output("WEATHER GENERATOR", :header) + "\n\n"
+  mstring += colorize_output("Select month:", :header) + "\n\n"
   7.times do |i|
-    mstring += "#{i.to_s.rjust(2)}: #{$Month[i]}".ljust(20)
-    mstring += "#{(i+7).to_s.rjust(2)}: #{$Month[i+7]}\n"
+    mstring += colorize_output(i.to_s.rjust(2), :dice) + ": "
+    mstring += colorize_output($Month[i], :value).ljust(30)
+    mstring += colorize_output((i+7).to_s.rjust(2), :dice) + ": "
+    mstring += colorize_output($Month[i+7], :value) + "\n"
   end
-  mstring += "\nEnter month (default=#{$mn}):"
-  
+  mstring += "\n" + colorize_output("Enter month", :label) + " (default=#{$mn}):\n\n"
+
   show_content(mstring)
-  month_input = get_text_input("Month: ")
+  month_input = get_text_input(colorize_output("Month: ", :prompt))
   return if month_input == :cancelled
   
   month = month_input.to_i
@@ -2227,8 +2277,7 @@ def generate_town_ui
   debug "Starting generate_town_ui"
   
   # Get Town name
-  header = colorize_output("TOWN/CITY GENERATOR", :header) + "\n"
-  header += colorize_output("═" * 60, :header) + "\n\n"
+  header = colorize_output("TOWN/CITY GENERATOR", :header) + "\n\n"
   header += colorize_output("Enter Village/Town/City name", :label) + " (or ENTER for random):\n\n"
   show_content(header)
   town_name = get_text_input(colorize_output("Name: ", :prompt))
@@ -2474,6 +2523,7 @@ def generate_town_ui
   @content.say(output)
 
   # Refresh all panes to ensure UI is properly displayed
+  @header.refresh
   @menu.refresh
   @content.refresh
 
@@ -2485,7 +2535,8 @@ def generate_town_ui
   loop do
     key = getchr
     case key
-    when "\e", "q"
+    when "\e", "q", "ESC"
+      return_to_menu
       break
     when "j", "\e[B"
       @content.linedown
@@ -2628,34 +2679,20 @@ end
 # NAME GENERATOR
 def generate_name_ui
   # Use the actual name types from the $Names table
-  menu_text = colorize_output("SELECT NAME TYPE:", :header) + "\n"
-  content_width = @cols - 35
-  menu_text += colorize_output("─" * content_width, :header) + "\n\n"
-  
+  menu_text = colorize_output("SELECT NAME TYPE", :header) + "\n\n"
+
   $Names.each_with_index do |name_type, idx|
-    menu_text += colorize_output("#{idx.to_s.rjust(2)}: ", :label) + colorize_output(name_type[0], :value) + "\n"
+    menu_text += colorize_output(idx.to_s.rjust(2), :dice) + ": " + colorize_output(name_type[0], :value) + "\n"
   end
-  menu_text += "\nPress number to select or ESC to cancel"
-  
+  menu_text += "\n"
+
   show_content(menu_text)
-  
-  key = getchr
-  return if key == "\e"
-  
-  # Handle two-digit input
-  input = key
-  if key =~ /\d/
-    # Wait for possible second digit
-    second = getchr
-    if second =~ /\d/
-      input = key + second
-    elsif second != "\r" && second != "\n"
-      # Not a digit or enter, treat as single digit
-      # Put the second key back somehow or just ignore
-    end
-  end
-  
-  idx = input.to_i
+
+  # Use text input like other generators
+  name_input = get_text_input(colorize_output("Type number: ", :prompt))
+  return if name_input == :cancelled
+
+  idx = name_input.to_i
   idx = rand($Names.length) if idx < 0 || idx >= $Names.length
   
   begin
