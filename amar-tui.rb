@@ -1179,8 +1179,29 @@ def handle_npc_view(npc, output)
   # Save NPC to temp file for AI description
   save_dir = File.join($pgmdir, "saved")
   Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
+
+  # Clean output for saving
+  clean_output = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
+
+  # Save as temp_new.npc for AI description commands
   temp_file = File.join(save_dir, "temp_new.npc")
-  File.write(temp_file, output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, ''))
+  File.write(temp_file, clean_output)
+
+  # Also save as latest NPC
+  latest_file = File.join(save_dir, "npc_latest.txt")
+  File.write(latest_file, clean_output)
+
+  # Save with character name if available
+  if npc.respond_to?(:name) && npc.name && !npc.name.empty?
+    # Clean name for filename (remove spaces and special characters)
+    safe_name = npc.name.gsub(/[^A-Za-z0-9]/, '')
+    if !safe_name.empty?
+      name_file = File.join(save_dir, "#{safe_name}.npc")
+      File.write(name_file, clean_output)
+      @last_npc_name = safe_name  # Store for later use in descriptions and images
+      debug "Saved NPC as #{safe_name}.npc"
+    end
+  end
 
   # Show instructions including clipboard copy
   @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
@@ -3659,7 +3680,33 @@ def describe_npc_ai
       Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
       save_file = File.join(save_dir, "openai.txt")
       File.write(save_file, response)
-      output += "\n\n" + colorize_output("Saved to: saved/openai.txt", :success)
+
+      # Try to extract character name from the NPC file or use last known name
+      character_name = nil
+      if filename && filename.match?(/\.npc$/)
+        # Try to read the NPC file and extract the name
+        begin
+          npc_content = File.read(filepath)
+          if match = npc_content.match(/^([A-Za-z\s]+)\s+\([MF]\s+\d+\)/)
+            character_name = match[1].strip.gsub(/[^A-Za-z0-9]/, '')
+          end
+        rescue
+          # Ignore errors
+        end
+      end
+
+      # Use last known name if no name extracted
+      character_name ||= @last_npc_name
+
+      # Save with character name if available
+      if character_name && !character_name.empty?
+        name_desc_file = File.join(save_dir, "#{character_name}.txt")
+        File.write(name_desc_file, response)
+        output += "\n\n" + colorize_output("Saved to: saved/#{character_name}.txt", :success)
+        @last_npc_name = character_name  # Update last known name
+      else
+        output += "\n\n" + colorize_output("Saved to: saved/openai.txt", :success)
+      end
 
       show_content(output)
 
@@ -3808,8 +3855,26 @@ def generate_npc_image(description = nil)
       save_dir = File.join($pgmdir, "saved", "images")
       FileUtils.mkdir_p(save_dir)
 
-      timestamp = Time.now.strftime("%Y%m%d_%H%M%S")
-      image_file = File.join(save_dir, "npc_#{timestamp}.png")
+      # Try to extract character name from description if not already set
+      if !@last_npc_name || @last_npc_name.empty?
+        # Try to extract name from description (e.g., "John Smith, a tall warrior...")
+        if match = description.match(/^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/)
+          @last_npc_name = match[1].gsub(/[^A-Za-z0-9]/, '')
+        end
+      end
+
+      # Use character name if available, otherwise timestamp
+      if @last_npc_name && !@last_npc_name.empty?
+        image_file = File.join(save_dir, "#{@last_npc_name}.png")
+        # If file exists, add timestamp to avoid overwriting
+        if File.exist?(image_file)
+          timestamp = Time.now.strftime("%Y%m%d_%H%M%S")
+          image_file = File.join(save_dir, "#{@last_npc_name}_#{timestamp}.png")
+        end
+      else
+        timestamp = Time.now.strftime("%Y%m%d_%H%M%S")
+        image_file = File.join(save_dir, "npc_#{timestamp}.png")
+      end
 
       # Download the image
       uri = URI(image_url)
