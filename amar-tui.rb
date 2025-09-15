@@ -168,7 +168,7 @@ debug "Defining help text"
     PgUp   Page up
     e      Edit in editor
     s      Save to file
-    r      Regenerate
+    r      Refresh/reload view
     ESC    Back to menu
 
   SHORTCUTS FROM MENU:
@@ -936,19 +936,19 @@ def npc_input_new_tui
   ]
   
   race_text = colorize_output("Select Race:", :header) + "\n\n"
-  race_text += colorize_output("0", :dice) + ": " + colorize_output("Human", :value) + " (default)\n"
+  race_text += colorize_output(" 0", :dice) + ": " + colorize_output("Human", :value) + " (default)\n"
   races.each_with_index do |race, index|
-    race_text += colorize_output((index + 1).to_s, :dice) + ": " + colorize_output(race, :value) + "\n"
+    race_text += colorize_output((index + 1).to_s.rjust(2), :dice) + ": " + colorize_output(race, :value) + "\n"
   end
-  race_text += "\n" + "Press number key or ENTER for Human:".fg(240)
-  
+  race_text += "\n" + "Enter race number: "
+
   show_content(race_text)
-  key = getchr
-  return nil if key == "ESC" || key == "\e"
-  
+  race_input = get_text_input("")
+  return nil if race_input == :cancelled
+
   race = "Human"
-  if key =~ /[1-9]/ || key == "0"
-    race_idx = key.to_i
+  if race_input && race_input.match?(/^\d+$/)
+    race_idx = race_input.to_i
     race = races[race_idx - 1] if race_idx > 0 && race_idx <= races.length
   end
   
@@ -983,7 +983,7 @@ def npc_input_new_tui
   
   # Type selection in columns
   type_text = colorize_output("Character Types", :header) + " (#{types.length} available):\n\n"
-  type_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
+  type_text += colorize_output(" 0", :dice) + ": " + colorize_output("Random", :value) + "\n"
 
   # Display types in 2 columns if more than 20, or 3 columns if more than 40
   cols = types.length > 40 ? 3 : (types.length > 20 ? 2 : 1)
@@ -1402,20 +1402,20 @@ def enc_input_new_tui
   ]
   
   race_text = colorize_output("Select race (for humanoid encounters):", :header) + "\n\n"
-  race_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + " (default)\n"
+  race_text += colorize_output(" 0", :dice) + ": " + colorize_output("Random", :value) + " (default)\n"
   races.each_with_index do |race, index|
-    race_text += "#{index + 1}: #{race}\n"
+    race_text += colorize_output((index + 1).to_s.rjust(2), :dice) + ": " + colorize_output(race, :value) + "\n"
   end
-  race_text += "\n" + "Press number key:".fg(240)
-  
+  race_text += "\n" + "Enter race number: "
+
   show_content(race_text)
-  key = getchr
-  return nil if key == "ESC" || key == "\e"
-  
+  race_input = get_text_input("")
+  return nil if race_input == :cancelled
+
   race = ""
-  if key =~ /[1-9]/
-    race_idx = key.to_i
-    race = races[race_idx - 1] if race_idx <= races.length
+  if race_input && race_input.match?(/^\d+$/)
+    race_idx = race_input.to_i
+    race = races[race_idx - 1] if race_idx > 0 && race_idx <= races.length
   end
   debug "Selected race: #{race.empty? ? 'Random' : race}"
   
@@ -1437,8 +1437,19 @@ def handle_encounter_view(enc, output)
   # Save encounter to temp file for AI description
   save_dir = File.join($pgmdir, "saved")
   Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
+
+  # Save clean version
+  clean_output = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
   temp_file = File.join(save_dir, "temp_new.enc")
-  File.write(temp_file, output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, ''))
+  File.write(temp_file, clean_output)
+
+  # Also save as encounter_new.npc for AI description commands
+  enc_file = File.join(save_dir, "encounter_new.npc")
+  File.write(enc_file, clean_output)
+
+  # Save as latest encounter too
+  latest_file = File.join(save_dir, "encounter_latest.txt")
+  File.write(latest_file, clean_output)
 
   # Show instructions including clipboard copy
   @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
@@ -3316,10 +3327,21 @@ def generate_adventure_ai
     response = api_response&.dig('choices', 0, 'message', 'content')
 
     if response && !response.empty?
+      # Clean up any #### dividers and format as Markdown
+      response = response.gsub(/####\s*/, '')
+
+      # Apply Markdown-style colorization
+      formatted_response = response
+        .gsub(/^#\s+(.*)$/, colorize_output("\\1", :header))  # H1 headers
+        .gsub(/^##\s+(.*)$/, colorize_output("\\1", :label))   # H2 headers
+        .gsub(/^###\s+(.*)$/, colorize_output("\\1", :value))  # H3 headers
+        .gsub(/\*\*(.*?)\*\*/, colorize_output("\\1", :highlight))  # Bold
+        .gsub(/\*(.*?)\*/, "\\1".fg(244))  # Italic (grey)
+
       # Format and display response
       output = colorize_output("AI GENERATED ADVENTURE", :header) + "\n"
       output += colorize_output("─" * content_width, :header) + "\n\n"
-      output += response
+      output += formatted_response
 
       # Save to file
       save_dir = File.join($pgmdir, "saved")
@@ -3330,8 +3352,8 @@ def generate_adventure_ai
 
       show_content(output)
 
-      # Navigation
-      @footer.say(" [j/↓] Down | [k/↑] Up | [s] Save | [ESC/q] Back ".ljust(@cols))
+      # Navigation with editor option
+      @footer.say(" [j/↓] Down | [k/↑] Up | [e] Edit | [s] Save | [ESC/q] Back ".ljust(@cols))
 
       loop do
         key = getchr
@@ -3347,6 +3369,10 @@ def generate_adventure_ai
           @content.pagedown
         when "PgUP"
           @content.pageup
+        when "e"
+          # Edit in editor
+          edit_in_editor(response)
+          show_content(output)
         when "s"
           save_to_file(response, :adventure)
         end

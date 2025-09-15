@@ -208,7 +208,9 @@ def npc_output_new(n, cli, custom_width = nil)
     -7  # Extreme encumbrance (not -10)
   end
   
-  f += "#{@stat_color}SIZE:#{n.SIZE.to_s.rjust(2)}    BP:#{n.BP.to_s.rjust(2)}    DB:#{n.DB.to_s.rjust(2)}    MD:#{n.MD.to_s.rjust(2)}    "
+  # Format SIZE for display (3.5 becomes "3½")
+  size_display = n.SIZE % 1 == 0.5 ? "#{n.SIZE.floor}½" : n.SIZE.to_s
+  f += "#{@stat_color}SIZE:#{size_display.rjust(3)}    BP:#{n.BP.to_s.rjust(2)}    DB:#{n.DB.to_s.rjust(2)}    MD:#{n.MD.to_s.rjust(2)}    "
   f += "Weight Carried:#{total_weight.to_s.rjust(5)}kg    ENC Penalty:#{enc_penalty.to_s.rjust(3)}#{@reset}\n"
   
   # Armor section (moved above weapons)

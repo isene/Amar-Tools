@@ -380,7 +380,13 @@ def generate_spell_cards(npc_type, level, casting_level)
               ["Mind", "Self"]
             when /Wizard \((.*?)\)/
               # Extract domain from wizard type (e.g., "Wizard (water)" -> "Water")
-              wizard_domain = $1.capitalize
+              wizard_type = $1
+              wizard_domain = case wizard_type
+                            when "prot.", "protection"
+                              "Self"  # Protection wizards focus on Self domain
+                            else
+                              wizard_type.capitalize
+                            end
               [wizard_domain, wizard_domain]  # Primary domain focus
             else
               ["Fire", "Water", "Air", "Earth"].sample(2)

@@ -82,16 +82,16 @@ $MonsterStats = {
     "armor" => "Leather (1 AP)",
     "description" => "Small cunning humanoid"
   },
-  "orc" => {
+  "arax" => {
     "type" => "Monster",
     "base_body" => 3,
     "base_mind" => 2,
     "base_spirit" => 1,
-    "weight_range" => [120, 250],  # Lions 120-250kg
+    "weight_range" => [60, 90],  # Arax are human-sized
     "skills" => ["Sword", "Spear", "Shield"],
-    "special" => "Warlike culture",
+    "special" => "Disciplined warriors",
     "armor" => "Chain (3 AP)",
-    "description" => "Aggressive warrior humanoid"
+    "description" => "Grey-skinned warrior race"
   },
   "giant spider" => {
     "type" => "Monster",

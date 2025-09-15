@@ -123,7 +123,9 @@ def enc_output_new(e, cli, custom_width = nil)
         md_value = npc.MD.respond_to?(:round) ? npc.MD.round : npc.MD.to_i
         
         # Line 1: SIZE, Characteristics and key attributes
-        f += "   SIZE:#{npc.SIZE}  BODY:#{body}  Str:#{body + str_attr}  End:#{body + end_attr}"
+        # Format SIZE for display
+        size_display = npc.SIZE % 1 == 0.5 ? "#{npc.SIZE.floor}½" : npc.SIZE.to_s
+        f += "   SIZE:#{size_display}  BODY:#{body}  Str:#{body + str_attr}  End:#{body + end_attr}"
         f += " | MIND:#{mind}  Awr:#{mind + awareness_attr}  RS:#{reaction_speed}"
         if spirit > 0
           f += " | SPIRIT:#{spirit}"

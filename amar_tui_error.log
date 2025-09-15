@@ -1,13 +1,7 @@
-2025-09-14 12:44:28 +0200: Input/output error @ io_write - <STDOUT>
-/var/lib/gems/3.3.0/gems/rcurses-6.0.2/lib/rcurses/pane.rb:212:in `write'
-/var/lib/gems/3.3.0/gems/rcurses-6.0.2/lib/rcurses/pane.rb:212:in `print'
-/var/lib/gems/3.3.0/gems/rcurses-6.0.2/lib/rcurses/pane.rb:212:in `refresh'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:378:in `show_content'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2344:in `rescue in generate_town_ui'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2035:in `generate_town_ui'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:665:in `execute_menu_item'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:604:in `handle_menu_navigation'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2444:in `main_loop'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2601:in `<top (required)>'
+2025-09-14 22:40:15 +0200: undefined method `draw_border' for an instance of Rcurses::Pane
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:387:in `update_border_colors'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:253:in `init_screen'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2660:in `main_loop'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2842:in `<top (required)>'
 ./amar-tui:7:in `require_relative'
 ./amar-tui:7:in `<main>'

@@ -57,14 +57,7 @@ class MonsterNew
         },
         "Athletics" => {
           "level" => stats["base_body"] + rand(-1..1),
-          "skills" => {
-            "Dodge" => @level + rand(0..2),
-            "Running" => @level + rand(-1..1),
-            "Move Quietly" => @level + rand(0..2),
-            "Hide" => @level + rand(0..2),
-            "Climbing" => rand(0..2),
-            "Swimming" => rand(0..1)
-          }
+          "skills" => generate_athletics_skills(stats)
         }
       },
       "MIND" => {
@@ -72,13 +65,7 @@ class MonsterNew
         "Intelligence" => { "level" => stats["base_mind"] },
         "Awareness" => {
           "level" => stats["base_mind"] + rand(0..1),
-          "skills" => {
-            "Reaction speed" => @level + rand(0..2),
-            "Tracking" => stats["skills"].include?("Tracking") ? @level + rand(1..3) : rand(0..1),
-            "Alertness" => @level + rand(1..3),
-            "Search" => @level + rand(0..1),
-            "Sense ambush" => @level + rand(0..2)
-          }
+          "skills" => generate_awareness_skills(stats)
         }
       },
       "SPIRIT" => {
@@ -149,41 +136,44 @@ class MonsterNew
   end
   
   def calculate_size_from_weight(weight)
-    # SIZE system based on weight - returns integer SIZE
+    # SIZE system based on weight with half-sizes - matches NPC class
     case weight
-    when 0...10
-      1
-    when 10...25
-      2
-    when 25...50
-      3
-    when 50...100
-      4
-    when 100...150
-      5
-    when 150...200
-      6
-    when 200...275
-      7
-    when 275...350
-      8
-    when 350...450
-      9
-    when 450...550
-      10
-    when 550...650
-      11
-    when 650...750
-      12
-    when 750...900
-      13
-    when 900...1100
-      14
-    when 1100...1300
-      15
+    when 0...10 then 0.5
+    when 10...15 then 1
+    when 15...20 then 1.5
+    when 20...35 then 2
+    when 35...50 then 2.5
+    when 50...75 then 3
+    when 75...100 then 3.5
+    when 100...125 then 4
+    when 125...150 then 4.5
+    when 150...188 then 5
+    when 188...225 then 5.5
+    when 225...263 then 6
+    when 263...300 then 6.5
+    when 300...350 then 7
+    when 350...400 then 7.5
+    when 400...450 then 8
+    when 450...500 then 8.5
+    when 500...550 then 9
+    when 550...600 then 9.5
+    when 600...663 then 10
+    when 663...725 then 10.5
+    when 725...788 then 11
+    when 788...850 then 11.5
+    when 850...925 then 12
+    when 925...1000 then 12.5
+    when 1000...1075 then 13
+    when 1075...1150 then 13.5
+    when 1150...1225 then 14
+    when 1225...1300 then 14.5
+    when 1300...1375 then 15
+    when 1375...1450 then 15.5
+    when 1450...1525 then 16
+    when 1525...1600 then 16.5
     else
-      # For very large creatures
-      15 + ((weight - 1300) / 300).floor
+      # For very large creatures, add 0.5 per 100kg
+      16.5 + ((weight - 1600) / 100.0).floor * 0.5
     end
   end
   
@@ -222,20 +212,89 @@ class MonsterNew
 
     skills
   end
+
+  def generate_athletics_skills(stats)
+    skills = {}
+
+    # Base athletics skills appropriate for all creatures
+    skills["Dodge"] = @level + rand(0..2)
+
+    # Movement skills based on creature type
+    case stats["type"]
+    when "Undead"
+      # Undead don't swim or climb well, but can move quietly
+      skills["Move quietly"] = @level + rand(0..2)
+      skills["Hide"] = @level + rand(-1..1)
+      # Skeletons and zombies are slow
+      if @name.downcase.include?("skeleton") || @name.downcase.include?("zombie")
+        skills["Running"] = rand(0..1)  # Very slow
+      else
+        skills["Running"] = @level + rand(-1..1)
+      end
+    when "Animal"
+      # Animals have natural athletics
+      skills["Running"] = @level + rand(0..2)
+      skills["Jumping"] = @level + rand(0..1)
+      # Aquatic animals can swim
+      if @name.downcase.include?("fish") || @name.downcase.include?("shark")
+        skills["Swimming"] = @level + rand(2..4)
+      elsif @name.downcase.include?("bear") || @name.downcase.include?("dog")
+        skills["Swimming"] = rand(1..2)
+      end
+      # Climbing for appropriate animals
+      if @name.downcase.include?("bear") || @name.downcase.include?("monkey")
+        skills["Climbing"] = @level + rand(1..3)
+      end
+      # Stealth for predators
+      if stats["skills"].any? { |s| s.downcase.include?("stealth") || s.downcase.include?("ambush") }
+        skills["Move quietly"] = @level + rand(1..3)
+        skills["Hide"] = @level + rand(0..2)
+      end
+    when "Monster"
+      # Most monsters have standard athletics
+      skills["Running"] = @level + rand(-1..2)
+      # Flying creatures
+      if stats["skills"].any? { |s| s.downcase.include?("flight") || s.downcase.include?("fly") }
+        skills["Flying"] = @level + rand(2..4)
+      end
+      # Stealthy monsters
+      if @name.downcase.include?("goblin") || stats["skills"].include?("Stealth")
+        skills["Move quietly"] = @level + rand(1..3)
+        skills["Hide"] = @level + rand(1..3)
+      end
+      # Large monsters don't hide well
+      if @weight > 500
+        skills["Hide"] = rand(0..1) if skills["Hide"]
+        skills["Move quietly"] = rand(0..1) if skills["Move quietly"]
+      end
+    else
+      # Default fallback
+      skills["Running"] = @level + rand(-1..1)
+    end
+
+    # Remove any skills with 0 or negative values
+    skills.delete_if { |_, v| v <= 0 }
+
+    skills
+  end
   
   def calculate_derived_stats
     body = @tiers["BODY"]["level"]
     mind = @tiers["MIND"]["level"]
+    spirit = @tiers["SPIRIT"]["level"]
 
-    # Body Points (round to integer)
-    @BP = (@SIZE + body + @tiers["BODY"]["Endurance"]["level"]).round
+    # Body Points: SIZE * 2 + Fortitude / 3 (same as NPC class)
+    fortitude = get_skill_total("BODY", "Endurance", "Fortitude")
+    @BP = (@SIZE * 2 + fortitude / 3.0).round
 
-    # Damage Bonus (round to integer)
-    strength_total = body + @tiers["BODY"]["Strength"]["level"]
-    @DB = ((strength_total + @SIZE - 10) / 3.0).round
+    # Damage Bonus: (SIZE + Wield weapon) / 3 (same as NPC class)
+    wield_weapon = get_skill_total("BODY", "Strength", "Wield weapon")
+    @DB = ((@SIZE + wield_weapon) / 3.0).round
 
-    # Magic Defense (round to integer)
-    @MD = (mind + @tiers["MIND"]["Awareness"]["level"]).round
+    # Magic Defense: (Mental fortitude + Attunement/Self) / 3 (same as NPC class)
+    mental_fortitude = get_skill_total("MIND", "Learning", "Mental fortitude")
+    attunement_self = get_skill_total("SPIRIT", "Magic", "Attunement/Self")
+    @MD = ((mental_fortitude + attunement_self) / 3.0).round
 
     # Encumbrance (monsters don't carry much)
     @ENC = 0
@@ -434,5 +493,55 @@ class MonsterNew
   
   def equipment
     []  # Monsters don't have equipment
+  end
+
+  def generate_awareness_skills(stats)
+    skills = {}
+
+    # Base awareness skills
+    skills["Reaction speed"] = @level + rand(0..2)
+    skills["Alertness"] = @level + rand(0..2)
+
+    case stats["type"]
+    when "Undead"
+      # Undead have poor awareness but don't get surprised
+      skills["Alertness"] = rand(1..2)
+      skills["Search"] = rand(0..1)
+      # No tracking or sense ambush for mindless undead
+      unless @name.downcase.include?("vampire") || @name.downcase.include?("lich")
+        skills.delete("Reaction speed")
+      end
+    when "Animal"
+      # Animals have good natural senses
+      skills["Alertness"] = @level + rand(1..3)
+      # Predators track
+      if stats["skills"].any? { |s| s.downcase.include?("track") || s.downcase.include?("hunt") }
+        skills["Tracking"] = @level + rand(2..4)
+      end
+      # Pack animals sense ambush
+      if stats["skills"].include?("Pack tactics")
+        skills["Sense ambush"] = @level + rand(1..3)
+      end
+    when "Monster"
+      # Standard monster awareness
+      skills["Search"] = @level + rand(0..1)
+      # Intelligent monsters have better awareness
+      if stats["base_mind"] >= 3
+        skills["Sense ambush"] = @level + rand(0..2)
+        skills["Search"] = @level + rand(1..2)
+      end
+      # Tracking for appropriate monsters
+      if stats["skills"].include?("Tracking")
+        skills["Tracking"] = @level + rand(1..3)
+      end
+    else
+      # Default fallback
+      skills["Search"] = rand(0..1)
+    end
+
+    # Remove any skills with 0 or negative values
+    skills.delete_if { |_, v| v <= 0 }
+
+    skills
   end
 end
