@@ -403,7 +403,10 @@ def update_border_colors
 end
 
 def return_to_menu
-  # Clear content first (without changing focus)
+  # Clear any displayed image first
+  clear_terminal_image
+
+  # Clear content (without changing focus)
   @content.say("")
   @content.ix = 0
 
