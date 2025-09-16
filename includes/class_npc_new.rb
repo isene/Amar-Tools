@@ -34,6 +34,7 @@ class NpcNew
     
     # Generate realistic height and weight based on Amar averages
     # Human average: 170cm height, 70kg weight
+    # But allowing for strongmen up to 195cm/125kg
     if height.to_i > 0
       @height = height.to_i
     else
@@ -44,14 +45,40 @@ class NpcNew
       @height = base_height + variation
       @height -= 5 if @sex == "F"  # Females slightly shorter on average
       @height -= (3 * (16 - @age)) if @age < 17  # Youth adjustment
+
+      # Type-based adjustments for larger/smaller builds
+      case @type
+      when /Warrior|Guard|Soldier|Body guard|Barbarian/
+        @height += rand(0..10)  # Warriors tend to be taller
+      when /Thief|Assassin|Rogue/
+        @height -= rand(0..5)  # Rogues tend to be more average/shorter
+      end
     end
 
     if weight.to_i > 0
       @weight = weight.to_i
     else
-      # Weight based on height with variation
-      # Formula: height - 120 + variation gives average of ~70kg for 170cm
-      @weight = @height - 120 + aD6 * 4 + rand(10)
+      # Weight based on height with more variation for different builds
+      # Base formula: height - 120 + variation
+      base_weight = @height - 120
+
+      # Build variation based on character type
+      build_modifier = case @type
+      when /Warrior|Guard|Soldier|Body guard|Barbarian|Worker|Farmer/
+        # Muscular builds: more weight for same height
+        aD6 * 5 + rand(15)  # Can add up to 55kg for strongman builds
+      when /Noble|Merchant|Scholar|Sage|Priest|Mage|Wizard/
+        # Average to lighter builds
+        aD6 * 3 + rand(10)  # Normal variation
+      when /Thief|Assassin|Rogue|Scout/
+        # Lean, agile builds
+        aD6 * 2 + rand(10)  # Lighter variation
+      else
+        # Default average build
+        aD6 * 4 + rand(10)
+      end
+
+      @weight = base_weight + build_modifier
       @weight = [@weight, 40].max  # Minimum weight of 40kg
     end
     @description = description
