@@ -421,7 +421,11 @@ end
 
 def draw_footer
   # Build footer with left-aligned help and right-aligned version
-  help = " [↑↓] Navigate | [Enter] Select | [TAB] Switch Focus | [r] Refresh | [q] Quit"
+  if @focus == :content && @content.text && !@content.text.strip.empty?
+    help = " [↑↓] Scroll | [e] Edit | [TAB] Back to Menu | [q] Quit"
+  else
+    help = " [↑↓] Navigate | [Enter] Select | [TAB] Switch Focus | [r] Refresh | [q] Quit"
+  end
   version_text = "v#{@version} "
   
   # Calculate padding
@@ -469,6 +473,7 @@ def show_content(text)
   if @focus != :content
     @focus = :content
     update_border_colors if @config[:show_borders]
+    draw_footer  # Update footer for content pane help
   end
 
   # Add spacing if last prompt ended
@@ -753,7 +758,14 @@ def handle_menu_navigation
   when "n", "N"
     generate_npc_new
   when "e", "E"
-    generate_encounter_new
+    # If focus is on content and there's content to edit, edit it
+    if @focus == :content && @content.text && !@content.text.strip.empty?
+      edited_text = edit_in_editor(@content.text)
+      show_content(edited_text)
+    else
+      # Otherwise, generate encounter
+      generate_encounter_new
+    end
   when "m", "M"
     generate_monster_new
 
@@ -795,6 +807,7 @@ def handle_menu_navigation
   when "\t"  # Tab to switch focus
     @focus = (@focus == :menu) ? :content : :menu
     update_border_colors if @config[:show_borders]
+    draw_footer  # Update footer to show context-aware help
 
   when "RIGHT"  # Right arrow
     if @focus == :menu
