@@ -987,8 +987,9 @@ def generate_npc_new
     debug "Contains ANSI codes: #{output.include?("\e[")}"
     
     # Display in content pane
-    show_content(output)
-    
+    # Show content is handled inside handle_npc_view
+    # show_content(output)
+
     # Handle view with clipboard support
     handle_npc_view(npc, output)
   rescue => e
@@ -1065,7 +1066,7 @@ def npc_input_new_tui
   end
   
   # Type selection in columns
-  type_text = colorize_output("Character Types", :header) + " (#{types.length} available):\n\n"
+  type_text = colorize_output("Character Types", :header) + " (#{types.length} available):\n"
   type_text += colorize_output(" 0", :dice) + ": " + colorize_output("Random", :value) + "\n"
 
   # Display types in 2 columns if more than 20, or 3 columns if more than 40
@@ -1254,6 +1255,10 @@ end
 
 def handle_npc_view(npc, output)
   debug "=== Entering handle_npc_view ==="
+
+  # Display the NPC content first
+  show_content(output)
+
   # Save NPC to temp file for AI description
   save_dir = File.join($pgmdir, "saved")
   Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
