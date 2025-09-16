@@ -3778,6 +3778,63 @@ def describe_npc_ai
   return_to_menu
 end
 
+# Display image in terminal using w3mimgdisplay (like RTFM/IMDB)
+def display_terminal_image(image_path)
+  w3m = "/usr/lib/w3m/w3mimgdisplay"
+  return false unless File.executable?(w3m) && File.exist?(image_path)
+
+  begin
+    # Use timeout to prevent hanging
+    require 'timeout'
+    Timeout.timeout(2) do
+      # Get terminal window info
+      info = `xwininfo -id $(xdotool getactivewindow) 2>/dev/null`
+      return false unless info =~ /Width:\s*(\d+).*Height:\s*(\d+)/m
+
+      term_width = $1.to_i
+      term_height = $2.to_i
+
+      # Calculate position and size for image display
+      # Position image in content pane area
+      px = (@cols > 35) ? (35 * (term_width.to_f / @cols)).to_i : 10
+      py = 100  # Position below header
+
+      # Max dimensions for the image
+      max_w = (((@cols - 35) * 0.8) * (term_width.to_f / @cols)).to_i
+      max_h = ((@rows - 10) * (term_height.to_f / @rows)).to_i
+
+      # Clear the area first
+      `echo "6;#{px};#{py};#{max_w+4};#{max_h+4};\n4;\n3;" | #{w3m} 2>/dev/null`
+
+      # Get image dimensions
+      dimensions = `identify -format "%wx%h" "#{image_path}" 2>/dev/null`.strip
+      return false if dimensions.empty?
+
+      iw, ih = dimensions.split('x').map(&:to_i)
+
+      # Scale image to fit
+      if iw > max_w
+        ih = (ih * max_w / iw).to_i
+        iw = max_w
+      end
+      if ih > max_h
+        iw = (iw * max_h / ih).to_i
+        ih = max_h
+      end
+
+      # Display the image
+      `echo "0;1;#{px};#{py};#{iw};#{ih};;;;;\"#{image_path}\"\n4;\n3;" | #{w3m} 2>/dev/null`
+
+      return true
+    end
+  rescue Timeout::Error
+    return false
+  rescue => e
+    debug "Error displaying image: #{e.message}"
+    return false
+  end
+end
+
 def generate_npc_image(description = nil)
   debug "Starting generate_npc_image"
   content_width = @cols - 35
@@ -3830,13 +3887,43 @@ def generate_npc_image(description = nil)
       end
     end
 
-    # Extract character name from NPC file
+    # Extract character details from NPC file
     npc_content = File.read(npc_file)
     character_name = nil
-    if match = npc_content.match(/^([A-Za-z\s]+)\s+\([MF]\s+\d+\)/)
-      character_name = match[1].strip
-      safe_name = character_name.gsub(/[^A-Za-z0-9]/, '')
-      @last_npc_name = safe_name
+    character_gender = nil
+    character_race = nil
+    character_class = nil
+    character_height = nil
+    character_weight = nil
+    character_desc_line = nil
+
+    # Parse first line for name, gender, height, weight
+    lines = npc_content.lines
+    if lines[0]
+      # Extract name and gender (e.g., "Sera Brightblade (F 75)")
+      if match = lines[0].match(/^([A-Za-z\s]+)\s+\(([MF])\s+\d+\)/)
+        character_name = match[1].strip
+        character_gender = match[2] == "F" ? "female" : "male"
+        safe_name = character_name.gsub(/[^A-Za-z0-9]/, '')
+        @last_npc_name = safe_name
+      end
+
+      # Extract height and weight
+      if match = lines[0].match(/H\/W:\s+(\d+cm)\/(\d+kg)/)
+        character_height = match[1]
+        character_weight = match[2]
+      end
+
+      # Extract race and class (e.g., "Elf: Warrior (7)")
+      if match = lines[0].match(/([A-Za-z-]+):\s+([A-Za-z\s]+)\s*\(\d+\)/)
+        character_race = match[1]
+        character_class = match[2].strip
+      end
+    end
+
+    # Extract description line
+    if lines[2] && match = lines[2].match(/Description:\s+(.+)$/)
+      character_desc_line = match[1].strip
     end
 
     # Check if we already have a description for this NPC
@@ -3854,6 +3941,17 @@ def generate_npc_image(description = nil)
       show_content(colorize_output("Generating AI description for #{character_name || 'NPC'}...", :header) + "\n\n" +
                   "Please wait, this may take a moment...\n\n")
 
+      # Build character info for the AI prompt
+      character_info = "Generate a detailed physical and personality description for:\n"
+      character_info += "Name: #{character_name}\n" if character_name
+      character_info += "Gender: #{character_gender}\n" if character_gender
+      character_info += "Race: #{character_race}\n" if character_race
+      character_info += "Class/Profession: #{character_class}\n" if character_class
+      character_info += "Height: #{character_height}\n" if character_height
+      character_info += "Weight: #{character_weight}\n" if character_weight
+      character_info += "Basic appearance: #{character_desc_line}\n" if character_desc_line
+      character_info += "\nProvide a rich, detailed description suitable for generating a character portrait."
+
       # Load NPC prompt
       npc_prompt = File.join($pgmdir, "npc.txt")
       unless File.exist?(npc_prompt)
@@ -3863,7 +3961,7 @@ def generate_npc_image(description = nil)
       end
 
       prompt_text = File.read(npc_prompt)
-      combined = "#{prompt_text}\n\n#{npc_content}"
+      combined = "#{character_info}\n\n#{prompt_text}\n\n#{npc_content}"
 
       # Generate description
       client = openai_client
@@ -3901,6 +3999,7 @@ def generate_npc_image(description = nil)
     key = getchr
     case key
     when "\e", "q"
+      return_to_menu
       return
     when "e", "E"
       description = edit_in_editor(description)
@@ -3920,17 +4019,36 @@ def generate_npc_image(description = nil)
     amar_background = File.read(gen_file)
   end
 
-  # Create enhanced prompt for DALL-E
-  dalle_prompt = <<~PROMPT
-    Create a photorealistic fantasy character portrait:
+  # Create enhanced prompt for DALL-E with explicit character details
+  dalle_prompt = "Create a photorealistic fantasy character portrait:\n\n"
 
-    #{description}
+  # Add explicit character details if we have them
+  if character_name
+    dalle_prompt += "CHARACTER DETAILS:\n"
+    dalle_prompt += "- Name: #{character_name}\n"
+    dalle_prompt += "- Gender: #{character_gender.upcase} (IMPORTANT: This must be a #{character_gender} character)\n" if character_gender
+    dalle_prompt += "- Race: #{character_race}\n" if character_race
+    dalle_prompt += "- Class: #{character_class}\n" if character_class
+    dalle_prompt += "- Height: #{character_height}\n" if character_height
+    dalle_prompt += "- Weight: #{character_weight}\n" if character_weight
+    dalle_prompt += "\n"
+  end
 
-    Style: Photorealistic, cinematic lighting, medieval fantasy setting, highly detailed, 8k resolution
-    Background: #{amar_background[0..500]}
+  dalle_prompt += "DESCRIPTION:\n#{description}\n\n"
+  dalle_prompt += "STYLE REQUIREMENTS:\n"
+  dalle_prompt += "- Photorealistic, cinematic lighting\n"
+  dalle_prompt += "- Medieval fantasy setting\n"
+  dalle_prompt += "- Highly detailed, 8k resolution\n"
+  dalle_prompt += "- Character portrait from mid-torso up\n"
+  dalle_prompt += "- Appropriate medieval/fantasy clothing and equipment\n"
 
-    The image should be a character portrait showing the person from mid-torso up, with appropriate medieval/fantasy clothing and equipment visible.
-  PROMPT
+  if character_gender
+    dalle_prompt += "\nCRITICAL: Ensure the character is clearly depicted as #{character_gender}.\n"
+  end
+
+  if amar_background && !amar_background.empty?
+    dalle_prompt += "\nWorld context: #{amar_background[0..300]}"
+  end
 
   show_content(colorize_output("GENERATING IMAGE", :header) + "\n" +
               colorize_output("─" * content_width, :header) + "\n\n" +
@@ -4005,22 +4123,33 @@ def generate_npc_image(description = nil)
         output += colorize_output("─" * content_width, :header) + "\n\n"
         output += "Image saved to: #{image_file}\n\n"
 
-        # Try to display image using terminal image viewer if available
-        if system("which imgcat > /dev/null 2>&1")
-          output += "Displaying image in terminal...\n\n"
-          show_content(output)
+        # Display the output first
+        show_content(output)
+
+        # Try to display image inline using w3mimgdisplay (like RTFM/IMDB)
+        image_displayed = false
+        if display_terminal_image(image_file)
+          image_displayed = true
+          debug "Image displayed using w3mimgdisplay"
+        elsif system("which imgcat > /dev/null 2>&1")
+          # Fallback to imgcat if available
           system("imgcat \"#{image_file}\"")
+          image_displayed = true
+          debug "Image displayed using imgcat"
         elsif system("which kitty > /dev/null 2>&1")
-          output += "Displaying image in terminal...\n\n"
-          show_content(output)
+          # Fallback to kitty if available
           system("kitty +kitten icat \"#{image_file}\"")
-        else
+          image_displayed = true
+          debug "Image displayed using kitty"
+        end
+
+        if !image_displayed
           output += "To view the image, open: #{image_file}\n\n"
-          output += "(Install imgcat or use kitty terminal for inline viewing)\n\n"
+          output += "(Install w3m-img, imgcat, or use kitty terminal for inline viewing)\n\n"
           show_content(output)
         end
 
-        output += "\n" + colorize_output("Press any key to continue...", :info)
+        output = "\n" + colorize_output("Press any key to continue...", :info)
         show_content(output)
         getchr
       else
@@ -4040,6 +4169,9 @@ def generate_npc_image(description = nil)
   rescue => e
     show_content("Error: #{e.message}\n\nPress any key to continue...")
     getchr
+  ensure
+    # Always return focus to menu after image generation
+    return_to_menu
   end
 end
 
