@@ -762,10 +762,14 @@ def handle_menu_navigation
   when "n", "N"
     generate_npc_new
   when "e", "E"
+    debug "Main handler: 'e' key pressed, focus=#{@focus}, has_content=#{!@content.text.to_s.strip.empty?}"
     # Only handle 'e' from menu focus for encounter generation
     # Content editing is handled within each view's own loop
     if @focus == :menu
+      debug "Main handler: Generating encounter from menu"
       generate_encounter_new
+    else
+      debug "Main handler: Ignoring 'e' - should be handled by view loop"
     end
   when "m", "M"
     generate_monster_new
@@ -1249,6 +1253,7 @@ def get_text_input(prompt)
 end
 
 def handle_npc_view(npc, output)
+  debug "=== Entering handle_npc_view ==="
   # Save NPC to temp file for AI description
   save_dir = File.join($pgmdir, "saved")
   Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
@@ -1281,6 +1286,7 @@ def handle_npc_view(npc, output)
 
   loop do
     key = getchr
+    debug "NPC view loop: key pressed = '#{key}' (#{key.ord rescue 'special'})"
 
     case key
     when "ESC", "\e", "q", "LEFT"
@@ -1310,11 +1316,18 @@ def handle_npc_view(npc, output)
       @footer.bg = 237  # Reset to medium grey
       sleep(1)
       @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-    when "e"
+    when "e", "E"
+      debug "View: 'e' key matched, calling edit_in_editor"
       # Edit in editor - strip ANSI codes first
       clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
-      edit_in_editor(clean_text)
-      show_content(output)
+      debug "View: Cleaned text length = #{clean_text.length}"
+      edited_text = edit_in_editor(clean_text)
+      debug "View: edit_in_editor returned, edited_text = #{edited_text ? 'content' : 'nil'}"
+      if edited_text
+        show_content(edited_text)
+      else
+        show_content(output)
+      end
     when "r"
       # Re-roll with same parameters
       generate_npc_new
@@ -1328,9 +1341,12 @@ def handle_npc_view(npc, output)
       init_screen
       refresh_all
       show_content(output)
+    else
+      debug "NPC view: Unhandled key: '#{key}' (#{key.ord rescue 'special'})"
     end
   end
 
+  debug "=== Exiting handle_npc_view loop, last key was: #{key} ==="
   # Return focus to menu when done viewing
   return_to_menu
 end
@@ -1624,11 +1640,18 @@ def handle_encounter_view(enc, output)
       @footer.bg = 237  # Reset to medium grey
       sleep(1)
       @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-    when "e"
+    when "e", "E"
+      debug "View: 'e' key matched, calling edit_in_editor"
       # Edit in editor - strip ANSI codes first
       clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
-      edit_in_editor(clean_text)
-      show_content(output)
+      debug "View: Cleaned text length = #{clean_text.length}"
+      edited_text = edit_in_editor(clean_text)
+      debug "View: edit_in_editor returned, edited_text = #{edited_text ? 'content' : 'nil'}"
+      if edited_text
+        show_content(edited_text)
+      else
+        show_content(output)
+      end
     when "r"
       # Re-roll with same parameters
       generate_encounter_new
@@ -1925,11 +1948,18 @@ def handle_monster_view(monster, output)
       @footer.bg = 237  # Reset to medium grey
       sleep(1)
       @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-    when "e"
+    when "e", "E"
+      debug "View: 'e' key matched, calling edit_in_editor"
       # Edit in editor - strip ANSI codes first
       clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
-      edit_in_editor(clean_text)
-      show_content(output)
+      debug "View: Cleaned text length = #{clean_text.length}"
+      edited_text = edit_in_editor(clean_text)
+      debug "View: edit_in_editor returned, edited_text = #{edited_text ? 'content' : 'nil'}"
+      if edited_text
+        show_content(edited_text)
+      else
+        show_content(output)
+      end
     when "r"
       generate_monster_new
       break
