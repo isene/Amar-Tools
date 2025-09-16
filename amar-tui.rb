@@ -3377,7 +3377,6 @@ def generate_town_relations
             # Clear the content pane text
             @content.text = ""
             @content.clear
-            @content.update = false
             @content.refresh
             if display_terminal_image(png_file)
               showing_image = true
@@ -4853,7 +4852,6 @@ def show_latest_town_map
           # Clear the content pane text first
           @content.text = ""
           @content.clear
-          @content.update = false
           @content.refresh
           debug "Content pane cleared"
 
