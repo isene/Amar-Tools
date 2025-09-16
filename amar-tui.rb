@@ -617,7 +617,11 @@ def show_help
   end
 
   help_text += "\n" + colorize_output("─" * content_width, :header) + "\n"
-  help_text += colorize_output("SCROLLING:", :subheader) + "\n"
+  help_text += colorize_output("NAVIGATION:", :subheader) + "\n"
+  help_text += colorize_output("  →/RIGHT", :value) + "     - Activate menu item (when in menu)".fg(240) + "\n"
+  help_text += colorize_output("  ←/LEFT", :value) + "      - Return to menu (when viewing content)".fg(240) + "\n"
+  help_text += colorize_output("  TAB", :value) + "         - Switch between panes".fg(240) + "\n"
+  help_text += "\n" + colorize_output("SCROLLING:", :subheader) + "\n"
   help_text += colorize_output("  j / DOWN", :value) + "    - Scroll down".fg(240) + "\n"
   help_text += colorize_output("  k / UP", :value) + "      - Scroll up".fg(240) + "\n"
   help_text += colorize_output("  SPACE/PgDn", :value) + "  - Page down".fg(240) + "\n"
@@ -631,7 +635,7 @@ def show_help
   # Handle scrolling in content pane
   loop do
     key = getchr
-    break if key == "ESC" || key == "q" || key == "\e"
+    break if key == "ESC" || key == "q" || key == "\e" || key == "LEFT"
     
     case key
     when "j", "DOWN"
@@ -774,8 +778,27 @@ def handle_menu_navigation
   when "\t"  # Tab to switch focus
     @focus = (@focus == :menu) ? :content : :menu
     update_border_colors if @config[:show_borders]
+
+  when "RIGHT"  # Right arrow
+    if @focus == :menu
+      # When in menu, RIGHT activates the selected item (like Enter)
+      result = execute_menu_item
+      return false if result == false
+    else
+      # When in content pane, navigate right (if applicable)
+      @content.right if @content.respond_to?(:right)
+    end
+
+  when "LEFT"  # Left arrow (not 'h' as that's used for help)
+    if @focus == :content
+      # When in content pane, LEFT returns to menu (like ESC)
+      return_to_menu
+    else
+      # When in menu, navigate left (if applicable)
+      @content.left if @content.respond_to?(:left)
+    end
   end
-  
+
   true
 end
 
@@ -870,7 +893,7 @@ def roll_o6
   # Handle ESC and q to return to menu
   loop do
     key = getchr
-    if key == "ESC" || key == "\e" || key == "q"
+    if key == "ESC" || key == "\e" || key == "q" || key == "LEFT"
       return_to_menu
       break
     else
@@ -1210,7 +1233,7 @@ def handle_npc_view(npc, output)
     key = getchr
 
     case key
-    when "ESC", "\e", "q"
+    when "ESC", "\e", "q", "LEFT"
       break
     when "j", "DOWN"
       @content.linedown
@@ -1489,7 +1512,7 @@ def handle_encounter_view(enc, output)
     key = getchr
 
     case key
-    when "ESC", "\e", "q"
+    when "ESC", "\e", "q", "LEFT"
       break
     when /[1-9]/
       # View individual NPC from encounter
@@ -1621,7 +1644,7 @@ def handle_content_view(object, type)
     key = getchr
     
     case key
-    when "ESC", "\e", "q"  # ESC or q to go back
+    when "ESC", "\e", "q", "LEFT"  # ESC or q to go back
       break
     when "j", "DOWN"  # Scroll down
       @content.linedown
@@ -1815,7 +1838,7 @@ def handle_monster_view(monster, output)
     key = getchr
 
     case key
-    when "ESC", "\e", "q"
+    when "ESC", "\e", "q", "LEFT"
       break
     when "j", "DOWN"
       @content.linedown
