@@ -2322,8 +2322,8 @@ end
 def generate_weather_ui
   debug "Starting generate_weather_ui"
 
-  # Initialize weather globals if needed
-  $weather_n = 1 if $weather_n.nil?
+  # Initialize weather globals if needed (5 = Normal)
+  $weather_n = 5 if $weather_n.nil?
   $wind_dir_n = 0 if $wind_dir_n.nil?
   $wind_str_n = 0 if $wind_str_n.nil?
   $mn = 0 if $mn.nil?
@@ -2379,7 +2379,7 @@ def generate_weather_ui
   
   weather = weather_input.to_i
   weather = $weather_n if weather_input.nil? || weather_input.empty?
-  weather = 1 if weather < 1
+  weather = 5 if weather < 1  # Default to 5 (Normal) if invalid
   weather = 9 if weather > 9
   
   # Get wind - Always use colors

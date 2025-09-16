@@ -318,7 +318,7 @@ loop do
     prompt.keypress("\nPress any key...".c(@gray))
   # w = Random weather
   elsif c == "w"
-    $weather_n = 1 if $weather_n == nil
+    $weather_n = 5 if $weather_n == nil  # Default to 5 (Normal)
     $wind_dir_n = 0 if $wind_dir_n == nil
     $wind_str_n = 0 if $wind_str_n == nil
     $mn = 0 if $mn == nil
