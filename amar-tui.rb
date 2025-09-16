@@ -3932,7 +3932,7 @@ def clear_terminal_image
 
       # Size: content pane width/height minus borders
       max_w = ((@cols - 35 - 2) * char_w).to_i  # -2 for left and right borders
-      max_h = ((@rows - 4 - 2) * char_h).to_i   # -2 for top and bottom borders
+      max_h = ((@rows - 4 - 3) * char_h).to_i   # -3 to stay away from bottom border
 
       # Clear only the inside of the content pane
       `echo "6;#{px};#{py};#{max_w};#{max_h};\n4;\n3;" | #{w3m} 2>/dev/null`
@@ -3986,7 +3986,7 @@ def display_terminal_image(image_path)
 
       # Clear the area first (same as clear_terminal_image but inline)
       clear_w = ((@cols - 35 - 2) * char_w).to_i
-      clear_h = ((@rows - 4 - 2) * char_h).to_i
+      clear_h = ((@rows - 4 - 3) * char_h).to_i
       `echo "6;#{px};#{py};#{clear_w};#{clear_h};\n4;\n3;" | #{w3m} 2>/dev/null`
 
       # Get image dimensions
