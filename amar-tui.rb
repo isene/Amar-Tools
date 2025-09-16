@@ -763,8 +763,11 @@ def handle_menu_navigation
   when "n", "N"
     generate_npc_new
   when "e", "E"
-    # If focus is on content and there's content to edit, edit it
-    if @focus == :content && @content.text && !@content.text.strip.empty?
+    # Only handle 'e' from menu focus for encounter generation
+    if @focus == :menu
+      generate_encounter_new
+    elsif @focus == :content && @content.text && !@content.text.strip.empty?
+      # Edit content when focus is on content pane
       # Strip ANSI codes before editing
       clean_text = @content.text.respond_to?(:pure) ? @content.text.pure : @content.text.gsub(/\e\[\d+(?:;\d+)*m/, '')
       edited_text = edit_in_editor(clean_text)
@@ -772,9 +775,6 @@ def handle_menu_navigation
         @content.text = edited_text
         show_content(edited_text)
       end
-    else
-      # Otherwise, generate encounter
-      generate_encounter_new
     end
   when "m", "M"
     generate_monster_new
@@ -1009,7 +1009,7 @@ def npc_input_new_tui
   
   # Name input
   debug "Getting name input"
-  header = colorize_output("NEW SYSTEM NPC GENERATION (3-Tier)", :header) + "\n\n"
+  header = colorize_output("NEW SYSTEM NPC GENERATION (3-Tier)", :header) + "\n"
   header += colorize_output("Enter NPC name", :label) + " (or ENTER for random): "
   show_content(header)
   name = get_text_input("")
@@ -1023,7 +1023,7 @@ def npc_input_new_tui
     "Centaur", "Ogre", "Troll", "Araxi", "Faerie"
   ]
   
-  race_text = colorize_output("Select Race:", :header) + "\n\n"
+  race_text = colorize_output("Select Race:", :header) + "\n"
   race_text += colorize_output(" 0", :dice) + ": " + colorize_output("Human", :value) + " (default)\n"
   races.each_with_index do |race, index|
     race_text += colorize_output((index + 1).to_s.rjust(2), :dice) + ": " + colorize_output(race, :value) + "\n"
@@ -1112,7 +1112,7 @@ def npc_input_new_tui
   inputs << type
   
   # Level selection
-  level_text = colorize_output("Select character level:", :header) + "\n\n"
+  level_text = colorize_output("Select character level:", :header) + "\n"
   level_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
   level_text += colorize_output("1", :dice) + ": " + colorize_output("Novice", :value) + "\n"
   level_text += colorize_output("2", :dice) + ": " + colorize_output("Apprentice", :value) + "\n"
@@ -1130,7 +1130,7 @@ def npc_input_new_tui
   inputs << level
   
   # Area selection
-  area_text = colorize_output("Select area of origin:", :header) + "\n\n"
+  area_text = colorize_output("Select area of origin:", :header) + "\n"
   area_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
   area_text += colorize_output("1", :dice) + ": " + colorize_output("Amaronir", :value) + "\n"
   area_text += colorize_output("2", :dice) + ": " + colorize_output("Merisir", :value) + "\n"
@@ -1151,7 +1151,7 @@ def npc_input_new_tui
   inputs << area
   
   # Sex selection
-  sex_text = colorize_output("Select sex:", :header) + "\n\n"
+  sex_text = colorize_output("Select sex:", :header) + "\n"
   sex_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
   sex_text += colorize_output("1", :dice) + ": " + colorize_output("Male", :value) + "\n"
   sex_text += colorize_output("2", :dice) + ": " + colorize_output("Female", :value) + "\n\n"
@@ -1469,8 +1469,8 @@ def enc_input_new_tui
   
   # Get night/day
   # Night/day selection
-  time_text = colorize_output("NEW SYSTEM ENCOUNTER GENERATION", :header) + "\n\n"
-  time_text += colorize_output("Select time:", :header) + "\n\n"
+  time_text = colorize_output("NEW SYSTEM ENCOUNTER GENERATION", :header) + "\n"
+  time_text += colorize_output("Select time:", :header) + "\n"
   time_text += colorize_output("0", :dice) + ": " + colorize_output("Night", :value) + "\n"
   time_text += colorize_output("1", :dice) + ": " + colorize_output("Day", :value) + " (default)\n\n"
   time_text += "Press number key:".fg(240)
@@ -1482,7 +1482,7 @@ def enc_input_new_tui
   debug "Day/Night: #{$Day}"
   
   # Get terrain
-  terrain_text = colorize_output("Select terrain type:", :header) + "\n\n"
+  terrain_text = colorize_output("Select terrain type:", :header) + "\n"
   terrain_text += colorize_output("0", :dice) + ": " + colorize_output("City", :value) + "\n"
   terrain_text += colorize_output("1", :dice) + ": " + colorize_output("Rural", :value) + "\n"
   terrain_text += colorize_output("2", :dice) + ": " + colorize_output("Road", :value) + "\n"
@@ -1502,7 +1502,7 @@ def enc_input_new_tui
   debug "Terrain: #{$Terrain}, Terraintype: #{$Terraintype}"
   
   # Get level modifier
-  level_text = "\n" + colorize_output("Enter level modifier (+/-)", :header) + "\n\n"
+  level_text = colorize_output("Enter level modifier (+/-)", :header) + "\n"
   level_text += colorize_output("0-9", :dice) + ": Positive modifier\n"
   level_text += colorize_output("-", :dice) + " then number: Negative modifier\n"
   level_text += colorize_output("ENTER", :dice) + ": No modifier (0)\n\n"
@@ -1519,7 +1519,7 @@ def enc_input_new_tui
     "Centaur", "Ogre", "Troll", "Araxi", "Faerie"
   ]
   
-  race_text = colorize_output("Select race (for humanoid encounters):", :header) + "\n\n"
+  race_text = colorize_output("Select race (for humanoid encounters):", :header) + "\n"
   race_text += colorize_output(" 0", :dice) + ": " + colorize_output("Random", :value) + " (default)\n"
   races.each_with_index do |race, index|
     race_text += colorize_output((index + 1).to_s.rjust(2), :dice) + ": " + colorize_output(race, :value) + "\n"
@@ -1846,8 +1846,8 @@ def generate_monster_new
   # Get monster type selection
   monster_list = $MonsterStats.keys.reject { |k| k == "default" }.sort
   
-  monster_text = colorize_output("NEW SYSTEM MONSTER GENERATION", :header) + "\n\n"
-  monster_text += colorize_output("Select monster type:", :header) + "\n\n"
+  monster_text = colorize_output("NEW SYSTEM MONSTER GENERATION", :header) + "\n"
+  monster_text += colorize_output("Select monster type:", :header) + "\n"
   monster_text += " " + colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
   
   # Display in columns for better readability with proper coloring
@@ -1877,7 +1877,7 @@ def generate_monster_new
   debug "Selected monster: #{monster_type}"
   
   # Get level
-  level_text = colorize_output("Select monster level:", :header) + "\n\n"
+  level_text = colorize_output("Select monster level:", :header) + "\n"
   level_text += colorize_output("0", :dice) + ": " + colorize_output("Random", :value) + "\n"
   level_text += colorize_output("1-6", :dice) + ": " + colorize_output("Specific level", :value) + "\n\n"
   level_text += "Press number key:".fg(240)
@@ -2421,8 +2421,8 @@ def generate_weather_ui
   end
 
   # Get Month - Always use colors for weather UI
-  mstring = "WEATHER GENERATOR".fg(14).b + "\n\n"
-  mstring += "Select month:".fg(14).b + "\n\n"
+  mstring = "WEATHER GENERATOR".fg(14).b + "\n"
+  mstring += "Select month:".fg(14).b + "\n"
   7.times do |i|
     mstring += i.to_s.rjust(2).fg(202) + ": "  # Orange for numbers
     mstring += $Month[i].fg(7).ljust(30)  # White for month names
@@ -2763,8 +2763,8 @@ def generate_weather_pdf
   end
 
   # Get Month
-  mstring = "WEATHER PDF GENERATOR".fg(14).b + "\n\n"
-  mstring += "Select month for PDF:".fg(14).b + "\n\n"
+  mstring = "WEATHER PDF GENERATOR".fg(14).b + "\n"
+  mstring += "Select month for PDF:".fg(14).b + "\n"
   7.times do |i|
     mstring += i.to_s.rjust(2).fg(202) + ": "
     mstring += $Month[i].fg(7).ljust(30)
@@ -2805,9 +2805,9 @@ def generate_weather_pdf
   $mn = month_input.to_i unless month_input.empty?
 
   # Get Weather condition
-  wstring = "WEATHER PDF GENERATOR".fg(14).b + "\n\n"
-  wstring += "Month: #{$Month[$mn]}".fg(45).b + "\n\n"
-  wstring += "Select weather condition:".fg(14).b + "\n\n"
+  wstring = "WEATHER PDF GENERATOR".fg(14).b + "\n"
+  wstring += "Month: #{$Month[$mn]}".fg(45).b + "\n"
+  wstring += "Select weather condition:".fg(14).b + "\n"
   ["1: Snow storm", "2: Heavy snow", "3: Light snow", "4: Hail",
    "5: Normal", "6: Sunny", "7: Hot", "8: Sweltering"].each do |w|
     wstring += w.fg(7) + "\n"
@@ -2920,7 +2920,7 @@ def generate_town_ui
   debug "Starting generate_town_ui"
   
   # Get Town name
-  header = colorize_output("TOWN/CITY GENERATOR", :header) + "\n\n"
+  header = colorize_output("TOWN/CITY GENERATOR", :header) + "\n"
   header += colorize_output("Enter Village/Town/City name", :label) + " (or ENTER for random): "
   show_content(header)
   town_name = get_text_input("")
@@ -3335,7 +3335,7 @@ end
 # NAME GENERATOR
 def generate_name_ui
   # Use the actual name types from the $Names table
-  menu_text = colorize_output("SELECT NAME TYPE", :header) + "\n\n"
+  menu_text = colorize_output("SELECT NAME TYPE", :header) + "\n"
 
   $Names.each_with_index do |name_type, idx|
     menu_text += colorize_output(idx.to_s.rjust(2), :dice) + ": " + colorize_output(name_type[0], :value) + "\n"
