@@ -763,17 +763,9 @@ def handle_menu_navigation
     generate_npc_new
   when "e", "E"
     # Only handle 'e' from menu focus for encounter generation
+    # Content editing is handled within each view's own loop
     if @focus == :menu
       generate_encounter_new
-    elsif @focus == :content && @content.text && !@content.text.strip.empty?
-      # Edit content when focus is on content pane
-      # Strip ANSI codes before editing
-      clean_text = @content.text.respond_to?(:pure) ? @content.text.pure : @content.text.gsub(/\e\[\d+(?:;\d+)*m/, '')
-      edited_text = edit_in_editor(clean_text)
-      if edited_text
-        @content.text = edited_text
-        show_content(edited_text)
-      end
     end
   when "m", "M"
     generate_monster_new
@@ -2942,14 +2934,14 @@ def generate_town_ui
   town_size = 1 if town_size < 1
   
   # Get Town variations
-  var_text = "\n" + colorize_output("Select race variation:", :header) + "\n\n"
+  var_text = colorize_output("Select race variation:", :header) + "\n"
   var_text += colorize_output("0", :dice) + ": " + colorize_output("Only humans", :value) + " (default)\n"
   var_text += colorize_output("1", :dice) + ": " + colorize_output("Few non-humans", :value) + "\n"
   var_text += colorize_output("2", :dice) + ": " + colorize_output("Several non-humans", :value) + "\n"
   var_text += colorize_output("3", :dice) + ": " + colorize_output("Crazy place", :value) + "\n"
   var_text += colorize_output("4", :dice) + ": " + colorize_output("Only Dwarves", :value) + "\n"
   var_text += colorize_output("5", :dice) + ": " + colorize_output("Only Elves", :value) + "\n"
-  var_text += colorize_output("6", :dice) + ": " + colorize_output("Only Lizardfolk", :value) + "\n\n"
+  var_text += colorize_output("6", :dice) + ": " + colorize_output("Only Lizardfolk", :value) + "\n"
   show_content(var_text)
   var_input = get_text_input("")
   if var_input == :cancelled
