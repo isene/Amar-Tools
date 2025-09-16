@@ -269,6 +269,7 @@ def init_screen
     "── WORLD BUILDING ──",
     "6. Town/City Generator",
     "7. Town Relations",
+    "T. Show Town Relations Map",
     "8. Weather Generator",
     "9. Name Generator",
     "",
@@ -278,7 +279,6 @@ def init_screen
     "N. Describe NPC",
     "I. Generate NPC Image",
     "S. Show Latest NPC Image",
-    "T. Show Town Relations Map",
     "",
     "── UTILITIES ──",
     "O. Roll Open Ended d6",
@@ -3357,9 +3357,16 @@ def generate_town_relations
           show_content(output)
         else
           # Currently showing text, switch to image
-          if File.exist?(png_file) && display_terminal_image(png_file)
+          if File.exist?(png_file)
+            # Clear the content pane completely
+            @content.text = ""
             @content.clear
-            showing_image = true
+            @content.update = false
+            @content.refresh
+            sleep(0.05)  # Small delay to ensure clearing completes
+            if display_terminal_image(png_file)
+              showing_image = true
+            end
           end
         end
       end
@@ -4758,9 +4765,14 @@ def show_latest_town_map
         show_content(output)
       else
         # Switch to image view
+        # Clear the content pane completely
+        @content.text = ""
+        @content.clear
+        @content.update = false
+        @content.refresh
+        sleep(0.05)  # Small delay to ensure clearing completes
         if display_terminal_image(current_png)
           showing_image = true
-          @content.clear
         elsif system("which imgcat > /dev/null 2>&1")
           system("imgcat \"#{current_png}\"")
           showing_image = true
