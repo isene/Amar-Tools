@@ -235,13 +235,13 @@ def init_screen
   begin
     #                     x   y   width        height      fg              bg
     debug "Creating header pane"
-    @header = Pane.new(   1,  1,  @cols,       1,          255,            234)  # Dark grey background
+    @header = Pane.new(   1,  1,  @cols,       1,          255,            237)  # Medium grey background
     debug "Creating menu pane"
     @menu   = Pane.new(   2,  3,  30,          @rows - 4,  255,            232)  # Black background
     debug "Creating content pane"
     @content= Pane.new(   34, 3,  @cols - 35,  @rows - 4,  255,            @colors[:content])
     debug "Creating footer pane"
-    @footer = Pane.new(   1,  @rows, @cols,    1,          255,            234)  # Dark grey background
+    @footer = Pane.new(   1,  @rows, @cols,    1,          255,            237)  # Medium grey background
     debug "All panes created"
   rescue => e
     debug "Error creating panes: #{e.message}"
@@ -1234,7 +1234,7 @@ def handle_npc_view(npc, output)
       footer_text = " ✓ Output copied to clipboard! Press any key to continue... "
       @footer.bg = 28  # Dark green background for success
       @footer.say(footer_text.ljust(@cols))
-      @footer.bg = 234  # Reset to dark grey
+      @footer.bg = 237  # Reset to medium grey
       sleep(1)
       @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     when "e"
@@ -1539,7 +1539,7 @@ def handle_encounter_view(enc, output)
       footer_text = " ✓ Output copied to clipboard! Press any key to continue... "
       @footer.bg = 28  # Dark green background for success
       @footer.say(footer_text.ljust(@cols))
-      @footer.bg = 234  # Reset to dark grey
+      @footer.bg = 237  # Reset to medium grey
       sleep(1)
       @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     when "e"
@@ -1668,19 +1668,7 @@ def save_to_file(object, type)
   show_popup("SAVED", "Saved to: #{filename}\n\nPress any key to continue")
 end
 
-def edit_in_editor(text)
-  require 'tempfile'
-  
-  Tempfile.create(['amar', '.txt']) do |f|
-    f.write(text)
-    f.flush
-    
-    editor = ENV['EDITOR'] || 'vim'
-    system("#{editor} #{f.path}")
-    
-    # Could reload content here if needed
-  end
-end
+# This function is duplicate - removing it to use the proper one above
 
 # COLOR FORMATTING HELPERS
 def colorize_output(text, type = :default)
@@ -1842,7 +1830,7 @@ def handle_monster_view(monster, output)
       footer_text = " ✓ Output copied to clipboard! Press any key to continue... "
       @footer.bg = 28  # Dark green background for success
       @footer.say(footer_text.ljust(@cols))
-      @footer.bg = 234  # Reset to dark grey
+      @footer.bg = 237  # Reset to medium grey
       sleep(1)
       @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     when "e"
@@ -3437,7 +3425,7 @@ def generate_adventure_ai
     else
       output = colorize_output("ERROR", :header) + "\n\n"
       output += "Failed to get response from OpenAI.\n\n"
-      output += "Error: #{response}\n\n" unless response.empty?
+      output += "Error: #{response}\n\n" if response && !response.empty?
       output += "Press any key to continue..."
       show_content(output)
       getchr
@@ -3563,6 +3551,21 @@ def describe_encounter_ai
           @content.pagedown
         when "PgUP"
           @content.pageup
+        when "e", "E"
+          # Edit the description
+          edited_response = edit_in_editor(response)
+          if edited_response != response
+            response = edited_response
+            # Save the edited version
+            File.write(File.join(save_dir, "openai.txt"), response)
+            # Update display
+            output = colorize_output("AI ENCOUNTER DESCRIPTION (EDITED)", :header) + "\n"
+            output += colorize_output("─" * content_width, :header) + "\n\n"
+            output += response
+            output += "\n\n" + colorize_output("Edited and saved", :success)
+            show_content(output)
+          end
+          @footer.say(" [j/↓] Down | [k/↑] Up | [e] Edit | [s] Save | [ESC/q] Back ".ljust(@cols))
         when "s"
           save_to_file(response, :encounter_desc)
         end
@@ -3570,7 +3573,7 @@ def describe_encounter_ai
     else
       output = colorize_output("ERROR", :header) + "\n\n"
       output += "Failed to get response from OpenAI.\n\n"
-      output += "Error: #{response}\n\n" unless response.empty?
+      output += "Error: #{response}\n\n" if response && !response.empty?
       output += "Press any key to continue..."
       show_content(output)
       getchr
@@ -3713,8 +3716,8 @@ def describe_npc_ai
       # Store description for potential image generation
       @last_npc_description = response
 
-      # Navigation with ESC/q support and image generation
-      @footer.say(" [j/↓] Down | [k/↑] Up | [i] Generate Image | [s] Save | [ESC/q] Back ".ljust(@cols))
+      # Navigation with ESC/q support, edit, and image generation
+      @footer.say(" [j/↓] Down | [k/↑] Up | [e] Edit | [i] Generate Image | [s] Save | [ESC/q] Back ".ljust(@cols))
 
       loop do
         key = getchr
@@ -3730,6 +3733,25 @@ def describe_npc_ai
           @content.pagedown
         when "PgUP"
           @content.pageup
+        when "e", "E"
+          # Edit the description
+          edited_response = edit_in_editor(response)
+          if edited_response != response
+            response = edited_response
+            # Save the edited version
+            if character_name && !character_name.empty?
+              File.write(File.join(save_dir, "#{character_name}.txt"), response)
+            end
+            File.write(File.join(save_dir, "openai.txt"), response)
+            # Update display
+            output = colorize_output("AI NPC DESCRIPTION (EDITED)", :header) + "\n"
+            output += colorize_output("─" * content_width, :header) + "\n\n"
+            output += response
+            output += "\n\n" + colorize_output("Edited and saved", :success)
+            show_content(output)
+            @last_npc_description = response
+          end
+          @footer.say(" [j/↓] Down | [k/↑] Up | [e] Edit | [i] Generate Image | [s] Save | [ESC/q] Back ".ljust(@cols))
         when "s"
           save_to_file(response, :npc_desc)
         when "i", "I"
@@ -3737,13 +3759,13 @@ def describe_npc_ai
           generate_npc_image(response)
           # Return to description view
           show_content(output)
-          @footer.say(" [j/↓] Down | [k/↑] Up | [i] Generate Image | [s] Save | [ESC/q] Back ".ljust(@cols))
+          @footer.say(" [j/↓] Down | [k/↑] Up | [e] Edit | [i] Generate Image | [s] Save | [ESC/q] Back ".ljust(@cols))
         end
       end
     else
       output = colorize_output("ERROR", :header) + "\n\n"
       output += "Failed to get response from OpenAI.\n\n"
-      output += "Error: #{response}\n\n" unless response.empty?
+      output += "Error: #{response}\n\n" if response && !response.empty?
       output += "Press any key to continue..."
       show_content(output)
       getchr
@@ -3924,6 +3946,7 @@ def generate_npc_image(description = nil)
     client = openai_client
 
     # Generate image with DALL-E 3
+    debug "Attempting to generate image with DALL-E"
     api_response = client.images.generate(
       parameters: {
         model: "dall-e-3",
@@ -3932,10 +3955,17 @@ def generate_npc_image(description = nil)
         quality: "standard",
         n: 1
       }
-    ) rescue nil
+    )
 
-    if api_response && api_response["data"] && api_response["data"][0]["url"]
-      image_url = api_response["data"][0]["url"]
+    debug "API Response: #{api_response.inspect}"
+
+    # Check different response formats
+    image_url = api_response&.dig("data", 0, "url") ||
+                api_response&.dig("data")&.first&.dig("url") ||
+                api_response&.dig("images")&.first&.dig("url")
+
+    if image_url
+      # URL already extracted above
 
       # Download image
       save_dir = File.join($pgmdir, "saved", "images")
@@ -3998,7 +4028,13 @@ def generate_npc_image(description = nil)
         getchr
       end
     else
-      show_content("Failed to generate image.\n\nPress any key to continue...")
+      error_msg = "Failed to generate image.\n\n"
+      if api_response
+        error_msg += "Response: #{api_response.inspect[0..500]}\n\n"
+      end
+      error_msg += "Press any key to continue..."
+      show_content(error_msg)
+      debug "Image generation failed. Response: #{api_response.inspect}"
       getchr
     end
   rescue => e
