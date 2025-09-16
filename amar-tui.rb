@@ -479,9 +479,8 @@ def show_content(text)
     draw_footer  # Update footer for content pane help
   end
 
-  # Add spacing if last prompt ended
-  if @last_prompt_ended && !text.start_with?("\n")
-    text = "\n" + text
+  # Reset prompt ended flag without adding newline
+  if @last_prompt_ended
     @last_prompt_ended = false
   end
 
