@@ -4618,8 +4618,8 @@ def show_latest_town_map
   current_png = png_files[current_index]
   png_name = File.basename(current_png)
 
-  # Check for corresponding text file
-  txt_file = current_png.sub(/\.png$/, '.txt')
+  # Check for corresponding text file (uses _relations.txt suffix)
+  txt_file = current_png.sub(/\.png$/, '_relations.txt')
 
   # Start in image mode by default
   showing_image = true
@@ -4682,7 +4682,7 @@ def show_latest_town_map
         current_index += 1
         current_png = png_files[current_index]
         png_name = File.basename(current_png)
-        txt_file = current_png.sub(/\.png$/, '.txt')
+        txt_file = current_png.sub(/\.png$/, '_relations.txt')
 
         if showing_image
           # Display image only, no text
@@ -4732,7 +4732,7 @@ def show_latest_town_map
         current_index -= 1
         current_png = png_files[current_index]
         png_name = File.basename(current_png)
-        txt_file = current_png.sub(/\.png$/, '.txt')
+        txt_file = current_png.sub(/\.png$/, '_relations.txt')
 
         if showing_image
           # Display image only, no text
@@ -4789,7 +4789,6 @@ def show_latest_town_map
         output += "Map: " + colorize_output(png_name, :value) + "\n"
         output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
 
-        txt_file = current_png.sub(/\.png$/, '_relations.txt')
         if File.exist?(txt_file)
           output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
           output += "─" * content_width + "\n\n"
@@ -4817,22 +4816,26 @@ def show_latest_town_map
         show_content(output)
       else
         # Switch to image view
-        # Clear the content pane text first
-        @content.text = ""
-        @content.clear
-        @content.update = false
-        @content.refresh
+        if current_png && File.exist?(current_png)
+          # Clear the content pane text first
+          @content.text = ""
+          @content.clear
+          @content.update = false
+          @content.refresh
 
-        if display_terminal_image(current_png)
-          showing_image = true
-        elsif system("which imgcat > /dev/null 2>&1")
-          @content.clear
-          system("imgcat \"#{current_png}\"")
-          showing_image = true
-        elsif system("which kitty > /dev/null 2>&1")
-          @content.clear
-          system("kitty +kitten icat \"#{current_png}\"")
-          showing_image = true
+          if display_terminal_image(current_png)
+            showing_image = true
+          elsif system("which imgcat > /dev/null 2>&1")
+            @content.clear
+            system("imgcat \"#{current_png}\"")
+            showing_image = true
+          elsif system("which kitty > /dev/null 2>&1")
+            @content.clear
+            system("kitty +kitten icat \"#{current_png}\"")
+            showing_image = true
+          end
+        else
+          debug "Error: current_png is nil or doesn't exist: #{current_png}"
         end
       end
 
