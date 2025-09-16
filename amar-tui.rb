@@ -3941,8 +3941,18 @@ def clear_terminal_image
 end
 
 def display_terminal_image(image_path)
+  debug "display_terminal_image called with: #{image_path.inspect}"
   w3m = "/usr/lib/w3m/w3mimgdisplay"
-  return false unless File.executable?(w3m) && File.exist?(image_path)
+
+  unless File.executable?(w3m)
+    debug "w3mimgdisplay not executable at #{w3m}"
+    return false
+  end
+
+  unless File.exist?(image_path)
+    debug "Image path doesn't exist: #{image_path}"
+    return false
+  end
 
   begin
     # Use timeout to prevent hanging
@@ -3984,14 +3994,18 @@ def display_terminal_image(image_path)
       end
 
       # Display the image
+      debug "Displaying image at: px=#{px}, py=#{py}, iw=#{iw}, ih=#{ih}"
       `echo "0;1;#{px};#{py};#{iw};#{ih};;;;;\"#{image_path}\"\n4;\n3;" | #{w3m} 2>/dev/null`
+      debug "Image display command sent successfully"
 
       return true
     end
   rescue Timeout::Error
+    debug "Timeout error in display_terminal_image"
     return false
   rescue => e
     debug "Error displaying image: #{e.message}"
+    debug "Backtrace: #{e.backtrace[0..3].join("\n")}"
     return false
   end
 end
@@ -4778,66 +4792,93 @@ def show_latest_town_map
 
     when "v", "V"
       # Toggle between image and text view
+      debug "Toggle pressed. showing_image=#{showing_image}"
+      debug "current_png=#{current_png.inspect}"
+      debug "current_index=#{current_index}"
+      debug "png_name=#{png_name.inspect}"
+      debug "txt_file=#{txt_file.inspect}"
+
       if showing_image
+        debug "Switching from image to text view"
         # Switch to text view - must clear image overlay first
         clear_terminal_image  # Clear the image overlay like RTFM does
         showing_image = false
+        debug "Image cleared, showing_image now=#{showing_image}"
 
         # Build the text output
-        output = colorize_output("TOWN RELATIONSHIP MAP", :header) + " (#{current_index + 1}/#{png_files.length})\n"
-        output += colorize_output("─" * content_width, :header) + "\n\n"
-        output += "Map: " + colorize_output(png_name, :value) + "\n"
-        output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
+        begin
+          output = colorize_output("TOWN RELATIONSHIP MAP", :header) + " (#{current_index + 1}/#{png_files.length})\n"
+          output += colorize_output("─" * content_width, :header) + "\n\n"
+          output += "Map: " + colorize_output(png_name, :value) + "\n"
+          output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
 
-        if File.exist?(txt_file)
-          output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
-          output += "─" * content_width + "\n\n"
-          txt_content = File.read(txt_file)
-          txt_content.lines.each do |line|
-            if line.include?("===")
-              output += line.fg(46).b
-            elsif line.include?("---")
-              output += line.fg(196).b
-            elsif line.include?("+++")
-              output += line.fg(226)
-            elsif line.include?("--")
-              output += line.fg(160)
-            elsif line.include?("++")
-              output += line.fg(82)
-            else
-              output += line.fg(7)
+          if File.exist?(txt_file)
+            debug "Reading txt_file: #{txt_file}"
+            output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
+            output += "─" * content_width + "\n\n"
+            txt_content = File.read(txt_file)
+            txt_content.lines.each do |line|
+              if line.include?("===")
+                output += line.fg(46).b
+              elsif line.include?("---")
+                output += line.fg(196).b
+              elsif line.include?("+++")
+                output += line.fg(226)
+              elsif line.include?("--")
+                output += line.fg(160)
+              elsif line.include?("++")
+                output += line.fg(82)
+              else
+                output += line.fg(7)
+              end
             end
+          else
+            debug "txt_file does not exist: #{txt_file}"
+            output += "\n(No text file available for this map)\n"
           end
-        else
-          output += "\n(No text file available for this map)\n"
-        end
 
-        @content.clear
-        show_content(output)
+          @content.clear
+          show_content(output)
+          debug "Text content shown successfully"
+        rescue => e
+          debug "Error building text output: #{e.message}"
+          debug "Backtrace: #{e.backtrace[0..5].join("\n")}"
+        end
       else
+        debug "Switching from text to image view"
+        debug "Checking current_png: exists=#{File.exist?(current_png) rescue false}"
         # Switch to image view
         if current_png && File.exist?(current_png)
+          debug "current_png exists, preparing to display"
           # Clear the content pane text first
           @content.text = ""
           @content.clear
           @content.update = false
           @content.refresh
+          debug "Content pane cleared"
 
           if display_terminal_image(current_png)
             showing_image = true
+            debug "Image displayed successfully with w3mimgdisplay"
           elsif system("which imgcat > /dev/null 2>&1")
             @content.clear
             system("imgcat \"#{current_png}\"")
             showing_image = true
+            debug "Image displayed with imgcat"
           elsif system("which kitty > /dev/null 2>&1")
             @content.clear
             system("kitty +kitten icat \"#{current_png}\"")
             showing_image = true
+            debug "Image displayed with kitty"
+          else
+            debug "No image display method available"
           end
+          debug "showing_image now=#{showing_image}"
         else
           debug "Error: current_png is nil or doesn't exist: #{current_png}"
         end
       end
+      debug "Toggle complete. Final showing_image=#{showing_image}"
 
     when "d", "D"
       # Delete current map
