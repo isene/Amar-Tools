@@ -3914,10 +3914,14 @@ def generate_npc_image(description = nil)
         character_weight = match[2]
       end
 
-      # Extract race and class (e.g., "Elf: Warrior (7)")
+      # Extract race and class (e.g., "Elf: Warrior (7)" or just race)
+      # Look for pattern like "Elf: Warrior (7)" or "Human (0)"
       if match = lines[0].match(/([A-Za-z-]+):\s+([A-Za-z\s]+)\s*\(\d+\)/)
         character_race = match[1]
         character_class = match[2].strip
+      elsif match = lines[0].match(/\s+([A-Za-z-]+)\s*\(\d+\)\s*$/)
+        # Just race without class (e.g., "Human (0)")
+        character_race = match[1]
       end
     end
 
@@ -4020,34 +4024,49 @@ def generate_npc_image(description = nil)
   end
 
   # Create enhanced prompt for DALL-E with explicit character details
-  dalle_prompt = "Create a photorealistic fantasy character portrait:\n\n"
+  dalle_prompt = "Create a photorealistic fantasy character portrait.\n\n"
 
   # Add explicit character details if we have them
-  if character_name
+  if character_name || character_gender
     dalle_prompt += "CHARACTER DETAILS:\n"
-    dalle_prompt += "- Name: #{character_name}\n"
-    dalle_prompt += "- Gender: #{character_gender.upcase} (IMPORTANT: This must be a #{character_gender} character)\n" if character_gender
-    dalle_prompt += "- Race: #{character_race}\n" if character_race
-    dalle_prompt += "- Class: #{character_class}\n" if character_class
+    dalle_prompt += "- Name: #{character_name}\n" if character_name
+
+    if character_gender
+      dalle_prompt += "- Gender: #{character_gender.upcase} (CRITICAL: This MUST be a #{character_gender} character)\n"
+    end
+
+    # Default to Human if no race specified
+    if character_race && !character_race.empty?
+      dalle_prompt += "- Race: #{character_race}\n"
+    else
+      dalle_prompt += "- Race: Human (assumed)\n"
+    end
+
+    if character_class && !character_class.empty?
+      dalle_prompt += "- Class: #{character_class}\n"
+    else
+      dalle_prompt += "- Class: Commoner/Civilian\n"
+    end
+
     dalle_prompt += "- Height: #{character_height}\n" if character_height
     dalle_prompt += "- Weight: #{character_weight}\n" if character_weight
     dalle_prompt += "\n"
   end
 
-  dalle_prompt += "DESCRIPTION:\n#{description}\n\n"
-  dalle_prompt += "STYLE REQUIREMENTS:\n"
-  dalle_prompt += "- Photorealistic, cinematic lighting\n"
-  dalle_prompt += "- Medieval fantasy setting\n"
-  dalle_prompt += "- Highly detailed, 8k resolution\n"
-  dalle_prompt += "- Character portrait from mid-torso up\n"
-  dalle_prompt += "- Appropriate medieval/fantasy clothing and equipment\n"
-
-  if character_gender
-    dalle_prompt += "\nCRITICAL: Ensure the character is clearly depicted as #{character_gender}.\n"
+  # Make sure description is not nil
+  if description && !description.empty?
+    dalle_prompt += "DESCRIPTION:\n#{description}\n\n"
+  else
+    dalle_prompt += "DESCRIPTION:\nGenerate based on the character details above.\n\n"
   end
 
-  if amar_background && !amar_background.empty?
-    dalle_prompt += "\nWorld context: #{amar_background[0..300]}"
+  dalle_prompt += "STYLE:\n"
+  dalle_prompt += "Photorealistic medieval fantasy portrait, cinematic lighting, highly detailed.\n"
+  dalle_prompt += "Show character from mid-torso up with appropriate clothing and equipment.\n"
+
+  if character_gender
+    dalle_prompt += "\nVERY IMPORTANT: The character is #{character_gender.upcase}. "
+    dalle_prompt += "Ensure all physical features clearly match a #{character_gender} character.\n"
   end
 
   show_content(colorize_output("GENERATING IMAGE", :header) + "\n" +
@@ -4065,6 +4084,15 @@ def generate_npc_image(description = nil)
 
     # Generate image with DALL-E 3
     debug "Attempting to generate image with DALL-E"
+    debug "DALL-E Prompt length: #{dalle_prompt.length} characters"
+    debug "DALL-E Prompt (first 500 chars): #{dalle_prompt[0..500]}"
+
+    # Ensure prompt doesn't exceed DALL-E 3's 4000 character limit
+    if dalle_prompt.length > 4000
+      dalle_prompt = dalle_prompt[0..3990] + "..."
+      debug "Prompt truncated to 4000 characters"
+    end
+
     api_response = client.images.generate(
       parameters: {
         model: "dall-e-3",
@@ -4167,7 +4195,27 @@ def generate_npc_image(description = nil)
       getchr
     end
   rescue => e
-    show_content("Error: #{e.message}\n\nPress any key to continue...")
+    debug "Image generation error: #{e.class} - #{e.message}"
+    debug "Backtrace: #{e.backtrace.first(5).join("\n")}" if e.backtrace
+
+    error_msg = "Error generating image:\n\n"
+
+    # Check for specific error types
+    if e.message.include?("400")
+      error_msg += "Bad Request (400): The prompt may be invalid or too long.\n"
+      error_msg += "Check the debug log at /tmp/amar_tui_debug.log for details.\n\n"
+    elsif e.message.include?("401")
+      error_msg += "Authentication Error (401): Check your OpenAI API key.\n\n"
+    elsif e.message.include?("429")
+      error_msg += "Rate Limit (429): Too many requests. Please wait and try again.\n\n"
+    elsif e.message.include?("500") || e.message.include?("502") || e.message.include?("503")
+      error_msg += "OpenAI Server Error: The service may be temporarily unavailable.\n\n"
+    else
+      error_msg += "#{e.message}\n\n"
+    end
+
+    error_msg += "Press any key to continue..."
+    show_content(error_msg)
     getchr
   ensure
     # Always return focus to menu after image generation
