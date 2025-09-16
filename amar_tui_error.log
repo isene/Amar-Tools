@@ -1,7 +1,10 @@
-2025-09-14 22:40:15 +0200: undefined method `draw_border' for an instance of Rcurses::Pane
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:387:in `update_border_colors'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:253:in `init_screen'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2660:in `main_loop'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:2842:in `<top (required)>'
+2025-09-16 10:49:35 +0200: undefined method `+' for true
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:3886:in `block in generate_npc_image'
+<internal:kernel>:187:in `loop'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:3878:in `generate_npc_image'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:812:in `execute_menu_item'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:732:in `handle_menu_navigation'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:3171:in `main_loop'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:4039:in `<top (required)>'
 ./amar-tui:7:in `require_relative'
 ./amar-tui:7:in `<main>'

@@ -36,8 +36,12 @@ class MonsterNew
       @weight = size_to_weight(old_size)
       @SIZE = calculate_size_from_weight(@weight)
     else
-      # Default human range
-      @weight = rand(50..100)
+      # Default human-like range centered around 70kg
+      # Using a more realistic distribution
+      base_weight = 60
+      variation = rand(-10..20)  # Slightly skewed toward heavier
+      @weight = base_weight + variation + rand(10)
+      @weight = [@weight, 40].max  # Minimum weight
       @SIZE = calculate_size_from_weight(@weight)
     end
     

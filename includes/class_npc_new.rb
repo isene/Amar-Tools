@@ -32,8 +32,28 @@ class NpcNew
       @age = base_age + years_training
     end
     
-    @height = height.to_i > 0 ? height.to_i : rand(150..200)
-    @weight = weight.to_i > 0 ? weight.to_i : rand(50..100)
+    # Generate realistic height and weight based on Amar averages
+    # Human average: 170cm height, 70kg weight
+    if height.to_i > 0
+      @height = height.to_i
+    else
+      # Base height around 160 + variation using open-ended d6 rolls
+      # This gives a bell curve centered around 170cm
+      base_height = 160
+      variation = oD6 * 2 + oD6 + rand(10)
+      @height = base_height + variation
+      @height -= 5 if @sex == "F"  # Females slightly shorter on average
+      @height -= (3 * (16 - @age)) if @age < 17  # Youth adjustment
+    end
+
+    if weight.to_i > 0
+      @weight = weight.to_i
+    else
+      # Weight based on height with variation
+      # Formula: height - 120 + variation gives average of ~70kg for 170cm
+      @weight = @height - 120 + aD6 * 4 + rand(10)
+      @weight = [@weight, 40].max  # Minimum weight of 40kg
+    end
     @description = description
     
     # Initialize tier system structures
@@ -701,6 +721,37 @@ class NpcNew
     end
   end
   
+  # Dice rolling methods (matching old system)
+  def d6
+    rand(1..6)
+  end
+
+  def oD6
+    # Open-ended D6 roll
+    result = d6
+    return result if (2..5).include?(result)
+
+    if result == 1
+      down = d6
+      while down <= 3
+        result -= 1
+        down = d6
+      end
+    elsif result == 6
+      up = d6
+      while up >= 4
+        result += 1
+        up = d6
+      end
+    end
+    result
+  end
+
+  def aD6
+    # Average D6 roll (average of regular d6 and open-ended d6)
+    ((d6 + oD6) / 2.0).to_i
+  end
+
   # Public methods for accessing tier data
   public
   
