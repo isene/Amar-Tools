@@ -37,8 +37,8 @@ def save_temp_file(content, file_base, cli)
 		File.write(tfile, clean_content, perm: 0644)
 	rescue
   	if cli == "cli"
-			puts "Error writing file #{tfile}"
-			gets
+			# Silent error - no puts in TUI mode
+			# gets removed for TUI compatibility
 		end
 	end
 end
@@ -57,8 +57,8 @@ def save_named_file(content, file_base, cli)
   	File.write($nfile, content, perm: 0644)
   rescue
   	if cli == "cli"
-			puts "Error writing file #{$nfile}"
-			gets
+			# Silent error - no puts in TUI mode
+			# gets removed for TUI compatibility
 		end
   end
 

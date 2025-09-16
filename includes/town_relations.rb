@@ -67,15 +67,15 @@ DOTSTART
 
 	begin
 		File.write(town_dot, dot_text, perm: 0644)
-		puts "DOT file created: #{town_dot}"
+		# Silent - no puts in TUI mode
 	rescue
-		puts "Error! No DOT file written."
+		# Silent error - no puts in TUI mode
 	end
 	begin
 		`dot -Tpng #{town_dot} -o #{$town_png}`
-		puts "PNG file created: #{$town_png}"
+		# Silent - no puts in TUI mode
 	rescue
-		puts "Error! No PNG file written."
+		# Silent error - no puts in TUI mode
 	end
 end
 
@@ -112,9 +112,9 @@ def town_dot2txt(town_file)
 		File.open($townrel_file, File::CREAT|File::EXCL|File::RDWR, 0644) do |fl|
 			fl.write townrel
 		end
-		puts "Town relationship file written: #{$townrel_file}"
+		# Silent - no puts in TUI mode
 	rescue
-		 puts "Error! No town relationship file written."
+		# Silent error - no puts in TUI mode
 	end
 end
 
