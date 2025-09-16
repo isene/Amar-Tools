@@ -3921,13 +3921,20 @@ def clear_terminal_image
       term_width = $1.to_i
       term_height = $2.to_i
 
-      # Calculate area to clear (entire content pane area)
-      px = (@cols > 35) ? (35 * (term_width.to_f / @cols)).to_i : 10
-      py = 50  # Start from top
-      max_w = (((@cols - 35) * 0.9) * (term_width.to_f / @cols)).to_i
-      max_h = ((@rows - 2) * (term_height.to_f / @rows)).to_i
+      # Calculate area to clear (only INSIDE the content pane)
+      # Content pane starts at column 34, row 3, with 1 char border
+      char_w = term_width.to_f / @cols
+      char_h = term_height.to_f / @rows
 
-      # Clear the entire image area
+      # Start position: account for pane position and border
+      px = ((34 + 1) * char_w).to_i  # Column 35 (34 + 1 for border)
+      py = ((3 + 1) * char_h).to_i   # Row 4 (3 + 1 for border)
+
+      # Size: content pane width/height minus borders
+      max_w = ((@cols - 35 - 2) * char_w).to_i  # -2 for left and right borders
+      max_h = ((@rows - 4 - 2) * char_h).to_i   # -2 for top and bottom borders
+
+      # Clear only the inside of the content pane
       `echo "6;#{px};#{py};#{max_w};#{max_h};\n4;\n3;" | #{w3m} 2>/dev/null`
       return true
     end
@@ -3965,16 +3972,22 @@ def display_terminal_image(image_path)
       term_height = $2.to_i
 
       # Calculate position and size for image display
-      # Position image in content pane area
-      px = (@cols > 35) ? (35 * (term_width.to_f / @cols)).to_i : 10
-      py = 100  # Position below header
+      # Content pane starts at column 34, row 3, with borders
+      char_w = term_width.to_f / @cols
+      char_h = term_height.to_f / @rows
 
-      # Max dimensions for the image
-      max_w = (((@cols - 35) * 0.8) * (term_width.to_f / @cols)).to_i
-      max_h = ((@rows - 10) * (term_height.to_f / @rows)).to_i
+      # Position image inside the content pane (account for border)
+      px = ((34 + 1) * char_w).to_i  # Column 35 (34 + 1 for left border)
+      py = ((3 + 1) * char_h).to_i   # Row 4 (3 + 1 for top border)
 
-      # Clear the area first
-      `echo "6;#{px};#{py};#{max_w+4};#{max_h+4};\n4;\n3;" | #{w3m} 2>/dev/null`
+      # Max dimensions for the image (leave some padding inside the pane)
+      max_w = ((@cols - 35 - 3) * char_w).to_i  # -3 for borders and padding
+      max_h = ((@rows - 4 - 3) * char_h).to_i   # -3 for borders and padding
+
+      # Clear the area first (same as clear_terminal_image but inline)
+      clear_w = ((@cols - 35 - 2) * char_w).to_i
+      clear_h = ((@rows - 4 - 2) * char_h).to_i
+      `echo "6;#{px};#{py};#{clear_w};#{clear_h};\n4;\n3;" | #{w3m} 2>/dev/null`
 
       # Get image dimensions
       dimensions = `identify -format "%wx%h" "#{image_path}" 2>/dev/null`.strip
