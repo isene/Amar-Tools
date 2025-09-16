@@ -1168,7 +1168,7 @@ def npc_input_new_tui
   inputs << sex
   
   # Age input
-  age_text = "\n" + colorize_output("Enter age", :label) + " (or ENTER/0 for random): "
+  age_text = colorize_output("Enter age", :label) + " (or ENTER/0 for random): "
   show_content(age_text)
   age_input = get_text_input("")
   return nil if age_input == :cancelled
@@ -1176,14 +1176,14 @@ def npc_input_new_tui
   inputs << age
   
   # Physical attributes
-  height_text = "\n" + colorize_output("Enter height in cm", :label) + " (or ENTER/0 for random): "
+  height_text = colorize_output("Enter height in cm", :label) + " (or ENTER/0 for random): "
   show_content(height_text)
   height_input = get_text_input("")
   return nil if height_input == :cancelled
   height = height_input.to_i
   inputs << height
   
-  weight_text = "\n" + colorize_output("Enter weight in kg", :label) + " (or ENTER/0 for random): "
+  weight_text = colorize_output("Enter weight in kg", :label) + " (or ENTER/0 for random): "
   show_content(weight_text)
   weight_input = get_text_input("")
   return nil if weight_input == :cancelled
@@ -1191,7 +1191,7 @@ def npc_input_new_tui
   inputs << weight
   
   # Description
-  desc_text = "\n" + colorize_output("Enter description", :label) + " (optional, ENTER to skip): "
+  desc_text = colorize_output("Enter description", :label) + " (optional, ENTER to skip): "
   show_content(desc_text)
   description = get_text_input("")
   return nil if description == :cancelled
@@ -2186,7 +2186,7 @@ def generate_npc_old
   name = "" if name.nil?
 
   # Type selection
-  type_text = "\n" + colorize_output("Select type (0 for random):", :header) + "\n\n"
+  type_text = colorize_output("Select type (0 for random):", :header) + "\n"
   types = [""] + $Chartype.keys.sort
   types.each_with_index do |t, i|
     next if i == 0
@@ -2199,7 +2199,7 @@ def generate_npc_old
   type = type_input.to_i > 0 ? types[type_input.to_i] : ""
 
   # Level
-  level_text = "\n" + colorize_output("Level:", :header) + "\n"
+  level_text = colorize_output("Level:", :header) + "\n"
   level_text += "1: Untrained  2: Trained some  3: Trained  4: Well trained  5: Master\n\n"
   show_content(level_text + "Enter level (0-5): ")
   level_input = get_text_input("")
@@ -2207,7 +2207,7 @@ def generate_npc_old
   level = level_input.to_i
 
   # Area
-  area_text = "\n" + colorize_output("Area:", :header) + "\n"
+  area_text = colorize_output("Area:", :header) + "\n"
   area_text += "1: Amaronir  2: Merisir  3: Calaronir  4: Feronir\n"
   area_text += "5: Alerisir  6: Rauinir  7: Outskirts\n\n"
   show_content(area_text + "Enter area (0 for random): ")
@@ -2329,7 +2329,7 @@ def generate_encounter_old
   $Day = day_input == "0" ? 0 : 1
 
   # Terrain
-  terrain_text = "\n" + colorize_output("Terrain:", :header) + "\n"
+  terrain_text = colorize_output("Terrain:", :header) + "\n"
   terrain_text += "0: City  1: Rural  2: Road  3: Plains\n"
   terrain_text += "4: Hills  5: Mountains  6: Woods  7: Wilderness\n\n"
   show_content(terrain_text + "Enter terrain (default=1): ")
