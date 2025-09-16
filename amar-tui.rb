@@ -3210,71 +3210,104 @@ end
 # TOWN RELATIONS
 def generate_town_relations
   debug "Starting generate_town_relations"
-  
+
   # Check for saved town files
   saved_dir = File.join($pgmdir, "saved")
   default_file = File.join(saved_dir, "town.npc")
-  
+
   content_width = @cols - 35
-  show_content("\nTown Relations Generator\n\n" + "─" * content_width + "\n\n")
-  
-  # Ask for town file
-  show_content("Enter town file name (default is the latest town generated [town.npc]):")
-  file_input = get_text_input("File name: ")
+  header = colorize_output("TOWN RELATIONSHIP GENERATOR", :header) + "\n"
+  header += colorize_output("─" * content_width, :header) + "\n\n"
+  header += "Enter town file name (default: town.npc): "
+  show_content(header)
+
+  file_input = get_text_input("")
   if file_input == :cancelled
     return_to_menu
     return
   end
-  
+
+  # Build full path
   if file_input.nil? || file_input.empty?
     town_file = default_file
   else
+    # Add .npc extension if not present
+    file_input += ".npc" unless file_input.end_with?(".npc")
     town_file = File.join(saved_dir, file_input)
   end
-  
+
+  unless File.exist?(town_file)
+    error_msg = colorize_output("FILE NOT FOUND", :error) + "\n\n"
+    error_msg += "File not found: " + town_file.fg(196) + "\n\n"
+    error_msg += "Press any key to continue..."
+    show_content(error_msg)
+    getchr
+    return_to_menu
+    return
+  end
+
+  show_content(colorize_output("Generating relationship map...", :info) + "\n\n")
+
   begin
-    unless File.exist?(town_file)
-      show_content("\nError: File '#{town_file}' not found.\n\nPress any key to continue...")
-      getchr
-      return
-    end
-    
-    show_content("\nGenerating relationship map...\n")
-    
-    # Capture output
-    output_io = StringIO.new
-    original_stdout = $stdout
-    $stdout = output_io
-    
-    # Generate relations
+    # Run the town_relations function from includes (same as CLI)
     town_relations(town_file)
     town_dot2txt(town_file)
-    
-    $stdout = original_stdout
-    output = output_io.string
-    
-    # Show the text output with coloring
+
+    # Check if PNG and TXT were generated
+    png_file = town_file.sub(/\.npc$/, '.png')
     txt_file = town_file.sub(/\.npc$/, '.txt')
-    if File.exist?(txt_file)
-      raw_output = File.read(txt_file)
-      # Add coloring to relationship map
-      colored_output = colorize_output("RELATIONSHIP MAP", :header) + "\n"
-      colored_output += colorize_output("─" * content_width, :header) + "\n\n"
-      colored_output += raw_output
-      show_content(colored_output)
-    else
-      show_content("\nRelationship map generated.\n")
+
+    output = colorize_output("TOWN RELATIONSHIPS", :header) + "\n"
+    output += colorize_output("─" * content_width, :header) + "\n\n"
+
+    if File.exist?(png_file)
+      output += colorize_output("✓ Graphical map generated: ", :success) + File.basename(png_file).fg(39) + "\n"
     end
 
-    # Navigation
-    @footer.clear
-    @footer.say(" [j/↓] Down | [k/↑] Up | [e] Edit | [ESC/q] Back ".ljust(@cols))
-    
+    if File.exist?(txt_file)
+      output += colorize_output("✓ Text map generated: ", :success) + File.basename(txt_file).fg(39) + "\n\n"
+
+      # Read and display the text relationship map with coloring
+      txt_content = File.read(txt_file)
+      output += colorize_output("RELATIONSHIP MAP", :subheader) + "\n"
+      output += "─" * content_width + "\n\n"
+
+      # Add coloring to the relationship text
+      txt_content.lines.each do |line|
+        if line.include?("===")
+          # Strong alliance (double positive)
+          output += line.fg(46).b  # Bright green bold
+        elsif line.include?("---")
+          # Strong hate (double negative)
+          output += line.fg(196).b  # Bright red bold
+        elsif line.include?("+++")
+          # Complex relationship
+          output += line.fg(226)  # Yellow
+        elsif line.include?("--")
+          # Negative relationship
+          output += line.fg(160)  # Red
+        elsif line.include?("++")
+          # Positive relationship
+          output += line.fg(82)  # Green
+        else
+          output += line.fg(7)  # Normal white
+        end
+      end
+    else
+      output += "No text map generated.\n"
+    end
+
+    output += "\n" + colorize_output("Files saved in: ", :info) + saved_dir.fg(39) + "\n"
+
+    show_content(output)
+
+    # Show navigation options
+    @footer.say(" [j/↓] Down | [k/↑] Up | [o] Open PNG | [s] Save | [ESC/q] Back ".ljust(@cols))
+
     loop do
       key = getchr
       case key
-      when "\e", "q"
-        return_to_menu
+      when "ESC", "\e", "q", "LEFT"
         break
       when "j", "DOWN"
         @content.linedown
@@ -3282,22 +3315,37 @@ def generate_town_relations
         @content.lineup
       when " ", "PgDOWN"
         @content.pagedown
-      when "PgUP"
+      when "b", "PgUP"
         @content.pageup
-      when "e"
-        # Edit in editor - strip ANSI codes first
-        clean_text = @content.text.respond_to?(:pure) ? @content.text.pure : @content.text.gsub(/\e\[\d+(?:;\d+)*m/, '')
-        edit_in_editor(clean_text)
-        show_content(@content.text)
+      when "o", "O"
+        # Open PNG in external viewer
+        if File.exist?(png_file)
+          if system("which xdg-open > /dev/null 2>&1")
+            system("xdg-open \"#{png_file}\" 2>/dev/null &")
+          elsif system("which open > /dev/null 2>&1")
+            system("open \"#{png_file}\" 2>/dev/null &")
+          else
+            show_content(@content.text + "\n\nCannot open image - no viewer available.\nImage path: #{png_file}")
+          end
+        else
+          show_content(@content.text + "\n\nNo PNG file generated.")
+        end
+      when "s", "S"
+        save_to_file(@content.text, :relations)
       end
     end
-    
+
   rescue => e
-    show_content("\nError generating relations: #{e.message}\n\nPress any key to continue...")
+    debug "Error generating relations: #{e.message}"
+    debug e.backtrace.join("\n") if e.backtrace
+    error_msg = colorize_output("ERROR", :error) + "\n\n"
+    error_msg += "Failed to generate relations: " + e.message.fg(196) + "\n\n"
+    error_msg += "Press any key to continue..."
+    show_content(error_msg)
     getchr
   end
-  
-  draw_footer
+
+  return_to_menu
 end
 
 # AI FEATURES
@@ -4206,8 +4254,7 @@ def generate_npc_image(description = nil)
           show_content(output)
         end
 
-        output = "\n" + colorize_output("Press any key to continue...", :info)
-        show_content(output)
+        # Don't show any text after displaying image - just wait for key
         getchr
       else
         show_content("Error downloading image: #{response.code}\n\nPress any key to continue...")
@@ -4317,6 +4364,9 @@ def show_latest_npc_image
     output += "Image file: " + latest_image.fg(39) + "\n\n"
     output += "(Install w3m-img, imgcat, or use kitty terminal for inline viewing)\n\n"
     show_content(output)
+  else
+    # Clear content pane when image is displayed to avoid text overlap
+    @content.clear
   end
 
   # Show navigation options
