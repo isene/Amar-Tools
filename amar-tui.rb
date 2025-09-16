@@ -262,21 +262,21 @@ def init_screen
   # Initialize menu
   @menu_items = [
     "── NEW 3-TIER SYSTEM ──",
-    "1. Generate NPC",
-    "2. Generate Encounter",
-    "3. Generate Monster",
+    "N. Generate NPC",
+    "E. Generate Encounter",
+    "M. Generate Monster",
     "",
     "── WORLD BUILDING ──",
-    "6. Town/City Generator",
-    "7. Town Relations",
-    "T. Show Town Relations Map",
-    "8. Weather Generator",
-    "9. Name Generator",
+    "T. Town/City Generator",
+    "R. Town Relations",
+    "V. Show Town Relations Map",
+    "W. Weather Generator",
+    "G. Name Generator",
     "",
     "── AI TOOLS ──",
     "A. Generate Adventure",
-    "D. Describe Encounter",
-    "N. Describe NPC",
+    "C. Describe Encounter",
+    "D. Describe NPC",
     "I. Generate NPC Image",
     "S. Show Latest NPC Image",
     "",
@@ -285,8 +285,8 @@ def init_screen
     "H. Help",
     "",
     "── LEGACY SYSTEM ──",
-    "4. Old NPC Generator",
-    "5. Old Encounter",
+    "1. Old NPC Generator",
+    "2. Old Encounter",
     "",
     "Q. Quit"
   ]
@@ -746,43 +746,49 @@ def handle_menu_navigation
   when "q", "Q"
     return false
     
-  # Shortcuts
-  when "1"
+  # Shortcuts - NEW 3-TIER SYSTEM
+  when "n", "N"
     generate_npc_new
-  when "2"
+  when "e", "E"
     generate_encounter_new
-  when "3"
+  when "m", "M"
     generate_monster_new
-  when "4"
-    generate_npc_old
-  when "5"
-    generate_encounter_old
-  when "6"
+
+  # WORLD BUILDING
+  when "t", "T"
     generate_town_ui
-  when "7"
+  when "r", "R"
     generate_town_relations
-  when "8"
+  when "v", "V"
+    show_latest_town_map
+  when "w", "W"
     generate_weather_ui
-  when "9"
+  when "g", "G"
     generate_name_ui
+
+  # AI TOOLS
   when "a", "A"
     generate_adventure_ai
-  when "d", "D"
+  when "c", "C"
     describe_encounter_ai
-  when "n", "N"
+  when "d", "D"
     describe_npc_ai
   when "i", "I"
     generate_npc_image
   when "s", "S"
     show_latest_npc_image
-  when "t", "T"
-    show_latest_town_map
+
+  # UTILITIES
   when "o", "O"
     roll_o6
   when "h", "H"
     show_help
-  when "r", "R"
-    recreate_panes
+
+  # LEGACY SYSTEM
+  when "1"
+    generate_npc_old
+  when "2"
+    generate_encounter_old
   when "\t"  # Tab to switch focus
     @focus = (@focus == :menu) ? :content : :menu
     update_border_colors if @config[:show_borders]
@@ -813,42 +819,50 @@ end
 def execute_menu_item
   item = @menu_items[@menu_index]
   debug "Executing menu item: #{item}"
-  
+
   case item
-  when /1\. Generate NPC/
+  when /N\. Generate NPC/
     generate_npc_new
-  when /2\. Generate Encounter/
+  when /E\. Generate Encounter/
     generate_encounter_new
-  when /3\. Generate Monster/
+  when /M\. Generate Monster/
     generate_monster_new
-  when /4\. Old NPC/
-    generate_npc_old
-  when /5\. Old Encounter/
-    generate_encounter_old
-  when /6\. Town\/City/
+  # WORLD BUILDING
+  when /T\. Town\/City/
     generate_town_ui
-  when /7\. Town Relations/
+  when /R\. Town Relations/
     generate_town_relations
-  when /8\. Weather/
+  when /V\. Show Town Relations Map/
+    show_latest_town_map
+  when /W\. Weather/
     generate_weather_ui
-  when /9\. Name/
+  when /G\. Name/
     generate_name_ui
+
+  # AI TOOLS
   when /A\. Generate Adventure/
     generate_adventure_ai
-  when /D\. Describe Encounter/
+  when /C\. Describe Encounter/
     describe_encounter_ai
-  when /N\. Describe NPC/
+  when /D\. Describe NPC/
     describe_npc_ai
   when /I\. Generate NPC Image/
     generate_npc_image
   when /S\. Show Latest NPC Image/
     show_latest_npc_image
-  when /T\. Show Town Relations Map/
-    show_latest_town_map
+
+  # UTILITIES
   when /O\. Roll Open Ended/
     roll_o6
   when /H\. Help/
     show_help
+
+  # LEGACY SYSTEM
+  when /1\. Old NPC/
+    generate_npc_old
+  when /2\. Old Encounter/
+    generate_encounter_old
+
   when /Q\. Quit/
     return false
   end

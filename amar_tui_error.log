@@ -1,10 +1,10 @@
-2025-09-16 10:49:35 +0200: undefined method `+' for true
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:3886:in `block in generate_npc_image'
+2025-09-16 17:34:50 +0200: undefined method `update=' for an instance of Rcurses::Pane
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:4771:in `block in show_latest_town_map'
 <internal:kernel>:187:in `loop'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:3878:in `generate_npc_image'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:812:in `execute_menu_item'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:732:in `handle_menu_navigation'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:3171:in `main_loop'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:4039:in `<top (required)>'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:4627:in `show_latest_town_map'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:847:in `execute_menu_item'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:793:in `handle_menu_navigation'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:3194:in `main_loop'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:4875:in `<top (required)>'
 ./amar-tui:7:in `require_relative'
 ./amar-tui:7:in `<main>'
