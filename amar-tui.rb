@@ -3366,18 +3366,19 @@ def generate_town_relations
       when "v", "V"
         # Toggle between image and text view
         if showing_image
-          # Currently showing image, switch to text
+          # Currently showing image, switch to text - clear image overlay first
+          clear_terminal_image
           showing_image = false
+          @content.clear
           show_content(output)
         else
           # Currently showing text, switch to image
           if File.exist?(png_file)
-            # Clear the content pane completely
+            # Clear the content pane text
             @content.text = ""
             @content.clear
             @content.update = false
             @content.refresh
-            sleep(0.05)  # Small delay to ensure clearing completes
             if display_terminal_image(png_file)
               showing_image = true
             end
@@ -3907,6 +3908,38 @@ def describe_npc_ai
 end
 
 # Display image in terminal using w3mimgdisplay (like RTFM/IMDB)
+def clear_terminal_image
+  w3m = "/usr/lib/w3m/w3mimgdisplay"
+  return false unless File.executable?(w3m)
+
+  begin
+    require 'timeout'
+    Timeout.timeout(1) do
+      # Get terminal window info
+      info = `xwininfo -id $(xdotool getactivewindow) 2>/dev/null`
+      return false unless info =~ /Width:\s*(\d+).*Height:\s*(\d+)/m
+
+      term_width = $1.to_i
+      term_height = $2.to_i
+
+      # Calculate area to clear (entire content pane area)
+      px = (@cols > 35) ? (35 * (term_width.to_f / @cols)).to_i : 10
+      py = 50  # Start from top
+      max_w = (((@cols - 35) * 0.9) * (term_width.to_f / @cols)).to_i
+      max_h = ((@rows - 2) * (term_height.to_f / @rows)).to_i
+
+      # Clear the entire image area
+      `echo "6;#{px};#{py};#{max_w};#{max_h};\n4;\n3;" | #{w3m} 2>/dev/null`
+      return true
+    end
+  rescue Timeout::Error
+    return false
+  rescue => e
+    debug "Error clearing image: #{e.message}"
+    return false
+  end
+end
+
 def display_terminal_image(image_path)
   w3m = "/usr/lib/w3m/w3mimgdisplay"
   return false unless File.executable?(w3m) && File.exist?(image_path)
@@ -4746,13 +4779,17 @@ def show_latest_town_map
     when "v", "V"
       # Toggle between image and text view
       if showing_image
-        # Switch to text view
+        # Switch to text view - must clear image overlay first
+        clear_terminal_image  # Clear the image overlay like RTFM does
         showing_image = false
+
+        # Build the text output
         output = colorize_output("TOWN RELATIONSHIP MAP", :header) + " (#{current_index + 1}/#{png_files.length})\n"
         output += colorize_output("─" * content_width, :header) + "\n\n"
         output += "Map: " + colorize_output(png_name, :value) + "\n"
         output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
 
+        txt_file = current_png.sub(/\.png$/, '_relations.txt')
         if File.exist?(txt_file)
           output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
           output += "─" * content_width + "\n\n"
@@ -4776,21 +4813,24 @@ def show_latest_town_map
           output += "\n(No text file available for this map)\n"
         end
 
+        @content.clear
         show_content(output)
       else
         # Switch to image view
-        # Clear the content pane completely
+        # Clear the content pane text first
         @content.text = ""
         @content.clear
         @content.update = false
         @content.refresh
-        sleep(0.05)  # Small delay to ensure clearing completes
+
         if display_terminal_image(current_png)
           showing_image = true
         elsif system("which imgcat > /dev/null 2>&1")
+          @content.clear
           system("imgcat \"#{current_png}\"")
           showing_image = true
         elsif system("which kitty > /dev/null 2>&1")
+          @content.clear
           system("kitty +kitten icat \"#{current_png}\"")
           showing_image = true
         end
