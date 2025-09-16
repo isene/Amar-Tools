@@ -148,40 +148,41 @@ debug "Colors defined"
 # HELP TEXT
 debug "Defining help text"
 @help = <<~HELP
-  AMAR RPG TOOLS - TUI Version #{@version}
-
   MAIN MENU NAVIGATION:
     j/↓    Move down in menu
     k/↑    Move up in menu
     Enter  Select menu item
+    TAB    Switch focus between panes
     q      Quit application
     ?      Show this help
 
-  INPUT WIZARDS:
-    ESC    Cancel wizard at any prompt
-    Enter  Accept current input/default
+  SHORTCUTS:
+    The first letter of each menu item acts as a shortcut key.
+    You can also use number keys 1-9 for quick selection.
 
-  NPC/ENCOUNTER VIEW:
+  CONTENT VIEW NAVIGATION:
     j/↓    Scroll down
     k/↑    Scroll up
-    PgDn   Page down
+    Space  Page down
     PgUp   Page up
-    e      Edit in editor
+    g      Go to top
+    G      Go to bottom
+    e      Edit in external editor (when content present)
+    y      Copy to clipboard
     s      Save to file
-    r      Refresh/reload view
-    ESC    Back to menu
+    r      Re-generate/refresh
+    ESC/q  Back to menu
 
-  SHORTCUTS FROM MENU:
-    1-9    Quick select menu items
-    A      Generate Adventure (AI)
-    D      Describe Encounter (AI)
-    N      Describe NPC (AI)
-    I      Generate NPC Image (AI)
-    S      Show Latest NPC Image
-    T      Show Town Relations Map
-    O      Roll Open Ended d6
-    H      Show this help
-    Q      Quit application
+  INPUT WIZARDS:
+    ESC    Cancel at any prompt
+    Enter  Accept current input/default
+    Tab    Auto-complete (where available)
+
+  SPECIAL KEYS:
+    →      Activate menu item (when menu focused)
+    ←      Return to menu (when content focused)
+    v      Toggle view (for maps/images)
+    o      Open file (for PDFs)
 HELP
 debug "Help text defined"
 
@@ -271,6 +272,7 @@ def init_screen
     "R. Town Relations",
     "V. Show Town Relations Map",
     "W. Weather Generator",
+    "P. Weather PDF Generator",
     "G. Name Generator",
     "",
     "── AI TOOLS ──",
@@ -605,7 +607,9 @@ end
 
 def show_help
   content_width = @cols - 35
-  help_text = colorize_output("AMAR RPG TOOLS - HELP", :header) + "\n"
+
+  # Show TUI version in header
+  help_text = colorize_output("HELP - TUI Version 1.0.0", :header) + "\n"
   help_text += colorize_output("─" * content_width, :header) + "\n\n"
 
   # Add subtle coloring to help content
@@ -760,8 +764,13 @@ def handle_menu_navigation
   when "e", "E"
     # If focus is on content and there's content to edit, edit it
     if @focus == :content && @content.text && !@content.text.strip.empty?
-      edited_text = edit_in_editor(@content.text)
-      show_content(edited_text)
+      # Strip ANSI codes before editing
+      clean_text = @content.text.respond_to?(:pure) ? @content.text.pure : @content.text.gsub(/\e\[\d+(?:;\d+)*m/, '')
+      edited_text = edit_in_editor(clean_text)
+      if edited_text
+        @content.text = edited_text
+        show_content(edited_text)
+      end
     else
       # Otherwise, generate encounter
       generate_encounter_new
@@ -778,6 +787,8 @@ def handle_menu_navigation
     show_latest_town_map
   when "w", "W"
     generate_weather_ui
+  when "p", "P"
+    generate_weather_pdf
   when "g", "G"
     generate_name_ui
 
@@ -796,7 +807,7 @@ def handle_menu_navigation
   # UTILITIES
   when "o", "O"
     roll_o6
-  when "h", "H"
+  when "?"
     show_help
 
   # LEGACY SYSTEM
@@ -2701,7 +2712,177 @@ def generate_weather_ui
   end
 end
 
-# TOWN GENERATOR  
+# WEATHER PDF GENERATION
+def generate_weather_pdf
+  debug "Starting generate_weather_pdf"
+
+  # First generate weather for the month
+  show_content("Generating weather for PDF...\n\nPlease select month and weather conditions...")
+
+  # Initialize weather globals if needed (5 = Normal)
+  $weather_n = 5 if $weather_n.nil?
+  $wind_dir_n = 0 if $wind_dir_n.nil?
+  $wind_str_n = 0 if $wind_str_n.nil?
+  $mn = 0 if $mn.nil?
+  if $mn != 0
+    $mn = (($mn + 1) % 14)
+    $mn = 1 if $mn == 0
+  end
+
+  # Get Month
+  mstring = "WEATHER PDF GENERATOR".fg(14).b + "\n\n"
+  mstring += "Select month for PDF:".fg(14).b + "\n\n"
+  7.times do |i|
+    mstring += i.to_s.rjust(2).fg(202) + ": "
+    mstring += $Month[i].fg(7).ljust(30)
+    mstring += (i+7).to_s.rjust(2).fg(202) + ": "
+    mstring += $Month[i+7].fg(7) + "\n"
+  end
+  mstring += "\n" + "Month (0-13 or Enter=#{$mn}): ".fg(14)
+
+  show_content(mstring)
+  @focus = :content
+
+  # Get month selection
+  month_input = ""
+  loop do
+    key = getchr
+    case key
+    when "\e", "q"
+      return_to_menu
+      return
+    when "ENTER", "\r"
+      break
+    when "0".."9"
+      month_input += key
+      if month_input.to_i > 13 || (month_input.length == 2 && month_input.to_i > 13)
+        month_input = ""
+        next
+      end
+      show_content(mstring + month_input)
+      if month_input.length == 2 || month_input.to_i > 1
+        break
+      end
+    when "BACK"
+      month_input = month_input[0..-2] if month_input.length > 0
+      show_content(mstring + month_input)
+    end
+  end
+
+  $mn = month_input.to_i unless month_input.empty?
+
+  # Get Weather condition
+  wstring = "WEATHER PDF GENERATOR".fg(14).b + "\n\n"
+  wstring += "Month: #{$Month[$mn]}".fg(45).b + "\n\n"
+  wstring += "Select weather condition:".fg(14).b + "\n\n"
+  ["1: Snow storm", "2: Heavy snow", "3: Light snow", "4: Hail",
+   "5: Normal", "6: Sunny", "7: Hot", "8: Sweltering"].each do |w|
+    wstring += w.fg(7) + "\n"
+  end
+  wstring += "\n" + "Weather (1-8 or Enter=#{$weather_n}): ".fg(14)
+
+  show_content(wstring)
+
+  weather_input = ""
+  loop do
+    key = getchr
+    case key
+    when "\e", "q"
+      return_to_menu
+      return
+    when "ENTER", "\r"
+      break
+    when "1".."8"
+      weather_input = key
+      break
+    end
+  end
+
+  $weather_n = weather_input.to_i unless weather_input.empty?
+
+  # Generate the weather
+  show_content("Generating weather month...\n\nPlease wait...")
+  w = Month.new($mn, $weather_n, $wind_dir_n, $wind_str_n)
+
+  # Load weather2latex if not already loaded
+  weather2latex_file = File.join($pgmdir, "includes", "weather2latex.rb")
+  if File.exist?(weather2latex_file)
+    load weather2latex_file
+  else
+    show_content("Error: weather2latex.rb not found")
+    return_to_menu
+    return
+  end
+
+  # Generate LaTeX and PDF
+  show_content("Creating PDF...\n\nThis will generate a printable weather calendar PDF.")
+
+  begin
+    # Generate LaTeX content
+    latex_content = weather_out_latex(w, "cli")
+
+    # Write LaTeX file
+    latex_file = "saved/weather.tex"
+    File.write(latex_file, latex_content, perm: 0644)
+
+    # Generate PDF using pdflatex
+    Dir.chdir("saved") do
+      # Run pdflatex twice for proper rendering
+      system("pdflatex -interaction=nonstopmode weather.tex >/dev/null 2>&1")
+      system("pdflatex -interaction=nonstopmode weather.tex >/dev/null 2>&1")
+    end
+
+    pdf_file = "saved/weather.pdf"
+    if File.exist?(pdf_file)
+      output = "WEATHER PDF GENERATED".fg(10).b + "\n\n"
+      output += "Month: ".fg(14) + "#{$Month[$mn]}".fg(45).b + "\n"
+      output += "Weather: ".fg(14) + ["", "Snow storm", "Heavy snow", "Light snow", "Hail",
+                                       "Normal", "Sunny", "Hot", "Sweltering"][$weather_n].fg(45) + "\n\n"
+      output += "PDF saved to: ".fg(14) + pdf_file.fg(10) + "\n\n"
+      output += "The PDF contains a printable calendar with:\n".fg(7)
+      output += "• Daily weather conditions\n"
+      output += "• Temperature and wind information\n"
+      output += "• Moon phases\n"
+      output += "• Special divine days (if any)\n\n"
+      output += "You can print this PDF for use at your gaming table.\n\n".fg(7)
+      output += "Press [o] to open PDF, [ESC/q] to return".fg(14)
+
+      show_content(output)
+
+      # Wait for user input
+      loop do
+        key = getchr
+        case key
+        when "\e", "q"
+          break
+        when "o", "O"
+          # Try to open PDF with default viewer
+          if system("which xdg-open >/dev/null 2>&1")
+            system("xdg-open #{pdf_file} >/dev/null 2>&1 &")
+          elsif system("which open >/dev/null 2>&1")
+            system("open #{pdf_file} >/dev/null 2>&1 &")
+          else
+            show_content(output + "\n\nCannot open PDF automatically. Please open manually:\n#{File.expand_path(pdf_file)}".fg(11))
+          end
+        end
+      end
+    else
+      show_content("Error: PDF generation failed.\n\nMake sure pdflatex is installed:\n  sudo apt-get install texlive-latex-base")
+    end
+
+    # Clean up temporary LaTeX files
+    ["saved/weather.tex", "saved/weather.aux", "saved/weather.log"].each do |f|
+      File.delete(f) if File.exist?(f)
+    end
+
+  rescue => e
+    show_content("Error generating weather PDF: #{e.message}")
+  end
+
+  return_to_menu
+end
+
+# TOWN GENERATOR
 def generate_town_ui
   debug "Starting generate_town_ui"
   
