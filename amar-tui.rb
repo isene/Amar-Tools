@@ -1702,7 +1702,8 @@ def handle_content_view(object, type)
     when "s"  # Save
       save_to_file(object, type)
     when "e"  # Edit in external editor
-      edit_in_editor(@content.text)
+      edited_text = edit_in_editor(@content.text)
+      show_content(edited_text)  # Update the content with edited text
     end
   end
   

@@ -963,14 +963,24 @@ class NpcNew
   private
   
   def generate_random_name(sex)
-    # Generate a random fantasy name
-    if sex == "F" || (sex.empty? && rand(2) == 0)
-      female_names = ["Aria", "Luna", "Sera", "Mira", "Lyra", "Nova", "Kira", "Zara", "Elara", "Thalia"]
-      female_names.sample + " " + ["Starweaver", "Moonwhisper", "Brightblade", "Swiftwind", "Ironheart"].sample
-    else
-      male_names = ["Gareth", "Marcus", "Aldric", "Kael", "Doran", "Lucian", "Theron", "Cassius", "Orion", "Zephyr"]
-      male_names.sample + " " + ["Ironforge", "Stormcaller", "Darkbane", "Goldhand", "Steelclaw"].sample
+    # Use the proper name generator based on race
+    race = @type.to_s.sub(/(:| ).*/, '').capitalize
+
+    # Use naming function from functions.rb which uses the actual name generator
+    name = naming(race, sex)
+
+    # Fallback to basic names if name generator fails
+    if name.nil? || name.empty?
+      if sex == "F" || (sex.empty? && rand(2) == 0)
+        female_names = ["Aria", "Luna", "Sera", "Mira", "Lyra", "Nova", "Kira", "Zara", "Elara", "Thalia"]
+        name = female_names.sample + " " + ["Starweaver", "Moonwhisper", "Brightblade", "Swiftwind", "Ironheart"].sample
+      else
+        male_names = ["Gareth", "Marcus", "Aldric", "Kael", "Doran", "Lucian", "Theron", "Cassius", "Orion", "Zephyr"]
+        name = male_names.sample + " " + ["Ironforge", "Stormcaller", "Darkbane", "Goldhand", "Steelclaw"].sample
+      end
     end
+
+    name
   end
   
   def ensure_essential_skills
