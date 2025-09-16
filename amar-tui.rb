@@ -3305,18 +3305,19 @@ def generate_town_relations
 
     output += "\n" + colorize_output("Files saved in: ", :info) + saved_dir.fg(39) + "\n"
 
-    show_content(output)
-
-    # Try to display the PNG inline if it exists
-    if File.exist?(png_file)
-      if display_terminal_image(png_file)
-        # Clear the content if image was displayed to avoid overlap
-        @content.clear
-      end
+    # Try to display the PNG inline if it exists, otherwise show text
+    showing_image = false
+    if File.exist?(png_file) && display_terminal_image(png_file)
+      # Image displayed successfully, clear any text to prevent overlap
+      @content.clear
+      showing_image = true
+    else
+      # No image display available or failed, show the text output
+      show_content(output)
     end
 
     # Show navigation options
-    @footer.say(" [j/↓] Down | [k/↑] Up | [v] View text | [o] Open PNG | [s] Save | [ESC/q] Back ".ljust(@cols))
+    @footer.say(" [j/↓] Down | [k/↑] Up | [v] View image/text | [o] Open PNG | [s] Save | [ESC/q] Back ".ljust(@cols))
 
     loop do
       key = getchr
@@ -3324,13 +3325,13 @@ def generate_town_relations
       when "ESC", "\e", "q", "LEFT"
         break
       when "j", "DOWN"
-        @content.linedown
+        @content.linedown unless showing_image
       when "k", "UP"
-        @content.lineup
+        @content.lineup unless showing_image
       when " ", "PgDOWN"
-        @content.pagedown
+        @content.pagedown unless showing_image
       when "b", "PgUP"
-        @content.pageup
+        @content.pageup unless showing_image
       when "o", "O"
         # Open PNG in external viewer
         if File.exist?(png_file)
@@ -3339,22 +3340,26 @@ def generate_town_relations
           elsif system("which open > /dev/null 2>&1")
             system("open \"#{png_file}\" 2>/dev/null &")
           else
-            show_content(@content.text + "\n\nCannot open image - no viewer available.\nImage path: #{png_file}")
+            temp_msg = showing_image ? "" : @content.text
+            show_content(temp_msg + "\n\nCannot open image - no viewer available.\nImage path: #{png_file}")
           end
         else
-          show_content(@content.text + "\n\nNo PNG file generated.")
+          temp_msg = showing_image ? "" : @content.text
+          show_content(temp_msg + "\n\nNo PNG file generated.")
         end
       when "s", "S"
-        save_to_file(@content.text, :relations)
+        save_to_file(showing_image ? output : @content.text, :relations)
       when "v", "V"
         # Toggle between image and text view
-        if @content.text.empty? || @content.text.strip.empty?
+        if showing_image
           # Currently showing image, switch to text
+          showing_image = false
           show_content(output)
         else
           # Currently showing text, switch to image
           if File.exist?(png_file) && display_terminal_image(png_file)
             @content.clear
+            showing_image = true
           end
         end
       end
@@ -4562,58 +4567,56 @@ def show_latest_town_map
   # Check for corresponding text file
   txt_file = current_png.sub(/\.png$/, '.txt')
 
-  # Display map info
-  output = colorize_output("TOWN RELATIONSHIP MAP", :header) + "\n"
-  output += colorize_output("─" * content_width, :header) + "\n\n"
-  output += "Map: " + colorize_output(png_name, :value) + "\n"
-  output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
+  # Start in image mode by default
+  showing_image = true
 
-  # Show text map if available
-  if File.exist?(txt_file)
-    output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
-    output += "─" * content_width + "\n\n"
-
-    txt_content = File.read(txt_file)
-    txt_content.lines.each do |line|
-      if line.include?("===")
-        output += line.fg(46).b  # Bright green bold for strong alliance
-      elsif line.include?("---")
-        output += line.fg(196).b  # Bright red bold for deep hate
-      elsif line.include?("+++")
-        output += line.fg(226)  # Yellow for complex
-      elsif line.include?("--")
-        output += line.fg(160)  # Red for negative
-      elsif line.include?("++")
-        output += line.fg(82)  # Green for positive
-      else
-        output += line.fg(7)  # Normal white
-      end
-    end
-  end
-
-  show_content(output)
-
-  # Try to display the PNG inline
-  image_displayed = false
+  # Try to display the PNG inline first
   if display_terminal_image(current_png)
-    image_displayed = true
-    @content.clear  # Clear text to show image
+    @content.clear  # Clear any existing content
     debug "Town map displayed using w3mimgdisplay"
   elsif system("which imgcat > /dev/null 2>&1")
+    @content.clear
     system("imgcat \"#{current_png}\"")
-    image_displayed = true
     debug "Town map displayed using imgcat"
   elsif system("which kitty > /dev/null 2>&1")
+    @content.clear
     system("kitty +kitten icat \"#{current_png}\"")
-    image_displayed = true
     debug "Town map displayed using kitty"
+  else
+    # If no image display is available, show text instead
+    showing_image = false
+    output = colorize_output("TOWN RELATIONSHIP MAP", :header) + "\n"
+    output += colorize_output("─" * content_width, :header) + "\n\n"
+    output += "Map: " + colorize_output(png_name, :value) + "\n"
+    output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
+
+    # Show text map if available
+    if File.exist?(txt_file)
+      output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
+      output += "─" * content_width + "\n\n"
+
+      txt_content = File.read(txt_file)
+      txt_content.lines.each do |line|
+        if line.include?("===")
+          output += line.fg(46).b  # Bright green bold for strong alliance
+        elsif line.include?("---")
+          output += line.fg(196).b  # Bright red bold for deep hate
+        elsif line.include?("+++")
+          output += line.fg(226)  # Yellow for complex
+        elsif line.include?("--")
+          output += line.fg(160)  # Red for negative
+        elsif line.include?("++")
+          output += line.fg(82)  # Green for positive
+        else
+          output += line.fg(7)  # Normal white
+        end
+      end
+    end
+    show_content(output)
   end
 
   # Show navigation options
-  @footer.say(" [n] Next | [p] Previous | [v] View text | [o] Open externally | [d] Delete | [ESC/q] Back ".ljust(@cols))
-
-  # Handle navigation through maps
-  showing_image = image_displayed
+  @footer.say(" [n] Next | [p] Previous | [v] Toggle view | [o] Open externally | [d] Delete | [ESC/q] Back ".ljust(@cols))
   loop do
     key = getchr
     case key
@@ -4627,42 +4630,45 @@ def show_latest_town_map
         png_name = File.basename(current_png)
         txt_file = current_png.sub(/\.png$/, '.txt')
 
-        output = colorize_output("TOWN RELATIONSHIP MAP", :header) + " (#{current_index + 1}/#{png_files.length})\n"
-        output += colorize_output("─" * content_width, :header) + "\n\n"
-        output += "Map: " + colorize_output(png_name, :value) + "\n"
-        output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
-
-        if File.exist?(txt_file) && !showing_image
-          output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
-          output += "─" * content_width + "\n\n"
-          txt_content = File.read(txt_file)
-          txt_content.lines.each do |line|
-            if line.include?("===")
-              output += line.fg(46).b
-            elsif line.include?("---")
-              output += line.fg(196).b
-            elsif line.include?("+++")
-              output += line.fg(226)
-            elsif line.include?("--")
-              output += line.fg(160)
-            elsif line.include?("++")
-              output += line.fg(82)
-            else
-              output += line.fg(7)
-            end
-          end
-        end
-
-        show_content(output)
-
         if showing_image
+          # Display image only, no text
           if display_terminal_image(current_png)
             @content.clear
           elsif system("which imgcat > /dev/null 2>&1")
+            @content.clear
             system("imgcat \"#{current_png}\"")
           elsif system("which kitty > /dev/null 2>&1")
+            @content.clear
             system("kitty +kitten icat \"#{current_png}\"")
           end
+        else
+          # Display text info
+          output = colorize_output("TOWN RELATIONSHIP MAP", :header) + " (#{current_index + 1}/#{png_files.length})\n"
+          output += colorize_output("─" * content_width, :header) + "\n\n"
+          output += "Map: " + colorize_output(png_name, :value) + "\n"
+          output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
+
+          if File.exist?(txt_file)
+            output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
+            output += "─" * content_width + "\n\n"
+            txt_content = File.read(txt_file)
+            txt_content.lines.each do |line|
+              if line.include?("===")
+                output += line.fg(46).b
+              elsif line.include?("---")
+                output += line.fg(196).b
+              elsif line.include?("+++")
+                output += line.fg(226)
+              elsif line.include?("--")
+                output += line.fg(160)
+              elsif line.include?("++")
+                output += line.fg(82)
+              else
+                output += line.fg(7)
+              end
+            end
+          end
+          show_content(output)
         end
       end
 
@@ -4674,42 +4680,45 @@ def show_latest_town_map
         png_name = File.basename(current_png)
         txt_file = current_png.sub(/\.png$/, '.txt')
 
-        output = colorize_output("TOWN RELATIONSHIP MAP", :header) + " (#{current_index + 1}/#{png_files.length})\n"
-        output += colorize_output("─" * content_width, :header) + "\n\n"
-        output += "Map: " + colorize_output(png_name, :value) + "\n"
-        output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
-
-        if File.exist?(txt_file) && !showing_image
-          output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
-          output += "─" * content_width + "\n\n"
-          txt_content = File.read(txt_file)
-          txt_content.lines.each do |line|
-            if line.include?("===")
-              output += line.fg(46).b
-            elsif line.include?("---")
-              output += line.fg(196).b
-            elsif line.include?("+++")
-              output += line.fg(226)
-            elsif line.include?("--")
-              output += line.fg(160)
-            elsif line.include?("++")
-              output += line.fg(82)
-            else
-              output += line.fg(7)
-            end
-          end
-        end
-
-        show_content(output)
-
         if showing_image
+          # Display image only, no text
           if display_terminal_image(current_png)
             @content.clear
           elsif system("which imgcat > /dev/null 2>&1")
+            @content.clear
             system("imgcat \"#{current_png}\"")
           elsif system("which kitty > /dev/null 2>&1")
+            @content.clear
             system("kitty +kitten icat \"#{current_png}\"")
           end
+        else
+          # Display text info
+          output = colorize_output("TOWN RELATIONSHIP MAP", :header) + " (#{current_index + 1}/#{png_files.length})\n"
+          output += colorize_output("─" * content_width, :header) + "\n\n"
+          output += "Map: " + colorize_output(png_name, :value) + "\n"
+          output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
+
+          if File.exist?(txt_file)
+            output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
+            output += "─" * content_width + "\n\n"
+            txt_content = File.read(txt_file)
+            txt_content.lines.each do |line|
+              if line.include?("===")
+                output += line.fg(46).b
+              elsif line.include?("---")
+                output += line.fg(196).b
+              elsif line.include?("+++")
+                output += line.fg(226)
+              elsif line.include?("--")
+                output += line.fg(160)
+              elsif line.include?("++")
+                output += line.fg(82)
+              else
+                output += line.fg(7)
+              end
+            end
+          end
+          show_content(output)
         end
       end
 
