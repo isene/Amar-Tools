@@ -4166,8 +4166,14 @@ def generate_npc_image(description = nil)
   dalle_prompt += "Photorealistic medieval fantasy portrait, cinematic lighting, highly detailed.\n"
   dalle_prompt += "Show character from mid-torso up with appropriate clothing and equipment.\n"
 
+  dalle_prompt += "\nIMPORTANT REQUIREMENTS:\n"
+  dalle_prompt += "- NO TEXT, LABELS, WATERMARKS, OR WRITING OF ANY KIND IN THE IMAGE\n"
+  dalle_prompt += "- This must be a PURE PORTRAIT IMAGE with absolutely no text elements\n"
+  dalle_prompt += "- Do not add names, titles, captions, or any written information\n"
+  dalle_prompt += "- Focus solely on the visual representation of the character\n"
+
   if character_gender
-    dalle_prompt += "\nVERY IMPORTANT: The character is #{character_gender.upcase}. "
+    dalle_prompt += "\n- The character is #{character_gender.upcase}. "
     dalle_prompt += "Ensure all physical features clearly match a #{character_gender} character.\n"
   end
 
