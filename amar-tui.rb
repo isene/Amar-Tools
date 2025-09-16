@@ -170,7 +170,8 @@ debug "Defining help text"
     e      Edit in external editor (when content present)
     y      Copy to clipboard
     s      Save to file
-    r      Re-generate/refresh
+    r      Re-generate content (roll again)
+    Ctrl-L Refresh/redraw screen
     ESC/q  Back to menu
 
   INPUT WIZARDS:
@@ -284,7 +285,7 @@ def init_screen
     "",
     "── UTILITIES ──",
     "O. Roll Open Ended d6",
-    "H. Help",
+    "?. Help",
     "",
     "── LEGACY SYSTEM ──",
     "1. Old NPC Generator",
@@ -820,6 +821,11 @@ def handle_menu_navigation
     update_border_colors if @config[:show_borders]
     draw_footer  # Update footer to show context-aware help
 
+  when "\f", "\x0C"  # Ctrl-L to refresh screen
+    Rcurses.clear
+    init_screen
+    refresh_all
+
   when "RIGHT"  # Right arrow
     if @focus == :menu
       # When in menu, RIGHT activates the selected item (like Enter)
@@ -881,7 +887,7 @@ def execute_menu_item
   # UTILITIES
   when /O\. Roll Open Ended/
     roll_o6
-  when /H\. Help/
+  when /\?\. Help/
     show_help
 
   # LEGACY SYSTEM
@@ -1280,7 +1286,7 @@ def handle_npc_view(npc, output)
   end
 
   # Show instructions including clipboard copy
-  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
 
   loop do
     key = getchr
@@ -1312,7 +1318,7 @@ def handle_npc_view(npc, output)
       @footer.say(footer_text.ljust(@cols))
       @footer.bg = 237  # Reset to medium grey
       sleep(1)
-      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     when "e"
       # Edit in editor - strip ANSI codes first
       clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
@@ -1322,6 +1328,15 @@ def handle_npc_view(npc, output)
       # Re-roll with same parameters
       generate_npc_new
       break
+    when "s"
+      # Save to file
+      save_to_file(output, :npc)
+    when "\f", "\x0C"  # Ctrl-L
+      # Refresh screen
+      Rcurses.clear
+      init_screen
+      refresh_all
+      show_content(output)
     end
   end
 
@@ -1558,7 +1573,7 @@ def handle_encounter_view(enc, output)
   if enc.npcs && enc.npcs.length > 0
     @footer.say(" [1-9] View NPC | [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [ESC/q] Back ".ljust(@cols))
   else
-    @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+    @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
   end
 
   loop do
@@ -1589,7 +1604,7 @@ def handle_encounter_view(enc, output)
           if enc.npcs && enc.npcs.length > 0
             @footer.say(" [1-9] View NPC | [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [ESC/q] Back ".ljust(@cols))
           else
-            @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+            @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
           end
         end
       end
@@ -1617,7 +1632,7 @@ def handle_encounter_view(enc, output)
       @footer.say(footer_text.ljust(@cols))
       @footer.bg = 237  # Reset to medium grey
       sleep(1)
-      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     when "e"
       # Edit in editor - strip ANSI codes first
       clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
@@ -1627,6 +1642,15 @@ def handle_encounter_view(enc, output)
       # Re-roll with same parameters
       generate_encounter_new
       break
+    when "s"
+      # Save to file
+      save_to_file(output, :encounter)
+    when "\f", "\x0C"  # Ctrl-L
+      # Refresh screen
+      Rcurses.clear
+      init_screen
+      refresh_all
+      show_content(output)
     end
   end
 
@@ -1886,7 +1910,7 @@ def generate_monster_new
 end
 
 def handle_monster_view(monster, output)
-  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
 
   loop do
     key = getchr
@@ -1909,7 +1933,7 @@ def handle_monster_view(monster, output)
       @footer.say(footer_text.ljust(@cols))
       @footer.bg = 237  # Reset to medium grey
       sleep(1)
-      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     when "e"
       # Edit in editor - strip ANSI codes first
       clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
@@ -1918,6 +1942,15 @@ def handle_monster_view(monster, output)
     when "r"
       generate_monster_new
       break
+    when "s"
+      # Save to file
+      save_to_file(output, :monster)
+    when "\f", "\x0C"  # Ctrl-L
+      # Refresh screen
+      Rcurses.clear
+      init_screen
+      refresh_all
+      show_content(output)
     end
   end
 
@@ -2669,7 +2702,7 @@ def generate_weather_ui
     
     # Navigation
     @footer.clear
-    @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [ESC/q] Back ".ljust(@cols))
+    @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     
     loop do
       key = getchr
@@ -2691,7 +2724,7 @@ def generate_weather_ui
         @footer.say(" Copied to clipboard! ".ljust(@cols))
         sleep(1)
         @footer.clear
-        @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [ESC/q] Back ".ljust(@cols))
+        @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
       when "e"
         # Edit in editor - strip ANSI codes first
         clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
@@ -3152,7 +3185,7 @@ def generate_town_ui
 
   # Show navigation help
   @footer.clear
-  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
 
   # Navigation
   loop do
@@ -3274,7 +3307,7 @@ def generate_town_ui
 
         # Restore navigation help
         @footer.clear
-        @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+        @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
       rescue => e
         show_content("Error re-rolling town: #{e.message}")
       end
@@ -3285,7 +3318,7 @@ def generate_town_ui
         @footer.say(" Copied to clipboard! ".ljust(@cols))
         sleep(1)
         @footer.clear
-        @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+        @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
       when "e"
         # Edit in editor - strip ANSI codes first
         clean_text = @content.text.respond_to?(:pure) ? @content.text.pure : @content.text.gsub(/\e\[\d+(?:;\d+)*m/, '')
