@@ -178,6 +178,7 @@ debug "Defining help text"
     N      Describe NPC (AI)
     I      Generate NPC Image (AI)
     S      Show Latest NPC Image
+    T      Show Town Relations Map
     O      Roll Open Ended d6
     H      Show this help
     Q      Quit application
@@ -277,6 +278,7 @@ def init_screen
     "N. Describe NPC",
     "I. Generate NPC Image",
     "S. Show Latest NPC Image",
+    "T. Show Town Relations Map",
     "",
     "── UTILITIES ──",
     "O. Roll Open Ended d6",
@@ -773,6 +775,8 @@ def handle_menu_navigation
     generate_npc_image
   when "s", "S"
     show_latest_npc_image
+  when "t", "T"
+    show_latest_town_map
   when "o", "O"
     roll_o6
   when "h", "H"
@@ -839,6 +843,8 @@ def execute_menu_item
     generate_npc_image
   when /S\. Show Latest NPC Image/
     show_latest_npc_image
+  when /T\. Show Town Relations Map/
+    show_latest_town_map
   when /O\. Roll Open Ended/
     roll_o6
   when /H\. Help/
@@ -3301,8 +3307,16 @@ def generate_town_relations
 
     show_content(output)
 
+    # Try to display the PNG inline if it exists
+    if File.exist?(png_file)
+      if display_terminal_image(png_file)
+        # Clear the content if image was displayed to avoid overlap
+        @content.clear
+      end
+    end
+
     # Show navigation options
-    @footer.say(" [j/↓] Down | [k/↑] Up | [o] Open PNG | [s] Save | [ESC/q] Back ".ljust(@cols))
+    @footer.say(" [j/↓] Down | [k/↑] Up | [v] View text | [o] Open PNG | [s] Save | [ESC/q] Back ".ljust(@cols))
 
     loop do
       key = getchr
@@ -3332,6 +3346,17 @@ def generate_town_relations
         end
       when "s", "S"
         save_to_file(@content.text, :relations)
+      when "v", "V"
+        # Toggle between image and text view
+        if @content.text.empty? || @content.text.strip.empty?
+          # Currently showing image, switch to text
+          show_content(output)
+        else
+          # Currently showing text, switch to image
+          if File.exist?(png_file) && display_terminal_image(png_file)
+            @content.clear
+          end
+        end
       end
     end
 
@@ -4490,6 +4515,300 @@ def show_latest_npc_image
         display_terminal_image(latest_image) ||
           (system("which imgcat > /dev/null 2>&1") && system("imgcat \"#{latest_image}\"")) ||
           (system("which kitty > /dev/null 2>&1") && system("kitty +kitten icat \"#{latest_image}\""))
+      end
+    end
+  end
+
+  return_to_menu
+end
+
+def show_latest_town_map
+  debug "Starting show_latest_town_map"
+  content_width = @cols - 35
+
+  # Check saved directory
+  save_dir = File.join($pgmdir, "saved")
+
+  # Find all PNG files that match town relationship patterns
+  png_files = Dir.glob(File.join(save_dir, "*.png")).select do |f|
+    # Town relation PNGs are typically named after the town file (e.g., town.png, village1.png)
+    # Exclude NPC images which typically have character names
+    basename = File.basename(f, ".png")
+    !basename.match?(/^[A-Z][a-z]+[A-Z]/) # Exclude CamelCase names (likely NPC images)
+  end.sort_by { |f| File.mtime(f) }.reverse
+
+  if png_files.empty?
+    output = colorize_output("NO TOWN MAPS FOUND", :header) + "\n\n"
+    output += "No town relationship maps have been generated yet.\n\n"
+    output += "Use '7. Town Relations' to create a relationship map first.\n\n"
+    output += "Press any key to continue..."
+    show_content(output)
+    getchr
+    return_to_menu
+    return
+  end
+
+  # Get the latest map
+  current_index = 0
+  current_png = png_files[current_index]
+  png_name = File.basename(current_png)
+
+  # Check for corresponding text file
+  txt_file = current_png.sub(/\.png$/, '.txt')
+
+  # Display map info
+  output = colorize_output("TOWN RELATIONSHIP MAP", :header) + "\n"
+  output += colorize_output("─" * content_width, :header) + "\n\n"
+  output += "Map: " + colorize_output(png_name, :value) + "\n"
+  output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
+
+  # Show text map if available
+  if File.exist?(txt_file)
+    output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
+    output += "─" * content_width + "\n\n"
+
+    txt_content = File.read(txt_file)
+    txt_content.lines.each do |line|
+      if line.include?("===")
+        output += line.fg(46).b  # Bright green bold for strong alliance
+      elsif line.include?("---")
+        output += line.fg(196).b  # Bright red bold for deep hate
+      elsif line.include?("+++")
+        output += line.fg(226)  # Yellow for complex
+      elsif line.include?("--")
+        output += line.fg(160)  # Red for negative
+      elsif line.include?("++")
+        output += line.fg(82)  # Green for positive
+      else
+        output += line.fg(7)  # Normal white
+      end
+    end
+  end
+
+  show_content(output)
+
+  # Try to display the PNG inline
+  image_displayed = false
+  if display_terminal_image(current_png)
+    image_displayed = true
+    @content.clear  # Clear text to show image
+    debug "Town map displayed using w3mimgdisplay"
+  elsif system("which imgcat > /dev/null 2>&1")
+    system("imgcat \"#{current_png}\"")
+    image_displayed = true
+    debug "Town map displayed using imgcat"
+  elsif system("which kitty > /dev/null 2>&1")
+    system("kitty +kitten icat \"#{current_png}\"")
+    image_displayed = true
+    debug "Town map displayed using kitty"
+  end
+
+  # Show navigation options
+  @footer.say(" [n] Next | [p] Previous | [v] View text | [o] Open externally | [d] Delete | [ESC/q] Back ".ljust(@cols))
+
+  # Handle navigation through maps
+  showing_image = image_displayed
+  loop do
+    key = getchr
+    case key
+    when "ESC", "\e", "q", "LEFT"
+      break
+    when "n", "j", "DOWN"
+      # Show next map (older)
+      if current_index < png_files.length - 1
+        current_index += 1
+        current_png = png_files[current_index]
+        png_name = File.basename(current_png)
+        txt_file = current_png.sub(/\.png$/, '.txt')
+
+        output = colorize_output("TOWN RELATIONSHIP MAP", :header) + " (#{current_index + 1}/#{png_files.length})\n"
+        output += colorize_output("─" * content_width, :header) + "\n\n"
+        output += "Map: " + colorize_output(png_name, :value) + "\n"
+        output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
+
+        if File.exist?(txt_file) && !showing_image
+          output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
+          output += "─" * content_width + "\n\n"
+          txt_content = File.read(txt_file)
+          txt_content.lines.each do |line|
+            if line.include?("===")
+              output += line.fg(46).b
+            elsif line.include?("---")
+              output += line.fg(196).b
+            elsif line.include?("+++")
+              output += line.fg(226)
+            elsif line.include?("--")
+              output += line.fg(160)
+            elsif line.include?("++")
+              output += line.fg(82)
+            else
+              output += line.fg(7)
+            end
+          end
+        end
+
+        show_content(output)
+
+        if showing_image
+          if display_terminal_image(current_png)
+            @content.clear
+          elsif system("which imgcat > /dev/null 2>&1")
+            system("imgcat \"#{current_png}\"")
+          elsif system("which kitty > /dev/null 2>&1")
+            system("kitty +kitten icat \"#{current_png}\"")
+          end
+        end
+      end
+
+    when "p", "k", "UP"
+      # Show previous map (newer)
+      if current_index > 0
+        current_index -= 1
+        current_png = png_files[current_index]
+        png_name = File.basename(current_png)
+        txt_file = current_png.sub(/\.png$/, '.txt')
+
+        output = colorize_output("TOWN RELATIONSHIP MAP", :header) + " (#{current_index + 1}/#{png_files.length})\n"
+        output += colorize_output("─" * content_width, :header) + "\n\n"
+        output += "Map: " + colorize_output(png_name, :value) + "\n"
+        output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
+
+        if File.exist?(txt_file) && !showing_image
+          output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
+          output += "─" * content_width + "\n\n"
+          txt_content = File.read(txt_file)
+          txt_content.lines.each do |line|
+            if line.include?("===")
+              output += line.fg(46).b
+            elsif line.include?("---")
+              output += line.fg(196).b
+            elsif line.include?("+++")
+              output += line.fg(226)
+            elsif line.include?("--")
+              output += line.fg(160)
+            elsif line.include?("++")
+              output += line.fg(82)
+            else
+              output += line.fg(7)
+            end
+          end
+        end
+
+        show_content(output)
+
+        if showing_image
+          if display_terminal_image(current_png)
+            @content.clear
+          elsif system("which imgcat > /dev/null 2>&1")
+            system("imgcat \"#{current_png}\"")
+          elsif system("which kitty > /dev/null 2>&1")
+            system("kitty +kitten icat \"#{current_png}\"")
+          end
+        end
+      end
+
+    when "v", "V"
+      # Toggle between image and text view
+      if showing_image
+        # Switch to text view
+        showing_image = false
+        output = colorize_output("TOWN RELATIONSHIP MAP", :header) + " (#{current_index + 1}/#{png_files.length})\n"
+        output += colorize_output("─" * content_width, :header) + "\n\n"
+        output += "Map: " + colorize_output(png_name, :value) + "\n"
+        output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n"
+
+        if File.exist?(txt_file)
+          output += "\n" + colorize_output("TEXT RELATIONSHIPS", :subheader) + "\n"
+          output += "─" * content_width + "\n\n"
+          txt_content = File.read(txt_file)
+          txt_content.lines.each do |line|
+            if line.include?("===")
+              output += line.fg(46).b
+            elsif line.include?("---")
+              output += line.fg(196).b
+            elsif line.include?("+++")
+              output += line.fg(226)
+            elsif line.include?("--")
+              output += line.fg(160)
+            elsif line.include?("++")
+              output += line.fg(82)
+            else
+              output += line.fg(7)
+            end
+          end
+        else
+          output += "\n(No text file available for this map)\n"
+        end
+
+        show_content(output)
+      else
+        # Switch to image view
+        if display_terminal_image(current_png)
+          showing_image = true
+          @content.clear
+        elsif system("which imgcat > /dev/null 2>&1")
+          system("imgcat \"#{current_png}\"")
+          showing_image = true
+        elsif system("which kitty > /dev/null 2>&1")
+          system("kitty +kitten icat \"#{current_png}\"")
+          showing_image = true
+        end
+      end
+
+    when "d", "D"
+      # Delete current map
+      confirm_text = colorize_output("DELETE MAP?", :error) + "\n\n"
+      confirm_text += "Delete " + png_name.fg(196) + "?\n"
+      confirm_text += "This will also delete the .txt file if it exists.\n\n"
+      confirm_text += "Press 'y' to confirm, any other key to cancel."
+      show_content(confirm_text)
+
+      if getchr.downcase == "y"
+        File.delete(current_png)
+        File.delete(txt_file) if File.exist?(txt_file)
+        png_files.delete_at(current_index)
+
+        if png_files.empty?
+          output = colorize_output("MAP DELETED", :success) + "\n\n"
+          output += "No more maps available.\n\n"
+          output += "Press any key to continue..."
+          show_content(output)
+          getchr
+          break
+        else
+          # Adjust index if needed
+          current_index = [current_index, png_files.length - 1].min
+          current_png = png_files[current_index]
+          png_name = File.basename(current_png)
+          txt_file = current_png.sub(/\.png$/, '.txt')
+
+          output = colorize_output("MAP DELETED", :success) + "\n\n"
+          output += colorize_output("TOWN RELATIONSHIP MAP", :header) + " (#{current_index + 1}/#{png_files.length})\n"
+          output += colorize_output("─" * content_width, :header) + "\n\n"
+          output += "Map: " + colorize_output(png_name, :value) + "\n"
+          output += "Generated: " + File.mtime(current_png).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n\n"
+          show_content(output)
+
+          if showing_image
+            if display_terminal_image(current_png)
+              @content.clear
+            elsif system("which imgcat > /dev/null 2>&1")
+              system("imgcat \"#{current_png}\"")
+            elsif system("which kitty > /dev/null 2>&1")
+              system("kitty +kitten icat \"#{current_png}\"")
+            end
+          end
+        end
+      end
+
+    when "o", "O"
+      # Open in external viewer
+      if system("which xdg-open > /dev/null 2>&1")
+        system("xdg-open \"#{current_png}\" 2>/dev/null &")
+      elsif system("which open > /dev/null 2>&1")
+        system("open \"#{current_png}\" 2>/dev/null &")
+      else
+        show_content(@content.text + "\n\nCannot open image - no viewer available.\nImage path: #{current_png}")
       end
     end
   end
