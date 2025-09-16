@@ -177,6 +177,7 @@ debug "Defining help text"
     D      Describe Encounter (AI)
     N      Describe NPC (AI)
     I      Generate NPC Image (AI)
+    S      Show Latest NPC Image
     O      Roll Open Ended d6
     H      Show this help
     Q      Quit application
@@ -275,6 +276,7 @@ def init_screen
     "D. Describe Encounter",
     "N. Describe NPC",
     "I. Generate NPC Image",
+    "S. Show Latest NPC Image",
     "",
     "── UTILITIES ──",
     "O. Roll Open Ended d6",
@@ -769,6 +771,8 @@ def handle_menu_navigation
     describe_npc_ai
   when "i", "I"
     generate_npc_image
+  when "s", "S"
+    show_latest_npc_image
   when "o", "O"
     roll_o6
   when "h", "H"
@@ -833,6 +837,8 @@ def execute_menu_item
     describe_npc_ai
   when /I\. Generate NPC Image/
     generate_npc_image
+  when /S\. Show Latest NPC Image/
+    show_latest_npc_image
   when /O\. Roll Open Ended/
     roll_o6
   when /H\. Help/
@@ -4244,6 +4250,201 @@ def generate_npc_image(description = nil)
     # Always return focus to menu after image generation
     return_to_menu
   end
+end
+
+def show_latest_npc_image
+  debug "Starting show_latest_npc_image"
+  content_width = @cols - 35
+
+  # Check saved images directory
+  save_dir = File.join($pgmdir, "saved", "images")
+
+  unless Dir.exist?(save_dir)
+    output = colorize_output("NO IMAGES FOUND", :header) + "\n\n"
+    output += "No NPC images have been generated yet.\n\n"
+    output += "Use 'I. Generate NPC Image' to create an image first.\n\n"
+    output += "Press any key to continue..."
+    show_content(output)
+    getchr
+    return_to_menu
+    return
+  end
+
+  # Find the most recent PNG file in the images directory
+  image_files = Dir.glob(File.join(save_dir, "*.png")).sort_by { |f| File.mtime(f) }.reverse
+
+  if image_files.empty?
+    output = colorize_output("NO IMAGES FOUND", :header) + "\n\n"
+    output += "No NPC images have been generated yet.\n\n"
+    output += "Use 'I. Generate NPC Image' to create an image first.\n\n"
+    output += "Press any key to continue..."
+    show_content(output)
+    getchr
+    return_to_menu
+    return
+  end
+
+  # Get the latest image
+  latest_image = image_files.first
+  image_name = File.basename(latest_image)
+
+  # Display image info
+  output = colorize_output("LATEST NPC IMAGE", :header) + "\n"
+  output += colorize_output("─" * content_width, :header) + "\n\n"
+  output += "Image: " + colorize_output(image_name, :value) + "\n"
+  output += "Generated: " + File.mtime(latest_image).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n\n"
+
+  show_content(output)
+
+  # Try to display the image inline
+  image_displayed = false
+  if display_terminal_image(latest_image)
+    image_displayed = true
+    debug "Image displayed using w3mimgdisplay"
+  elsif system("which imgcat > /dev/null 2>&1")
+    # Fallback to imgcat if available
+    system("imgcat \"#{latest_image}\"")
+    image_displayed = true
+    debug "Image displayed using imgcat"
+  elsif system("which kitty > /dev/null 2>&1")
+    # Fallback to kitty if available
+    system("kitty +kitten icat \"#{latest_image}\"")
+    image_displayed = true
+    debug "Image displayed using kitty"
+  end
+
+  if !image_displayed
+    output += "Image file: " + latest_image.fg(39) + "\n\n"
+    output += "(Install w3m-img, imgcat, or use kitty terminal for inline viewing)\n\n"
+    show_content(output)
+  end
+
+  # Show navigation options
+  @footer.say(" [n] Next | [p] Previous | [d] Delete | [o] Open externally | [ESC/q] Back ".ljust(@cols))
+
+  # Handle navigation through images
+  current_index = 0
+  loop do
+    key = getchr
+    case key
+    when "ESC", "\e", "q", "LEFT"
+      break
+    when "n", "j", "DOWN"
+      # Show next image (older)
+      if current_index < image_files.length - 1
+        current_index += 1
+        latest_image = image_files[current_index]
+        image_name = File.basename(latest_image)
+
+        output = colorize_output("NPC IMAGE", :header) + " (#{current_index + 1}/#{image_files.length})\n"
+        output += colorize_output("─" * content_width, :header) + "\n\n"
+        output += "Image: " + colorize_output(image_name, :value) + "\n"
+        output += "Generated: " + File.mtime(latest_image).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n\n"
+        show_content(output)
+
+        display_terminal_image(latest_image) ||
+          (system("which imgcat > /dev/null 2>&1") && system("imgcat \"#{latest_image}\"")) ||
+          (system("which kitty > /dev/null 2>&1") && system("kitty +kitten icat \"#{latest_image}\""))
+      end
+
+    when "p", "k", "UP"
+      # Show previous image (newer)
+      if current_index > 0
+        current_index -= 1
+        latest_image = image_files[current_index]
+        image_name = File.basename(latest_image)
+
+        output = colorize_output("NPC IMAGE", :header) + " (#{current_index + 1}/#{image_files.length})\n"
+        output += colorize_output("─" * content_width, :header) + "\n\n"
+        output += "Image: " + colorize_output(image_name, :value) + "\n"
+        output += "Generated: " + File.mtime(latest_image).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n\n"
+        show_content(output)
+
+        display_terminal_image(latest_image) ||
+          (system("which imgcat > /dev/null 2>&1") && system("imgcat \"#{latest_image}\"")) ||
+          (system("which kitty > /dev/null 2>&1") && system("kitty +kitten icat \"#{latest_image}\""))
+      end
+
+    when "d", "D"
+      # Delete current image
+      confirm_text = colorize_output("DELETE IMAGE?", :error) + "\n\n"
+      confirm_text += "Delete " + image_name.fg(196) + "?\n\n"
+      confirm_text += "Press 'y' to confirm, any other key to cancel."
+      show_content(confirm_text)
+
+      if getchr.downcase == "y"
+        File.delete(latest_image)
+        image_files.delete_at(current_index)
+
+        if image_files.empty?
+          output = colorize_output("IMAGE DELETED", :success) + "\n\n"
+          output += "No more images available.\n\n"
+          output += "Press any key to continue..."
+          show_content(output)
+          getchr
+          break
+        else
+          # Adjust index if needed
+          current_index = [current_index, image_files.length - 1].min
+          latest_image = image_files[current_index]
+          image_name = File.basename(latest_image)
+
+          output = colorize_output("IMAGE DELETED", :success) + "\n\n"
+          output += colorize_output("NPC IMAGE", :header) + " (#{current_index + 1}/#{image_files.length})\n"
+          output += colorize_output("─" * content_width, :header) + "\n\n"
+          output += "Image: " + colorize_output(image_name, :value) + "\n"
+          output += "Generated: " + File.mtime(latest_image).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n\n"
+          show_content(output)
+
+          display_terminal_image(latest_image) ||
+            (system("which imgcat > /dev/null 2>&1") && system("imgcat \"#{latest_image}\"")) ||
+            (system("which kitty > /dev/null 2>&1") && system("kitty +kitten icat \"#{latest_image}\""))
+
+          @footer.say(" [n] Next | [p] Previous | [d] Delete | [o] Open externally | [ESC/q] Back ".ljust(@cols))
+        end
+      else
+        # Cancelled - redisplay current image
+        output = colorize_output("NPC IMAGE", :header) + " (#{current_index + 1}/#{image_files.length})\n"
+        output += colorize_output("─" * content_width, :header) + "\n\n"
+        output += "Image: " + colorize_output(image_name, :value) + "\n"
+        output += "Generated: " + File.mtime(latest_image).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n\n"
+        show_content(output)
+
+        display_terminal_image(latest_image) ||
+          (system("which imgcat > /dev/null 2>&1") && system("imgcat \"#{latest_image}\"")) ||
+          (system("which kitty > /dev/null 2>&1") && system("kitty +kitten icat \"#{latest_image}\""))
+
+        @footer.say(" [n] Next | [p] Previous | [d] Delete | [o] Open externally | [ESC/q] Back ".ljust(@cols))
+      end
+
+    when "o", "O"
+      # Open in external viewer
+      if system("which xdg-open > /dev/null 2>&1")
+        system("xdg-open \"#{latest_image}\" 2>/dev/null &")
+      elsif system("which open > /dev/null 2>&1")
+        system("open \"#{latest_image}\" 2>/dev/null &")
+      else
+        output = "Cannot open image - no viewer available.\n"
+        output += "Image path: #{latest_image}\n\n"
+        output += "Press any key to continue..."
+        show_content(output)
+        getchr
+
+        # Redisplay current image
+        output = colorize_output("NPC IMAGE", :header) + " (#{current_index + 1}/#{image_files.length})\n"
+        output += colorize_output("─" * content_width, :header) + "\n\n"
+        output += "Image: " + colorize_output(image_name, :value) + "\n"
+        output += "Generated: " + File.mtime(latest_image).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n\n"
+        show_content(output)
+
+        display_terminal_image(latest_image) ||
+          (system("which imgcat > /dev/null 2>&1") && system("imgcat \"#{latest_image}\"")) ||
+          (system("which kitty > /dev/null 2>&1") && system("kitty +kitten icat \"#{latest_image}\""))
+      end
+    end
+  end
+
+  return_to_menu
 end
 
 debug "About to check if running as main"
