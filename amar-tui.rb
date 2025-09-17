@@ -497,7 +497,7 @@ def init_screen
     "",
     "Q. Quit"
   ]
-    @menu_index = 1  # Start at first selectable item
+  @menu_index = 1  # Start at first selectable item
   @focus = :menu   # Track which pane has focus (:menu or :content)
 
   refresh_all
@@ -828,11 +828,6 @@ def return_to_menu
   end
 
   draw_footer
-
-  # TEST: Hard-set menu index to 5 to see if restoration works
-    @menu_index = $saved_menu_index if $saved_menu_index
-  # Redraw menu with correct selection
-  draw_menu
 end
 
 def reapply_colors(text)
@@ -1292,7 +1287,7 @@ def show_help
   
   # Return focus to menu when done
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -1427,7 +1422,7 @@ def handle_menu_navigation
   when "k", "UP"  # Up arrow
     if @focus == :menu
       loop do
-    @menu_index = (@menu_index - 1) % @menu_items.length
+        @menu_index = (@menu_index - 1) % @menu_items.length
         break unless @menu_items[@menu_index].empty? || @menu_items[@menu_index].start_with?("──")
       end
       draw_menu
@@ -1448,7 +1443,6 @@ def handle_menu_navigation
   # Shortcuts - NEW 3-TIER SYSTEM
   when "n", "N"
     generate_npc_new
-    # Save menu index for restoration after editing
   when "e", "E"
     # Only handle 'e' from menu focus for encounter generation
     # Content editing is handled within each view's own loop
@@ -1520,7 +1514,7 @@ def handle_menu_navigation
     if @focus == :content
       # When in content pane, LEFT returns to menu (like ESC)
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
     else
       # When in menu, navigate left (if applicable)
@@ -1704,13 +1698,13 @@ def roll_o6
     key = getchr
     if key == "ESC" || key == "\e" || key == "q" || key == "LEFT"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       break
     else
       # Any other key also returns to menu
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       break
     end
@@ -1754,8 +1748,6 @@ end
 
 # NPC GENERATION (NEW SYSTEM)
 def generate_npc_new
-  # Save menu index for restoration after editing
-    $saved_menu_index = @menu_index
   debug "Starting generate_npc_new"
   
   # Get inputs using the exact same logic as CLI
@@ -1763,7 +1755,7 @@ def generate_npc_new
   if ia.nil?
     debug "User cancelled NPC generation"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -1789,8 +1781,6 @@ def generate_npc_new
 
     # Handle view with clipboard support
     handle_npc_view(npc, output)
-    # Restore menu index after view
-    @menu_index = $saved_menu_index if $saved_menu_index
   rescue => e
     debug "Error generating NPC: #{e.message}"
     debug e.backtrace.join("\n") if e.backtrace
@@ -2156,10 +2146,10 @@ end
 
 def handle_npc_view(npc, output)
   # Save menu state to preserve selection
-  
+  saved_menu_index = @menu_index
 
   # Save menu state to preserve selection
-  
+  saved_menu_index = @menu_index
 
   # Display the NPC content first
   show_content(output)
@@ -2237,7 +2227,6 @@ def handle_npc_view(npc, output)
       @footer.bg = 237  # Reset to medium grey
       sleep(1)
       @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-    # Save menu index for restoration after editing
     when "e", "E"  # Ctrl+E
       # Simple external editor - just like it was working before
       clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
@@ -2278,9 +2267,9 @@ def handle_npc_view(npc, output)
 
   debug "=== Exiting handle_npc_view loop, last key was: #{key} ==="
   # Restore menu selection and return focus to menu
-    @menu_index = saved_menu_index
+  @menu_index = saved_menu_index
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -2529,8 +2518,6 @@ end
 
 # ENCOUNTER GENERATION (NEW SYSTEM) 
 def generate_encounter_new
-  # Save menu index for restoration after editing
-    $saved_menu_index = @menu_index
   debug "Starting generate_encounter_new"
   
   # Get inputs using same logic as CLI
@@ -2538,7 +2525,7 @@ def generate_encounter_new
   if ia.nil?
     debug "User cancelled encounter generation"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -2562,8 +2549,6 @@ def generate_encounter_new
     
     # Handle view with clipboard support
     handle_encounter_view(enc, output)
-    # Restore menu index after view
-    @menu_index = $saved_menu_index if $saved_menu_index
   rescue => e
     debug "Error generating encounter: #{e.message}"
     debug e.backtrace.join("\n") if e.backtrace
@@ -2733,10 +2718,10 @@ end
 
 def handle_encounter_view(enc, output)
   # Save menu state to preserve selection
-  
+  saved_menu_index = @menu_index
 
   # Save menu state to preserve selection
-  
+  saved_menu_index = @menu_index
 
   # Save encounter to temp file for AI description
   save_dir = File.join($pgmdir, "saved")
@@ -2819,7 +2804,6 @@ def handle_encounter_view(enc, output)
       @footer.bg = 237  # Reset to medium grey
       sleep(1)
       @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-    # Save menu index for restoration after editing
     when "e", "E"
       debug "View: 'e' key matched, calling edit_in_external_editor"
       # Edit in editor - strip ANSI codes first
@@ -2850,7 +2834,7 @@ def handle_encounter_view(enc, output)
 
   # Return focus to menu when done viewing
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -3013,7 +2997,7 @@ end
 
 def handle_content_view(object, type)
   # Save menu state to preserve selection
-  
+  saved_menu_index = @menu_index
 
   # Show scrolling instructions in footer
   @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [b] PgUp | [g] Top | [G] Bottom | [ESC/q] Back ".ljust(@cols))
@@ -3306,8 +3290,6 @@ end
 
 # MONSTER GENERATION (NEW SYSTEM)
 def generate_monster_new
-  # Save menu index for restoration after editing
-    $saved_menu_index = @menu_index
   debug "Starting generate_monster_new"
   
   # Load monster stats if not loaded
@@ -3336,7 +3318,7 @@ def generate_monster_new
   monster_input = get_text_input("")
   if monster_input == :cancelled
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3360,7 +3342,7 @@ def generate_monster_new
   key = getchr
   if key == "ESC" || key == "\e"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3379,8 +3361,6 @@ def generate_monster_new
     
     # Handle view with clipboard support
     handle_monster_view(monster, output)
-    # DEBUG: Track menu index changes for monster
-    @menu_index = $saved_menu_index if $saved_menu_index
   rescue => e
     debug "Error generating monster: #{e.message}"
     debug e.backtrace.join("\n") if e.backtrace
@@ -3424,7 +3404,7 @@ end
 
 def handle_monster_view(monster, output)
   # Save menu state to preserve selection
-  
+  saved_menu_index = @menu_index
 
   @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
 
@@ -3450,7 +3430,6 @@ def handle_monster_view(monster, output)
       @footer.bg = 237  # Reset to medium grey
       sleep(1)
       @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-    # Save menu index for restoration after editing
     when "e", "E"
       debug "View: 'e' key matched, calling edit_in_external_editor"
       # Edit in editor - strip ANSI codes first
@@ -3480,7 +3459,7 @@ def handle_monster_view(monster, output)
 
   # Return focus to menu when done viewing
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -3887,7 +3866,7 @@ def generate_npc_old
       case key
       when "\e", "q"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
         return_to_menu
         break
       when "j", "DOWN"
@@ -4014,7 +3993,7 @@ def generate_encounter_old
       case key
       when "\e", "q"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
         return_to_menu
         break
       when "j", "DOWN"
@@ -4101,7 +4080,7 @@ def generate_weather_ui
   month_input = get_text_input("")
   if month_input == :cancelled
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -4129,7 +4108,7 @@ def generate_weather_ui
   weather_input = get_text_input("")
   if weather_input == :cancelled
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -4155,7 +4134,7 @@ def generate_weather_ui
   wind_input = get_text_input("")
   if wind_input == :cancelled
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -4381,7 +4360,7 @@ def generate_weather_ui
       case key
       when "\e", "q"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
         return_to_menu
         break
       when "j", "DOWN"
@@ -4414,7 +4393,7 @@ def generate_weather_ui
 
     # Return focus to menu when done
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
   rescue => e
     show_content("Error generating weather: #{e.message}")
@@ -4493,7 +4472,7 @@ def generate_weather_pdf
     case key
     when "\e", "q"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       return
     when "ENTER", "\r"
@@ -4534,7 +4513,7 @@ def generate_weather_pdf
     case key
     when "\e", "q"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       return
     when "ENTER", "\r"
@@ -4558,7 +4537,7 @@ def generate_weather_pdf
   else
     show_content("Error: weather2latex.rb not found")
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -4629,7 +4608,7 @@ def generate_weather_pdf
   end
 
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -4678,7 +4657,7 @@ def generate_town_ui
   town_name = get_text_input("")
   if town_name == :cancelled
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -4691,7 +4670,7 @@ def generate_town_ui
   size_input = get_text_input("")
   if size_input == :cancelled
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -4711,7 +4690,7 @@ def generate_town_ui
   var_input = get_text_input("")
   if var_input == :cancelled
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -4951,7 +4930,7 @@ def generate_town_ui
     case key
     when "\e", "q", "ESC"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       break
     when "j", "DOWN"
@@ -5143,7 +5122,7 @@ def generate_name_ui
   name_input = get_text_input("")
   if name_input == :cancelled
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -5175,7 +5154,7 @@ def generate_name_ui
       case key
       when "\e", "q"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
         return_to_menu
         break
       when "j", "DOWN"
@@ -5196,7 +5175,7 @@ def generate_name_ui
 
     # Return focus to menu when done
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
   rescue => e
     show_content("Error generating names: #{e.message}")
@@ -5343,7 +5322,7 @@ def generate_town_relations
   file_input = get_text_input("")
   if file_input == :cancelled
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -5364,7 +5343,7 @@ def generate_town_relations
     show_content(error_msg)
     getchr
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -5500,7 +5479,7 @@ def generate_town_relations
   end
 
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -5656,7 +5635,7 @@ def generate_adventure_ai
     show_content(output)
     key = getchr
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -5671,7 +5650,7 @@ def generate_adventure_ai
     show_content(output)
     key = getchr
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -5696,7 +5675,7 @@ def generate_adventure_ai
       show_content("Error: ruby-openai gem not found. Please install with: gem install ruby-openai")
       getchr
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       return
     end
@@ -5746,7 +5725,7 @@ def generate_adventure_ai
         case key
         when "\e", "q"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
           return_to_menu
           break
         when "j", "DOWN"
@@ -5779,7 +5758,7 @@ def generate_adventure_ai
   end
 
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -5830,7 +5809,7 @@ def describe_encounter_ai
     show_content(output)
     key = getchr
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -5844,7 +5823,7 @@ def describe_encounter_ai
   file_input = get_text_input("")
   if file_input == :cancelled
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -5860,7 +5839,7 @@ def describe_encounter_ai
     show_content(output)
     getchr
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -5875,7 +5854,7 @@ def describe_encounter_ai
     show_content(output)
     getchr
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -5929,7 +5908,7 @@ def describe_encounter_ai
         case key
         when "\e", "q"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
           return_to_menu
           break
         when "j", "DOWN"
@@ -5940,7 +5919,6 @@ def describe_encounter_ai
           @content.pagedown
         when "PgUP"
           @content.pageup
-    # Save menu index for restoration after editing
         when "e", "E"
           # Edit the description
           edited_response = edit_in_external_editor(response)
@@ -5974,7 +5952,7 @@ def describe_encounter_ai
   end
 
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -6030,7 +6008,7 @@ def describe_npc_ai
     show_content(output)
     key = getchr
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -6044,7 +6022,7 @@ def describe_npc_ai
   file_input = get_text_input("")
   if file_input == :cancelled
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -6060,7 +6038,7 @@ def describe_npc_ai
     show_content(output)
     getchr
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -6075,7 +6053,7 @@ def describe_npc_ai
     show_content(output)
     getchr
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -6158,7 +6136,7 @@ def describe_npc_ai
         case key
         when "\e", "q"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
           return_to_menu
           break
         when "j", "DOWN"
@@ -6169,7 +6147,6 @@ def describe_npc_ai
           @content.pagedown
         when "PgUP"
           @content.pageup
-    # Save menu index for restoration after editing
         when "e", "E"
           # Edit the description
           edited_response = edit_in_external_editor(response)
@@ -6213,7 +6190,7 @@ def describe_npc_ai
   end
 
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -6604,10 +6581,9 @@ def generate_npc_image(description = nil)
     case key
     when "\e", "q"
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       return
-    # Save menu index for restoration after editing
     when "e", "E"
       description = edit_in_external_editor(description)
       edit_text = colorize_output("CHARACTER DESCRIPTION FOR IMAGE", :header) + "\n\n"
@@ -6828,7 +6804,7 @@ def generate_npc_image(description = nil)
   ensure
     # Always return focus to menu after image generation
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
   end
 end
@@ -6882,7 +6858,7 @@ def show_latest_npc_image
     show_content(output)
     getchr
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -6898,7 +6874,7 @@ def show_latest_npc_image
     show_content(output)
     getchr
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -7067,7 +7043,7 @@ def show_latest_npc_image
   end
 
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -7128,7 +7104,7 @@ def show_latest_town_map
     show_content(output)
     getchr
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -7444,7 +7420,7 @@ def show_latest_town_map
   end
 
   # Restore menu selection
-  @menu_index = $saved_menu_index if $saved_menu_index
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
