@@ -762,14 +762,14 @@ def handle_menu_navigation
   when "n", "N"
     generate_npc_new
   when "e", "E"
-    debug "Main handler: 'e' key pressed, focus=#{@focus}, has_content=#{!@content.text.to_s.strip.empty?}"
+    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: MAIN HANDLER: 'e' key pressed, focus=#{@focus}, has_content=#{!@content.text.to_s.strip.empty?}" }
     # Only handle 'e' from menu focus for encounter generation
     # Content editing is handled within each view's own loop
     if @focus == :menu
-      debug "Main handler: Generating encounter from menu"
+      File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: MAIN HANDLER: Focus is menu - generating encounter" }
       generate_encounter_new
     else
-      debug "Main handler: Ignoring 'e' - should be handled by view loop"
+      File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: MAIN HANDLER: Focus is #{@focus} - ignoring 'e' key" }
     end
   when "m", "M"
     generate_monster_new
@@ -1254,10 +1254,15 @@ def get_text_input(prompt)
 end
 
 def handle_npc_view(npc, output)
-  debug "=== Entering handle_npc_view ==="
+  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: === Entering handle_npc_view ===" }
+  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: handle_npc_view: Current focus = #{@focus}" }
 
   # Display the NPC content first
   show_content(output)
+
+  # Set focus to content so key handling works properly
+  @focus = :content
+  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: handle_npc_view: Set focus to content, now = #{@focus}" }
 
   # Save NPC to temp file for AI description
   save_dir = File.join($pgmdir, "saved")
@@ -1287,32 +1292,41 @@ def handle_npc_view(npc, output)
   end
 
   # Show instructions including clipboard copy
-  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [Ctrl+E] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
 
   key = nil  # Initialize key variable
+  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: handle_npc_view: Starting keyboard loop, focus=#{@focus}" }
   loop do
     key = getchr
-    debug "NPC view loop: key pressed = '#{key}' (#{key.ord rescue 'special'})"
+    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: NPC view loop: key pressed = '#{key}' (#{key.ord rescue 'special'})" }
 
     case key
     when "ESC", "\e", "q", "LEFT"
+      debug "NPC view: Exit key pressed, breaking loop"
       break
     when "j", "DOWN"
+      debug "NPC view: Down key pressed"
       @content.linedown
     when "k", "UP"
+      debug "NPC view: Up key pressed"
       @content.lineup
     when " ", "PgDOWN"
+      debug "NPC view: Page down pressed"
       @content.pagedown
     when "b", "PgUP"
+      debug "NPC view: Page up pressed"
       @content.pageup
     when "g", "HOME"
+      debug "NPC view: Home key pressed"
       @content.ix = 0
       @content.refresh
     when "G", "END"
+      debug "NPC view: End key pressed"
       max_ix = [@content.text.lines.count - @content.h + 2, 0].max
       @content.ix = max_ix
       @content.refresh
     when "Y", "y"
+      debug "NPC view: Copy key pressed"
       # Copy output to clipboard
       copy_to_clipboard(output)
       # Show confirmation in footer briefly
@@ -1321,27 +1335,39 @@ def handle_npc_view(npc, output)
       @footer.say(footer_text.ljust(@cols))
       @footer.bg = 237  # Reset to medium grey
       sleep(1)
-      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-    when "e", "E"
-      debug "View: 'e' key matched, calling edit_in_editor"
-      # Edit in editor - strip ANSI codes first
+      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [Ctrl+E] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+    when "C-E"  # Ctrl+E
+      File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: Starting external editor process" }
+      # Simple external editor - just like it was working before
       clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
-      debug "View: Cleaned text length = #{clean_text.length}"
-      edited_text = edit_in_editor(clean_text)
-      debug "View: edit_in_editor returned, edited_text = #{edited_text ? 'content' : 'nil'}"
-      if edited_text
+      File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: About to call edit_in_external_editor" }
+      edited_text = edit_in_external_editor(clean_text)
+      File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: Editor returned, reinitializing display" }
+
+      # Show edited content if it was changed, otherwise show original with colors
+      if edited_text && !edited_text.empty? && edited_text.strip != clean_text.strip
+        File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: Showing edited content" }
         show_content(edited_text)
+        output = edited_text  # Update the output variable
       else
+        File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: No changes, showing original" }
         show_content(output)
       end
+      File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: Display restored" }
+
+      # Always restore the footer
+      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [Ctrl+E] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     when "r"
+      debug "NPC view: Re-roll key pressed"
       # Re-roll with same parameters
       generate_npc_new
       break
     when "s"
+      debug "NPC view: Save key pressed"
       # Save to file
       save_to_file(output, :npc)
     when "\f", "\x0C"  # Ctrl-L
+      debug "NPC view: Refresh key pressed"
       # Refresh screen
       Rcurses.clear
       init_screen
@@ -1384,54 +1410,97 @@ def copy_to_clipboard(text)
   end
 end
 
-def edit_in_editor(text)
-  debug "Opening output in editor"
+def edit_in_external_editor(text)
+  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Starting, text length = #{text.length}" }
   
   # Remove ANSI codes before editing
+  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Cleaning ANSI codes" }
   clean_text = text.gsub(/\e\[[\d;]*m/, '')
-  
+  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: ANSI codes cleaned, length = #{clean_text.length}" }
+
   # Also remove rcurses color formatting if present
   if clean_text.respond_to?(:pure)
+    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Applying .pure method" }
     clean_text = clean_text.pure
+    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Pure applied, length = #{clean_text.length}" }
   end
-  
+
   # Create temporary file
+  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Creating tempfile" }
   require 'tempfile'
   tmpfile = Tempfile.new(['amar_output', '.txt'])
+  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Tempfile created: #{tmpfile.path}" }
   tmpfile.write(clean_text)
   tmpfile.close
+  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Tempfile written and closed" }
   
   begin
-    # Clean up terminal for editor
-    Rcurses.end!  # Properly end rcurses
-    system('clear')
-    
-    # Launch editor
-    editor = ENV.fetch('EDITOR', 'vi')
-    system("#{editor} #{tmpfile.path}")
-    
-    # Reinitialize rcurses
-    Rcurses.init!
-    Rcurses.clear
+    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: About to launch editor safely" }
+
+    # Use simple internal editing instead of external editor
+    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Using internal editor" }
+
+    # Show the text in an editable popup
+    lines = clean_text.split("\n")
+    edited_lines = edit_text_internally(lines)
+    edited_text = edited_lines.join("\n")
+
+    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Internal editing completed" }
     
     # Refresh all panes
     init_screen
     refresh_all
-    show_content(@content.text)  # Restore the content
-    
-    # Return the edited content if needed
-    edited_text = File.read(tmpfile.path)
+
+    # Return the edited content
+    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Returning edited text, length = #{edited_text.length}" }
     return edited_text
   ensure
     tmpfile.unlink if tmpfile
   end
 rescue => e
-  debug "Error opening editor: #{e.message}"
-  # Make sure to reinitialize rcurses even on error
-  Rcurses.init!
-  init_screen
-  refresh_all
+  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Error - #{e.message}" }
   nil
+end
+
+def edit_in_external_editor(text)
+  # Simple external editor like RTFM does it
+  require 'tempfile'
+
+  tmpfile = Tempfile.new(['amar_edit', '.txt'])
+  tmpfile.write(text)
+  tmpfile.close
+
+  begin
+    # Save terminal state exactly like RTFM
+    system("stty -g > /tmp/amar_stty_$$")
+
+    # Clear and reset terminal for editor
+    system('clear < /dev/tty > /dev/tty')
+
+    # Launch editor
+    editor = ENV.fetch('EDITOR', 'vi')
+    system("#{editor} #{tmpfile.path}")
+
+    # Restore terminal state exactly like RTFM
+    system("stty $(cat /tmp/amar_stty_$$) < /dev/tty")
+    system("rm -f /tmp/amar_stty_$$")
+
+    # Reinitialize the TUI
+    init_screen
+    refresh_all
+
+    # Read the edited content
+    edited_content = File.read(tmpfile.path)
+    return edited_content
+  rescue => e
+    # Cleanup on error
+    system("rm -f /tmp/amar_stty_$$")
+    init_screen rescue nil
+    refresh_all rescue nil
+    return text
+  ensure
+    tmpfile.unlink if tmpfile
+  end
 end
 
 # ENCOUNTER GENERATION (NEW SYSTEM) 
@@ -1647,12 +1716,12 @@ def handle_encounter_view(enc, output)
       sleep(1)
       @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     when "e", "E"
-      debug "View: 'e' key matched, calling edit_in_editor"
+      debug "View: 'e' key matched, calling edit_in_external_editor"
       # Edit in editor - strip ANSI codes first
       clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
       debug "View: Cleaned text length = #{clean_text.length}"
-      edited_text = edit_in_editor(clean_text)
-      debug "View: edit_in_editor returned, edited_text = #{edited_text ? 'content' : 'nil'}"
+      edited_text = edit_in_external_editor(clean_text)
+      debug "View: edit_in_external_editor returned, edited_text = #{edited_text ? 'content' : 'nil'}"
       if edited_text
         show_content(edited_text)
       else
@@ -1770,7 +1839,7 @@ def handle_content_view(object, type)
     when "s"  # Save
       save_to_file(object, type)
     when "e"  # Edit in external editor
-      edited_text = edit_in_editor(@content.text)
+      edited_text = edit_in_external_editor(@content.text)
       show_content(edited_text)  # Update the content with edited text
     end
   end
@@ -1955,12 +2024,12 @@ def handle_monster_view(monster, output)
       sleep(1)
       @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     when "e", "E"
-      debug "View: 'e' key matched, calling edit_in_editor"
+      debug "View: 'e' key matched, calling edit_in_external_editor"
       # Edit in editor - strip ANSI codes first
       clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
       debug "View: Cleaned text length = #{clean_text.length}"
-      edited_text = edit_in_editor(clean_text)
-      debug "View: edit_in_editor returned, edited_text = #{edited_text ? 'content' : 'nil'}"
+      edited_text = edit_in_external_editor(clean_text)
+      debug "View: edit_in_external_editor returned, edited_text = #{edited_text ? 'content' : 'nil'}"
       if edited_text
         show_content(edited_text)
       else
@@ -2755,7 +2824,7 @@ def generate_weather_ui
       when "e"
         # Edit in editor - strip ANSI codes first
         clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
-        edit_in_editor(clean_text)
+        edit_in_external_editor(clean_text)
         show_content(output)
       when "r"
         generate_weather_ui
@@ -3349,7 +3418,7 @@ def generate_town_ui
       when "e"
         # Edit in editor - strip ANSI codes first
         clean_text = @content.text.respond_to?(:pure) ? @content.text.pure : @content.text.gsub(/\e\[\d+(?:;\d+)*m/, '')
-        edit_in_editor(clean_text)
+        edit_in_external_editor(clean_text)
         @content.say(@content.text)
       when "s"
         save_to_file(@content.text, :town)
@@ -3802,7 +3871,7 @@ def generate_adventure_ai
           @content.pageup
         when "e"
           # Edit in editor
-          edit_in_editor(response)
+          edit_in_external_editor(response)
           show_content(output)
         when "s"
           save_to_file(response, :adventure)
@@ -3939,7 +4008,7 @@ def describe_encounter_ai
           @content.pageup
         when "e", "E"
           # Edit the description
-          edited_response = edit_in_editor(response)
+          edited_response = edit_in_external_editor(response)
           if edited_response != response
             response = edited_response
             # Save the edited version
@@ -4121,7 +4190,7 @@ def describe_npc_ai
           @content.pageup
         when "e", "E"
           # Edit the description
-          edited_response = edit_in_editor(response)
+          edited_response = edit_in_external_editor(response)
           if edited_response != response
             response = edited_response
             # Save the edited version
@@ -4451,7 +4520,7 @@ def generate_npc_image(description = nil)
       return_to_menu
       return
     when "e", "E"
-      description = edit_in_editor(description)
+      description = edit_in_external_editor(description)
       edit_text = colorize_output("CHARACTER DESCRIPTION FOR IMAGE", :header) + "\n\n"
       edit_text += description + "\n\n"
       edit_text += colorize_output("Press [e] to edit, [Enter] to generate, [ESC] to cancel", :info)
