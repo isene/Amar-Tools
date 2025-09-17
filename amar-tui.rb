@@ -674,6 +674,8 @@ def show_help
   end
   
   # Return focus to menu when done
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -834,6 +836,8 @@ def handle_menu_navigation
   when "LEFT"  # Left arrow (not 'h' as that's used for help)
     if @focus == :content
       # When in content pane, LEFT returns to menu (like ESC)
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
     else
       # When in menu, navigate left (if applicable)
@@ -948,10 +952,14 @@ def roll_o6
   loop do
     key = getchr
     if key == "ESC" || key == "\e" || key == "q" || key == "LEFT"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       break
     else
       # Any other key also returns to menu
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       break
     end
@@ -967,6 +975,8 @@ def generate_npc_new
   ia = npc_input_new_tui
   if ia.nil?
     debug "User cancelled NPC generation"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -1257,6 +1267,9 @@ def handle_npc_view(npc, output)
   # Save menu state to preserve selection
   saved_menu_index = @menu_index
 
+  # Save menu state to preserve selection
+  saved_menu_index = @menu_index
+
   # Display the NPC content first
   show_content(output)
 
@@ -1345,13 +1358,11 @@ def handle_npc_view(npc, output)
 
       # Show edited content if it was changed, otherwise show original with colors
       if edited_text && !edited_text.empty? && edited_text.strip != clean_text.strip
-        File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: Changes detected, regenerating colored NPC" }
-        # Regenerate colored output from the NPC object (keeps colors)
-        colored_output = npc_output_new(npc, 'cli', @cols - 35)
-        show_content(colored_output)
-        output = colored_output  # Update with colored version
+        # Apply basic colors to edited text
+        
+        show_content(edited_text)
+        output = edited_text  # Update with colored edited version
       else
-        File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: No changes, showing original" }
         show_content(output)
       end
       File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: Display restored" }
@@ -1382,6 +1393,8 @@ def handle_npc_view(npc, output)
   debug "=== Exiting handle_npc_view loop, last key was: #{key} ==="
   # Restore menu selection and return focus to menu
   @menu_index = saved_menu_index
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -1513,6 +1526,8 @@ def generate_encounter_new
   ia = enc_input_new_tui
   if ia.nil?
     debug "User cancelled encounter generation"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -1636,6 +1651,12 @@ def enc_input_new_tui
 end
 
 def handle_encounter_view(enc, output)
+  # Save menu state to preserve selection
+  saved_menu_index = @menu_index
+
+  # Save menu state to preserve selection
+  saved_menu_index = @menu_index
+
   # Save encounter to temp file for AI description
   save_dir = File.join($pgmdir, "saved")
   Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
@@ -1746,6 +1767,8 @@ def handle_encounter_view(enc, output)
   end
 
   # Return focus to menu when done viewing
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -1805,6 +1828,9 @@ def format_encounter_new(enc)
 end
 
 def handle_content_view(object, type)
+  # Save menu state to preserve selection
+  saved_menu_index = @menu_index
+
   # Show scrolling instructions in footer
   @footer.say(" [j/↓] Down | [k/↑] Up | [SPACE] PgDn | [b] PgUp | [g] Top | [G] Bottom | [ESC/q] Back ".ljust(@cols))
   
@@ -1953,6 +1979,8 @@ def generate_monster_new
   show_content(monster_text)
   monster_input = get_text_input("")
   if monster_input == :cancelled
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -1975,6 +2003,8 @@ def generate_monster_new
   show_content(level_text)
   key = getchr
   if key == "ESC" || key == "\e"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -2001,6 +2031,9 @@ def generate_monster_new
 end
 
 def handle_monster_view(monster, output)
+  # Save menu state to preserve selection
+  saved_menu_index = @menu_index
+
   @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
 
   loop do
@@ -2053,6 +2086,8 @@ def handle_monster_view(monster, output)
   end
 
   # Return focus to menu when done viewing
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -2390,6 +2425,8 @@ def generate_npc_old
       key = getchr
       case key
       when "\e", "q"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
         return_to_menu
         break
       when "j", "DOWN"
@@ -2481,6 +2518,8 @@ def generate_encounter_old
       key = getchr
       case key
       when "\e", "q"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
         return_to_menu
         break
       when "j", "DOWN"
@@ -2532,6 +2571,8 @@ def generate_weather_ui
   show_content(mstring)
   month_input = get_text_input("")
   if month_input == :cancelled
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -2558,6 +2599,8 @@ def generate_weather_ui
   show_content(weather_text)
   weather_input = get_text_input("")
   if weather_input == :cancelled
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -2582,6 +2625,8 @@ def generate_weather_ui
   show_content(wind_text)
   wind_input = get_text_input("")
   if wind_input == :cancelled
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -2806,6 +2851,8 @@ def generate_weather_ui
       key = getchr
       case key
       when "\e", "q"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
         return_to_menu
         break
       when "j", "DOWN"
@@ -2837,6 +2884,8 @@ def generate_weather_ui
     end
 
     # Return focus to menu when done
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
   rescue => e
     show_content("Error generating weather: #{e.message}")
@@ -2880,6 +2929,8 @@ def generate_weather_pdf
     key = getchr
     case key
     when "\e", "q"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       return
     when "ENTER", "\r"
@@ -2919,6 +2970,8 @@ def generate_weather_pdf
     key = getchr
     case key
     when "\e", "q"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       return
     when "ENTER", "\r"
@@ -2941,6 +2994,8 @@ def generate_weather_pdf
     load weather2latex_file
   else
     show_content("Error: weather2latex.rb not found")
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3010,6 +3065,8 @@ def generate_weather_pdf
     show_content("Error generating weather PDF: #{e.message}")
   end
 
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -3023,6 +3080,8 @@ def generate_town_ui
   show_content(header)
   town_name = get_text_input("")
   if town_name == :cancelled
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3034,6 +3093,8 @@ def generate_town_ui
   show_content(prompt_text)
   size_input = get_text_input("")
   if size_input == :cancelled
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3052,6 +3113,8 @@ def generate_town_ui
   show_content(var_text)
   var_input = get_text_input("")
   if var_input == :cancelled
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3290,6 +3353,8 @@ def generate_town_ui
     key = getchr
     case key
     when "\e", "q", "ESC"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       break
     when "j", "DOWN"
@@ -3446,6 +3511,8 @@ def generate_name_ui
   # Use text input like other generators
   name_input = get_text_input("")
   if name_input == :cancelled
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3476,6 +3543,8 @@ def generate_name_ui
       key = getchr
       case key
       when "\e", "q"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
         return_to_menu
         break
       when "j", "DOWN"
@@ -3495,6 +3564,8 @@ def generate_name_ui
     end
 
     # Return focus to menu when done
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
   rescue => e
     show_content("Error generating names: #{e.message}")
@@ -3572,6 +3643,8 @@ def generate_town_relations
 
   file_input = get_text_input("")
   if file_input == :cancelled
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3591,6 +3664,8 @@ def generate_town_relations
     error_msg += "Press any key to continue..."
     show_content(error_msg)
     getchr
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3725,6 +3800,8 @@ def generate_town_relations
     getchr
   end
 
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -3777,6 +3854,8 @@ def generate_adventure_ai
     output += "Press any key to continue..."
     show_content(output)
     key = getchr
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3790,6 +3869,8 @@ def generate_adventure_ai
     output += "Press any key to continue..."
     show_content(output)
     key = getchr
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3813,6 +3894,8 @@ def generate_adventure_ai
     rescue LoadError
       show_content("Error: ruby-openai gem not found. Please install with: gem install ruby-openai")
       getchr
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       return
     end
@@ -3861,6 +3944,8 @@ def generate_adventure_ai
         key = getchr
         case key
         when "\e", "q"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
           return_to_menu
           break
         when "j", "DOWN"
@@ -3892,6 +3977,8 @@ def generate_adventure_ai
     getchr
   end
 
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -3907,6 +3994,8 @@ def describe_encounter_ai
     output += "Press any key to continue..."
     show_content(output)
     key = getchr
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3919,6 +4008,8 @@ def describe_encounter_ai
   show_content(prompt_text)
   file_input = get_text_input("")
   if file_input == :cancelled
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3933,6 +4024,8 @@ def describe_encounter_ai
     output += "Press any key to continue..."
     show_content(output)
     getchr
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3946,6 +4039,8 @@ def describe_encounter_ai
     output += "Press any key to continue..."
     show_content(output)
     getchr
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -3998,6 +4093,8 @@ def describe_encounter_ai
         key = getchr
         case key
         when "\e", "q"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
           return_to_menu
           break
         when "j", "DOWN"
@@ -4040,6 +4137,8 @@ def describe_encounter_ai
     getchr
   end
 
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -4060,6 +4159,8 @@ def describe_npc_ai
     output += "Press any key to continue..."
     show_content(output)
     key = getchr
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -4072,6 +4173,8 @@ def describe_npc_ai
   show_content(prompt_text)
   file_input = get_text_input("")
   if file_input == :cancelled
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -4086,6 +4189,8 @@ def describe_npc_ai
     output += "Press any key to continue..."
     show_content(output)
     getchr
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -4099,6 +4204,8 @@ def describe_npc_ai
     output += "Press any key to continue..."
     show_content(output)
     getchr
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -4180,6 +4287,8 @@ def describe_npc_ai
         key = getchr
         case key
         when "\e", "q"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
           return_to_menu
           break
         when "j", "DOWN"
@@ -4232,6 +4341,8 @@ def describe_npc_ai
     getchr
   end
 
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -4519,6 +4630,8 @@ def generate_npc_image(description = nil)
     key = getchr
     case key
     when "\e", "q"
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       return
     when "e", "E"
@@ -4740,6 +4853,8 @@ def generate_npc_image(description = nil)
     getchr
   ensure
     # Always return focus to menu after image generation
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
   end
 end
@@ -4758,6 +4873,8 @@ def show_latest_npc_image
     output += "Press any key to continue..."
     show_content(output)
     getchr
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -4772,6 +4889,8 @@ def show_latest_npc_image
     output += "Press any key to continue..."
     show_content(output)
     getchr
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -4939,6 +5058,8 @@ def show_latest_npc_image
     end
   end
 
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
@@ -4964,6 +5085,8 @@ def show_latest_town_map
     output += "Press any key to continue..."
     show_content(output)
     getchr
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
     return
   end
@@ -5278,6 +5401,8 @@ def show_latest_town_map
     end
   end
 
+  # Restore menu selection
+  @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
 end
 
