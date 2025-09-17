@@ -1254,15 +1254,14 @@ def get_text_input(prompt)
 end
 
 def handle_npc_view(npc, output)
-  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: === Entering handle_npc_view ===" }
-  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: handle_npc_view: Current focus = #{@focus}" }
+  # Save menu state to preserve selection
+  saved_menu_index = @menu_index
 
   # Display the NPC content first
   show_content(output)
 
   # Set focus to content so key handling works properly
   @focus = :content
-  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: handle_npc_view: Set focus to content, now = #{@focus}" }
 
   # Save NPC to temp file for AI description
   save_dir = File.join($pgmdir, "saved")
@@ -1292,7 +1291,7 @@ def handle_npc_view(npc, output)
   end
 
   # Show instructions including clipboard copy
-  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [Ctrl+E] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+  @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
 
   key = nil  # Initialize key variable
   File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: handle_npc_view: Starting keyboard loop, focus=#{@focus}" }
@@ -1335,8 +1334,8 @@ def handle_npc_view(npc, output)
       @footer.say(footer_text.ljust(@cols))
       @footer.bg = 237  # Reset to medium grey
       sleep(1)
-      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [Ctrl+E] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-    when "C-E"  # Ctrl+E
+      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+    when "e", "E"  # Ctrl+E
       File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: Starting external editor process" }
       # Simple external editor - just like it was working before
       clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
@@ -1346,9 +1345,11 @@ def handle_npc_view(npc, output)
 
       # Show edited content if it was changed, otherwise show original with colors
       if edited_text && !edited_text.empty? && edited_text.strip != clean_text.strip
-        File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: Showing edited content" }
-        show_content(edited_text)
-        output = edited_text  # Update the output variable
+        File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: Changes detected, regenerating colored NPC" }
+        # Regenerate colored output from the NPC object (keeps colors)
+        colored_output = npc_output_new(npc, 'cli', @cols - 35)
+        show_content(colored_output)
+        output = colored_output  # Update with colored version
       else
         File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: No changes, showing original" }
         show_content(output)
@@ -1356,7 +1357,7 @@ def handle_npc_view(npc, output)
       File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: Display restored" }
 
       # Always restore the footer
-      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [Ctrl+E] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+      @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     when "r"
       debug "NPC view: Re-roll key pressed"
       # Re-roll with same parameters
@@ -1379,7 +1380,8 @@ def handle_npc_view(npc, output)
   end
 
   debug "=== Exiting handle_npc_view loop, last key was: #{key} ==="
-  # Return focus to menu when done viewing
+  # Restore menu selection and return focus to menu
+  @menu_index = saved_menu_index
   return_to_menu
 end
 
