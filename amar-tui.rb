@@ -1289,6 +1289,7 @@ def handle_npc_view(npc, output)
   # Show instructions including clipboard copy
   @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
 
+  key = nil  # Initialize key variable
   loop do
     key = getchr
     debug "NPC view loop: key pressed = '#{key}' (#{key.ord rescue 'special'})"
