@@ -5,6 +5,14 @@ class NpcNew
   attr_accessor :name, :type, :level, :area, :sex, :age, :height, :weight
   attr_accessor :tiers, :social_status, :marks, :description
   attr_accessor :melee_weapon, :missile_weapon, :armor, :ENC, :spells
+  # Original CLI weapon format accessors
+  attr_accessor :melee1, :melee2, :melee3, :missile
+  attr_accessor :melee1s, :melee2s, :melee3s, :missiles
+  attr_accessor :melee1i, :melee1o, :melee1d, :melee1dam, :melee1hp
+  attr_accessor :melee2i, :melee2o, :melee2d, :melee2dam, :melee2hp
+  attr_accessor :melee3i, :melee3o, :melee3d, :melee3dam, :melee3hp
+  attr_accessor :missileo, :missiledam, :missilerange
+  attr_accessor :armour, :ap
   
   def initialize(name, type, level, area, sex, age, height, weight, description)
     # Generate random values for missing data
@@ -640,44 +648,143 @@ class NpcNew
     # Calculate encumbrance
     @ENC += @weapons.size
     
-    # Select armor based on type and level
-    armor_types = case @type
-                  when "Warrior", "Guard", "Soldier", "Gladiator"
-                    ["Chain mail", "Scale", "Plate"].sample
-                  when "Ranger", "Hunter", "Scout"
-                    ["Leather", "Padded", "Chain shirt"].sample
-                  when "Thief", "Rogue", "Assassin"
-                    ["Padded", "Leather"].sample
-                  when "Noble", "Knight"
-                    ["Chain mail", "Plate", "Full plate"].sample
-                  else
-                    rand(100) < 30 ? ["Padded", "Leather"].sample : nil
-                  end
-    
-    if armor_types
-      armor_name = armor_types
-      
-      @armor = case armor_name
-               when "Leather"
-                 { name: "Leather", ap: 2, enc: 2 }
-               when "Padded"
-                 { name: "Padded", ap: 1, enc: 1 }
-               when "Chain shirt"
-                 { name: "Chain shirt", ap: 3, enc: 3 }
-               when "Scale"
-                 { name: "Scale armor", ap: 4, enc: 4 }
-               when "Chain mail"
-                 { name: "Chain mail", ap: 4, enc: 5 }
-               when "Plate"
-                 { name: "Plate armor", ap: 5, enc: 6 }
-               when "Full plate"
-                 { name: "Full plate", ap: 6, enc: 7 }
-               else
-                 nil
-               end
-      
-      # Add armor encumbrance to total
-      @ENC += @armor[:enc] if @armor
+    # Use ORIGINAL armor selection logic from class_npc.rb
+    # Determine armor level based on strength (exact original logic)
+    strng = get_characteristic("BODY") || 3
+    arm_level = case strng
+                when 1..2 then 1
+                when 3 then 2
+                when 4 then 3
+                when 5 then 5
+                when 6 then 6
+                when 7 then 7
+                else 8
+                end
+
+    # Pick armor from ORIGINAL $Armour table
+    armor_index = rand(arm_level) + 1
+    armor_data = $Armour[armor_index]
+
+    @armour = armor_data[0]  # Armor name from original table
+    @ap = armor_data[1]      # Armor points from original table
+
+    # Set armor in new format for compatibility with output
+    @armor = {
+      name: @armour,
+      ap: @ap,
+      enc: armor_data[4] || 0  # Weight as encumbrance
+    }
+
+    # Add armor encumbrance
+    @ENC += @armor[:enc] if @armor
+
+    # Add ORIGINAL weapon selection using $Melee and $Missile tables
+    generate_original_weapons
+  end
+
+  def generate_original_weapons
+    # Use EXACT original CLI weapon selection logic
+    # Determine weapon level based on strength (like original)
+    strng = get_characteristic("BODY") || 3
+    wpn_level = case strng
+                when 1 then 2
+                when 2 then 4
+                when 3 then 11
+                when 4 then 18
+                when 5 then 22
+                when 7..8 then 28
+                else 30
+                end
+
+    # Initialize weapon variables
+    @melee1 = @melee2 = @melee3 = ""
+    @melee1s = @melee2s = @melee3s = 0
+    @melee1i = @melee1o = @melee1d = @melee1dam = @melee1hp = 0
+    @melee2i = @melee2o = @melee2d = @melee2dam = @melee2hp = 0
+    @melee3i = @melee3o = @melee3d = @melee3dam = @melee3hp = 0
+    @missile = ""
+    @missiles = @missileo = @missiledam = @missilerange = 0
+
+    # Get reaction speed for initiative calculations
+    reaction_speed = get_skill_total("MIND", "Awareness", "Reaction speed") || 0
+    dodge_total = get_skill_total("BODY", "Athletics", "Dodge") || 0
+
+    # Select melee weapon 1 from ORIGINAL $Melee table
+    melee1_idx = rand(wpn_level) + 1
+    melee1_data = $Melee[melee1_idx]
+    @melee1 = melee1_data[0]  # Weapon name like "Longsword/Buc"
+    @melee1s = calculate_weapon_skill_for_name(@melee1)
+    @melee1i = melee1_data[4] + reaction_speed     # Init = weapon init + reaction
+    @melee1o = melee1_data[5] + @melee1s           # Off = weapon off + skill
+    @melee1d = melee1_data[6] + @melee1s + (dodge_total / 5)  # Def = weapon def + skill + dodge/5
+    @melee1dam = melee1_data[3] + self.DB          # Damage = weapon dam + DB
+    @melee1hp = melee1_data[7]                     # Weapon hit points
+
+    # Select melee weapon 2 (if different)
+    melee2_idx = rand(wpn_level) + 1
+    if melee2_idx != melee1_idx
+      melee2_data = $Melee[melee2_idx]
+      @melee2 = melee2_data[0]
+      @melee2s = calculate_weapon_skill_for_name(@melee2)
+      @melee2i = melee2_data[4] + reaction_speed
+      @melee2o = melee2_data[5] + @melee2s
+      @melee2d = melee2_data[6] + @melee2s + (dodge_total / 5)
+      @melee2dam = melee2_data[3] + self.DB
+      @melee2hp = melee2_data[7]
+    end
+
+    # Select missile weapon from ORIGINAL $Missile table
+    msl_level = wpn_level
+    missile_idx = rand(msl_level) + 1
+    missile_data = $Missile[missile_idx]
+    @missile = missile_data[0]  # Weapon name like "Bow(H) [1]"
+    @missiles = calculate_missile_skill_for_name(@missile)
+    @missileo = missile_data[4] + @missiles        # Off = weapon off + skill
+    @missiledam = missile_data[3] + self.DB        # Damage = weapon dam + DB
+    @missilerange = missile_data[5]                # Range from table
+
+    # Apply strength bonus for throwing weapons (original logic)
+    if @missile && missile_data[1] != "Crossbow" && missile_data[1] != "Bow"
+      @missiledam += (strng / 5)
+    end
+  end
+
+  def calculate_weapon_skill_for_name(weapon_name)
+    # Map weapon names to 3-tier skills
+    case weapon_name.to_s.downcase
+    when /sword/
+      get_skill_total("BODY", "Melee Combat", "Sword")
+    when /axe/
+      get_skill_total("BODY", "Melee Combat", "Axe")
+    when /mace|club|hammer/
+      get_skill_total("BODY", "Melee Combat", "Club")
+    when /spear|polearm/
+      get_skill_total("BODY", "Melee Combat", "Spear")
+    when /staff/
+      get_skill_total("BODY", "Melee Combat", "Staff")
+    when /dagger|knife/
+      get_skill_total("BODY", "Melee Combat", "Dagger")
+    when /unarmed/
+      get_skill_total("BODY", "Melee Combat", "Unarmed")
+    else
+      get_skill_total("BODY", "Melee Combat", "Sword") || 0
+    end
+  end
+
+  def calculate_missile_skill_for_name(weapon_name)
+    case weapon_name.to_s.downcase
+    when /bow/
+      get_skill_total("BODY", "Missile Combat", "Bow")
+    when /crossbow|x-bow/
+      get_skill_total("BODY", "Missile Combat", "Crossbow")
+    when /sling/
+      get_skill_total("BODY", "Missile Combat", "Sling")
+    when /javelin/
+      get_skill_total("BODY", "Missile Combat", "Javelin")
+    when /rock|stone|throwing/
+      get_skill_total("BODY", "Missile Combat", "Throwing")
+    else
+      get_skill_total("BODY", "Missile Combat", "Bow") || 0
     end
   end
   

@@ -213,15 +213,65 @@ def npc_output_new(n, cli, custom_width = nil)
   f += "#{@stat_color}SIZE:#{size_display.rjust(3)}    BP:#{n.BP.to_s.rjust(2)}    DB:#{n.DB.to_s.rjust(2)}    MD:#{n.MD.to_s.rjust(2)}    "
   f += "Weight Carried:#{total_weight.to_s.rjust(5)}kg    ENC Penalty:#{enc_penalty.to_s.rjust(3)}#{@reset}\n"
   
-  # Armor section (moved above weapons)
-  if n.armor
-    f += "─" * width + "\n"
+  # Armor section - use original format if available
+  f += "─" * width + "\n"
+  if n.respond_to?(:armour) && !n.armour.to_s.empty?
+    # Use original armor format
+    f += "#{@weapon_color}ARMOR: #{n.armour.ljust(20)} AP: #{n.ap.to_s.rjust(2)}  Weight: #{get_armor_weight(n.armour).to_s.rjust(2)}kg#{@reset}\n"
+  elsif n.armor && n.armor[:name] && !n.armor[:name].empty?
+    # Fall back to new format
     f += "#{@weapon_color}ARMOR: #{n.armor[:name].ljust(20)} AP: #{n.armor[:ap].to_s.rjust(2)}  Weight: #{get_armor_weight(n.armor[:name]).to_s.rjust(2)}kg#{@reset}\n"
+  else
+    # No armor
+    f += "#{@weapon_color}ARMOR: None                  AP:  0  Weight:  0kg#{@reset}\n"
   end
   
-  # Weapons section with proper headers and totals
-  melee_weapons = n.tiers["BODY"]["Melee Combat"]["skills"].select { |_, v| v > 0 }
-  missile_weapons = n.tiers["BODY"]["Missile Combat"]["skills"].select { |_, v| v > 0 }
+  # Check if we have original weapon data and display it
+  if n.respond_to?(:melee1) && !n.melee1.to_s.empty?
+    # Display ORIGINAL weapon format
+    f += "─" * width + "\n"
+    f += "#{@weapon_color}WEAPON             SKILL    INI     OFF    DEF    DAM    HP    RANGE#{@reset}\n"
+
+    # Melee weapon 1
+    if n.melee1s && n.melee1s > 0
+      f += "#{n.melee1.ljust(19)}"
+      f += "#{n.melee1s.to_s.ljust(9)}"
+      f += "#{n.melee1i.to_s.ljust(8)}"
+      f += "#{n.melee1o.to_s.ljust(7)}"
+      f += "#{n.melee1d.to_s.ljust(7)}"
+      f += "#{n.melee1dam.to_s.ljust(7)}"
+      f += "#{n.melee1hp.to_s.ljust(6)}"
+      f += "\n"
+    end
+
+    # Melee weapon 2
+    if n.respond_to?(:melee2s) && n.melee2s && n.melee2s > 0
+      f += "#{n.melee2.ljust(19)}"
+      f += "#{n.melee2s.to_s.ljust(9)}"
+      f += "#{n.melee2i.to_s.ljust(8)}"
+      f += "#{n.melee2o.to_s.ljust(7)}"
+      f += "#{n.melee2d.to_s.ljust(7)}"
+      f += "#{n.melee2dam.to_s.ljust(7)}"
+      f += "#{n.melee2hp.to_s.ljust(6)}"
+      f += "\n"
+    end
+
+    # Missile weapon
+    if n.respond_to?(:missiles) && n.missiles && n.missiles > 0
+      f += "#{n.missile.ljust(19)}"
+      f += "#{n.missiles.to_s.ljust(9)}"
+      f += "#{' '.ljust(8)}"  # No init for missile
+      f += "#{n.missileo.to_s.ljust(7)}"
+      f += "#{' '.ljust(7)}"  # No def for missile
+      f += "#{n.missiledam.to_s.ljust(7)}"
+      f += "#{n.melee1hp.to_s.ljust(6)}"  # Use melee1 HP as placeholder
+      f += "#{n.missilerange}m"
+      f += "\n"
+    end
+  else
+    # Fall back to 3-tier weapon display
+    melee_weapons = n.tiers["BODY"]["Melee Combat"]["skills"].select { |_, v| v > 0 }
+    missile_weapons = n.tiers["BODY"]["Missile Combat"]["skills"].select { |_, v| v > 0 }
   
   if melee_weapons.any? || missile_weapons.any?
     f += "─" * width + "\n"
@@ -283,7 +333,8 @@ def npc_output_new(n, cli, custom_width = nil)
       f += "#{melee_lines[i].ljust(60)} │ #{missile_lines[i]}\n"
     end
   end
-  
+  end  # Close the original/3-tier weapon display if/else block
+
   # Equipment section with money
   equipment = generate_equipment(n.type, n.level)
   social_status = generate_social_status(n.type, n.level)
