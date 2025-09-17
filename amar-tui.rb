@@ -19,6 +19,40 @@ rescue LoadError
   exit 1
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 require 'io/console'
 require 'fileutils'
 require 'json'  # Needed for config save/load
@@ -38,6 +72,40 @@ rescue => e
   $debug_log = nil
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def debug(msg)
   return unless $debug_log
   begin
@@ -46,6 +114,40 @@ def debug(msg)
   rescue => e
     # Silent fail if debug log fails
   end
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 debug "Starting TUI - version #{@version}"
@@ -110,6 +212,40 @@ rescue => e
   debug e.backtrace.join("\n") if e.backtrace
   puts "Fatal: Could not load includes - #{e.message}"
   exit 1
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 debug "After includes load block"
@@ -195,12 +331,80 @@ rescue => e
   # Silent fail for config save
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def load_config
   if File.exist?(CONFIG_FILE)
     @config = JSON.parse(File.read(CONFIG_FILE), symbolize_names: true)
   end
 rescue => e
   # Use defaults if config load fails
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def init_screen
@@ -299,6 +503,40 @@ def init_screen
   refresh_all
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def refresh_all
   @header.full_refresh
   @menu.full_refresh
@@ -307,6 +545,40 @@ def refresh_all
   draw_header
   draw_menu
   draw_footer
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def recreate_panes
@@ -344,10 +616,78 @@ def recreate_panes
   refresh_all
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def draw_header
   # Left justify the title text with padding
   title = " AMAR RPG TOOLS - The Ultimate Amar RPG Toolkit | [?] Help"
   @header.say(title)
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def draw_menu
@@ -390,6 +730,40 @@ def draw_menu
   @menu.say(menu_text)
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def update_border_colors
   # Toggle borders based on focus (like RTFM)
   # Only the focused pane gets a border
@@ -403,6 +777,40 @@ def update_border_colors
   # Refresh borders to show/hide them
   @menu.border_refresh
   @content.border_refresh
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def return_to_menu
@@ -420,6 +828,40 @@ def return_to_menu
   end
 
   draw_footer
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def draw_footer
@@ -446,11 +888,79 @@ def draw_footer
   @footer.say(footer_text)
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def show_footer_message(message, duration = 0)
   # Show a temporary footer message without it being immediately overwritten
   @footer.clear
   @footer.say(" #{message}".ljust(@cols))
   sleep(duration) if duration > 0
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def grey_out_content
@@ -466,6 +976,40 @@ def grey_out_content
     greyed = current_text.pure.fg(240)
     @content.say(greyed)
   end
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def show_content(text)
@@ -494,6 +1038,40 @@ rescue => e
   debug "Error in show_content: #{e.message}"
   debug e.backtrace.join("\n") if e.backtrace
   raise
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def convert_ansi_to_rcurses(text)
@@ -605,6 +1183,40 @@ def convert_ansi_to_rcurses(text)
   result
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def show_help
   content_width = @cols - 35
 
@@ -679,6 +1291,40 @@ def show_help
   return_to_menu
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def show_popup(title, content, width = 60, height = 20)
   # Calculate popup position (centered)
   x = (@cols - width) / 2
@@ -714,6 +1360,40 @@ def show_popup(title, content, width = 60, height = 20)
   end
   
   refresh_all
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def handle_menu_navigation
@@ -764,14 +1444,11 @@ def handle_menu_navigation
   when "n", "N"
     generate_npc_new
   when "e", "E"
-    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: MAIN HANDLER: 'e' key pressed, focus=#{@focus}, has_content=#{!@content.text.to_s.strip.empty?}" }
     # Only handle 'e' from menu focus for encounter generation
     # Content editing is handled within each view's own loop
     if @focus == :menu
-      File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: MAIN HANDLER: Focus is menu - generating encounter" }
       generate_encounter_new
     else
-      File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: MAIN HANDLER: Focus is #{@focus} - ignoring 'e' key" }
     end
   when "m", "M"
     generate_monster_new
@@ -848,6 +1525,40 @@ def handle_menu_navigation
   true
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def execute_menu_item
   item = @menu_items[@menu_index]
   debug "Executing menu item: #{item}"
@@ -898,6 +1609,40 @@ def execute_menu_item
   when /Q\. Quit/
     return false
   end
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 # O6 - Open Ended d6 roll
@@ -966,6 +1711,40 @@ def roll_o6
   end
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 
 # NPC GENERATION (NEW SYSTEM)
 def generate_npc_new
@@ -1007,6 +1786,40 @@ def generate_npc_new
     debug e.backtrace.join("\n") if e.backtrace
     show_content("Error generating NPC: #{e.message}\n\n#{e.backtrace.join("\n")}")
   end
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def npc_input_new_tui
@@ -1206,6 +2019,40 @@ def npc_input_new_tui
   inputs
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def get_text_input(prompt)
   debug "get_text_input called with prompt: #{prompt}"
   footer_text = colorize_output(" Type input", :label) + " | "
@@ -1263,6 +2110,40 @@ def get_text_input(prompt)
   end
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def handle_npc_view(npc, output)
   # Save menu state to preserve selection
   saved_menu_index = @menu_index
@@ -1307,10 +2188,8 @@ def handle_npc_view(npc, output)
   @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
 
   key = nil  # Initialize key variable
-  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: handle_npc_view: Starting keyboard loop, focus=#{@focus}" }
   loop do
     key = getchr
-    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: NPC view loop: key pressed = '#{key}' (#{key.ord rescue 'special'})" }
 
     case key
     when "ESC", "\e", "q", "LEFT"
@@ -1349,23 +2228,19 @@ def handle_npc_view(npc, output)
       sleep(1)
       @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     when "e", "E"  # Ctrl+E
-      File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: Starting external editor process" }
       # Simple external editor - just like it was working before
       clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
-      File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: About to call edit_in_external_editor" }
       edited_text = edit_in_external_editor(clean_text)
-      File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: Editor returned, reinitializing display" }
 
       # Show edited content if it was changed, otherwise show original with colors
       if edited_text && !edited_text.empty? && edited_text.strip != clean_text.strip
-        # Apply basic colors to edited text
-        
+        # Re-apply colors to edited text using the same patterns as original
+        # Skip coloring for now - just show edited text
         show_content(edited_text)
         output = edited_text  # Update with colored edited version
       else
         show_content(output)
       end
-      File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: Display restored" }
 
       # Always restore the footer
       @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
@@ -1398,6 +2273,40 @@ def handle_npc_view(npc, output)
   return_to_menu
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def copy_to_clipboard(text)
   # Remove ANSI color codes if present
   clean_text = text.gsub(/\e\[[\d;]*m/, '')
@@ -1425,56 +2334,111 @@ def copy_to_clipboard(text)
   end
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def edit_in_external_editor(text)
-  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Starting, text length = #{text.length}" }
   
   # Remove ANSI codes before editing
-  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Cleaning ANSI codes" }
   clean_text = text.gsub(/\e\[[\d;]*m/, '')
-  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: ANSI codes cleaned, length = #{clean_text.length}" }
 
   # Also remove rcurses color formatting if present
   if clean_text.respond_to?(:pure)
-    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Applying .pure method" }
     clean_text = clean_text.pure
-    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Pure applied, length = #{clean_text.length}" }
   end
 
   # Create temporary file
-  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Creating tempfile" }
   require 'tempfile'
   tmpfile = Tempfile.new(['amar_output', '.txt'])
-  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Tempfile created: #{tmpfile.path}" }
   tmpfile.write(clean_text)
   tmpfile.close
-  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Tempfile written and closed" }
   
   begin
-    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: About to launch editor safely" }
 
     # Use simple internal editing instead of external editor
-    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Using internal editor" }
 
     # Show the text in an editable popup
     lines = clean_text.split("\n")
     edited_lines = edit_text_internally(lines)
     edited_text = edited_lines.join("\n")
 
-    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Internal editing completed" }
     
     # Refresh all panes
     init_screen
     refresh_all
 
     # Return the edited content
-    File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Returning edited text, length = #{edited_text.length}" }
     return edited_text
   ensure
     tmpfile.unlink if tmpfile
   end
 rescue => e
-  File.open("/tmp/amar_debug.log", "a") { |f| f.puts "#{Time.now}: edit_in_external_editor: Error - #{e.message}" }
   nil
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def edit_in_external_editor(text)
@@ -1518,6 +2482,40 @@ def edit_in_external_editor(text)
   end
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 # ENCOUNTER GENERATION (NEW SYSTEM) 
 def generate_encounter_new
   debug "Starting generate_encounter_new"
@@ -1556,6 +2554,40 @@ def generate_encounter_new
     debug e.backtrace.join("\n") if e.backtrace
     show_content("Error generating encounter: #{e.message}\n\n#{e.backtrace.join("\n")}")
   end
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def enc_input_new_tui
@@ -1648,6 +2680,40 @@ def enc_input_new_tui
   
   # Return the encounter settings
   [encounter, enc_number, $Terraintype, $Level]
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def handle_encounter_view(enc, output)
@@ -1772,6 +2838,40 @@ def handle_encounter_view(enc, output)
   return_to_menu
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def format_npc_new(npc)
   content_width = @cols - 35
   output = "NPC: #{npc.name} (#{npc.sex}, #{npc.age})\n"
@@ -1807,6 +2907,40 @@ def format_npc_new(npc)
   output
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def format_encounter_new(enc)
   content_width = @cols - 35
   output = "ENCOUNTER: #{enc.enc_attitude}\n"
@@ -1825,6 +2959,40 @@ def format_encounter_new(enc)
   end
   
   output
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def handle_content_view(object, type)
@@ -1876,6 +3044,40 @@ def handle_content_view(object, type)
   draw_footer
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def save_to_file(object, type)
   timestamp = Time.now.strftime("%Y%m%d_%H%M%S")
   filename = "saved/#{type}_#{timestamp}.txt"
@@ -1884,6 +3086,40 @@ def save_to_file(object, type)
   File.write(filename, @content.text)
   
   show_popup("SAVED", "Saved to: #{filename}\n\nPress any key to continue")
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 # This function is duplicate - removing it to use the proper one above
@@ -1915,6 +3151,40 @@ def colorize_output(text, type = :default)
   end
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 # DICE ROLLER
 def roll_dice_ui
   show_popup("DICE ROLLER", "Enter dice notation (e.g., 3d6+2):\n\nOr press ESC to cancel")
@@ -1936,6 +3206,40 @@ def roll_dice_ui
   end
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def roll_dice(notation)
   # Parse dice notation like "3d6+2"
   if notation =~ /(\d+)d(\d+)([+\-]\d+)?/
@@ -1948,6 +3252,40 @@ def roll_dice(notation)
   else
     return "Invalid notation"
   end
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 # MONSTER GENERATION (NEW SYSTEM)
@@ -2030,6 +3368,40 @@ def generate_monster_new
   end
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def handle_monster_view(monster, output)
   # Save menu state to preserve selection
   saved_menu_index = @menu_index
@@ -2089,6 +3461,40 @@ def handle_monster_view(monster, output)
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def format_monster_new(monster)
@@ -2308,6 +3714,40 @@ def format_monster_new(monster)
   output
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 # NPC GENERATION (OLD SYSTEM)
 def generate_npc_old
   # Get inputs for old system NPC
@@ -2449,6 +3889,40 @@ def generate_npc_old
   end
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 # ENCOUNTER GENERATION (OLD SYSTEM)
 def generate_encounter_old
   # Get inputs for old system encounter
@@ -2540,6 +4014,40 @@ def generate_encounter_old
   rescue => e
     show_content("Error generating encounter: #{e.message}")
   end
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 # WEATHER GENERATOR
@@ -2892,6 +4400,40 @@ def generate_weather_ui
   end
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 # WEATHER PDF GENERATION
 def generate_weather_pdf
   debug "Starting generate_weather_pdf"
@@ -3068,6 +4610,40 @@ def generate_weather_pdf
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 # TOWN GENERATOR
@@ -3495,6 +5071,40 @@ rescue => e
   show_content("Error generating town: #{e.message}")
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 # NAME GENERATOR
 def generate_name_ui
   # Use the actual name types from the $Names table
@@ -3572,6 +5182,40 @@ def generate_name_ui
   end
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 debug "All methods defined"
 
 # MAIN LOOP
@@ -3625,6 +5269,40 @@ ensure
   Cursor.show if defined?(Cursor) # Show cursor again
   $debug_log.close if $debug_log
   debug "Cleanup completed"
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 # TOWN RELATIONS
@@ -3700,7 +5378,7 @@ def generate_town_relations
       txt_content.lines.each do |line|
         if line.include?("===")
           # Strong alliance (double positive)
-          output += line.fg(46).b  # Bright green bold
+          output += line.fg(10).b  # Bright green bold
         elsif line.include?("---")
           # Strong hate (double negative)
           output += line.fg(196).b  # Bright red bold
@@ -3805,6 +5483,40 @@ def generate_town_relations
   return_to_menu
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 # AI FEATURES
 def setup_openai_config
   config_dir = File.expand_path("~/.amar-tools")
@@ -3832,9 +5544,77 @@ def setup_openai_config
   @aimodel ||= "gpt-4o-mini"
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def openai_client
   require 'ruby/openai' unless defined?(OpenAI)
   @openai_client ||= OpenAI::Client.new(access_token: @ai)
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def generate_adventure_ai
@@ -3980,6 +5760,40 @@ def generate_adventure_ai
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def describe_encounter_ai
@@ -4140,6 +5954,40 @@ def describe_encounter_ai
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
   return_to_menu
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def describe_npc_ai
@@ -4346,6 +6194,40 @@ def describe_npc_ai
   return_to_menu
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 # Display image in terminal using w3mimgdisplay (like RTFM/IMDB)
 def clear_terminal_image
   w3m = "/usr/lib/w3m/w3mimgdisplay"
@@ -4384,6 +6266,40 @@ def clear_terminal_image
     debug "Error clearing image: #{e.message}"
     return false
   end
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def display_terminal_image(image_path)
@@ -4460,6 +6376,40 @@ def display_terminal_image(image_path)
     debug "Backtrace: #{e.backtrace[0..3].join("\n")}"
     return false
   end
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
 
 def generate_npc_image(description = nil)
@@ -4859,6 +6809,40 @@ def generate_npc_image(description = nil)
   end
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def show_latest_npc_image
   debug "Starting show_latest_npc_image"
   content_width = @cols - 35
@@ -5063,6 +7047,40 @@ def show_latest_npc_image
   return_to_menu
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 def show_latest_town_map
   debug "Starting show_latest_town_map"
   content_width = @cols - 35
@@ -5130,7 +7148,7 @@ def show_latest_town_map
       txt_content = File.read(txt_file)
       txt_content.lines.each do |line|
         if line.include?("===")
-          output += line.fg(46).b  # Bright green bold for strong alliance
+          output += line.fg(10).b  # Bright green bold for strong alliance
         elsif line.include?("---")
           output += line.fg(196).b  # Bright red bold for deep hate
         elsif line.include?("+++")
@@ -5186,7 +7204,7 @@ def show_latest_town_map
             txt_content = File.read(txt_file)
             txt_content.lines.each do |line|
               if line.include?("===")
-                output += line.fg(46).b
+                output += line.fg(10).b
               elsif line.include?("---")
                 output += line.fg(196).b
               elsif line.include?("+++")
@@ -5236,7 +7254,7 @@ def show_latest_town_map
             txt_content = File.read(txt_file)
             txt_content.lines.each do |line|
               if line.include?("===")
-                output += line.fg(46).b
+                output += line.fg(10).b
               elsif line.include?("---")
                 output += line.fg(196).b
               elsif line.include?("+++")
@@ -5283,7 +7301,7 @@ def show_latest_town_map
             txt_content = File.read(txt_file)
             txt_content.lines.each do |line|
               if line.include?("===")
-                output += line.fg(46).b
+                output += line.fg(10).b
               elsif line.include?("---")
                 output += line.fg(196).b
               elsif line.include?("+++")
@@ -5406,6 +7424,40 @@ def show_latest_town_map
   return_to_menu
 end
 
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
 debug "About to check if running as main"
 debug "__FILE__ = #{__FILE__}"
 debug "$0 = #{$0}"
@@ -5447,4 +7499,73 @@ else
   debug "Not running as main script, skipping startup"
   debug "This happens when __FILE__ != File.expand_path($0)"
 end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
 end
+end
+
+def reapply_colors(text)
+  # Re-apply colors using rcurses string extensions
+  lines = text.split("\n")
+  colored_lines = lines.map do |line|
+    case line
+    when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
+      # Character name line - bright cyan
+      line.fg(14).b
+    when /^(Description:.*$)/
+      # Description line - light yellow
+      line.fg(229)
+    when /^(BODY|MIND|SPIRIT)\s*\(/
+      # Characteristic headers - bright yellow
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+    when /^\s+([A-Z][a-z]+)\s*\(/
+      # Attribute names - bright magenta
+      line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
+    when /^\s+[\w\s]+:\s*\d+$/
+      # Skill lines - white
+      line.fg(7)
+    when /^(SIZE:.*BP:.*DB:.*MD:.*)/
+      # Stats line - bright green
+      line.fg(10).b
+    when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
+      # Weapons/armor/equipment - red
+      line.fg(202).b
+    else
+      line
+    end
+  end
+
+  colored_lines.join("\n")
+end
+
