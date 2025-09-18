@@ -235,28 +235,20 @@
         </div>
 
         <div class="menu-panel focused" id="menuPanel">
-            <div class="menu-item separator">── NEW 3-TIER SYSTEM ──</div>
+            <div class="menu-item separator" style="color: #2AA52A; text-align: left;">NEW 3-TIER SYSTEM</div>
             <div class="menu-item" data-action="npc">N. Generate NPC</div>
             <div class="menu-item" data-action="encounter">E. Generate Encounter</div>
             <div class="menu-item" data-action="monster">M. Generate Monster</div>
             <div class="menu-item empty"></div>
-            <div class="menu-item separator">── WORLD BUILDING ──</div>
+            <div class="menu-item separator" style="color: #42A5A5; text-align: left;">WORLD BUILDING</div>
             <div class="menu-item" data-action="town">T. Town/City Generator</div>
-            <div class="menu-item" data-action="relations">R. Town Relations</div>
-            <div class="menu-item" data-action="relations-map">V. Show Town Relations Map</div>
             <div class="menu-item" data-action="weather">W. Weather Generator</div>
             <div class="menu-item" data-action="weather-pdf">P. Weather PDF Generator</div>
             <div class="menu-item" data-action="names">G. Name Generator</div>
             <div class="menu-item empty"></div>
-            <div class="menu-item separator">── UTILITIES ──</div>
+            <div class="menu-item separator" style="color: #855A85; text-align: left;">UTILITIES</div>
             <div class="menu-item" data-action="roll">O. Roll Open Ended d6</div>
             <div class="menu-item" data-action="help">?. Help</div>
-            <div class="menu-item empty"></div>
-            <div class="menu-item separator">── LEGACY SYSTEM ──</div>
-            <div class="menu-item" data-action="old-npc">1. Old NPC Generator</div>
-            <div class="menu-item" data-action="old-encounter">2. Old Encounter</div>
-            <div class="menu-item empty"></div>
-            <div class="menu-item" data-action="quit">Q. Quit</div>
         </div>
 
         <div class="content-panel" id="contentPanel">
@@ -522,6 +514,89 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     <button class="btn" onclick="showMainView()">Back</button>
                 </div>
             </div>
+
+            <!-- Town Generation Form -->
+            <div class="form-container hidden" id="townForm">
+                <h3 style="color: #00ffff; margin-bottom: 8px; font-size: 16px;">Town/City Generator</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="townName">Name:</label>
+                        <input type="text" id="townName" placeholder="Random" style="width: 140px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="townSize">Houses:</label>
+                        <input type="number" id="townSize" min="1" max="1000" value="0" placeholder="Random" style="width: 80px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="townVar">Variation:</label>
+                        <select id="townVar" style="width: 60px;">
+                            <option value="0">Rand</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top: 8px;">
+                    <button class="btn" onclick="generateTown()">Generate Town</button>
+                    <button class="btn" onclick="showMainView()">Back</button>
+                </div>
+            </div>
+
+            <!-- Encounter Generation Form -->
+            <div class="form-container hidden" id="encounterForm">
+                <h3 style="color: #00ffff; margin-bottom: 8px; font-size: 16px;">Generate Encounter</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="encTime">Time:</label>
+                        <select id="encTime" style="width: 80px;">
+                            <option value="1">Day</option>
+                            <option value="0">Night</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="encTerrain">Terrain:</label>
+                        <select id="encTerrain" style="width: 100px;">
+                            <option value="0">City</option>
+                            <option value="1">Rural</option>
+                            <option value="2">Road</option>
+                            <option value="3">Plains</option>
+                            <option value="4">Hills</option>
+                            <option value="5">Mountains</option>
+                            <option value="6">Woods</option>
+                            <option value="7">Wilderness</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="encLevel">Level Mod:</label>
+                        <input type="number" id="encLevel" min="-5" max="5" value="0" style="width: 60px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="encRace">Race:</label>
+                        <select id="encRace" style="width: 100px;">
+                            <option value="0">Random</option>
+                            <option value="1">Human</option>
+                            <option value="2">Elf</option>
+                            <option value="3">Half-elf</option>
+                            <option value="4">Dwarf</option>
+                            <option value="5">Goblin</option>
+                            <option value="6">Lizard Man</option>
+                            <option value="7">Centaur</option>
+                            <option value="8">Ogre</option>
+                            <option value="9">Troll</option>
+                            <option value="10">Araxi</option>
+                            <option value="11">Faerie</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top: 8px;">
+                    <button class="btn" onclick="generateEncounter()">Generate Encounter</button>
+                    <button class="btn" onclick="showMainView()">Back</button>
+                </div>
+            </div>
         </div>
 
         <div class="status-bar" id="statusBar">
@@ -582,16 +657,11 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                         'e': 'encounter',
                         'm': 'monster',
                         't': 'town',
-                        'r': 'relations',
-                        'v': 'relations-map',
                         'w': 'weather',
                         'p': 'weather-pdf',
                         'g': 'names',
                         'o': 'roll',
-                        '?': 'help',
-                        '1': 'old-npc',
-                        '2': 'old-encounter',
-                        'q': 'quit'
+                        '?': 'help'
                     };
 
                     if (shortcuts[key]) {
@@ -654,19 +724,13 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     showNPCForm();
                     break;
                 case 'encounter':
-                    generateEncounter();
+                    showEncounterForm();
                     break;
                 case 'monster':
                     generateMonster();
                     break;
                 case 'town':
-                    generateTown();
-                    break;
-                case 'relations':
-                    showNotImplemented('Town Relations');
-                    break;
-                case 'relations-map':
-                    showNotImplemented('Town Relations Map');
+                    showTownForm();
                     break;
                 case 'weather':
                     showWeatherForm();
@@ -682,15 +746,6 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     break;
                 case 'help':
                     showHelp();
-                    break;
-                case 'old-npc':
-                    showNotImplemented('Old NPC Generator');
-                    break;
-                case 'old-encounter':
-                    showNotImplemented('Old Encounter');
-                    break;
-                case 'quit':
-                    showQuit();
                     break;
                 default:
                     updateStatus('Unknown action');
@@ -739,6 +794,24 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
             document.getElementById('menuPanel').classList.remove('focused');
             document.getElementById('contentPanel').classList.add('focused');
             updateStatus('Select name options and click Generate | ESC to return to menu');
+        }
+
+        function showTownForm() {
+            document.getElementById('output').style.display = 'none';
+            document.getElementById('townForm').classList.remove('hidden');
+            currentFocus = 'content';
+            document.getElementById('menuPanel').classList.remove('focused');
+            document.getElementById('contentPanel').classList.add('focused');
+            updateStatus('Enter town parameters and click Generate | ESC to return to menu');
+        }
+
+        function showEncounterForm() {
+            document.getElementById('output').style.display = 'none';
+            document.getElementById('encounterForm').classList.remove('hidden');
+            currentFocus = 'content';
+            document.getElementById('menuPanel').classList.remove('focused');
+            document.getElementById('contentPanel').classList.add('focused');
+            updateStatus('Select encounter parameters and click Generate | ESC to return to menu');
         }
 
         function showNotImplemented(feature) {
@@ -815,6 +888,13 @@ Failed to connect to server: ${error.message}
         }
 
         async function generateEncounter() {
+            const params = {
+                time: parseInt(document.getElementById('encTime').value),
+                terrain: parseInt(document.getElementById('encTerrain').value),
+                level_mod: parseInt(document.getElementById('encLevel').value) || 0,
+                race: parseInt(document.getElementById('encRace').value) || 0
+            };
+
             updateStatus('Generating encounter...');
 
             const output = document.getElementById('output');
@@ -832,7 +912,7 @@ Failed to connect to server: ${error.message}
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({})
+                    body: JSON.stringify(params)
                 });
 
                 const result = await response.json();
@@ -888,8 +968,7 @@ Failed to connect to server: ${error.message}
                 const result = await response.json();
 
                 if (result.success) {
-                    const coloredOutput = applyTUIColors(result.output);
-                    output.innerHTML = `<div class="output">${coloredOutput}</div>
+                    output.innerHTML = `<div class="output">${result.output}</div>
 
 <div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
                     updateStatus('Monster generated successfully | ESC to return to menu');
@@ -916,6 +995,12 @@ Failed to connect to server: ${error.message}
         }
 
         async function generateTown() {
+            const params = {
+                town_name: document.getElementById('townName').value,
+                town_size: parseInt(document.getElementById('townSize').value) || 0,
+                town_var: parseInt(document.getElementById('townVar').value) || 0
+            };
+
             updateStatus('Generating town...');
 
             const output = document.getElementById('output');
@@ -933,14 +1018,13 @@ Failed to connect to server: ${error.message}
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({})
+                    body: JSON.stringify(params)
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
-                    const coloredOutput = applyTUIColors(result.output);
-                    output.innerHTML = `<div class="output">${coloredOutput}</div>
+                    output.innerHTML = `<div class="output">${result.output}</div>
 
 <div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
                     updateStatus('Town generated successfully | ESC to return to menu');
@@ -997,8 +1081,7 @@ Failed to connect to server: ${error.message}
                 const result = await response.json();
 
                 if (result.success) {
-                    const coloredOutput = applyTUIColors(result.output);
-                    output.innerHTML = `<div class="output">${coloredOutput}</div>
+                    output.innerHTML = `<div class="output">${result.output}</div>
 
 <div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
                     updateStatus('Weather generated successfully | ESC to return to menu');
@@ -1053,8 +1136,7 @@ Failed to connect to server: ${error.message}
                 const result = await response.json();
 
                 if (result.success) {
-                    const coloredOutput = applyTUIColors(result.output);
-                    output.innerHTML = `<div class="output">${coloredOutput}</div>
+                    output.innerHTML = `<div class="output">${result.output}</div>
 
 <div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
                     updateStatus('Names generated successfully | ESC to return to menu');

@@ -188,6 +188,27 @@ def call_ruby_function(function_name, params=None):
                 param_str = f'[{name_idx}, {count}]'
             else:
                 param_str = '[0, 20]'
+        elif function_name == 'town':
+            # Build parameter string for town generation
+            if params:
+                town_name = params.get('town_name', '').strip()
+                town_size = params.get('town_size', 0)
+                town_var = params.get('town_var', 0)
+                if town_size == 0: town_size = 'rand(1..100)'
+                if town_var == 0: town_var = 'rand(1..6)'
+                param_str = f'["{town_name}", {town_size}, {town_var}]'
+            else:
+                param_str = '["", rand(1..100), rand(1..6)]'
+        elif function_name == 'encounter':
+            # Build parameter string for encounter generation
+            if params:
+                time = params.get('time', 1)  # 1=day, 0=night
+                terrain = params.get('terrain', 1)  # 0-7
+                level_mod = params.get('level_mod', 0)  # +/- modifier
+                race = params.get('race', 0)  # 0=random, 1-11 specific races
+                param_str = f'[{time}, {terrain}, {level_mod}, {race}]'
+            else:
+                param_str = '[1, 1, 0, 0]'
 
         # Create a temporary Ruby script that calls the function
         ruby_code = f"""
@@ -242,12 +263,25 @@ when 'encounter'
     # Load encounter system
     require_relative 'cli_enc_output_new.rb'
 
-    # Initialize global variables needed for encounter output
-    $Day = 1  # 1 = day, 0 = night
-    $Terrain = rand(8)  # 0-7 for different terrain types
-    $Level = rand(1..5)  # Random level modifier
+    # Get parameters from input
+    params = {param_str} rescue [1, 1, 0, 0]
+    time = params[0] || 1
+    terrain = params[1] || 1
+    level_mod = params[2] || 0
+    race = params[3] || 0
 
-    enc = EncNew.new
+    # Set global variables for encounter generation
+    $Day = time
+    $Terrain = terrain
+    $Terraintype = terrain + (8 * time)
+    $Level = level_mod
+
+    # Map race parameter to race name
+    races = ["Random", "Human", "Elf", "Half-elf", "Dwarf", "Goblin", "Lizard Man", "Centaur", "Ogre", "Troll", "Araxi", "Faerie"]
+    selected_race = race == 0 ? "Random" : races[race]
+
+    # Generate encounter with parameters - exact TUI approach
+    enc = EncNew.new(selected_race, 1, $Terraintype, level_mod)
     output = enc_output_new(enc, 'cli', 120)
     puts output
 when 'monster'
@@ -264,7 +298,7 @@ when 'monster'
       k == "default"
     end.sort
     monster_type = monster_list.sample
-    level = rand(1..6)
+    level = rand(1..3)  # Monsters should be level 1-3, not 1-6
 
     # Create monster exactly as TUI does
     monster = MonsterNew.new(monster_type, level)
@@ -374,18 +408,46 @@ when 'town'
     # Use actual town generation from TUI
     require_relative 'includes/class_town.rb'
     require_relative 'includes/tables/town.rb'
+    require_relative 'includes/functions.rb'
+
+    # Get parameters
+    params = {param_str} rescue ["", "rand(1..100)", "rand(1..6)"]
+    town_name = params[0] || ""
+    town_size = params[1].is_a?(String) ? eval(params[1]) : (params[1] || rand(1..100))
+    town_var = params[2].is_a?(String) ? eval(params[2]) : (params[2] || rand(1..6))
 
     # Generate town exactly as TUI does
-    town = Town.new
+    town = Town.new(town_name, town_size, town_var)
 
-    puts "TOWN GENERATOR".fg(14).b
-    puts "=" * 40
-    puts "Name: ".fg(13) + town.name.fg(226)
-    puts "Population: ".fg(13) + town.population.to_s.fg(202)
-    puts "Size: ".fg(13) + town.size.fg(7)
-    puts "Wealth: ".fg(13) + town.wealth.fg(11)
-    puts "Government: ".fg(13) + town.government.fg(195)
-    puts "Notable Features: ".fg(13) + town.features.join(", ").fg(51)
+    # Fix name formatting - add proper prefix
+    display_name = town.town_name
+    if !display_name.empty?
+      case town_size
+      when 1..5
+        display_name = "Castle of " + display_name unless display_name.start_with?("Castle")
+      when 6..25
+        display_name = "Village of " + display_name unless display_name.start_with?("Village")
+      when 26..100
+        display_name = "Town of " + display_name unless display_name.start_with?("Town")
+      else
+        display_name = "City of " + display_name unless display_name.start_with?("City")
+      end
+    end
+
+    puts display_name.fg(14).b
+    puts "=" * 60
+    puts "Population: ".fg(13) + town.town_residents.to_s.fg(202) + " in ".fg(7) + town.town_size.to_s.fg(202) + " houses".fg(7)
+    puts ""
+    puts "ALL RESIDENTS:".fg(13)
+
+    # Show ALL residents like TUI does
+    if town.town && town.town.length > 0
+      town.town.each_with_index do |resident, idx|
+        if resident && resident.length > 1
+          puts "  " + (idx + 1).to_s.rjust(2).fg(202) + ". " + resident[0].fg(226) + " - " + resident[1].fg(7)
+        end
+      end
+    end
 when 'names'
     # Use actual name generation from TUI
     require_relative 'includes/functions.rb'
