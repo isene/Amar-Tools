@@ -12,6 +12,120 @@ import tempfile
 import shutil
 import re
 
+# ANSI to CSS color mapping
+ANSI_TO_CSS = {
+    # Standard colors (30-37, 90-97)
+    '30': 'color: #000000',  # Black
+    '31': 'color: #800000',  # Red
+    '32': 'color: #008000',  # Green
+    '33': 'color: #808000',  # Yellow
+    '34': 'color: #000080',  # Blue
+    '35': 'color: #800080',  # Magenta
+    '36': 'color: #008080',  # Cyan
+    '37': 'color: #c0c0c0',  # White
+    '90': 'color: #808080',  # Bright Black
+    '91': 'color: #ff0000',  # Bright Red
+    '92': 'color: #00ff00',  # Bright Green
+    '93': 'color: #ffff00',  # Bright Yellow
+    '94': 'color: #0000ff',  # Bright Blue
+    '95': 'color: #ff00ff',  # Bright Magenta
+    '96': 'color: #00ffff',  # Bright Cyan
+    '97': 'color: #ffffff',  # Bright White
+
+    # 256-color palette (key colors used in TUI)
+    '7': 'color: #c0c0c0',    # White
+    '10': 'color: #00ff00',   # Bright green
+    '11': 'color: #ffff00',   # Bright yellow
+    '13': 'color: #ff00ff',   # Bright magenta
+    '14': 'color: #00ffff',   # Bright cyan
+    '15': 'color: #ffffff',   # Bright white
+    '28': 'color: #008700',   # Dark green
+    '34': 'color: #00af00',   # Green
+    '40': 'color: #00d700',   # Bright green
+    '46': 'color: #00ff00',   # Very bright green
+    '51': 'color: #00ffff',   # Cyan
+    '82': 'color: #5fff00',   # Lime green
+    '88': 'color: #870000',   # Dark red
+    '111': 'color: #87afff',  # Light blue
+    '118': 'color: #87ff00',  # Bright lime
+    '124': 'color: #af0000',  # Red
+    '154': 'color: #afff00',  # Yellow-green
+    '160': 'color: #d70000',  # Bright red
+    '166': 'color: #d75f00',  # Orange-red
+    '172': 'color: #d78700',  # Orange
+    '178': 'color: #d7af00',  # Light orange
+    '184': 'color: #d7d700',  # Yellow-orange
+    '190': 'color: #d7ff00',  # Light yellow
+    '195': 'color: #d7ffff',  # Light cyan
+    '196': 'color: #ff0000',  # Bright red
+    '202': 'color: #ff5f00',  # Red-orange
+    '208': 'color: #ff8700',  # Orange
+    '214': 'color: #ffaf00',  # Gold
+    '226': 'color: #ffff00',  # Yellow
+    '229': 'color: #ffffaf',  # Light yellow
+    '240': 'color: #585858',  # Dark gray
+    '243': 'color: #767676',  # Medium gray
+    '245': 'color: #8a8a8a',  # Light gray
+    '247': 'color: #9e9e9e',  # Light gray
+    '248': 'color: #a8a8a8',  # Light gray
+    '250': 'color: #bcbcbc',  # Very light gray
+    '251': 'color: #c6c6c6',  # Very light gray
+    '255': 'color: #eeeeee',  # Almost white
+}
+
+def convert_ansi_to_css(text):
+    """Convert ANSI escape codes to HTML with CSS styling"""
+    if not text:
+        return text
+
+    # Pattern for ANSI escape sequences
+    ansi_pattern = r'\x1b\[([0-9;]*)m'
+
+    def replace_ansi(match):
+        codes = match.group(1)
+        if not codes:
+            return '</span>'  # Reset code
+
+        styles = []
+        code_parts = codes.split(';') if codes else ['0']
+
+        for code in code_parts:
+            if code == '0':
+                return '</span>'  # Reset
+            elif code == '1':
+                styles.append('font-weight: bold')
+            elif code == '22':
+                styles.append('font-weight: normal')
+            elif code == '4':
+                styles.append('text-decoration: underline')
+            elif code == '24':
+                styles.append('text-decoration: none')
+            elif code.startswith('38;5;'):
+                # 256-color foreground
+                color_code = code.split(';')[2]
+                if color_code in ANSI_TO_CSS:
+                    styles.append(ANSI_TO_CSS[color_code])
+                else:
+                    styles.append(f'color: #{int(color_code):02x}{int(color_code):02x}{int(color_code):02x}')
+            elif code in ANSI_TO_CSS:
+                styles.append(ANSI_TO_CSS[code])
+
+        if styles:
+            return f'<span style="{"; ".join(styles)}">'
+        return ''
+
+    # Replace ANSI codes with HTML spans
+    result = re.sub(ansi_pattern, replace_ansi, text)
+
+    # Ensure we close any open spans
+    if '<span' in result and result.count('<span') > result.count('</span>'):
+        result += '</span>'
+
+    # Convert line breaks to HTML
+    result = result.replace('\n', '<br>')
+
+    return result
+
 app = Flask(__name__)
 
 # Configuration
@@ -41,6 +155,39 @@ def call_ruby_function(function_name, params=None):
                 param_str = f'["{name}", "{race}", "{type_val}", {level}, "{area}", "{sex}", {age}, {height}, {weight}, "{description}"]'
             else:
                 param_str = '["", "", "", 0, "", "", 0, 0, 0, ""]'
+        elif function_name == 'weather':
+            # Build parameter string for weather generation
+            if params:
+                month = params.get('month', 0)
+                condition = params.get('condition', 0)
+                wind_direction = params.get('wind_direction', 0)
+                wind_strength = params.get('wind_strength', 0)
+                param_str = f'[{month}, {condition}, {wind_direction}, {wind_strength}]'
+            else:
+                param_str = '[0, 0, 0, 0]'
+        elif function_name == 'names':
+            # Build parameter string for name generation
+            if params:
+                name_type = params.get('name_type', 'all')
+                count = params.get('count', 20)
+                # Convert name_type to index for $Names array
+                name_idx = 0  # Default to random
+                if name_type == 'human_male': name_idx = 0
+                elif name_type == 'human_female': name_idx = 1
+                elif name_type == 'dwarven_male': name_idx = 2
+                elif name_type == 'dwarven_female': name_idx = 3
+                elif name_type == 'elven_male': name_idx = 4
+                elif name_type == 'elven_female': name_idx = 5
+                elif name_type == 'lizardfolk': name_idx = 6
+                elif name_type == 'troll': name_idx = 7
+                elif name_type == 'araxi': name_idx = 8
+                elif name_type == 'fantasy_male': name_idx = 9
+                elif name_type == 'fantasy_female': name_idx = 10
+                elif name_type == 'places': name_idx = 12  # Village/Town
+                elif name_type == 'weapons': name_idx = 15
+                param_str = f'[{name_idx}, {count}]'
+            else:
+                param_str = '[0, 20]'
 
         # Create a temporary Ruby script that calls the function
         ruby_code = f"""
@@ -52,6 +199,21 @@ $pgmdir = '{RUBY_DIR}'
 # Load all required files
 require_relative 'includes/includes.rb'
 require_relative 'cli_npc_output_new.rb'
+
+# Define colorize_output function (simplified for web)
+def colorize_output(text, type)
+  case type
+  when :header then text.fg(14).b
+  when :subheader then text.fg(13)
+  when :label then text.fg(13)
+  when :value then text.fg(7)
+  when :success then text.fg(46)
+  when :warning then text.fg(214)
+  when :dice then text.fg(202)
+  when :name then text.fg(226)
+  else text.fg(7)
+  end
+end
 
 # Call the requested function
 case '{function_name}'
@@ -73,8 +235,8 @@ when 'npc'
     # Create NPC using exact TUI method
     npc = NpcNew.new(name, type, level, area, sex, age, height, weight, description)
 
-    # Generate output exactly as TUI does (without colors for web)
-    output = npc_output_new(npc, 'web', 120)
+    # Generate output exactly as TUI does (with CLI colors for web)
+    output = npc_output_new(npc, 'cli', 120)
     puts output
 when 'encounter'
     # Load encounter system
@@ -86,110 +248,213 @@ when 'encounter'
     $Level = rand(1..5)  # Random level modifier
 
     enc = EncNew.new
-    output = enc_output_new(enc, 'web', 120)
+    output = enc_output_new(enc, 'cli', 120)
     puts output
 when 'monster'
-    # Load monster system
+    # Use actual monster generation from TUI with exact format_monster_new function
     require_relative 'includes/class_monster_new.rb'
 
-    # Pick a random monster type
-    monster_types = ["Wolf", "Bear", "Dragon", "Orc", "Goblin", "Troll", "Giant Spider", "Dire Wolf"]
-    monster_type = monster_types.sample
-    level = rand(1..5)
+    # Load monster stats
+    unless defined?($MonsterStats)
+      load File.join($pgmdir, "includes/tables/monster_stats_new.rb")
+    end
 
-    begin
-      monster = MonsterNew.new(monster_type, level)
-      puts "Generated Monster:"
-      puts "Name: #{{monster.name || monster_type}}"
-      puts "Type: #{{monster.type}}"
-      puts "Level: #{{monster.level}}"
-      puts "SIZE: #{{monster.SIZE}}"
-      puts "Body Points: #{{monster.BP}}"
-      puts "Damage Bonus: #{{monster.DB}}"
-      puts "Movement: #{{monster.MD}}"
-      if monster.special_abilities && !monster.special_abilities.to_s.empty?
-        abilities = monster.special_abilities.is_a?(Array) ? monster.special_abilities.join(', ') : monster.special_abilities.to_s
-        puts "Special Abilities: #{{abilities}}"
+    # Get monster list and pick one randomly
+    monster_list = $MonsterStats.keys.reject do |k|
+      k == "default"
+    end.sort
+    monster_type = monster_list.sample
+    level = rand(1..6)
+
+    # Create monster exactly as TUI does
+    monster = MonsterNew.new(monster_type, level)
+
+    # Format output exactly as TUI format_monster_new function
+    content_width = 85  # Fixed width for web
+    puts monster.name.fg(46) + " (" + monster.type.fg(7) + ", Level " + monster.level.to_s.fg(7) + ")"
+    puts "─" * content_width
+    puts ""
+
+    # Physical stats with exact TUI formatting
+    size_val = monster.SIZE
+    size_display = size_val % 1 == 0.5 ? (size_val.floor.to_s + "½") : size_val.to_s
+    bp_val = monster.BP.is_a?(Float) ? monster.BP.round : monster.BP
+    db_val = monster.DB.is_a?(Float) ? monster.DB.round : monster.DB
+    md_val = monster.MD.is_a?(Float) ? monster.MD.round : monster.MD
+
+    puts "SIZE: ".fg(13) + size_display.fg(7) + " (" + monster.weight.round.to_s.fg(7) + "kg)  " +
+         "BP: ".fg(13) + bp_val.to_s.fg(7) + "  " +
+         "DB: ".fg(13) + db_val.to_s.fg(7) + "  " +
+         "MD: ".fg(13) + md_val.to_s.fg(7)
+    puts ""
+
+    # Special abilities
+    if monster.special_abilities && !monster.special_abilities.empty?
+      puts "SPECIAL ABILITIES:".fg(13)
+      puts "  " + monster.special_abilities.fg(46)
+      puts ""
+    end
+
+    # Weapons/Attacks with exact TUI format
+    puts "WEAPONS/ATTACKS:".fg(13)
+    puts "  " + "Attack".ljust(20).fg(13) + "Skill".rjust(6).fg(13) + "Init".rjust(6).fg(13) + "Off".rjust(5).fg(13) + "Def".rjust(5).fg(13) + "Damage".rjust(8).fg(13)
+
+    if monster.tiers && monster.tiers["BODY"] && monster.tiers["BODY"]["Melee Combat"] && monster.tiers["BODY"]["Melee Combat"]["skills"]
+      monster.tiers["BODY"]["Melee Combat"]["skills"].each do |skill, value|
+        next if value == 0
+        total = monster.get_skill_total("BODY", "Melee Combat", skill)
+
+        # Calculate weapon stats based on skill type and monster DB
+        db = monster.DB.is_a?(Float) ? monster.DB.round : monster.DB
+        if skill.downcase.include?("unarmed") || skill.downcase.include?("claw") || skill.downcase.include?("bite")
+          init = 3 + (monster.level / 2)
+          off = total + 2
+          def_val = total
+          damage = -4 + db
+        else
+          init = 4
+          off = total + 1
+          def_val = total + 1
+          damage = db + 2
+        end
+
+        # Color code damage
+        damage_color = case damage
+                       when -10..-5 then 88
+                       when -4..-2 then 124
+                       when -1..0 then 166
+                       when 1..2 then 226
+                       when 3..4 then 154
+                       when 5..6 then 118
+                       when 7..9 then 82
+                       when 10..14 then 46
+                       else 40
+                       end
+
+        puts "  " + skill.capitalize.ljust(20).fg(7) + total.to_s.rjust(6).fg(202) + init.to_s.rjust(6).fg(7) + off.to_s.rjust(5).fg(46) + def_val.to_s.rjust(5).fg(214) + damage.to_s.rjust(8).fg(damage_color)
       end
-      puts ""
-      puts "A fearsome creature with natural weapons and abilities."
-    rescue => e
-      # Fallback if monster system isn't fully loaded
-      puts "Generated Monster:"
-      puts "Name: #{{monster_type}}"
-      puts "Level: #{{level}}"
-      puts "A dangerous creature encountered in the wild."
-      puts ""
-      puts "Note: Full monster stats require complete monster tables."
-      puts "Error: #{{e.message}}"
     end
 when 'weather'
-    # Load weather system
+    # Use actual weather generation from TUI
     require_relative 'includes/weather.rb'
+    require_relative 'includes/tables/weather.rb'
+    require_relative 'includes/tables/month.rb'
 
-    # Initialize weather globals
-    $weather_n = 5   # Normal weather
-    $wind_dir_n = 0  # Wind direction
-    $wind_str_n = 0  # Wind strength
-    $mn = rand(14)   # Random month (0-13)
+    # Get parameters from input or use defaults
+    params = {param_str} rescue [0, 0, 0, 0]
+    month = params[0] || 0
+    weather_input = params[1] || 0
+    wind_dir = params[2] || 0
+    wind_str = params[3] || 0
 
-    # Generate a weather day
-    weather_day = Weather_day.new($weather_n, $wind_dir_n, $wind_str_n, $mn, rand(30))
-    puts "Weather for today:"
-    puts "Conditions: #{{weather_day.weather}}"
-    puts "Wind: Direction #{{weather_day.wind_dir}}, Strength #{{weather_day.wind_str}}"
-    puts "Special: #{{weather_day.special || 'None'}}"
+    # Use actual TUI defaults and logic
+    $mn = month == 0 ? rand(1..13) : month
+    weather = weather_input == 0 ? 5 : weather_input
+    wind = wind_str == 0 ? 0 : (wind_str - 1)
+
+    # Generate full weather month as TUI does
+    w = Weather_month.new($mn, weather, wind)
+
+    # Output with exact TUI colors
+    puts "WEATHER GENERATOR".fg(14).b
+    puts "=" * 40
+    puts "Month: ".fg(13) + $Month[$mn].fg(226)
+    puts ""
+
+    # Show a full month of weather like TUI does
+    (1..30).each do |day|
+      day_weather = w.day[day-1]
+      if day_weather
+        weather_text = $Weather[day_weather.weather] || "Unknown"
+        wind_text = ($Wind_str[day_weather.wind_str] || "No wind") + " " + ($Wind_dir[day_weather.wind_dir] || "")
+        puts "Day ".fg(202) + day.to_s.rjust(2).fg(202) + ": " + weather_text.fg(7) + " | " + wind_text.fg(51)
+      end
+    end
 when 'town'
-    # Load town system
+    # Use actual town generation from TUI
     require_relative 'includes/class_town.rb'
+    require_relative 'includes/tables/town.rb'
+
+    # Generate town exactly as TUI does
     town = Town.new
-    puts "Town: " + town.name
-    puts "Population: " + town.population.to_s
+
+    puts "TOWN GENERATOR".fg(14).b
+    puts "=" * 40
+    puts "Name: ".fg(13) + town.name.fg(226)
+    puts "Population: ".fg(13) + town.population.to_s.fg(202)
+    puts "Size: ".fg(13) + town.size.fg(7)
+    puts "Wealth: ".fg(13) + town.wealth.fg(11)
+    puts "Government: ".fg(13) + town.government.fg(195)
+    puts "Notable Features: ".fg(13) + town.features.join(", ").fg(51)
 when 'names'
-    # Simple name generation using predefined lists
-    puts "Random Names Generated:"
+    # Use actual name generation from TUI
+    require_relative 'includes/functions.rb'
+    require_relative 'includes/tables/names.rb'
+
+    # Get parameters
+    params = {param_str} rescue [0, 20]
+    name_idx = params[0] || 0
+    count = params[1] || 20
+
+    # Use random name type if 0
+    name_idx = rand($Names.length) if name_idx == 0
+
+    # Generate names exactly as TUI does
+    puts $Names[name_idx][0].upcase.fg(14).b + " NAMES"
+    puts "─" * 40
     puts ""
 
-    # Sample fantasy names
-    male_names = ["Aldric", "Bran", "Caelum", "Darian", "Eamon", "Finn", "Gareth", "Hadric", "Ivan", "Joren", "Kael", "Lucian", "Magnus", "Nolan", "Orin", "Piers", "Quinn", "Roderick", "Silas", "Theron"]
-    female_names = ["Aria", "Brenna", "Cora", "Dahlia", "Elara", "Freya", "Gaia", "Helena", "Isla", "Jessa", "Kira", "Luna", "Mira", "Nova", "Ophelia", "Petra", "Quinn", "Rhea", "Sera", "Tessa"]
-    surnames = ["Blackwood", "Stormwind", "Ironforge", "Goldleaf", "Silverblade", "Thornwick", "Ravencrest", "Brightstar", "Shadowmere", "Frostborn", "Emberfall", "Moonwhisper", "Starweaver", "Dragonborn", "Nightfall"]
-
-    puts "Male Names:"
-    5.times do
-      first = male_names.sample
-      last = surnames.sample
-      puts "  #{{first}} #{{last}}"
-    end
-
-    puts ""
-    puts "Female Names:"
-    5.times do
-      first = female_names.sample
-      last = surnames.sample
-      puts "  #{{first}} #{{last}}"
-    end
-
-    puts ""
-    puts "Single Names (Fantasy):"
-    fantasy_names = ["Zephyr", "Mystral", "Umbra", "Solara", "Vortex", "Zenith", "Nexus", "Prism", "Echo", "Raven"]
-    5.times do
-      puts "  #{{fantasy_names.sample}}"
+    count.times do
+      name = naming($Names[name_idx][0])
+      puts "  " + name.fg(226)
     end
 when 'roll'
-    # Open-ended d6 roll
-    roll = rand(1..6)
-    total = roll
-    explanation = "Initial roll: #{{roll}}"
+    # Use actual oD6 function exactly as TUI does - 10 rolls with colors
+    require_relative 'includes/d6s.rb'
 
-    while roll == 6
-        roll = rand(1..6)
-        total += roll
-        explanation += "\\nRolled 6! Bonus roll: #{{roll}}"
+    # Roll 10 O6 dice with gradient coloring based on result (exact TUI code)
+    results = []
+    10.times do
+      roll = oD6
+      # Gradient coloring based on roll value - exact TUI logic
+      roll_color = case roll
+                   when -99..-4 then 88   # Dark red for terrible fumbles
+                   when -3 then 124        # Red for fumbles
+                   when -2 then 160        # Light red
+                   when -1 then 166        # Orange-red
+                   when 0 then 172         # Orange
+                   when 1 then 178         # Light orange
+                   when 2 then 184         # Yellow-orange
+                   when 3 then 190         # Light yellow
+                   when 4 then 226         # Yellow
+                   when 5 then 154         # Yellow-green
+                   when 6 then 118         # Light green
+                   when 7 then 82          # Green
+                   when 8 then 46          # Bright green
+                   when 9 then 40          # Brighter green
+                   when 10..11 then 34     # Deep green for criticals
+                   when 12..14 then 28     # Darker green for high criticals
+                   else 22                 # Very dark green for extreme criticals
+                   end
+      roll_str = roll.to_s.rjust(3).fg(roll_color)
+      if roll >= 10
+        results << "#{{roll_str}} " + "(Critical!)".fg(46).b
+      elsif roll <= -3
+        results << "#{{roll_str}} " + "(Fumble!)".fg(196).b
+      else
+        results << "#{{roll_str}}"
+      end
     end
 
-    puts "Final Result: #{{total}}"
-    puts explanation
+    # Output exactly as TUI does
+    puts "OPEN ENDED D6 ROLLS (O6)".fg(14).b
+    puts "─" * 40
+    puts ""
+    results.each do |r|
+      puts r
+    end
+    puts ""
+    puts "Press any key to continue...".fg(240)
 else
     puts "Unknown function: {function_name}"
 end
@@ -205,7 +470,9 @@ end
         )
 
         if result.returncode == 0:
-            return {'success': True, 'output': result.stdout.strip()}
+            # Convert ANSI codes to HTML/CSS for web display
+            html_output = convert_ansi_to_css(result.stdout.strip())
+            return {'success': True, 'output': html_output}
         else:
             error_msg = result.stderr.strip() if result.stderr.strip() else "Ruby execution failed"
             return {'success': False, 'error': error_msg}

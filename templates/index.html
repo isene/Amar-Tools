@@ -105,32 +105,47 @@
         }
 
         .form-container {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #222;
-            border: 1px solid #555;
-            border-radius: 5px;
+            margin: 5px 0;
+            padding: 8px;
+            background-color: transparent;
+            border: none;
         }
 
         .form-group {
-            margin: 10px 0;
+            margin: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .form-group label {
-            display: block;
             color: #00ffff;
-            margin-bottom: 5px;
             font-weight: bold;
+            min-width: 70px;
+            font-size: 16px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+            margin: 4px 0;
+            flex-wrap: wrap;
+        }
+
+        .form-col {
+            flex: 1;
+            min-width: 140px;
         }
 
         .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 8px;
+            padding: 6px 8px;
             background-color: #333;
             border: 1px solid #555;
             color: #fff;
             font-family: 'Courier New', monospace;
             border-radius: 3px;
+            font-size: 16px;
+            height: 36px;
         }
 
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
@@ -233,13 +248,6 @@
             <div class="menu-item" data-action="weather-pdf">P. Weather PDF Generator</div>
             <div class="menu-item" data-action="names">G. Name Generator</div>
             <div class="menu-item empty"></div>
-            <div class="menu-item separator">── AI TOOLS ──</div>
-            <div class="menu-item" data-action="adventure">A. Generate Adventure</div>
-            <div class="menu-item" data-action="describe-encounter">C. Describe Encounter</div>
-            <div class="menu-item" data-action="describe-npc">D. Describe NPC</div>
-            <div class="menu-item" data-action="npc-image">I. Generate NPC Image</div>
-            <div class="menu-item" data-action="show-image">S. Show Latest NPC Image</div>
-            <div class="menu-item empty"></div>
             <div class="menu-item separator">── UTILITIES ──</div>
             <div class="menu-item" data-action="roll">O. Roll Open Ended d6</div>
             <div class="menu-item" data-action="help">?. Help</div>
@@ -272,58 +280,248 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
 
             <!-- NPC Generation Form -->
             <div class="form-container hidden" id="npcForm">
-                <h3 style="color: #00ffff; margin-bottom: 15px;">Generate NPC</h3>
-                <div class="form-group">
-                    <label for="npcName">Name (optional):</label>
-                    <input type="text" id="npcName" placeholder="Leave blank for random name">
+                <h3 style="color: #00ffff; margin-bottom: 8px; font-size: 14px;">Generate NPC</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="npcName">Name:</label>
+                        <input type="text" id="npcName" placeholder="Random" style="width: 120px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="npcType">Type:</label>
+                        <select id="npcType" style="width: 140px;">
+                            <option value="">Random</option>
+                            <option value="Animal trainer">Animal trainer</option>
+                            <option value="Archer">Archer</option>
+                            <option value="Armour smith">Armour smith</option>
+                            <option value="Army officer">Army officer</option>
+                            <option value="Assassin">Assassin</option>
+                            <option value="Baker/Cook">Baker/Cook</option>
+                            <option value="Bandit">Bandit</option>
+                            <option value="Bard">Bard</option>
+                            <option value="Boatbuilder">Boatbuilder</option>
+                            <option value="Body guard">Body guard</option>
+                            <option value="Builder">Builder</option>
+                            <option value="Bureaucrat">Bureaucrat</option>
+                            <option value="Carpenter">Carpenter</option>
+                            <option value="Clergyman">Clergyman</option>
+                            <option value="Commoner">Commoner</option>
+                            <option value="Crafts (fine)">Crafts (fine)</option>
+                            <option value="Crafts (heavy)">Crafts (heavy)</option>
+                            <option value="Entertainer">Entertainer</option>
+                            <option value="Executioner">Executioner</option>
+                            <option value="Farmer">Farmer</option>
+                            <option value="Fine artist">Fine artist</option>
+                            <option value="Fine smith">Fine smith</option>
+                            <option value="Fisherman">Fisherman</option>
+                            <option value="Gladiator">Gladiator</option>
+                            <option value="Guard">Guard</option>
+                            <option value="High class">High class</option>
+                            <option value="Highwayman">Highwayman</option>
+                            <option value="House wife">House wife</option>
+                            <option value="Hunter">Hunter</option>
+                            <option value="Jeweller">Jeweller</option>
+                            <option value="Mage">Mage</option>
+                            <option value="Mapmaker">Mapmaker</option>
+                            <option value="Mason">Mason</option>
+                            <option value="Merchant">Merchant</option>
+                            <option value="Messenger">Messenger</option>
+                            <option value="Monk">Monk</option>
+                            <option value="Nanny">Nanny</option>
+                            <option value="Navigator">Navigator</option>
+                            <option value="Noble">Noble</option>
+                            <option value="Priest">Priest</option>
+                            <option value="Prostitute">Prostitute</option>
+                            <option value="Ranger">Ranger</option>
+                            <option value="Sage">Sage</option>
+                            <option value="Sailor">Sailor</option>
+                            <option value="Scholar">Scholar</option>
+                            <option value="Scribe">Scribe</option>
+                            <option value="Seer">Seer</option>
+                            <option value="Smith">Smith</option>
+                            <option value="Soldier">Soldier</option>
+                            <option value="Sorcerer">Sorcerer</option>
+                            <option value="Sports contender">Sports contender</option>
+                            <option value="Summoner">Summoner</option>
+                            <option value="Tailor">Tailor</option>
+                            <option value="Tanner">Tanner</option>
+                            <option value="Thief">Thief</option>
+                            <option value="Tracker">Tracker</option>
+                            <option value="Warrior">Warrior</option>
+                            <option value="Witch (black)">Witch (black)</option>
+                            <option value="Witch (white)">Witch (white)</option>
+                            <option value="Wizard (air)">Wizard (air)</option>
+                            <option value="Wizard (earth)">Wizard (earth)</option>
+                            <option value="Wizard (fire)">Wizard (fire)</option>
+                            <option value="Wizard (prot.)">Wizard (prot.)</option>
+                            <option value="Wizard (water)">Wizard (water)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="npcLevel">Level:</label>
+                        <select id="npcLevel" style="width: 50px;">
+                            <option value="0">Rand</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="npcRace">Race (optional):</label>
-                    <input type="text" id="npcRace" placeholder="e.g., Human, Elf, Dwarf">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="npcArea">Area:</label>
+                        <select id="npcArea" style="width: 120px;">
+                            <option value="">Random</option>
+                            <option value="Amaronir">Amaronir</option>
+                            <option value="Feronir">Feronir</option>
+                            <option value="Goronir">Goronir</option>
+                            <option value="Huronir">Huronir</option>
+                            <option value="Koronir">Koronir</option>
+                            <option value="Loronir">Loronir</option>
+                            <option value="Noronir">Noronir</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="npcSex">Sex:</label>
+                        <select id="npcSex" style="width: 60px;">
+                            <option value="">Rand</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="npcAge">Age:</label>
+                        <input type="number" id="npcAge" min="0" value="0" style="width: 50px;" placeholder="0">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="npcType">Type (optional):</label>
-                    <input type="text" id="npcType" placeholder="e.g., Warrior, Mage, Thief">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="npcHeight">H(cm):</label>
+                        <input type="number" id="npcHeight" min="0" value="0" style="width: 60px;" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="npcWeight">W(kg):</label>
+                        <input type="number" id="npcWeight" min="0" value="0" style="width: 60px;" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="npcDescription">Desc:</label>
+                        <input type="text" id="npcDescription" placeholder="Auto" style="width: 150px;">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="npcLevel">Level (0 for random):</label>
-                    <input type="number" id="npcLevel" min="0" max="20" value="0">
-                </div>
-                <div class="form-group">
-                    <label for="npcArea">Area (optional):</label>
-                    <input type="text" id="npcArea" placeholder="Geographic area or culture">
-                </div>
-                <div class="form-group">
-                    <label for="npcSex">Sex:</label>
-                    <select id="npcSex">
-                        <option value="">Random</option>
-                        <option value="M">Male</option>
-                        <option value="F">Female</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="npcAge">Age (0 for random):</label>
-                    <input type="number" id="npcAge" min="0" value="0">
-                </div>
-                <div class="form-group">
-                    <label for="npcHeight">Height in cm (0 for random):</label>
-                    <input type="number" id="npcHeight" min="0" value="0">
-                </div>
-                <div class="form-group">
-                    <label for="npcWeight">Weight in kg (0 for random):</label>
-                    <input type="number" id="npcWeight" min="0" value="0">
-                </div>
-                <div class="form-group">
-                    <label for="npcDescription">Description (optional):</label>
-                    <textarea id="npcDescription" rows="3" placeholder="Physical description or background"></textarea>
-                </div>
-                <div>
+                <div style="margin-top: 12px;">
                     <button class="btn" onclick="generateNPC()">Generate NPC</button>
-                    <button class="btn" onclick="showMainView()">Back to Menu</button>
+                    <button class="btn" onclick="showMainView()">Back</button>
                 </div>
             </div>
 
-            <!-- Other forms will be added here as needed -->
+            <!-- Weather Generation Form -->
+            <div class="form-container hidden" id="weatherForm">
+                <h3 style="color: #00ffff; margin-bottom: 8px; font-size: 14px;">Weather Generator</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="weatherMonth">Month:</label>
+                        <select id="weatherMonth" style="width: 100px;">
+                            <option value="0">Random</option>
+                            <option value="1">Walmaer</option>
+                            <option value="2">Frosgar</option>
+                            <option value="3">Freugon</option>
+                            <option value="4">Kemar</option>
+                            <option value="5">Anselm</option>
+                            <option value="6">Juba</option>
+                            <option value="7">Taroc</option>
+                            <option value="8">Man Peggon</option>
+                            <option value="9">Maleko</option>
+                            <option value="10">Teka</option>
+                            <option value="11">Sirukar</option>
+                            <option value="12">Kelemun</option>
+                            <option value="13">Mestronorpha</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="weatherCondition">Condition:</label>
+                        <select id="weatherCondition" style="width: 120px;">
+                            <option value="0">Random</option>
+                            <option value="1">Clear</option>
+                            <option value="3">Partly cloudy</option>
+                            <option value="5">Cloudy, fog</option>
+                            <option value="7">Cloudy</option>
+                            <option value="9">Fog</option>
+                            <option value="11">Light rain</option>
+                            <option value="16">Rainy</option>
+                            <option value="20">Thunderstorm</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="windDirection">Wind:</label>
+                        <select id="windDirection" style="width: 60px;">
+                            <option value="0">Rand</option>
+                            <option value="1">N</option>
+                            <option value="2">NE</option>
+                            <option value="3">E</option>
+                            <option value="4">SE</option>
+                            <option value="5">S</option>
+                            <option value="6">SW</option>
+                            <option value="7">W</option>
+                            <option value="8">NW</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="windStrength">Strength:</label>
+                        <select id="windStrength" style="width: 80px;">
+                            <option value="0">Random</option>
+                            <option value="1">None</option>
+                            <option value="2">Soft</option>
+                            <option value="3">Windy</option>
+                            <option value="4">Very windy</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top: 12px;">
+                    <button class="btn" onclick="generateWeather()">Generate Weather</button>
+                    <button class="btn" onclick="showMainView()">Back</button>
+                </div>
+            </div>
+
+            <!-- Name Generation Form -->
+            <div class="form-container hidden" id="namesForm">
+                <h3 style="color: #00ffff; margin-bottom: 8px; font-size: 14px;">Name Generator</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nameType">Type:</label>
+                        <select id="nameType" style="width: 140px;">
+                            <option value="all">Random Type</option>
+                            <option value="human_male">Human Male</option>
+                            <option value="human_female">Human Female</option>
+                            <option value="dwarven_male">Dwarven Male</option>
+                            <option value="dwarven_female">Dwarven Female</option>
+                            <option value="elven_male">Elven Male</option>
+                            <option value="elven_female">Elven Female</option>
+                            <option value="lizardfolk">Lizardfolk</option>
+                            <option value="troll">Troll</option>
+                            <option value="araxi">Araxi</option>
+                            <option value="fantasy_male">Fantasy Male</option>
+                            <option value="fantasy_female">Fantasy Female</option>
+                            <option value="places">Places</option>
+                            <option value="weapons">Weapons</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nameCount">Count:</label>
+                        <select id="nameCount" style="width: 50px;">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top: 12px;">
+                    <button class="btn" onclick="generateNames()">Generate Names</button>
+                    <button class="btn" onclick="showMainView()">Back</button>
+                </div>
+            </div>
         </div>
 
         <div class="status-bar" id="statusBar">
@@ -389,11 +587,6 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                         'w': 'weather',
                         'p': 'weather-pdf',
                         'g': 'names',
-                        'a': 'adventure',
-                        'c': 'describe-encounter',
-                        'd': 'describe-npc',
-                        'i': 'npc-image',
-                        's': 'show-image',
                         'o': 'roll',
                         '?': 'help',
                         '1': 'old-npc',
@@ -476,28 +669,13 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     showNotImplemented('Town Relations Map');
                     break;
                 case 'weather':
-                    generateWeather();
+                    showWeatherForm();
                     break;
                 case 'weather-pdf':
                     showNotImplemented('Weather PDF Generator');
                     break;
                 case 'names':
-                    generateNames();
-                    break;
-                case 'adventure':
-                    showNotImplemented('Adventure Generator');
-                    break;
-                case 'describe-encounter':
-                    showNotImplemented('Describe Encounter');
-                    break;
-                case 'describe-npc':
-                    showNotImplemented('Describe NPC');
-                    break;
-                case 'npc-image':
-                    showNotImplemented('Generate NPC Image');
-                    break;
-                case 'show-image':
-                    showNotImplemented('Show Latest NPC Image');
+                    showNamesForm();
                     break;
                 case 'roll':
                     rollDice();
@@ -543,6 +721,24 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
             document.getElementById('menuPanel').classList.remove('focused');
             document.getElementById('contentPanel').classList.add('focused');
             updateStatus('Fill in NPC details (optional) and click Generate | ESC to return to menu');
+        }
+
+        function showWeatherForm() {
+            document.getElementById('output').style.display = 'none';
+            document.getElementById('weatherForm').classList.remove('hidden');
+            currentFocus = 'content';
+            document.getElementById('menuPanel').classList.remove('focused');
+            document.getElementById('contentPanel').classList.add('focused');
+            updateStatus('Select weather parameters and click Generate | ESC to return to menu');
+        }
+
+        function showNamesForm() {
+            document.getElementById('output').style.display = 'none';
+            document.getElementById('namesForm').classList.remove('hidden');
+            currentFocus = 'content';
+            document.getElementById('menuPanel').classList.remove('focused');
+            document.getElementById('contentPanel').classList.add('focused');
+            updateStatus('Select name options and click Generate | ESC to return to menu');
         }
 
         function showNotImplemented(feature) {
@@ -642,8 +838,7 @@ Failed to connect to server: ${error.message}
                 const result = await response.json();
 
                 if (result.success) {
-                    const coloredOutput = applyTUIColors(result.output);
-                    output.innerHTML = `<div class="output">${coloredOutput}</div>
+                    output.innerHTML = `<div class="output">${result.output}</div>
 
 <div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
                     updateStatus('Encounter generated successfully | ESC to return to menu');
@@ -772,6 +967,13 @@ Failed to connect to server: ${error.message}
         }
 
         async function generateWeather() {
+            const params = {
+                month: parseInt(document.getElementById('weatherMonth').value) || 0,
+                condition: parseInt(document.getElementById('weatherCondition').value) || 0,
+                wind_direction: parseInt(document.getElementById('windDirection').value) || 0,
+                wind_strength: parseInt(document.getElementById('windStrength').value) || 0
+            };
+
             updateStatus('Generating weather...');
 
             const output = document.getElementById('output');
@@ -789,7 +991,7 @@ Failed to connect to server: ${error.message}
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({})
+                    body: JSON.stringify(params)
                 });
 
                 const result = await response.json();
@@ -823,6 +1025,11 @@ Failed to connect to server: ${error.message}
         }
 
         async function generateNames() {
+            const params = {
+                name_type: document.getElementById('nameType').value,
+                count: parseInt(document.getElementById('nameCount').value)
+            };
+
             updateStatus('Generating names...');
 
             const output = document.getElementById('output');
@@ -840,7 +1047,7 @@ Failed to connect to server: ${error.message}
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({})
+                    body: JSON.stringify(params)
                 });
 
                 const result = await response.json();
@@ -973,9 +1180,8 @@ Thank you for using Amar RPG Tools!
                 const result = await response.json();
 
                 if (result.success) {
-                    // Apply TUI-style coloring to the output
-                    const coloredOutput = applyTUIColors(result.output);
-                    output.innerHTML = `<div class="output">${coloredOutput}</div>
+                    // Output already has proper CSS colors from backend
+                    output.innerHTML = `<div class="output">${result.output}</div>
 
 <div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
                     updateStatus('NPC generated successfully | ESC to return to menu');
