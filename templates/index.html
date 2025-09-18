@@ -53,12 +53,16 @@
         }
 
         .content-panel {
-            background-color: #1a1a1a;
+            background-color: #000;
             border: 2px solid #555;
-            padding: 15px;
+            padding: 5px;
             overflow-y: auto;
             white-space: pre-wrap;
             font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
         }
 
         .content-panel.focused {
@@ -105,10 +109,20 @@
         }
 
         .form-container {
-            margin: 5px 0;
-            padding: 8px;
+            margin: 0;
+            padding: 0;
             background-color: transparent;
             border: none;
+            width: 100%;
+            align-self: stretch;
+        }
+
+        .output {
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            line-height: 1.2;
+            width: 100%;
+            align-self: stretch;
         }
 
         .form-group {
@@ -148,6 +162,17 @@
             height: 36px;
         }
 
+        /* Remove number input spinners */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
             border-color: #00ffff;
@@ -163,7 +188,7 @@
             font-family: 'Courier New', monospace;
             font-weight: bold;
             border-radius: 3px;
-            margin: 5px;
+            margin: 0;
         }
 
         .btn:hover {
@@ -179,11 +204,6 @@
             box-shadow: none;
         }
 
-        .output {
-            font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
-            line-height: 1.2;
-        }
 
         .loading {
             color: #ffff00;
@@ -272,7 +292,7 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
 
             <!-- NPC Generation Form -->
             <div class="form-container hidden" id="npcForm">
-                <h3 style="color: #00ffff; margin-bottom: 8px; font-size: 14px;">Generate NPC</h3>
+                <h3 style="color: #00ffff; margin: 0 0 8px 0; font-size: 14px;">Generate NPC</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="npcName">Name:</label>
@@ -385,32 +405,29 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     </div>
                     <div class="form-group">
                         <label for="npcAge">Age:</label>
-                        <input type="number" id="npcAge" min="0" value="0" style="width: 50px;" placeholder="0">
+                        <input type="number" id="npcAge" min="0" value="0" style="width: 80px;" placeholder="0">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="npcHeight">H(cm):</label>
-                        <input type="number" id="npcHeight" min="0" value="0" style="width: 60px;" placeholder="0">
+                        <input type="number" id="npcHeight" min="0" value="0" style="width: 80px;" placeholder="0">
                     </div>
                     <div class="form-group">
                         <label for="npcWeight">W(kg):</label>
-                        <input type="number" id="npcWeight" min="0" value="0" style="width: 60px;" placeholder="0">
+                        <input type="number" id="npcWeight" min="0" value="0" style="width: 80px;" placeholder="0">
                     </div>
                     <div class="form-group">
                         <label for="npcDescription">Desc:</label>
                         <input type="text" id="npcDescription" placeholder="Auto" style="width: 150px;">
                     </div>
                 </div>
-                <div style="margin-top: 12px;">
-                    <button class="btn" onclick="generateNPC()">Generate NPC</button>
-                    <button class="btn" onclick="showMainView()">Back</button>
-                </div>
+                <button class="btn" onclick="generateNPC()" style="margin: 8px 0 0 5px; display: block;">Generate NPC</button>
             </div>
 
             <!-- Weather Generation Form -->
             <div class="form-container hidden" id="weatherForm">
-                <h3 style="color: #00ffff; margin-bottom: 8px; font-size: 14px;">Weather Generator</h3>
+                <h3 style="color: #00ffff; margin: 0 0 8px 0; font-size: 14px;">Weather Generator</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="weatherMonth">Month:</label>
@@ -470,15 +487,12 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                         </select>
                     </div>
                 </div>
-                <div style="margin-top: 12px;">
-                    <button class="btn" onclick="generateWeather()">Generate Weather</button>
-                    <button class="btn" onclick="showMainView()">Back</button>
-                </div>
+                <button class="btn" onclick="generateWeather()" style="margin: 8px 0 0 5px; display: block;">Generate Weather</button>
             </div>
 
             <!-- Name Generation Form -->
             <div class="form-container hidden" id="namesForm">
-                <h3 style="color: #00ffff; margin-bottom: 8px; font-size: 14px;">Name Generator</h3>
+                <h3 style="color: #00ffff; margin: 0 0 8px 0; font-size: 14px;">Name Generator</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="nameType">Type:</label>
@@ -502,22 +516,19 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     <div class="form-group">
                         <label for="nameCount">Count:</label>
                         <select id="nameCount" style="width: 50px;">
-                            <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="15">15</option>
-                            <option value="20">20</option>
+                            <option value="20" selected>20</option>
+                            <option value="25">25</option>
                         </select>
                     </div>
                 </div>
-                <div style="margin-top: 12px;">
-                    <button class="btn" onclick="generateNames()">Generate Names</button>
-                    <button class="btn" onclick="showMainView()">Back</button>
-                </div>
+                <button class="btn" onclick="generateNames()" style="margin: 8px 0 0 5px; display: block;">Generate Names</button>
             </div>
 
             <!-- Town Generation Form -->
             <div class="form-container hidden" id="townForm">
-                <h3 style="color: #00ffff; margin-bottom: 8px; font-size: 16px;">Town/City Generator</h3>
+                <h3 style="color: #00ffff; margin: 0 0 8px 0; font-size: 16px;">Town/City Generator</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="townName">Name:</label>
@@ -525,7 +536,7 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     </div>
                     <div class="form-group">
                         <label for="townSize">Houses:</label>
-                        <input type="number" id="townSize" min="1" max="1000" value="0" placeholder="Random" style="width: 80px;">
+                        <input type="number" id="townSize" min="1" max="1000" value="0" placeholder="Random" style="width: 100px;">
                     </div>
                     <div class="form-group">
                         <label for="townVar">Variation:</label>
@@ -540,15 +551,12 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                         </select>
                     </div>
                 </div>
-                <div style="margin-top: 8px;">
-                    <button class="btn" onclick="generateTown()">Generate Town</button>
-                    <button class="btn" onclick="showMainView()">Back</button>
-                </div>
+                <button class="btn" onclick="generateTown()" style="margin: 8px 0 0 5px; display: block;">Generate Town</button>
             </div>
 
             <!-- Encounter Generation Form -->
             <div class="form-container hidden" id="encounterForm">
-                <h3 style="color: #00ffff; margin-bottom: 8px; font-size: 16px;">Generate Encounter</h3>
+                <h3 style="color: #00ffff; margin: 0 0 8px 0; font-size: 16px;">Generate Encounter</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="encTime">Time:</label>
@@ -572,7 +580,7 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     </div>
                     <div class="form-group">
                         <label for="encLevel">Level Mod:</label>
-                        <input type="number" id="encLevel" min="-5" max="5" value="0" style="width: 60px;">
+                        <input type="number" id="encLevel" min="-5" max="5" value="0" style="width: 80px;">
                     </div>
                     <div class="form-group">
                         <label for="encRace">Race:</label>
@@ -592,21 +600,49 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                         </select>
                     </div>
                 </div>
-                <div style="margin-top: 8px;">
-                    <button class="btn" onclick="generateEncounter()">Generate Encounter</button>
-                    <button class="btn" onclick="showMainView()">Back</button>
+                <button class="btn" onclick="generateEncounter()" style="margin: 8px 0 0 5px; display: block;">Generate Encounter</button>
+            </div>
+
+            <!-- Monster Generation Form -->
+            <div class="form-container hidden" id="monsterForm">
+                <h3 style="color: #00ffff; margin: 0 0 8px 0; font-size: 16px;">Generate Monster</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="monsterType">Type:</label>
+                        <select id="monsterType" style="width: 120px;">
+                            <option value="">Random</option>
+                            <option value="wolf">Wolf</option>
+                            <option value="bear">Bear</option>
+                            <option value="lion">Lion</option>
+                            <option value="snake">Snake</option>
+                            <option value="spider">Spider</option>
+                            <option value="rat">Rat</option>
+                            <option value="hawk">Hawk</option>
+                            <option value="boar">Boar</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="monsterLevel">Level:</label>
+                        <select id="monsterLevel" style="width: 60px;">
+                            <option value="0">Rand</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
                 </div>
+                <button class="btn" onclick="generateMonster()" style="margin: 8px 0 0 5px; display: block;">Generate Monster</button>
             </div>
         </div>
 
         <div class="status-bar" id="statusBar">
-            Ready | Use menu or keyboard shortcuts | ESC to return to menu
-        </div>
+            Ready | Use menu or keyboard shortcuts        </div>
     </div>
 
     <script>
         let selectedMenuItem = 0;
         let currentFocus = 'menu';
+        let lastEncounterOutput = null;  // Store the last encounter output
 
         // Initialize the interface
         document.addEventListener('DOMContentLoaded', function() {
@@ -727,7 +763,7 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     showEncounterForm();
                     break;
                 case 'monster':
-                    generateMonster();
+                    showMonsterForm();
                     break;
                 case 'town':
                     showTownForm();
@@ -770,7 +806,13 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
         }
 
         function showNPCForm() {
+            // Hide all other content first
             document.getElementById('output').style.display = 'none';
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            // Show NPC form
             document.getElementById('npcForm').classList.remove('hidden');
             currentFocus = 'content';
             document.getElementById('menuPanel').classList.remove('focused');
@@ -779,7 +821,13 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
         }
 
         function showWeatherForm() {
+            // Hide all other content first
             document.getElementById('output').style.display = 'none';
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            // Show weather form
             document.getElementById('weatherForm').classList.remove('hidden');
             currentFocus = 'content';
             document.getElementById('menuPanel').classList.remove('focused');
@@ -787,8 +835,29 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
             updateStatus('Select weather parameters and click Generate | ESC to return to menu');
         }
 
-        function showNamesForm() {
+        function showMonsterForm() {
+            // Hide all other content first
             document.getElementById('output').style.display = 'none';
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            // Show monster form
+            document.getElementById('monsterForm').classList.remove('hidden');
+            currentFocus = 'content';
+            document.getElementById('menuPanel').classList.remove('focused');
+            document.getElementById('contentPanel').classList.add('focused');
+            updateStatus('Select monster parameters and click Generate | ESC to return to menu');
+        }
+
+        function showNamesForm() {
+            // Hide all other content first
+            document.getElementById('output').style.display = 'none';
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            // Show names form
             document.getElementById('namesForm').classList.remove('hidden');
             currentFocus = 'content';
             document.getElementById('menuPanel').classList.remove('focused');
@@ -797,7 +866,13 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
         }
 
         function showTownForm() {
+            // Hide all other content first
             document.getElementById('output').style.display = 'none';
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            // Show town form
             document.getElementById('townForm').classList.remove('hidden');
             currentFocus = 'content';
             document.getElementById('menuPanel').classList.remove('focused');
@@ -806,7 +881,13 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
         }
 
         function showEncounterForm() {
+            // Hide all other content first
             document.getElementById('output').style.display = 'none';
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            // Show encounter form
             document.getElementById('encounterForm').classList.remove('hidden');
             currentFocus = 'content';
             document.getElementById('menuPanel').classList.remove('focused');
@@ -821,8 +902,7 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
 ${feature} functionality will be added in the next update.
 
 This feature exists in the TUI version and will be ported to the web interface soon.
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
             output.style.display = 'block';
 
             // Hide forms
@@ -862,8 +942,7 @@ This feature exists in the TUI version and will be ported to the web interface s
 <div style="color: #00ffff; font-size: 18px; font-weight: bold; margin: 20px 0;">
 ${result.output}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                     updateStatus('Dice rolled successfully | ESC to return to menu');
                 } else {
                     output.innerHTML = `<div class="error">Error rolling dice</div>
@@ -871,8 +950,7 @@ ${result.output}
 <div style="color: #ff6666;">
 ${result.error || 'Unknown error occurred'}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                     updateStatus('Error rolling dice | ESC to return to menu');
                 }
             } catch (error) {
@@ -881,8 +959,7 @@ ${result.error || 'Unknown error occurred'}
 <div style="color: #ff6666;">
 Failed to connect to server: ${error.message}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                 updateStatus('Network error | ESC to return to menu');
             }
         }
@@ -918,18 +995,20 @@ Failed to connect to server: ${error.message}
                 const result = await response.json();
 
                 if (result.success) {
-                    output.innerHTML = `<div class="output">${result.output}</div>
+                    // Store the encounter output for back navigation
+                    lastEncounterOutput = result.output;
 
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
-                    updateStatus('Encounter generated successfully | ESC to return to menu');
+                    // Make encounter NPCs clickable for detailed view
+                    const clickableOutput = makeEncountersClickable(result.output);
+                    output.innerHTML = `<div class="output">${clickableOutput}</div>`;
+                    updateStatus('Encounter generated successfully - Click character names for details');
                 } else {
                     output.innerHTML = `<div class="error">Error generating encounter</div>
 
 <div style="color: #ff6666;">
 ${result.error || 'Unknown error occurred'}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                     updateStatus('Error generating encounter | ESC to return to menu');
                 }
             } catch (error) {
@@ -938,13 +1017,17 @@ ${result.error || 'Unknown error occurred'}
 <div style="color: #ff6666;">
 Failed to connect to server: ${error.message}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                 updateStatus('Network error | ESC to return to menu');
             }
         }
 
         async function generateMonster() {
+            const params = {
+                monster_type: document.getElementById('monsterType').value,
+                level: parseInt(document.getElementById('monsterLevel').value) || 0
+            };
+
             updateStatus('Generating monster...');
 
             const output = document.getElementById('output');
@@ -962,15 +1045,14 @@ Failed to connect to server: ${error.message}
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({})
+                    body: JSON.stringify(params)
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
                     output.innerHTML = `<div class="output">${result.output}</div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                     updateStatus('Monster generated successfully | ESC to return to menu');
                 } else {
                     output.innerHTML = `<div class="error">Error generating monster</div>
@@ -978,8 +1060,7 @@ Failed to connect to server: ${error.message}
 <div style="color: #ff6666;">
 ${result.error || 'Unknown error occurred'}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                     updateStatus('Error generating monster | ESC to return to menu');
                 }
             } catch (error) {
@@ -988,8 +1069,7 @@ ${result.error || 'Unknown error occurred'}
 <div style="color: #ff6666;">
 Failed to connect to server: ${error.message}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                 updateStatus('Network error | ESC to return to menu');
             }
         }
@@ -1025,8 +1105,7 @@ Failed to connect to server: ${error.message}
 
                 if (result.success) {
                     output.innerHTML = `<div class="output">${result.output}</div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                     updateStatus('Town generated successfully | ESC to return to menu');
                 } else {
                     output.innerHTML = `<div class="error">Error generating town</div>
@@ -1034,8 +1113,7 @@ Failed to connect to server: ${error.message}
 <div style="color: #ff6666;">
 ${result.error || 'Unknown error occurred'}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                     updateStatus('Error generating town | ESC to return to menu');
                 }
             } catch (error) {
@@ -1044,8 +1122,7 @@ ${result.error || 'Unknown error occurred'}
 <div style="color: #ff6666;">
 Failed to connect to server: ${error.message}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                 updateStatus('Network error | ESC to return to menu');
             }
         }
@@ -1082,8 +1159,7 @@ Failed to connect to server: ${error.message}
 
                 if (result.success) {
                     output.innerHTML = `<div class="output">${result.output}</div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                     updateStatus('Weather generated successfully | ESC to return to menu');
                 } else {
                     output.innerHTML = `<div class="error">Error generating weather</div>
@@ -1091,8 +1167,7 @@ Failed to connect to server: ${error.message}
 <div style="color: #ff6666;">
 ${result.error || 'Unknown error occurred'}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                     updateStatus('Error generating weather | ESC to return to menu');
                 }
             } catch (error) {
@@ -1101,8 +1176,7 @@ ${result.error || 'Unknown error occurred'}
 <div style="color: #ff6666;">
 Failed to connect to server: ${error.message}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                 updateStatus('Network error | ESC to return to menu');
             }
         }
@@ -1137,8 +1211,7 @@ Failed to connect to server: ${error.message}
 
                 if (result.success) {
                     output.innerHTML = `<div class="output">${result.output}</div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                     updateStatus('Names generated successfully | ESC to return to menu');
                 } else {
                     output.innerHTML = `<div class="error">Error generating names</div>
@@ -1146,8 +1219,7 @@ Failed to connect to server: ${error.message}
 <div style="color: #ff6666;">
 ${result.error || 'Unknown error occurred'}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                     updateStatus('Error generating names | ESC to return to menu');
                 }
             } catch (error) {
@@ -1156,8 +1228,7 @@ ${result.error || 'Unknown error occurred'}
 <div style="color: #ff6666;">
 Failed to connect to server: ${error.message}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                 updateStatus('Network error | ESC to return to menu');
             }
         }
@@ -1188,8 +1259,7 @@ allowing you to access all Amar RPG tools through your web browser.
 
 Version: 1.0.0
 Based on: Amar RPG System by Geir Isene
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
             output.style.display = 'block';
 
             // Hide forms
@@ -1211,8 +1281,7 @@ To exit the web interface, simply close your browser tab or window.
 <div style="color: #888;">
 Thank you for using Amar RPG Tools!
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
             output.style.display = 'block';
 
             // Hide forms
@@ -1230,7 +1299,6 @@ Thank you for using Amar RPG Tools!
         async function generateNPC() {
             const params = {
                 name: document.getElementById('npcName').value,
-                race: document.getElementById('npcRace').value,
                 type: document.getElementById('npcType').value,
                 level: parseInt(document.getElementById('npcLevel').value) || 0,
                 area: document.getElementById('npcArea').value,
@@ -1240,6 +1308,8 @@ Thank you for using Amar RPG Tools!
                 weight: parseInt(document.getElementById('npcWeight').value) || 0,
                 description: document.getElementById('npcDescription').value
             };
+
+            console.log('NPC Params:', params);
 
             updateStatus('Generating NPC...');
 
@@ -1263,18 +1333,15 @@ Thank you for using Amar RPG Tools!
 
                 if (result.success) {
                     // Output already has proper CSS colors from backend
-                    output.innerHTML = `<div class="output">${result.output}</div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
-                    updateStatus('NPC generated successfully | ESC to return to menu');
+                    output.innerHTML = `<div class="output">${result.output}</div>`;
+                    updateStatus('NPC generated successfully');
                 } else {
                     output.innerHTML = `<div class="error">Error generating NPC</div>
 
 <div style="color: #ff6666;">
 ${result.error || 'Unknown error occurred'}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                     updateStatus('Error generating NPC | ESC to return to menu');
                 }
             } catch (error) {
@@ -1283,8 +1350,7 @@ ${result.error || 'Unknown error occurred'}
 <div style="color: #ff6666;">
 Failed to connect to server: ${error.message}
 </div>
-
-<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+`;
                 updateStatus('Network error | ESC to return to menu');
             }
         }
@@ -1329,6 +1395,84 @@ Failed to connect to server: ${error.message}
             });
 
             return coloredLines.join('\n');
+        }
+
+        function makeEncountersClickable(output) {
+            // Make encounter lines clickable for detailed NPC view
+            // Pattern: "1. Name (Sex, Age) - Type [Level X]"
+            const encounterPattern = /(<span[^>]*>)?(\d+)\.\s*([^<]+?)\s*\(([MF]),\s*(\d+)\)\s*-\s*([^[]+)\s*\[Level\s*(\d+)\]/g;
+
+            return output.replace(encounterPattern, (match, spanTag, number, name, sex, age, type, level) => {
+                // Clean and escape the parameters to avoid quote issues
+                const cleanName = name.trim().replace(/'/g, "\\'").replace(/"/g, '\\"');
+                const cleanType = type.trim().replace(/'/g, "\\'").replace(/"/g, '\\"');
+
+                const clickableStyle = 'cursor: pointer; text-decoration: underline; transition: background-color 0.2s;';
+                const hoverStyle = 'onmouseover="this.style.backgroundColor=\'#333\'" onmouseout="this.style.backgroundColor=\'transparent\'"';
+                const clickHandler = `onclick="showEncounterNPCDetail('${cleanName}', '${sex}', ${age}, '${cleanType}', ${level})"`;
+
+                if (spanTag) {
+                    return `${spanTag}${number}. <span style="${clickableStyle}" ${hoverStyle} ${clickHandler}>${name.trim()} (${sex}, ${age}) - ${type.trim()} [Level ${level}]</span>`;
+                } else {
+                    return `${number}. <span style="${clickableStyle}" ${hoverStyle} ${clickHandler}>${name.trim()} (${sex}, ${age}) - ${type.trim()} [Level ${level}]</span>`;
+                }
+            });
+        }
+
+        async function showEncounterNPCDetail(name, sex, age, type, level) {
+            updateStatus('Loading detailed NPC view...');
+
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loading">Generating detailed NPC view...</div>';
+
+            try {
+                // Generate detailed NPC using the encounter character's stats
+                const params = {
+                    name: name,
+                    type: type,
+                    level: parseInt(level),
+                    sex: sex,
+                    age: parseInt(age)
+                };
+
+                const response = await fetch('/api/npc', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(params)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Add a back button to return to encounter - positioned left like Generate buttons
+                    output.innerHTML = `
+                        <button class="btn" onclick="goBackToEncounter()" style="margin: 0 0 10px 0; display: block;">← Back to Encounter</button>
+                        <div class="output">${result.output}</div>
+                    `;
+                    updateStatus('Detailed NPC view loaded');
+                } else {
+                    output.innerHTML = `<div class="error">Error loading detailed view: ${result.error}</div>`;
+                    updateStatus('Error loading detailed view');
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="error">Network error: ${error.message}</div>`;
+                updateStatus('Network error');
+            }
+        }
+
+        function goBackToEncounter() {
+            // Restore the same encounter list (don't generate new one)
+            if (lastEncounterOutput) {
+                const output = document.getElementById('output');
+                const clickableOutput = makeEncountersClickable(lastEncounterOutput);
+                output.innerHTML = `<div class="output">${clickableOutput}</div>`;
+                updateStatus('Encounter list restored - Click character names for details');
+            } else {
+                // Fallback if no stored encounter (shouldn't happen)
+                generateEncounter();
+            }
         }
 
         // Click handlers for menu items

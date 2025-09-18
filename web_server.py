@@ -209,6 +209,16 @@ def call_ruby_function(function_name, params=None):
                 param_str = f'[{time}, {terrain}, {level_mod}, {race}]'
             else:
                 param_str = '[1, 1, 0, 0]'
+        elif function_name == 'monster':
+            # Build parameter string for monster generation
+            if params:
+                monster_type = params.get('monster_type', '').strip()
+                level = params.get('level', 0)
+                if not monster_type: monster_type = 'random'
+                if level == 0: level = 'rand(1..3)'
+                param_str = f'["{monster_type}", {level}]'
+            else:
+                param_str = '["random", rand(1..3)]'
 
         # Create a temporary Ruby script that calls the function
         ruby_code = f"""
@@ -293,12 +303,22 @@ when 'monster'
       load File.join($pgmdir, "includes/tables/monster_stats_new.rb")
     end
 
-    # Get monster list and pick one randomly
+    # Get parameters
+    params = {param_str} rescue ["random", "rand(1..3)"]
+    monster_type_param = params[0] || "random"
+    level = params[1].is_a?(String) ? eval(params[1]) : (params[1] || rand(1..3))
+
+    # Get monster list
     monster_list = $MonsterStats.keys.reject do |k|
       k == "default"
     end.sort
-    monster_type = monster_list.sample
-    level = rand(1..3)  # Monsters should be level 1-3, not 1-6
+
+    # Select monster type
+    if monster_type_param == "random" || monster_type_param.empty?
+      monster_type = monster_list.sample
+    else
+      monster_type = monster_type_param
+    end
 
     # Create monster exactly as TUI does
     monster = MonsterNew.new(monster_type, level)
@@ -466,9 +486,9 @@ when 'names'
     puts "─" * 40
     puts ""
 
-    count.times do
+    count.times do |i|
       name = naming($Names[name_idx][0])
-      puts "  " + name.fg(226)
+      puts "  " + (i + 1).to_s.rjust(2).fg(202) + ". " + name.fg(226)
     end
 when 'roll'
     # Use actual oD6 function exactly as TUI does - 10 rolls with colors
