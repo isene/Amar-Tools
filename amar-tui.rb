@@ -409,10 +409,12 @@ end
 
 def init_screen
   debug "Initializing screen..."
-  
+
   begin
     debug "Calling Rcurses.init!"
     Rcurses.init!
+    # Clear screen immediately to remove any artifacts
+    Rcurses.clear_screen
     debug "Rcurses initialized"
   rescue => e
     debug "Error initializing Rcurses: #{e.message}"
@@ -489,6 +491,7 @@ def init_screen
     "",
     "── UTILITIES ──",
     "O. Roll Open Ended d6",
+    "F. Browse Saved Files",
     "?. Help",
     "",
     "── LEGACY SYSTEM ──",
@@ -1482,6 +1485,9 @@ def handle_menu_navigation
   # UTILITIES
   when "o", "O"
     roll_o6
+  when "f", "F"
+    File.open("/tmp/rcurses_debug_amar.log", "a") { |f| f.puts "#{Time.now}: F KEY PRESSED - calling browse_saved_files" }
+    browse_saved_files
   when "?"
     show_help
 
@@ -1597,6 +1603,8 @@ def execute_menu_item
   # UTILITIES
   when /O\. Roll Open Ended/
     roll_o6
+  when /F\. Browse Saved Files/
+    browse_saved_files
   when /\?\. Help/
     show_help
 
@@ -2158,7 +2166,7 @@ def handle_npc_view(npc, output)
   @focus = :content
 
   # Save NPC to temp file for AI description
-  save_dir = File.join($pgmdir, "saved")
+  save_dir = File.join($pgmdir || Dir.pwd, "saved")
   Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
 
   # Clean output for saving
@@ -2724,7 +2732,7 @@ def handle_encounter_view(enc, output)
   saved_menu_index = @menu_index
 
   # Save encounter to temp file for AI description
-  save_dir = File.join($pgmdir, "saved")
+  save_dir = File.join($pgmdir || Dir.pwd, "saved")
   Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
 
   # Save clean version
@@ -4857,7 +4865,7 @@ def generate_town_ui
     $editor = "/bin/true"  # Use /bin/true to avoid editor output
 
     # Ensure saved directory exists
-    saved_dir = File.join($pgmdir, "saved")
+    saved_dir = File.join($pgmdir || Dir.pwd, "saved")
     FileUtils.mkdir_p(saved_dir) unless Dir.exist?(saved_dir)
 
     # Call town_output to save files (ALL output suppressed)
@@ -5310,7 +5318,7 @@ def generate_town_relations
   debug "Starting generate_town_relations"
 
   # Check for saved town files
-  saved_dir = File.join($pgmdir, "saved")
+  saved_dir = File.join($pgmdir || Dir.pwd, "saved")
   default_file = File.join(saved_dir, "town.npc")
 
   content_width = @cols - 35
@@ -5709,7 +5717,7 @@ def generate_adventure_ai
       output += formatted_response
 
       # Save to file
-      save_dir = File.join($pgmdir, "saved")
+      save_dir = File.join($pgmdir || Dir.pwd, "saved")
       Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
       save_file = File.join(save_dir, "openai.txt")
       File.write(save_file, response)
@@ -5892,7 +5900,7 @@ def describe_encounter_ai
       output += response
 
       # Save to file
-      save_dir = File.join($pgmdir, "saved")
+      save_dir = File.join($pgmdir || Dir.pwd, "saved")
       Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
       save_file = File.join(save_dir, "openai.txt")
       File.write(save_file, response)
@@ -6091,7 +6099,7 @@ def describe_npc_ai
       output += response
 
       # Save to file
-      save_dir = File.join($pgmdir, "saved")
+      save_dir = File.join($pgmdir || Dir.pwd, "saved")
       Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
       save_file = File.join(save_dir, "openai.txt")
       File.write(save_file, response)
@@ -6440,7 +6448,7 @@ def generate_npc_image(description = nil)
     file_input = get_text_input("")
     return if file_input == :cancelled
 
-    save_dir = File.join($pgmdir, "saved")
+    save_dir = File.join($pgmdir || Dir.pwd, "saved")
     npc_file = nil
 
     if file_input.nil? || file_input.empty?
@@ -6886,10 +6894,8 @@ def show_latest_npc_image
   # Display image info
   output = colorize_output("LATEST NPC IMAGE", :header) + "\n"
   output += colorize_output("─" * content_width, :header) + "\n\n"
-  output += "Image: " + colorize_output(image_name, :value) + "\n"
-  output += "Generated: " + File.mtime(latest_image).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n\n"
-
-  show_content(output)
+  # Clear content for clean image display like RTFM
+  @content.clear
 
   # Try to display the image inline
   image_displayed = false
@@ -6936,9 +6942,8 @@ def show_latest_npc_image
 
         output = colorize_output("NPC IMAGE", :header) + " (#{current_index + 1}/#{image_files.length})\n"
         output += colorize_output("─" * content_width, :header) + "\n\n"
-        output += "Image: " + colorize_output(image_name, :value) + "\n"
-        output += "Generated: " + File.mtime(latest_image).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n\n"
-        show_content(output)
+  # Clear content for clean image display like RTFM
+  @content.clear
 
         display_terminal_image(latest_image) ||
           (system("which imgcat > /dev/null 2>&1") && system("imgcat \"#{latest_image}\"")) ||
@@ -6954,9 +6959,8 @@ def show_latest_npc_image
 
         output = colorize_output("NPC IMAGE", :header) + " (#{current_index + 1}/#{image_files.length})\n"
         output += colorize_output("─" * content_width, :header) + "\n\n"
-        output += "Image: " + colorize_output(image_name, :value) + "\n"
-        output += "Generated: " + File.mtime(latest_image).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n\n"
-        show_content(output)
+  # Clear content for clean image display like RTFM
+  @content.clear
 
         display_terminal_image(latest_image) ||
           (system("which imgcat > /dev/null 2>&1") && system("imgcat \"#{latest_image}\"")) ||
@@ -6990,9 +6994,8 @@ def show_latest_npc_image
           output = colorize_output("IMAGE DELETED", :success) + "\n\n"
           output += colorize_output("NPC IMAGE", :header) + " (#{current_index + 1}/#{image_files.length})\n"
           output += colorize_output("─" * content_width, :header) + "\n\n"
-          output += "Image: " + colorize_output(image_name, :value) + "\n"
-          output += "Generated: " + File.mtime(latest_image).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n\n"
-          show_content(output)
+  # Clear content for clean image display like RTFM
+  @content.clear
 
           display_terminal_image(latest_image) ||
             (system("which imgcat > /dev/null 2>&1") && system("imgcat \"#{latest_image}\"")) ||
@@ -7004,9 +7007,8 @@ def show_latest_npc_image
         # Cancelled - redisplay current image
         output = colorize_output("NPC IMAGE", :header) + " (#{current_index + 1}/#{image_files.length})\n"
         output += colorize_output("─" * content_width, :header) + "\n\n"
-        output += "Image: " + colorize_output(image_name, :value) + "\n"
-        output += "Generated: " + File.mtime(latest_image).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n\n"
-        show_content(output)
+  # Clear content for clean image display like RTFM
+  @content.clear
 
         display_terminal_image(latest_image) ||
           (system("which imgcat > /dev/null 2>&1") && system("imgcat \"#{latest_image}\"")) ||
@@ -7031,9 +7033,8 @@ def show_latest_npc_image
         # Redisplay current image
         output = colorize_output("NPC IMAGE", :header) + " (#{current_index + 1}/#{image_files.length})\n"
         output += colorize_output("─" * content_width, :header) + "\n\n"
-        output += "Image: " + colorize_output(image_name, :value) + "\n"
-        output += "Generated: " + File.mtime(latest_image).strftime("%Y-%m-%d %H:%M:%S").fg(240) + "\n\n"
-        show_content(output)
+  # Clear content for clean image display like RTFM
+  @content.clear
 
         display_terminal_image(latest_image) ||
           (system("which imgcat > /dev/null 2>&1") && system("imgcat \"#{latest_image}\"")) ||
@@ -7086,7 +7087,7 @@ def show_latest_town_map
   content_width = @cols - 35
 
   # Check saved directory
-  save_dir = File.join($pgmdir, "saved")
+  save_dir = File.join($pgmdir || Dir.pwd, "saved")
 
   # Find all PNG files that match town relationship patterns
   png_files = Dir.glob(File.join(save_dir, "*.png")).select do |f|
@@ -7567,5 +7568,40 @@ def reapply_colors(text)
   end
 
   colored_lines.join("\n")
+end
+
+
+def browse_saved_files
+  show_content("File browser test - working!")
+  getchr
+  return_to_menu
+end
+
+def view_saved_file(filepath)
+  content = File.read(filepath)
+  filename = File.basename(filepath)
+  
+  show_content(content)
+  @focus = :content
+  @footer.say(" [j/↓] [k/↑] [PgUp/PgDn] Navigate | [ESC/q] Back ".ljust(@cols))
+  
+  loop do
+    key = getchr
+    case key
+    when "ESC", "\e", "q", "LEFT"
+      break
+    when "j", "DOWN"
+      @content.linedown
+    when "k", "UP"
+      @content.lineup
+    when " ", "PgDOWN"
+      @content.pagedown
+    when "b", "PgUP"
+      @content.pageup
+    end
+  end
+rescue => e
+  File.open("/tmp/rcurses_debug_amar.log", "a") { |f| f.puts "#{Time.now}: ERROR in view_saved_file: #{e.message}" }
+  show_content("Error reading file: #{e.message}")
 end
 
