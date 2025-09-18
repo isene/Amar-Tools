@@ -491,7 +491,6 @@ def init_screen
     "",
     "── UTILITIES ──",
     "O. Roll Open Ended d6",
-    "F. Browse Saved Files",
     "?. Help",
     "",
     "── LEGACY SYSTEM ──",
@@ -1485,9 +1484,6 @@ def handle_menu_navigation
   # UTILITIES
   when "o", "O"
     roll_o6
-  when "f", "F"
-    File.open("/tmp/rcurses_debug_amar.log", "a") { |f| f.puts "#{Time.now}: F KEY PRESSED - calling browse_saved_files" }
-    browse_saved_files
   when "?"
     show_help
 
@@ -1603,7 +1599,6 @@ def execute_menu_item
   # UTILITIES
   when /O\. Roll Open Ended/
     roll_o6
-  when /F\. Browse Saved Files/
     browse_saved_files
   when /\?\. Help/
     show_help
@@ -7571,11 +7566,6 @@ def reapply_colors(text)
 end
 
 
-def browse_saved_files
-  show_content("File browser test - working!")
-  getchr
-  return_to_menu
-end
 
 def view_saved_file(filepath)
   content = File.read(filepath)
@@ -7605,3 +7595,70 @@ rescue => e
   show_content("Error reading file: #{e.message}")
 end
 
+def browse_saved_files
+  save_dir = "saved"
+
+  # Get list of files (like RTFM's ls)
+  files = Dir.glob("#{save_dir}/*").select { |f| File.file?(f) }
+
+  if files.empty?
+    show_content("No saved files found.\n\nGenerate some content first.")
+    getchr
+    return_to_menu
+    return
+  end
+
+  @file_index = 0  # Current selection
+
+  loop do
+    # Display file list (like RTFM)
+    output = ""
+    files.each_with_index do |file, i|
+      filename = File.basename(file)
+      if i == @file_index
+        output += "→ #{filename}\n"  # Selected file
+      else
+        output += "  #{filename}\n"
+      end
+    end
+
+    show_content(output)
+    @footer.say(" [↑↓] Navigate | [Enter] View | [ESC/q] Back ".ljust(@cols))
+
+    key = getchr
+    case key
+    when "ESC", "\e", "q", "LEFT"
+      break
+    when "j", "DOWN"
+      @file_index = (@file_index + 1) % files.length  # Wrap around
+    when "k", "UP"
+      @file_index = (@file_index - 1) % files.length  # Wrap around
+    when "ENTER", "\r"
+      # Show selected file content
+      selected_file = files[@file_index]
+      content = File.read(selected_file)
+      @content.clear  # Clear right pane properly like RTFM
+      show_content(content)
+      @footer.say(" [j/↓] Down | [k/↑] Up | [ESC/q] Back ".ljust(@cols))
+
+      # Simple file viewer
+      loop do
+        view_key = getchr
+        case view_key
+        when "ESC", "\e", "q", "LEFT"
+          break  # Return to file list
+        when "j", "DOWN"
+          @content.linedown
+        when "k", "UP"
+          @content.lineup
+        when " ", "PgDOWN"
+          @content.pagedown
+        when "b", "PgUP"
+          @content.pageup
+        end
+      end
+    end
+  end
+
+  return_to_menu
+end

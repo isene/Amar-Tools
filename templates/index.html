@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amar RPG Tools - Web Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #000;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+            gap: 2px;
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            background-color: #1a1a1a;
+            padding: 10px;
+            border: 2px solid #555;
+            text-align: center;
+        }
+
+        .title {
+            color: #00ffff;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .menu-panel {
+            background-color: #000;
+            border: 2px solid #555;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .menu-panel.focused {
+            border-color: #00ffff;
+        }
+
+        .content-panel {
+            background-color: #1a1a1a;
+            border: 2px solid #555;
+            padding: 15px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+        }
+
+        .content-panel.focused {
+            border-color: #00ffff;
+        }
+
+        .status-bar {
+            grid-column: 1 / -1;
+            background-color: #333;
+            padding: 5px 10px;
+            border: 1px solid #555;
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        .menu-item {
+            padding: 2px 5px;
+            cursor: pointer;
+            border-radius: 2px;
+            margin: 1px 0;
+        }
+
+        .menu-item.separator {
+            color: #888;
+            cursor: default;
+            font-weight: bold;
+            text-align: center;
+            margin: 5px 0;
+        }
+
+        .menu-item.empty {
+            height: 10px;
+            cursor: default;
+        }
+
+        .menu-item:hover:not(.separator):not(.empty) {
+            background-color: #333;
+        }
+
+        .menu-item.selected {
+            background-color: #444;
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        .form-container {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #222;
+            border: 1px solid #555;
+            border-radius: 5px;
+        }
+
+        .form-group {
+            margin: 10px 0;
+        }
+
+        .form-group label {
+            display: block;
+            color: #00ffff;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            background-color: #333;
+            border: 1px solid #555;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            border-radius: 3px;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+        }
+
+        .btn {
+            background-color: #444;
+            color: #00ffff;
+            border: 1px solid #00ffff;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            border-radius: 3px;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background-color: #555;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .btn:disabled {
+            background-color: #222;
+            color: #666;
+            border-color: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .output {
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            line-height: 1.2;
+        }
+
+        .loading {
+            color: #ffff00;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.5; }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error {
+            color: #ff4444;
+            background-color: #330000;
+            padding: 10px;
+            border: 1px solid #ff4444;
+            border-radius: 3px;
+            margin: 10px 0;
+        }
+
+        .success {
+            color: #44ff44;
+            background-color: #003300;
+            padding: 10px;
+            border: 1px solid #44ff44;
+            border-radius: 3px;
+            margin: 10px 0;
+        }
+
+        /* Color classes for TUI output */
+        .fg-14 { color: #00ffff; }  /* bright cyan */
+        .fg-229 { color: #ffffaf; } /* light yellow */
+        .fg-15 { color: #ffffff; }  /* bright white */
+        .fg-13 { color: #ff00ff; }  /* bright magenta */
+        .fg-7 { color: #c0c0c0; }   /* white */
+        .fg-10 { color: #00ff00; }  /* bright green */
+        .fg-202 { color: #ff5f00; } /* red-orange */
+        .bold { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">AMAR RPG TOOLS - Web Interface v1.0.0</div>
+        </div>
+
+        <div class="menu-panel focused" id="menuPanel">
+            <div class="menu-item separator">── NEW 3-TIER SYSTEM ──</div>
+            <div class="menu-item" data-action="npc">N. Generate NPC</div>
+            <div class="menu-item" data-action="encounter">E. Generate Encounter</div>
+            <div class="menu-item" data-action="monster">M. Generate Monster</div>
+            <div class="menu-item empty"></div>
+            <div class="menu-item separator">── WORLD BUILDING ──</div>
+            <div class="menu-item" data-action="town">T. Town/City Generator</div>
+            <div class="menu-item" data-action="relations">R. Town Relations</div>
+            <div class="menu-item" data-action="relations-map">V. Show Town Relations Map</div>
+            <div class="menu-item" data-action="weather">W. Weather Generator</div>
+            <div class="menu-item" data-action="weather-pdf">P. Weather PDF Generator</div>
+            <div class="menu-item" data-action="names">G. Name Generator</div>
+            <div class="menu-item empty"></div>
+            <div class="menu-item separator">── AI TOOLS ──</div>
+            <div class="menu-item" data-action="adventure">A. Generate Adventure</div>
+            <div class="menu-item" data-action="describe-encounter">C. Describe Encounter</div>
+            <div class="menu-item" data-action="describe-npc">D. Describe NPC</div>
+            <div class="menu-item" data-action="npc-image">I. Generate NPC Image</div>
+            <div class="menu-item" data-action="show-image">S. Show Latest NPC Image</div>
+            <div class="menu-item empty"></div>
+            <div class="menu-item separator">── UTILITIES ──</div>
+            <div class="menu-item" data-action="roll">O. Roll Open Ended d6</div>
+            <div class="menu-item" data-action="help">?. Help</div>
+            <div class="menu-item empty"></div>
+            <div class="menu-item separator">── LEGACY SYSTEM ──</div>
+            <div class="menu-item" data-action="old-npc">1. Old NPC Generator</div>
+            <div class="menu-item" data-action="old-encounter">2. Old Encounter</div>
+            <div class="menu-item empty"></div>
+            <div class="menu-item" data-action="quit">Q. Quit</div>
+        </div>
+
+        <div class="content-panel" id="contentPanel">
+            <div class="output" id="output">Welcome to the Amar RPG Tools Web Interface!
+
+Select an option from the menu on the left to get started.
+
+This web interface provides the exact same functionality as the TUI version,
+with all the same generators and tools available through a convenient web browser.
+
+Key Features:
+• Generate NPCs with full character stats
+• Create encounters and monsters
+• Build towns and generate weather
+• AI-powered adventure and description tools
+• Name generators for various cultures
+• Roll dice and access utilities
+
+Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
+            </div>
+
+            <!-- NPC Generation Form -->
+            <div class="form-container hidden" id="npcForm">
+                <h3 style="color: #00ffff; margin-bottom: 15px;">Generate NPC</h3>
+                <div class="form-group">
+                    <label for="npcName">Name (optional):</label>
+                    <input type="text" id="npcName" placeholder="Leave blank for random name">
+                </div>
+                <div class="form-group">
+                    <label for="npcRace">Race (optional):</label>
+                    <input type="text" id="npcRace" placeholder="e.g., Human, Elf, Dwarf">
+                </div>
+                <div class="form-group">
+                    <label for="npcType">Type (optional):</label>
+                    <input type="text" id="npcType" placeholder="e.g., Warrior, Mage, Thief">
+                </div>
+                <div class="form-group">
+                    <label for="npcLevel">Level (0 for random):</label>
+                    <input type="number" id="npcLevel" min="0" max="20" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="npcArea">Area (optional):</label>
+                    <input type="text" id="npcArea" placeholder="Geographic area or culture">
+                </div>
+                <div class="form-group">
+                    <label for="npcSex">Sex:</label>
+                    <select id="npcSex">
+                        <option value="">Random</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="npcAge">Age (0 for random):</label>
+                    <input type="number" id="npcAge" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="npcHeight">Height in cm (0 for random):</label>
+                    <input type="number" id="npcHeight" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="npcWeight">Weight in kg (0 for random):</label>
+                    <input type="number" id="npcWeight" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="npcDescription">Description (optional):</label>
+                    <textarea id="npcDescription" rows="3" placeholder="Physical description or background"></textarea>
+                </div>
+                <div>
+                    <button class="btn" onclick="generateNPC()">Generate NPC</button>
+                    <button class="btn" onclick="showMainView()">Back to Menu</button>
+                </div>
+            </div>
+
+            <!-- Other forms will be added here as needed -->
+        </div>
+
+        <div class="status-bar" id="statusBar">
+            Ready | Use menu or keyboard shortcuts | ESC to return to menu
+        </div>
+    </div>
+
+    <script>
+        let selectedMenuItem = 0;
+        let currentFocus = 'menu';
+
+        // Initialize the interface
+        document.addEventListener('DOMContentLoaded', function() {
+            updateMenuSelection();
+            setupKeyboardHandlers();
+        });
+
+        function setupKeyboardHandlers() {
+            document.addEventListener('keydown', function(e) {
+                if (currentFocus === 'menu') {
+                    handleMenuKeyboard(e);
+                } else {
+                    handleContentKeyboard(e);
+                }
+            });
+        }
+
+        function handleMenuKeyboard(e) {
+            const menuItems = document.querySelectorAll('.menu-item:not(.separator):not(.empty)');
+
+            switch(e.key) {
+                case 'ArrowDown':
+                case 'j':
+                    e.preventDefault();
+                    selectedMenuItem = Math.min(selectedMenuItem + 1, menuItems.length - 1);
+                    updateMenuSelection();
+                    break;
+                case 'ArrowUp':
+                case 'k':
+                    e.preventDefault();
+                    selectedMenuItem = Math.max(selectedMenuItem - 1, 0);
+                    updateMenuSelection();
+                    break;
+                case 'Enter':
+                case ' ':
+                    e.preventDefault();
+                    activateMenuItem(menuItems[selectedMenuItem]);
+                    break;
+                case 'Tab':
+                    e.preventDefault();
+                    switchFocus();
+                    break;
+                default:
+                    // Handle letter shortcuts
+                    const key = e.key.toLowerCase();
+                    const shortcuts = {
+                        'n': 'npc',
+                        'e': 'encounter',
+                        'm': 'monster',
+                        't': 'town',
+                        'r': 'relations',
+                        'v': 'relations-map',
+                        'w': 'weather',
+                        'p': 'weather-pdf',
+                        'g': 'names',
+                        'a': 'adventure',
+                        'c': 'describe-encounter',
+                        'd': 'describe-npc',
+                        'i': 'npc-image',
+                        's': 'show-image',
+                        'o': 'roll',
+                        '?': 'help',
+                        '1': 'old-npc',
+                        '2': 'old-encounter',
+                        'q': 'quit'
+                    };
+
+                    if (shortcuts[key]) {
+                        e.preventDefault();
+                        const item = document.querySelector(`[data-action="${shortcuts[key]}"]`);
+                        if (item) {
+                            activateMenuItem(item);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        function handleContentKeyboard(e) {
+            switch(e.key) {
+                case 'Escape':
+                    e.preventDefault();
+                    showMainView();
+                    break;
+                case 'Tab':
+                    e.preventDefault();
+                    switchFocus();
+                    break;
+            }
+        }
+
+        function updateMenuSelection() {
+            const menuItems = document.querySelectorAll('.menu-item:not(.separator):not(.empty)');
+            menuItems.forEach((item, index) => {
+                if (index === selectedMenuItem) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        function switchFocus() {
+            if (currentFocus === 'menu') {
+                currentFocus = 'content';
+                document.getElementById('menuPanel').classList.remove('focused');
+                document.getElementById('contentPanel').classList.add('focused');
+            } else {
+                currentFocus = 'menu';
+                document.getElementById('menuPanel').classList.add('focused');
+                document.getElementById('contentPanel').classList.remove('focused');
+            }
+        }
+
+        function activateMenuItem(item) {
+            if (!item || item.classList.contains('separator') || item.classList.contains('empty')) {
+                return;
+            }
+
+            const action = item.getAttribute('data-action');
+            updateStatus(`Executing: ${item.textContent}`);
+
+            switch(action) {
+                case 'npc':
+                    showNPCForm();
+                    break;
+                case 'encounter':
+                    generateEncounter();
+                    break;
+                case 'monster':
+                    generateMonster();
+                    break;
+                case 'town':
+                    generateTown();
+                    break;
+                case 'relations':
+                    showNotImplemented('Town Relations');
+                    break;
+                case 'relations-map':
+                    showNotImplemented('Town Relations Map');
+                    break;
+                case 'weather':
+                    generateWeather();
+                    break;
+                case 'weather-pdf':
+                    showNotImplemented('Weather PDF Generator');
+                    break;
+                case 'names':
+                    generateNames();
+                    break;
+                case 'adventure':
+                    showNotImplemented('Adventure Generator');
+                    break;
+                case 'describe-encounter':
+                    showNotImplemented('Describe Encounter');
+                    break;
+                case 'describe-npc':
+                    showNotImplemented('Describe NPC');
+                    break;
+                case 'npc-image':
+                    showNotImplemented('Generate NPC Image');
+                    break;
+                case 'show-image':
+                    showNotImplemented('Show Latest NPC Image');
+                    break;
+                case 'roll':
+                    rollDice();
+                    break;
+                case 'help':
+                    showHelp();
+                    break;
+                case 'old-npc':
+                    showNotImplemented('Old NPC Generator');
+                    break;
+                case 'old-encounter':
+                    showNotImplemented('Old Encounter');
+                    break;
+                case 'quit':
+                    showQuit();
+                    break;
+                default:
+                    updateStatus('Unknown action');
+            }
+        }
+
+        function showMainView() {
+            // Hide all forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            // Show main output
+            document.getElementById('output').style.display = 'block';
+
+            // Reset focus to menu
+            currentFocus = 'menu';
+            document.getElementById('menuPanel').classList.add('focused');
+            document.getElementById('contentPanel').classList.remove('focused');
+
+            updateStatus('Ready | Use menu or keyboard shortcuts | ESC to return to menu');
+        }
+
+        function showNPCForm() {
+            document.getElementById('output').style.display = 'none';
+            document.getElementById('npcForm').classList.remove('hidden');
+            currentFocus = 'content';
+            document.getElementById('menuPanel').classList.remove('focused');
+            document.getElementById('contentPanel').classList.add('focused');
+            updateStatus('Fill in NPC details (optional) and click Generate | ESC to return to menu');
+        }
+
+        function showNotImplemented(feature) {
+            const output = document.getElementById('output');
+            output.innerHTML = `<div class="error">Feature Not Yet Implemented</div>
+
+${feature} functionality will be added in the next update.
+
+This feature exists in the TUI version and will be ported to the web interface soon.
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+            output.style.display = 'block';
+
+            // Hide forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            updateStatus('Feature not implemented | ESC to return to menu');
+        }
+
+        async function rollDice() {
+            updateStatus('Rolling dice...');
+
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loading">Rolling open-ended d6...</div>';
+            output.style.display = 'block';
+
+            // Hide forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            try {
+                const response = await fetch('/api/roll', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    output.innerHTML = `<div class="success">Open Ended d6 Roll Result</div>
+
+<div style="color: #00ffff; font-size: 18px; font-weight: bold; margin: 20px 0;">
+${result.output}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('Dice rolled successfully | ESC to return to menu');
+                } else {
+                    output.innerHTML = `<div class="error">Error rolling dice</div>
+
+<div style="color: #ff6666;">
+${result.error || 'Unknown error occurred'}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('Error rolling dice | ESC to return to menu');
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="error">Network Error</div>
+
+<div style="color: #ff6666;">
+Failed to connect to server: ${error.message}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                updateStatus('Network error | ESC to return to menu');
+            }
+        }
+
+        async function generateEncounter() {
+            updateStatus('Generating encounter...');
+
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loading">Generating encounter, please wait...</div>';
+            output.style.display = 'block';
+
+            // Hide forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            try {
+                const response = await fetch('/api/encounter', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const coloredOutput = applyTUIColors(result.output);
+                    output.innerHTML = `<div class="output">${coloredOutput}</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('Encounter generated successfully | ESC to return to menu');
+                } else {
+                    output.innerHTML = `<div class="error">Error generating encounter</div>
+
+<div style="color: #ff6666;">
+${result.error || 'Unknown error occurred'}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('Error generating encounter | ESC to return to menu');
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="error">Network Error</div>
+
+<div style="color: #ff6666;">
+Failed to connect to server: ${error.message}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                updateStatus('Network error | ESC to return to menu');
+            }
+        }
+
+        async function generateMonster() {
+            updateStatus('Generating monster...');
+
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loading">Generating monster, please wait...</div>';
+            output.style.display = 'block';
+
+            // Hide forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            try {
+                const response = await fetch('/api/monster', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const coloredOutput = applyTUIColors(result.output);
+                    output.innerHTML = `<div class="output">${coloredOutput}</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('Monster generated successfully | ESC to return to menu');
+                } else {
+                    output.innerHTML = `<div class="error">Error generating monster</div>
+
+<div style="color: #ff6666;">
+${result.error || 'Unknown error occurred'}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('Error generating monster | ESC to return to menu');
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="error">Network Error</div>
+
+<div style="color: #ff6666;">
+Failed to connect to server: ${error.message}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                updateStatus('Network error | ESC to return to menu');
+            }
+        }
+
+        async function generateTown() {
+            updateStatus('Generating town...');
+
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loading">Generating town, please wait...</div>';
+            output.style.display = 'block';
+
+            // Hide forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            try {
+                const response = await fetch('/api/town', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const coloredOutput = applyTUIColors(result.output);
+                    output.innerHTML = `<div class="output">${coloredOutput}</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('Town generated successfully | ESC to return to menu');
+                } else {
+                    output.innerHTML = `<div class="error">Error generating town</div>
+
+<div style="color: #ff6666;">
+${result.error || 'Unknown error occurred'}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('Error generating town | ESC to return to menu');
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="error">Network Error</div>
+
+<div style="color: #ff6666;">
+Failed to connect to server: ${error.message}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                updateStatus('Network error | ESC to return to menu');
+            }
+        }
+
+        async function generateWeather() {
+            updateStatus('Generating weather...');
+
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loading">Generating weather, please wait...</div>';
+            output.style.display = 'block';
+
+            // Hide forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            try {
+                const response = await fetch('/api/weather', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const coloredOutput = applyTUIColors(result.output);
+                    output.innerHTML = `<div class="output">${coloredOutput}</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('Weather generated successfully | ESC to return to menu');
+                } else {
+                    output.innerHTML = `<div class="error">Error generating weather</div>
+
+<div style="color: #ff6666;">
+${result.error || 'Unknown error occurred'}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('Error generating weather | ESC to return to menu');
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="error">Network Error</div>
+
+<div style="color: #ff6666;">
+Failed to connect to server: ${error.message}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                updateStatus('Network error | ESC to return to menu');
+            }
+        }
+
+        async function generateNames() {
+            updateStatus('Generating names...');
+
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loading">Generating names, please wait...</div>';
+            output.style.display = 'block';
+
+            // Hide forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            try {
+                const response = await fetch('/api/names', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const coloredOutput = applyTUIColors(result.output);
+                    output.innerHTML = `<div class="output">${coloredOutput}</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('Names generated successfully | ESC to return to menu');
+                } else {
+                    output.innerHTML = `<div class="error">Error generating names</div>
+
+<div style="color: #ff6666;">
+${result.error || 'Unknown error occurred'}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('Error generating names | ESC to return to menu');
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="error">Network Error</div>
+
+<div style="color: #ff6666;">
+Failed to connect to server: ${error.message}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                updateStatus('Network error | ESC to return to menu');
+            }
+        }
+
+        function showHelp() {
+            const output = document.getElementById('output');
+            output.innerHTML = `<div style="color: #00ffff; font-weight: bold; font-size: 18px;">AMAR RPG TOOLS - Help</div>
+
+<div style="color: #ffff00; margin: 15px 0;">Navigation:</div>
+• Use arrow keys or J/K to navigate menu
+• Press Enter or Space to select menu items
+• Use letter shortcuts (N for NPC, E for Encounter, etc.)
+• Tab to switch between menu and content panels
+• ESC to return to main menu from any form
+
+<div style="color: #ffff00; margin: 15px 0;">Features:</div>
+• <span style="color: #00ff00;">NPC Generator</span> - Create detailed characters with stats
+• <span style="color: #888;">Encounter Generator</span> - Coming soon
+• <span style="color: #888;">Monster Generator</span> - Coming soon
+• <span style="color: #888;">World Building Tools</span> - Coming soon
+• <span style="color: #888;">AI Tools</span> - Coming soon
+• <span style="color: #00ff00;">Dice Rolling</span> - Open-ended d6 system
+• <span style="color: #888;">Legacy Tools</span> - Coming soon
+
+<div style="color: #ffff00; margin: 15px 0;">About:</div>
+This web interface provides the same functionality as the TUI version,
+allowing you to access all Amar RPG tools through your web browser.
+
+Version: 1.0.0
+Based on: Amar RPG System by Geir Isene
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+            output.style.display = 'block';
+
+            // Hide forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            updateStatus('Help displayed | ESC to return to menu');
+        }
+
+        function showQuit() {
+            const output = document.getElementById('output');
+            output.innerHTML = `<div style="color: #ff6666; font-weight: bold; font-size: 18px;">Exit Application</div>
+
+<div style="color: #ffff00; margin: 20px 0;">
+To exit the web interface, simply close your browser tab or window.
+</div>
+
+<div style="color: #888;">
+Thank you for using Amar RPG Tools!
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+            output.style.display = 'block';
+
+            // Hide forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            updateStatus('Close browser to exit | ESC to return to menu');
+        }
+
+        function updateStatus(message) {
+            document.getElementById('statusBar').textContent = message;
+        }
+
+        async function generateNPC() {
+            const params = {
+                name: document.getElementById('npcName').value,
+                race: document.getElementById('npcRace').value,
+                type: document.getElementById('npcType').value,
+                level: parseInt(document.getElementById('npcLevel').value) || 0,
+                area: document.getElementById('npcArea').value,
+                sex: document.getElementById('npcSex').value,
+                age: parseInt(document.getElementById('npcAge').value) || 0,
+                height: parseInt(document.getElementById('npcHeight').value) || 0,
+                weight: parseInt(document.getElementById('npcWeight').value) || 0,
+                description: document.getElementById('npcDescription').value
+            };
+
+            updateStatus('Generating NPC...');
+
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loading">Generating NPC, please wait...</div>';
+            output.style.display = 'block';
+
+            // Hide form
+            document.getElementById('npcForm').classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/npc', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(params)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Apply TUI-style coloring to the output
+                    const coloredOutput = applyTUIColors(result.output);
+                    output.innerHTML = `<div class="output">${coloredOutput}</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('NPC generated successfully | ESC to return to menu');
+                } else {
+                    output.innerHTML = `<div class="error">Error generating NPC</div>
+
+<div style="color: #ff6666;">
+${result.error || 'Unknown error occurred'}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                    updateStatus('Error generating NPC | ESC to return to menu');
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="error">Network Error</div>
+
+<div style="color: #ff6666;">
+Failed to connect to server: ${error.message}
+</div>
+
+<div style="color: #00ffff; margin-top: 20px;">Press ESC or click a menu item to continue</div>`;
+                updateStatus('Network error | ESC to return to menu');
+            }
+        }
+
+        function applyTUIColors(text) {
+            if (!text) return '';
+
+            // Split into lines and apply coloring
+            const lines = text.split('\n');
+            const coloredLines = lines.map(line => {
+                // Character name line - bright cyan
+                if (/^(\w+.*\([MF] \d+\).*H\/W:.*$)/.test(line)) {
+                    return `<span class="fg-14 bold">${line}</span>`;
+                }
+                // Description line - light yellow
+                else if (/^(Description:.*$)/.test(line)) {
+                    return `<span class="fg-229">${line}</span>`;
+                }
+                // Characteristic headers - bright yellow
+                else if (/^(BODY|MIND|SPIRIT)\s*\(/.test(line)) {
+                    return line.replace(/^(BODY|MIND|SPIRIT)/, '<span class="fg-15 bold">$1</span>');
+                }
+                // Attribute names - bright magenta
+                else if (/^\s+([A-Z][a-z]+)\s*\(/.test(line)) {
+                    return line.replace(/^(\s+)([A-Z][a-z]+)/, '$1<span class="fg-13">$2</span>');
+                }
+                // Skill lines - white
+                else if (/^\s+[\w\s]+:\s*\d+$/.test(line)) {
+                    return `<span class="fg-7">${line}</span>`;
+                }
+                // Stats line - bright green
+                else if (/^(SIZE:.*BP:.*DB:.*MD:.*)/.test(line)) {
+                    return `<span class="fg-10 bold">${line}</span>`;
+                }
+                // Weapons/armor/equipment - red
+                else if (/^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/.test(line)) {
+                    return `<span class="fg-202 bold">${line}</span>`;
+                }
+                else {
+                    return line;
+                }
+            });
+
+            return coloredLines.join('\n');
+        }
+
+        // Click handlers for menu items
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('menu-item') && !e.target.classList.contains('separator') && !e.target.classList.contains('empty')) {
+                activateMenuItem(e.target);
+            }
+        });
+    </script>
+</body>
+</html>
