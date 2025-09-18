@@ -600,6 +600,12 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                         </select>
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="encNumber">Number:</label>
+                        <input type="number" id="encNumber" min="0" max="20" value="0" placeholder="Random" style="width: 80px;">
+                    </div>
+                </div>
                 <button class="btn" onclick="generateEncounter()" style="margin: 8px 0 0 5px; display: block;">Generate Encounter</button>
             </div>
 
@@ -720,6 +726,29 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                 case 'Tab':
                     e.preventDefault();
                     switchFocus();
+                    break;
+                default:
+                    // Handle letter shortcuts from content panel too
+                    const key = e.key.toLowerCase();
+                    const shortcuts = {
+                        'n': 'npc',
+                        'e': 'encounter',
+                        'm': 'monster',
+                        't': 'town',
+                        'w': 'weather',
+                        'p': 'weather-pdf',
+                        'g': 'names',
+                        'o': 'roll',
+                        '?': 'help'
+                    };
+
+                    if (shortcuts[key]) {
+                        e.preventDefault();
+                        const item = document.querySelector(`[data-action="${shortcuts[key]}"]`);
+                        if (item) {
+                            activateMenuItem(item);
+                        }
+                    }
                     break;
             }
         }
@@ -969,7 +998,8 @@ Failed to connect to server: ${error.message}
                 time: parseInt(document.getElementById('encTime').value),
                 terrain: parseInt(document.getElementById('encTerrain').value),
                 level_mod: parseInt(document.getElementById('encLevel').value) || 0,
-                race: parseInt(document.getElementById('encRace').value) || 0
+                race: parseInt(document.getElementById('encRace').value) || 0,
+                number: parseInt(document.getElementById('encNumber').value) || 0
             };
 
             updateStatus('Generating encounter...');
@@ -1426,7 +1456,7 @@ Failed to connect to server: ${error.message}
             output.innerHTML = '<div class="loading">Generating detailed NPC view...</div>';
 
             try {
-                // Generate detailed NPC using the encounter character's stats
+                // Use encounter_npc endpoint to preserve encounter stats
                 const params = {
                     name: name,
                     type: type,
@@ -1435,7 +1465,7 @@ Failed to connect to server: ${error.message}
                     age: parseInt(age)
                 };
 
-                const response = await fetch('/api/npc', {
+                const response = await fetch('/api/encounter_npc/0', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

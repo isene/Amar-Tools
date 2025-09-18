@@ -173,33 +173,38 @@ def enc_output_new(e, cli, custom_width = nil)
         melee_weapons = []
         missile_weapons = []
         
-        # Melee combat
-        if npc.tiers["BODY"]["Melee Combat"]
-          melee_attr = npc.get_attribute("BODY", "Melee Combat")
-          melee_skills = npc.tiers["BODY"]["Melee Combat"]["skills"].select { |_, v| v > 0 }
-          melee_skills.take(2).each do |skill, value|
-            total = body + melee_attr + value
-            wpn_stats = get_weapon_stats(skill)
-            ini = reaction_speed + (wpn_stats[:ini] || 0)
-            off = total + wpn_stats[:off]
-            def_val = total + wpn_stats[:def] + dodge_bonus
-            dmg = (db_value + wpn_stats[:dmg]).round
-            
-            melee_weapons << "#{skill} (#{total}) I:#{ini} #{@stat_color}O:#{off}#{@reset} #{@stat_color}D:#{def_val}#{@reset} #{@stat_color}d:#{dmg}#{@reset}"
-          end
+        # Melee combat - use ORIGINAL weapon names with NEW skill calculations
+        if npc.respond_to?(:melee1) && npc.melee1 && !npc.melee1.strip.empty?
+          weapon_name = npc.melee1.strip
+          skill = npc.melee1s || 0
+          ini = npc.melee1i || 0
+          off = npc.melee1o || 0
+          def_val = npc.melee1d || 0
+          dmg = npc.melee1dam || 0
+
+          melee_weapons << "#{weapon_name} (#{skill}) I:#{ini} #{@stat_color}O:#{off}#{@reset} #{@stat_color}D:#{def_val}#{@reset} #{@stat_color}d:#{dmg}#{@reset}"
+        end
+
+        if npc.respond_to?(:melee2) && npc.melee2 && !npc.melee2.strip.empty?
+          weapon_name = npc.melee2.strip
+          skill = npc.melee2s || 0
+          ini = npc.melee2i || 0
+          off = npc.melee2o || 0
+          def_val = npc.melee2d || 0
+          dmg = npc.melee2dam || 0
+
+          melee_weapons << "#{weapon_name} (#{skill}) I:#{ini} #{@stat_color}O:#{off}#{@reset} #{@stat_color}D:#{def_val}#{@reset} #{@stat_color}d:#{dmg}#{@reset}"
         end
         
-        # Missile combat
-        if npc.tiers["BODY"]["Missile Combat"]
-          missile_attr = npc.get_attribute("BODY", "Missile Combat")
-          missile_skills = npc.tiers["BODY"]["Missile Combat"]["skills"].select { |_, v| v > 0 }
-          missile_skills.take(2).each do |skill, value|
-            total = body + missile_attr + value
-            msl_stats = get_missile_stats(skill)
-            dmg = (db_value + msl_stats[:dmg]).round
-            
-            missile_weapons << "#{skill} (#{total}) R:#{msl_stats[:range]} #{@stat_color}d:#{dmg}#{@reset}"
-          end
+        # Missile combat - use ORIGINAL weapon names
+        if npc.respond_to?(:missile) && npc.missile && !npc.missile.strip.empty?
+          weapon_name = npc.missile.strip
+          skill = npc.missiles || 0
+          off = npc.missileo || 0
+          dmg = npc.missiledam || 0
+          range = npc.missilerange ? "#{npc.missilerange}m" : "30m"
+
+          missile_weapons << "#{weapon_name} (#{skill}) R:#{range} #{@stat_color}d:#{dmg}#{@reset}"
         end
         
         # Display weapons
@@ -398,6 +403,23 @@ def get_missile_stats(weapon)
   else
     { range: "30m", dmg: 0, sr: "1" }
   end
+end
+
+# Missing function from npc_output_new.rb
+def generate_money(status, level)
+  base = case status
+         when "N" then 100 * level  # Noble
+         when "UC" then 50 * level  # Upper Class
+         when "MC" then 30 * level  # Middle Class
+         when "LMC" then 15 * level # Lower Middle Class
+         when "LC" then 8 * level   # Lower Class
+         when "S" then 2 * level    # Slave
+         else 10 * level
+         end
+
+  variance = rand(base / 2) - base / 4
+  total = base + variance
+  "#{total} silver"
 end
 
 # Keep the old compact format as an alternative

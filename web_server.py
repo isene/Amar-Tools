@@ -206,9 +206,10 @@ def call_ruby_function(function_name, params=None):
                 terrain = params.get('terrain', 1)  # 0-7
                 level_mod = params.get('level_mod', 0)  # +/- modifier
                 race = params.get('race', 0)  # 0=random, 1-11 specific races
-                param_str = f'[{time}, {terrain}, {level_mod}, {race}]'
+                number = params.get('number', 0)  # 0=random, 1-20 specific number
+                param_str = f'[{time}, {terrain}, {level_mod}, {race}, {number}]'
             else:
-                param_str = '[1, 1, 0, 0]'
+                param_str = '[1, 1, 0, 0, 0]'
         elif function_name == 'monster':
             # Build parameter string for monster generation
             if params:
@@ -219,6 +220,18 @@ def call_ruby_function(function_name, params=None):
                 param_str = f'["{monster_type}", {level}]'
             else:
                 param_str = '["random", rand(1..3)]'
+        elif function_name == 'encounter_npc':
+            # Build parameter string for encounter NPC detail
+            if params:
+                npc_index = params.get('npc_index', 0)
+                name = params.get('name', '').strip()
+                sex = params.get('sex', '').strip()
+                type_val = params.get('type', '').strip()
+                level = params.get('level', 1)
+                age = params.get('age', 0)
+                param_str = f'[{npc_index}, "{name}", "{sex}", "{type_val}", {level}, {age}]'
+            else:
+                param_str = '[0, "", "", "", 1, 0]'
 
         # Create a temporary Ruby script that calls the function
         ruby_code = f"""
@@ -274,11 +287,12 @@ when 'encounter'
     require_relative 'cli_enc_output_new.rb'
 
     # Get parameters from input
-    params = {param_str} rescue [1, 1, 0, 0]
+    params = {param_str} rescue [1, 1, 0, 0, 0]
     time = params[0] || 1
     terrain = params[1] || 1
     level_mod = params[2] || 0
     race = params[3] || 0
+    number = params[4] || 0
 
     # Set global variables for encounter generation
     $Day = time
@@ -291,7 +305,35 @@ when 'encounter'
     selected_race = race == 0 ? "Random" : races[race]
 
     # Generate encounter with parameters - exact TUI approach
-    enc = EncNew.new(selected_race, 1, $Terraintype, level_mod)
+    # Use number parameter (0 = random, specific number = that encounter)
+    enc = EncNew.new(selected_race, number, $Terraintype, level_mod)
+
+    # Store encounter object for detailed NPC views
+    encounter_file = File.join($pgmdir, "saved", "last_encounter.json")
+    Dir.mkdir(File.join($pgmdir, "saved")) unless Dir.exist?(File.join($pgmdir, "saved"))
+
+    # Serialize encounter NPCs for later retrieval
+    npc_data = []
+    if enc.npcs && enc.npcs.length > 0
+      enc.npcs.each_with_index do |npc, idx|
+        npc_data << {{
+          "index" => idx,
+          "name" => npc.name,
+          "type" => npc.type,
+          "level" => npc.level,
+          "sex" => npc.sex,
+          "age" => npc.age,
+          "area" => npc.area,
+          "height" => npc.height,
+          "weight" => npc.weight,
+          "description" => npc.description
+        }}
+      end
+    end
+
+    require 'json'
+    File.write(encounter_file, npc_data.to_json)
+
     output = enc_output_new(enc, 'cli', 120)
     puts output
 when 'monster'
@@ -537,6 +579,51 @@ when 'roll'
     end
     puts ""
     puts "Press any key to continue...".fg(240)
+when 'encounter_npc'
+    # Get specific NPC from stored encounter with preserved stats
+    require_relative 'cli_enc_output_new.rb'
+    require 'json'
+
+    # Load stored encounter data
+    encounter_file = File.join($pgmdir, "saved", "last_encounter.json")
+
+    if File.exist?(encounter_file)
+      # Parse parameters
+      params = {param_str} rescue [0, "", "", "", 0, 0]
+      name = params[1] || ""
+
+      # Load encounter NPCs
+      npc_data_array = JSON.parse(File.read(encounter_file))
+
+      # Find the NPC by name
+      npc_data = npc_data_array.find do |data|
+        data["name"] == name
+      end
+
+      if npc_data
+        # Recreate the EXACT same NPC with same parameters
+        # This should generate the same weapons/armor as the encounter
+        npc = NpcNew.new(
+          npc_data["name"],
+          npc_data["type"],
+          npc_data["level"],
+          npc_data["area"],
+          npc_data["sex"],
+          npc_data["age"],
+          npc_data["height"],
+          npc_data["weight"],
+          npc_data["description"]
+        )
+
+        # Generate full detailed output
+        output = npc_output_new(npc, 'cli', 120)
+        puts output
+      else
+        puts "NPC not found in stored encounter data"
+      end
+    else
+      puts "No stored encounter data found"
+    end
 else
     puts "Unknown function: {function_name}"
 end
@@ -613,6 +700,14 @@ def generate_names():
 def roll_dice():
     """Roll open-ended d6 using TUI backend"""
     result = call_ruby_function('roll', {})
+    return jsonify(result)
+
+@app.route('/api/encounter_npc/<int:npc_index>', methods=['POST'])
+def get_encounter_npc(npc_index):
+    """Get specific NPC from last encounter with preserved stats"""
+    params = request.get_json() or {}
+    params['npc_index'] = npc_index
+    result = call_ruby_function('encounter_npc', params)
     return jsonify(result)
 
 if __name__ == '__main__':

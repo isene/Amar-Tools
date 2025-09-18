@@ -14,7 +14,7 @@ class NpcNew
   attr_accessor :missileo, :missiledam, :missilerange
   attr_accessor :armour, :ap
   
-  def initialize(name, type, level, area, sex, age, height, weight, description)
+  def initialize(name, type, level, area, sex, age, height, weight, description, predetermined_stats = nil)
     # Generate random values for missing data
     @name = name && !name.empty? ? name : generate_random_name(sex)
     @type = type
@@ -108,12 +108,15 @@ class NpcNew
     # Set social status
     @social_status = ["S", "LC", "LMC", "MC", "UC", "N"].sample
     
+    # Store predetermined stats for later use
+    @predetermined_stats = predetermined_stats
+
     # Generate based on new tier system
     generate_tiers()
-    
+
     # Generate spells if magic user
     generate_spells()
-    
+
     # Select equipment
     select_equipment()
     
@@ -243,6 +246,9 @@ class NpcNew
       add_experience_skills()
     end
     
+    # Apply predetermined stats if provided (for encounter consistency)
+    apply_predetermined_stats() if @predetermined_stats
+
     # Ensure essential skills are always present
     ensure_essential_skills()
   end
@@ -1125,6 +1131,57 @@ class NpcNew
     # Reaction speed should always be present for initiative calculations
     unless @tiers["MIND"]["Awareness"]["skills"].key?("Reaction speed")
       @tiers["MIND"]["Awareness"]["skills"]["Reaction speed"] = 0
+    end
+  end
+
+  def apply_predetermined_stats
+    # Apply predetermined stats to preserve encounter consistency
+    # This allows encounters to pass specific stats that should not be randomized
+
+    return unless @predetermined_stats.is_a?(Hash)
+
+    # Override characteristics if provided
+    if @predetermined_stats["characteristics"]
+      @predetermined_stats["characteristics"].each do |char_name, value|
+        # This would require modifying the SIZE calculation system
+        # For now, we'll focus on weapons/armor/skills
+      end
+    end
+
+    # Override specific weapon skills if provided
+    if @predetermined_stats["weapon_skills"]
+      @predetermined_stats["weapon_skills"].each do |weapon, skill_level|
+        # Add to melee combat skills
+        @tiers["BODY"]["Melee Combat"]["skills"] ||= {}
+        @tiers["BODY"]["Melee Combat"]["skills"][weapon] = skill_level.to_i
+      end
+    end
+
+    # Override missile skills if provided
+    if @predetermined_stats["missile_skills"]
+      @predetermined_stats["missile_skills"].each do |weapon, skill_level|
+        @tiers["BODY"]["Missile Combat"]["skills"] ||= {}
+        @tiers["BODY"]["Missile Combat"]["skills"][weapon] = skill_level.to_i
+      end
+    end
+
+    # Override armor if provided
+    if @predetermined_stats["armor"]
+      @armor = @predetermined_stats["armor"]
+    end
+
+    # Override other skills if provided
+    if @predetermined_stats["skills"]
+      @predetermined_stats["skills"].each do |skill_path, value|
+        parts = skill_path.split("/")
+        next unless parts.length == 3
+
+        char_name, attr_name, skill_name = parts
+        next unless @tiers[char_name] && @tiers[char_name][attr_name]
+
+        @tiers[char_name][attr_name]["skills"] ||= {}
+        @tiers[char_name][attr_name]["skills"][skill_name] = value.to_i
+      end
     end
   end
 end
