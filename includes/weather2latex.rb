@@ -87,7 +87,7 @@ end
 
 l += "\\end{document}"
 
-File.delete("saved/weather.tex") if File.exists?("saved/weather.tex")
+File.delete("saved/weather.tex") if File.exist?("saved/weather.tex")
 begin
 	File.write("saved/weather.tex", l, perm: 0644)
 rescue
@@ -96,10 +96,10 @@ end
 
 system "clear" if t == ""
 
-File.delete("saved/weather.pdf") if File.exists?("saved/weather.pdf")
-if File.exists?("saved/weather.tex")
+File.delete("saved/weather.pdf") if File.exist?("saved/weather.pdf")
+if File.exist?("saved/weather.tex")
 	`pdflatex -interaction nonstopmode -output-directory saved saved/weather.tex` 
-	if File.exists?("saved/weather.pdf")
+	if File.exist?("saved/weather.pdf")
 		puts "Weather file created: saved/weather.pdf" 
 	else
 		puts "Weather file not created!" 

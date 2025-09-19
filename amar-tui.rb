@@ -4153,14 +4153,22 @@ def generate_weather_ui
     
     # Create colorized weather output with symbols
     output = ""
-    # Month-specific header colors
+    # Authentic Amar god colors for each month
     month_color = case month
-                  when 1..2 then 231   # White for winter months
-                  when 3..5 then 118   # Light green for spring
-                  when 6..8 then 226   # Yellow for summer
-                  when 9..11 then 208  # Orange for autumn
-                  when 12..13 then 195 # Light blue for winter
-                  else 255             # Default white
+                  when 1 then 231   # Cal Amae
+                  when 2 then 230   # Elesi
+                  when 3 then 41    # Anashina
+                  when 4 then 213   # Gwendyll
+                  when 5 then 163   # MacGillan
+                  when 6 then 204   # Juba
+                  when 7 then 248   # Taroc
+                  when 8 then 130   # Man Peggon
+                  when 9 then 172   # Maleko
+                  when 10 then 139  # Fal Munir
+                  when 11 then 202  # Moltan
+                  when 12 then 245  # Kraagh
+                  when 13 then 239  # Mestronorpha
+                  else 226          # Default yellow
                   end
     output += "\n" + "☀ WEATHER FOR #{$Month[month].upcase} ☀".fg(month_color).b + "\n"
     output += ("─" * 60).fg(240) + "\n\n"  # Grey divider
@@ -4380,11 +4388,50 @@ def generate_weather_ui
       when "PgUP"
         @content.pageup
       when "p", "P"
-        # Generate PDF from current weather
-        generate_weather_pdf
-        # Return to weather view after PDF generation
-        show_content(output)
-        @footer.say(" [j/↓] Down | [k/↑] Up | [p] Generate PDF | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+        # Generate PDF immediately from current weather data (like old CLI)
+        begin
+          # Generate LaTeX content using current weather month
+          # Weather_month expects (month, weather, wind) where wind combines dir+str
+          combined_wind = $wind_dir_n + ($wind_str_n * 8)
+          w = Weather_month.new($mn, $weather_n, combined_wind)
+
+          # Load weather2latex if not already loaded
+          weather2latex_file = File.join($pgmdir, "includes", "weather2latex.rb")
+          if File.exist?(weather2latex_file)
+            load weather2latex_file
+          end
+
+          latex_content = weather_out_latex(w, "cli")
+
+          # Write LaTeX file
+          save_dir = File.join($pgmdir, "saved")
+          Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
+          latex_file = File.join(save_dir, "weather.tex")
+          File.write(latex_file, latex_content)
+
+          # Show PDF generation status
+          pdf_output = "\n" + "PDF GENERATED".fg(10).b + "\n\n"
+          pdf_output += "LaTeX file: ".fg(14) + "saved/weather.tex".fg(226) + "\n"
+          pdf_output += "Month: ".fg(14) + "#{$Month[$mn]}".fg(month_color).b + "\n\n"
+          pdf_output += "To generate PDF, run:".fg(7) + "\n"
+          pdf_output += "  cd saved && pdflatex weather.tex".fg(51) + "\n\n"
+          pdf_output += "Press any key to return to weather view".fg(240)
+
+          show_content(pdf_output)
+          getchr  # Wait for keypress
+
+          # Return to weather view
+          show_content(output)
+          @footer.say(" [j/↓] Down | [k/↑] Up | [p] Generate PDF | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+        rescue => e
+          error_output = "PDF Generation Error".fg(196).b + "\n\n"
+          error_output += "#{e.message}\n\n"
+          error_output += "Press any key to continue".fg(240)
+          show_content(error_output)
+          getchr
+          show_content(output)
+          @footer.say(" [j/↓] Down | [k/↑] Up | [p] Generate PDF | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+        end
       when "y"
         copy_to_clipboard(output)
         @footer.clear
