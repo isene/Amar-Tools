@@ -1264,7 +1264,7 @@ def show_help
   # Handle scrolling in content pane
   loop do
     key = getchr
-    break if key == "ESC" || key == "q" || key == "\e" || key == "LEFT"
+    break if key == "ESC" || key == "q" || key == "ESC" || key == "LEFT"
     
     case key
     when "j", "DOWN"
@@ -1346,7 +1346,7 @@ def show_popup(title, content, width = 60, height = 20)
   # Wait for key to dismiss
   loop do
     key = getchr
-    break if key == "\e" || key == "q" || key == "\r"
+    break if key == "ESC" || key == "q" || key == "\r"
     
     case key
     when "j", "DOWN"  # Down
@@ -1696,7 +1696,7 @@ def roll_o6
   # Handle ESC and q to return to menu
   loop do
     key = getchr
-    if key == "ESC" || key == "\e" || key == "q" || key == "LEFT"
+    if key == "ESC" || key == "ESC" || key == "q" || key == "LEFT"
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
@@ -1943,7 +1943,7 @@ def npc_input_new_tui
   
   show_content(level_text)
   key = getchr
-  return nil if key == "ESC" || key == "\e"
+  return nil if key == "ESC"
   
   level = key =~ /[0-6]/ ? key.to_i : 0
   inputs << level
@@ -1963,7 +1963,7 @@ def npc_input_new_tui
   
   show_content(area_text)
   key = getchr
-  return nil if key == "ESC" || key == "\e"
+  return nil if key == "ESC"
   
   areas = ["", "Amaronir", "Merisir", "Calaronir", "Feronir", "Aleresir", "Rauinir", "Outskirts", "Other"]
   area = key =~ /[0-8]/ ? areas[key.to_i] : ""
@@ -1977,7 +1977,7 @@ def npc_input_new_tui
   sex_text += "Press number key:".fg(240)
   show_content(sex_text)
   key = getchr
-  return nil if key == "ESC" || key == "\e"
+  return nil if key == "ESC"
   
   sex = case key
         when "1" then "M"
@@ -2607,7 +2607,7 @@ def enc_input_new_tui
   time_text += "Press number key:".fg(240)
   show_content(time_text)
   key = getchr
-  return nil if key == "ESC" || key == "\e"
+  return nil if key == "ESC"
   
   $Day = key == "0" ? 0 : 1
   debug "Day/Night: #{$Day}"
@@ -2626,7 +2626,7 @@ def enc_input_new_tui
   
   show_content(terrain_text)
   key = getchr
-  return nil if key == "ESC" || key == "\e"
+  return nil if key == "ESC"
   
   $Terrain = key =~ /[0-7]/ ? key.to_i : 1
   $Terraintype = $Terrain + (8 * $Day)
@@ -3193,7 +3193,7 @@ def roll_dice_ui
   dice_input = ""
   loop do
     key = getchr
-    break if key == "\e"
+    break if key == "ESC"
     
     if key == "\r" && !dice_input.empty?
       result = roll_dice(dice_input)
@@ -3340,7 +3340,7 @@ def generate_monster_new
   level_text += "Press number key:".fg(240)
   show_content(level_text)
   key = getchr
-  if key == "ESC" || key == "\e"
+  if key == "ESC" || key == "ESC"
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
     return_to_menu
@@ -3864,7 +3864,7 @@ def generate_npc_old
     loop do
       key = getchr
       case key
-      when "\e", "q"
+      when "ESC", "q"
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
         return_to_menu
@@ -3991,7 +3991,7 @@ def generate_encounter_old
     loop do
       key = getchr
       case key
-      when "\e", "q"
+      when "ESC", "q"
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
         return_to_menu
@@ -4309,13 +4309,21 @@ def generate_weather_ui
         # Use different colors for different special days
         special_text = "★ #{d.special}"
         special_colored = case d.special
-                         when /new year/i then special_text.fg(226).b    # Bold yellow
-                         when /festival/i then special_text.fg(201).b    # Bold magenta
-                         when /harvest/i then special_text.fg(208)       # Orange
-                         when /moon/i then special_text.fg(195)          # Light blue
-                         when /solstice/i then special_text.fg(93).b     # Bold purple
-                         when /equinox/i then special_text.fg(118)       # Light green
-                         else special_text.fg(229)                       # Light yellow
+                         when /Anashina/i then special_text.fg(41)       # Anashina green
+                         when /Gwendyll/i then special_text.fg(213)      # Gwendyll magenta
+                         when /Fionella/i then special_text.fg(163)      # MacGillan color
+                         when /Elaari/i then special_text.fg(204)        # Juba color
+                         when /Ish Nakil/i then special_text.fg(204)     # Juba color
+                         when /Fenimaal/i then special_text.fg(163)      # MacGillan color
+                         when /Ikalio/i then special_text.fg(248)        # Taroc color
+                         when /Alesia/i then special_text.fg(230)        # Elesi color
+                         when /Juba/i then special_text.fg(204)          # Juba color
+                         when /new year/i then special_text.fg(239)      # Mestronorpha color
+                         when /festival/i then special_text.fg(172)      # Maleko color
+                         when /harvest/i then special_text.fg(130)       # Man Peggon color
+                         when /solstice/i then special_text.fg(248)      # Taroc color
+                         when /equinox/i then special_text.fg(172)       # Maleko color
+                         else special_text.fg(229)                       # Light yellow default
                          end
         line += special_colored
         current_length = line.pure.length
@@ -4358,9 +4366,9 @@ def generate_weather_ui
     loop do
       key = getchr
       case key
-      when "\e", "q"
-  # Restore menu selection
-  @menu_index = saved_menu_index if defined?(saved_menu_index)
+      when "ESC", "q"
+        # Restore menu selection
+        @menu_index = saved_menu_index if defined?(saved_menu_index)
         return_to_menu
         break
       when "j", "DOWN"
@@ -4371,6 +4379,12 @@ def generate_weather_ui
         @content.pagedown
       when "PgUP"
         @content.pageup
+      when "p", "P"
+        # Generate PDF from current weather
+        generate_weather_pdf
+        # Return to weather view after PDF generation
+        show_content(output)
+        @footer.say(" [j/↓] Down | [k/↑] Up | [p] Generate PDF | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
       when "y"
         copy_to_clipboard(output)
         @footer.clear
@@ -4476,7 +4490,7 @@ def generate_weather_pdf
   loop do
     key = getchr
     case key
-    when "\e", "q"
+    when "ESC", "q"
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
@@ -4517,7 +4531,7 @@ def generate_weather_pdf
   loop do
     key = getchr
     case key
-    when "\e", "q"
+    when "ESC", "q"
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
@@ -4587,7 +4601,7 @@ def generate_weather_pdf
       loop do
         key = getchr
         case key
-        when "\e", "q"
+        when "ESC", "q"
           break
         when "o", "O"
           # Try to open PDF with default viewer
@@ -4934,7 +4948,7 @@ def generate_town_ui
   loop do
     key = getchr
     case key
-    when "\e", "q", "ESC"
+    when "ESC", "q", "ESC"
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
@@ -5158,7 +5172,7 @@ def generate_name_ui
     loop do
       key = getchr
       case key
-      when "\e", "q"
+      when "ESC", "q"
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
         return_to_menu
@@ -5729,7 +5743,7 @@ def generate_adventure_ai
       loop do
         key = getchr
         case key
-        when "\e", "q"
+        when "ESC", "q"
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
           return_to_menu
@@ -5912,7 +5926,7 @@ def describe_encounter_ai
       loop do
         key = getchr
         case key
-        when "\e", "q"
+        when "ESC", "q"
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
           return_to_menu
@@ -6140,7 +6154,7 @@ def describe_npc_ai
       loop do
         key = getchr
         case key
-        when "\e", "q"
+        when "ESC", "q"
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
           return_to_menu
@@ -6585,7 +6599,7 @@ def generate_npc_image(description = nil)
   loop do
     key = getchr
     case key
-    when "\e", "q"
+    when "ESC", "q"
   # Restore menu selection
   @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
