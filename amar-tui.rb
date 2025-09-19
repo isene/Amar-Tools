@@ -479,7 +479,6 @@ def init_screen
     "R. Town Relations",
     "V. Show Town Relations Map",
     "W. Weather Generator",
-    "P. Weather PDF Generator",
     "G. Name Generator",
     "",
     "── AI TOOLS ──",
@@ -1464,8 +1463,6 @@ def handle_menu_navigation
     show_latest_town_map
   when "w", "W"
     generate_weather_ui
-  when "p", "P"
-    generate_weather_pdf
   when "g", "G"
     generate_name_ui
 

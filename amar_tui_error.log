@@ -1,6 +1,7 @@
-2025-09-18 15:08:01 +0200: undefined local variable or method `browse_saved_files' for main
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:1490:in `handle_menu_navigation'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:5260:in `main_loop'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:7491:in `<top (required)>'
+2025-09-19 09:02:15 +0200: uninitialized constant Month
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:4534:in `generate_weather_pdf'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:1468:in `handle_menu_navigation'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:5255:in `main_loop'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:7486:in `<top (required)>'
 ./amar-tui:7:in `require_relative'
 ./amar-tui:7:in `<main>'

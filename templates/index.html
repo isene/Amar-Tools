@@ -237,6 +237,48 @@
             margin: 10px 0;
         }
 
+        .edit-container {
+            margin: 10px 0;
+            padding: 0;
+        }
+
+        .edit-textarea {
+            width: 100%;
+            min-height: 400px;
+            background-color: #000;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.2;
+            resize: vertical;
+            white-space: pre;
+        }
+
+        .edit-buttons {
+            margin: 10px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-btn {
+            background-color: #444;
+            color: #00ffff;
+            border: 1px solid #00ffff;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .edit-btn:hover {
+            background-color: #555;
+            box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+        }
+
         /* Color classes for TUI output */
         .fg-14 { color: #00ffff; }  /* bright cyan */
         .fg-229 { color: #ffffaf; } /* light yellow */
@@ -263,7 +305,6 @@
             <div class="menu-item separator" style="color: #42A5A5; text-align: left;">WORLD BUILDING</div>
             <div class="menu-item" data-action="town">T. Town/City Generator</div>
             <div class="menu-item" data-action="weather">W. Weather Generator</div>
-            <div class="menu-item" data-action="weather-pdf">P. Weather PDF Generator</div>
             <div class="menu-item" data-action="names">G. Name Generator</div>
             <div class="menu-item empty"></div>
             <div class="menu-item separator" style="color: #855A85; text-align: left;">UTILITIES</div>
@@ -536,7 +577,7 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     </div>
                     <div class="form-group">
                         <label for="townSize">Houses:</label>
-                        <input type="number" id="townSize" min="1" max="1000" value="0" placeholder="Random" style="width: 100px;">
+                        <input type="number" id="townSize" min="1" max="200" value="0" placeholder="Random (max 200)" style="width: 120px;">
                     </div>
                     <div class="form-group">
                         <label for="townVar">Variation:</label>
@@ -642,7 +683,8 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
         </div>
 
         <div class="status-bar" id="statusBar">
-            Ready | Use menu or keyboard shortcuts        </div>
+            Ready | Use menu or keyboard shortcuts | TAB to switch panes | ESC to return to menu
+        </div>
     </div>
 
     <script>
@@ -700,7 +742,6 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                         'm': 'monster',
                         't': 'town',
                         'w': 'weather',
-                        'p': 'weather-pdf',
                         'g': 'names',
                         'o': 'roll',
                         '?': 'help'
@@ -736,7 +777,6 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                         'm': 'monster',
                         't': 'town',
                         'w': 'weather',
-                        'p': 'weather-pdf',
                         'g': 'names',
                         'o': 'roll',
                         '?': 'help'
@@ -799,9 +839,6 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     break;
                 case 'weather':
                     showWeatherForm();
-                    break;
-                case 'weather-pdf':
-                    showNotImplemented('Weather PDF Generator');
                     break;
                 case 'names':
                     showNamesForm();
@@ -1027,11 +1064,18 @@ Failed to connect to server: ${error.message}
                 if (result.success) {
                     // Store the encounter output for back navigation
                     lastEncounterOutput = result.output;
+                    currentEditContent = result.output;
 
                     // Make encounter NPCs clickable for detailed view
                     const clickableOutput = makeEncountersClickable(result.output);
-                    output.innerHTML = `<div class="output">${clickableOutput}</div>`;
-                    updateStatus('Encounter generated successfully - Click character names for details');
+                    output.innerHTML = `
+                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
+                            <button class="edit-btn" onclick="editOutput('encounter', currentEditContent)">Edit Encounter</button>
+                            <button class="edit-btn" onclick="downloadOutput('encounter', currentEditContent)">Download</button>
+                        </div>
+                        <div class="output">${clickableOutput}</div>
+                    `;
+                    updateStatus('Encounter generated successfully - Click names for details, Edit or Download');
                 } else {
                     output.innerHTML = `<div class="error">Error generating encounter</div>
 
@@ -1081,9 +1125,15 @@ Failed to connect to server: ${error.message}
                 const result = await response.json();
 
                 if (result.success) {
-                    output.innerHTML = `<div class="output">${result.output}</div>
-`;
-                    updateStatus('Monster generated successfully | ESC to return to menu');
+                    currentEditContent = result.output;
+                    output.innerHTML = `
+                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
+                            <button class="edit-btn" onclick="editOutput('monster', currentEditContent)">Edit Monster</button>
+                            <button class="edit-btn" onclick="downloadOutput('monster', currentEditContent)">Download</button>
+                        </div>
+                        <div class="output">${result.output}</div>
+                    `;
+                    updateStatus('Monster generated successfully - Edit or Download available');
                 } else {
                     output.innerHTML = `<div class="error">Error generating monster</div>
 
@@ -1111,10 +1161,17 @@ Failed to connect to server: ${error.message}
                 town_var: parseInt(document.getElementById('townVar').value) || 0
             };
 
-            updateStatus('Generating town...');
-
             const output = document.getElementById('output');
-            output.innerHTML = '<div class="loading">Generating town, please wait...</div>';
+            const houseCount = params.town_size || 0;
+
+            if (houseCount > 50) {
+                updateStatus(`Generating large town (${houseCount} houses) - this may take a moment...`);
+                output.innerHTML = `<div class="loading">Generating town with ${houseCount} houses...<br>Please wait, this may take up to a minute for large towns.</div>`;
+            } else {
+                updateStatus('Generating town...');
+                output.innerHTML = '<div class="loading">Generating town, please wait...</div>';
+            }
+
             output.style.display = 'block';
 
             // Hide forms
@@ -1188,9 +1245,16 @@ Failed to connect to server: ${error.message}
                 const result = await response.json();
 
                 if (result.success) {
-                    output.innerHTML = `<div class="output">${result.output}</div>
-`;
-                    updateStatus('Weather generated successfully | ESC to return to menu');
+                    currentEditContent = result.output;
+                    output.innerHTML = `
+                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
+                            <button class="edit-btn" onclick="editOutput('weather', currentEditContent)">Edit Weather</button>
+                            <button class="edit-btn" onclick="generateWeatherPDF()">Generate PDF</button>
+                            <button class="edit-btn" onclick="downloadOutput('weather', currentEditContent)">Download</button>
+                        </div>
+                        <div class="output">${result.output}</div>
+                    `;
+                    updateStatus('Weather generated successfully - Edit, Generate PDF, or Download available');
                 } else {
                     output.innerHTML = `<div class="error">Error generating weather</div>
 
@@ -1362,9 +1426,16 @@ Thank you for using Amar RPG Tools!
                 const result = await response.json();
 
                 if (result.success) {
-                    // Output already has proper CSS colors from backend
-                    output.innerHTML = `<div class="output">${result.output}</div>`;
-                    updateStatus('NPC generated successfully');
+                    // Store content and add top-positioned edit+download buttons
+                    currentEditContent = result.output;
+                    output.innerHTML = `
+                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
+                            <button class="edit-btn" onclick="editOutput('npc', currentEditContent)">Edit NPC</button>
+                            <button class="edit-btn" onclick="downloadOutput('npc', currentEditContent)">Download</button>
+                        </div>
+                        <div class="output" id="npc-output">${result.output}</div>
+                    `;
+                    updateStatus('NPC generated successfully - Edit or Download available');
                 } else {
                     output.innerHTML = `<div class="error">Error generating NPC</div>
 
@@ -1495,9 +1566,13 @@ Failed to connect to server: ${error.message}
         function goBackToEncounter() {
             // Restore the same encounter list (don't generate new one)
             if (lastEncounterOutput) {
+                currentEditContent = lastEncounterOutput;
                 const output = document.getElementById('output');
                 const clickableOutput = makeEncountersClickable(lastEncounterOutput);
-                output.innerHTML = `<div class="output">${clickableOutput}</div>`;
+                output.innerHTML = `
+                    <button class="edit-btn" onclick="editOutput('encounter', currentEditContent)" style="margin: 0 0 10px 0;">Edit Encounter</button>
+                    <div class="output">${clickableOutput}</div>
+                `;
                 updateStatus('Encounter list restored - Click character names for details');
             } else {
                 // Fallback if no stored encounter (shouldn't happen)
@@ -1505,10 +1580,148 @@ Failed to connect to server: ${error.message}
             }
         }
 
-        // Click handlers for menu items
+        // Store original content for editing
+        let currentEditContent = '';
+
+        function editOutput(type, content) {
+            // Store content for editing operations
+            currentEditContent = content;
+
+            // Convert HTML back to plain text for editing
+            const plainText = content.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+
+            const output = document.getElementById('output');
+            output.innerHTML = `
+                <div class="edit-container">
+                    <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
+                        <button class="edit-btn" onclick="saveEdit('${type}')">Save Changes</button>
+                        <button class="edit-btn" onclick="cancelEdit('${type}')">Cancel</button>
+                    </div>
+                    <textarea class="edit-textarea" id="edit-content">${plainText}</textarea>
+                </div>
+            `;
+            updateStatus(`Editing ${type} - Modify text and click Save Changes`);
+
+            // Focus the textarea
+            document.getElementById('edit-content').focus();
+        }
+
+        function saveEdit(type) {
+            const editedContent = document.getElementById('edit-content').value;
+
+            // Convert back to HTML format - but DON'T double-escape HTML entities
+            const htmlContent = editedContent.replace(/\n/g, '<br>');
+
+            // Update stored content
+            currentEditContent = htmlContent;
+
+            const output = document.getElementById('output');
+            output.innerHTML = `
+                <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
+                    <button class="edit-btn" onclick="editOutput('${type}', currentEditContent)">Edit ${type.charAt(0).toUpperCase() + type.slice(1)}</button>
+                    <button class="edit-btn" onclick="downloadOutput('${type}', currentEditContent)">Download</button>
+                </div>
+                <div class="output">${htmlContent}</div>
+            `;
+            updateStatus(`${type.charAt(0).toUpperCase() + type.slice(1)} edited and saved`);
+        }
+
+        function cancelEdit(type) {
+            const output = document.getElementById('output');
+            output.innerHTML = `
+                <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
+                    <button class="edit-btn" onclick="editOutput('${type}', currentEditContent)">Edit ${type.charAt(0).toUpperCase() + type.slice(1)}</button>
+                    <button class="edit-btn" onclick="downloadOutput('${type}', currentEditContent)">Download</button>
+                </div>
+                <div class="output">${currentEditContent}</div>
+            `;
+            updateStatus('Edit cancelled - original content restored');
+        }
+
+        function downloadOutput(type, content) {
+            // Convert HTML to plain text for download
+            const plainText = content.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+
+            // Create download
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            const filename = `amar-${type}-${timestamp}.txt`;
+
+            const blob = new Blob([plainText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            updateStatus(`${type.charAt(0).toUpperCase() + type.slice(1)} downloaded as ${filename}`);
+        }
+
+        async function generateWeatherPDF() {
+            updateStatus('Generating weather PDF...');
+
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loading">Generating weather PDF, please wait...</div>';
+            output.style.display = 'block';
+
+            // Hide forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            try {
+                const response = await fetch('/api/weather_pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    currentEditContent = result.output;
+                    output.innerHTML = `
+                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
+                            <button class="edit-btn" onclick="editOutput('weather-pdf', currentEditContent)">Edit PDF Info</button>
+                            <button class="edit-btn" onclick="downloadOutput('weather-pdf', currentEditContent)">Download</button>
+                        </div>
+                        <div class="output">${result.output}</div>
+                    `;
+                    updateStatus('Weather PDF LaTeX generated - Edit or Download available');
+                } else {
+                    output.innerHTML = `<div class="error">Error generating weather PDF: ${result.error}</div>`;
+                    updateStatus('Error generating weather PDF');
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="error">Network error: ${error.message}</div>`;
+                updateStatus('Network error');
+            }
+        }
+
+        // Click handlers for menu items and focus switching
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('menu-item') && !e.target.classList.contains('separator') && !e.target.classList.contains('empty')) {
                 activateMenuItem(e.target);
+            }
+
+            // Switch focus when clicking on panels
+            if (e.target.closest('#menuPanel') || e.target.closest('.menu-panel')) {
+                if (currentFocus !== 'menu') {
+                    currentFocus = 'menu';
+                    document.getElementById('menuPanel').classList.add('focused');
+                    document.getElementById('contentPanel').classList.remove('focused');
+                }
+            } else if (e.target.closest('#contentPanel') || e.target.closest('.content-panel')) {
+                if (currentFocus !== 'content') {
+                    currentFocus = 'content';
+                    document.getElementById('menuPanel').classList.remove('focused');
+                    document.getElementById('contentPanel').classList.add('focused');
+                }
             }
         });
     </script>

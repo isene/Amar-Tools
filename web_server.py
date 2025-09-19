@@ -194,7 +194,11 @@ def call_ruby_function(function_name, params=None):
                 town_name = params.get('town_name', '').strip()
                 town_size = params.get('town_size', 0)
                 town_var = params.get('town_var', 0)
-                if town_size == 0: town_size = 'rand(1..100)'
+                # Limit town size to 200 for web to prevent server overload
+                if town_size == 0:
+                    town_size = 'rand(1..50)'  # Smaller random range for web
+                else:
+                    town_size = min(town_size, 200)  # Cap at 200
                 if town_var == 0: town_var = 'rand(1..6)'
                 param_str = f'["{town_name}", {town_size}, {town_var}]'
             else:
@@ -452,20 +456,136 @@ when 'weather'
     w = Weather_month.new($mn, weather, wind)
 
     # Output with exact TUI colors
-    puts "WEATHER GENERATOR".fg(14).b
-    puts "=" * 40
-    puts "Month: ".fg(13) + $Month[$mn].fg(226)
+    puts "☀ WEATHER FOR ".fg(14).b + $Month[$mn].upcase.fg(226).b + " ☀".fg(14).b
+    puts "─" * 60
     puts ""
 
-    # Show a full month of weather like TUI does
     (1..30).each do |day|
       day_weather = w.day[day-1]
       if day_weather
-        weather_text = $Weather[day_weather.weather] || "Unknown"
-        wind_text = ($Wind_str[day_weather.wind_str] || "No wind") + " " + ($Wind_dir[day_weather.wind_dir] || "")
-        puts "Day ".fg(202) + day.to_s.rjust(2).fg(202) + ": " + weather_text.fg(7) + " | " + wind_text.fg(51)
+        # Get weather condition and symbol
+        weather_condition = $Weather[day_weather.weather] || "Clear"
+        weather_symbol = case weather_condition
+                        when /Clear/ then "☀"
+                        when /cloud|Cloud/ then "☁"
+                        when /rain|Rain/ then "☂"
+                        when /lightning|thunder|storm/ then "⛈"
+                        when /fog|Fog|mist|Mist/ then "🌫"
+                        when /snow|Snow/ then "❄"
+                        else "☀"
+                        end
+
+        # Format weather with symbol and ". ." (temperature indicators)
+        weather_line = "#{weather_condition} #{weather_symbol}. . ".ljust(35)
+
+        # Format wind with symbols
+        wind_strength = $Wind_str[day_weather.wind_str] || "No wind"
+        wind_dir = $Wind_dir[day_weather.wind_dir] || ""
+        wind_symbol = case wind_strength
+                     when "No wind" then "○"
+                     when "Soft wind" then "◡"
+                     when "Windy" then "◐"
+                     when "Very windy" then "●"
+                     else "○"
+                     end
+
+        # Wind direction arrows
+        dir_arrow = case wind_dir
+                   when "N" then "↑"
+                   when "NE" then "↗"
+                   when "E" then "→"
+                   when "SE" then "↘"
+                   when "S" then "↓"
+                   when "SW" then "↙"
+                   when "W" then "←"
+                   when "NW" then "↖"
+                   else ""
+                   end
+
+        wind_line = wind_symbol + " " + wind_strength
+        wind_line += " " + dir_arrow + " " + wind_dir if wind_dir != ""
+        wind_line = wind_line.ljust(20)
+
+        # Calculate correct Amar moon phases with symbols
+        moon_phase = case ((day - 1) / 7).to_i
+                     when 0 then "● New"      # First week
+                     when 1 then "◐ Waxing"   # Second week
+                     when 2 then "○ Full"     # Third week
+                     when 3 then "◑ Waning"   # Fourth week
+                     else "● New"             # Beyond 4 weeks
+                     end
+
+        # Check for special religious days (gods' holy days from wiki)
+        special_line = ""
+        case $mn
+        when 2  # Frosgar
+          special_line = "★ Anashina" if day == 4  # Anashina's day
+        when 5  # Anselm (Anashina month)
+          if day == 4
+            special_line = "★ Anashina"  # Anashina's main holy day
+          elsif day == 18
+            special_line = "★ Fenimaal"  # Fenimaal's day
+          elsif day == 21
+            special_line = "★ Fionella"  # Fionella's day
+          end
+        when 6  # Juba
+          if day == 12
+            special_line = "★ Gwendyll"  # Gwendyll's day
+          elsif day == 15
+            special_line = "★ Ish Nakil" # Ish Nakil's day
+          elsif day == 28
+            special_line = "★ Elaari"    # Elaari's day
+          end
+        when 7  # Taroc
+          if day == 1
+            special_line = "★ Summer Solstice"
+          elsif day == 14
+            special_line = "★ Ikalio"    # Ikalio's day
+          end
+        when 8  # Man Peggon
+          if day == 5
+            special_line = "★ Reaping Day"
+          elsif day == 20
+            special_line = "★ Harvest End"
+          end
+        when 13 # Mestronorpha
+          special_line = "★ New Year" if day == 1
+        end
+
+        # Add recurring god days (like "★ Alesia" on day 8)
+        if day == 8 && special_line.empty?
+          special_line = "★ Alesia"  # Alesia appears on 8th of many months
+        end
+
+        # Format the complete line exactly like TUI
+        base_line = day.to_s.rjust(2).fg(202) + ": " + weather_line.fg(7) + wind_line.fg(51)
+
+        # Add special events with proper spacing (centered in line)
+        if !special_line.empty?
+          # Calculate spacing to center the special event (approximation)
+          padding = " " * 15
+          puts base_line + padding + special_line.fg(226) + " " + moon_phase.fg(111)
+        else
+          # No special event, just add moon phase at the end with right alignment
+          padding = " " * 50
+          puts base_line + padding + moon_phase.fg(111)
+        end
       end
+
+      # Add blank line after each week
+      puts "" if day % 7 == 0
     end
+
+    puts ""
+    puts "SUMMARY:".fg(14).b
+    puts "Month: ".fg(13) + $Month[$mn].fg(226) + " has ".fg(7) + "30 days".fg(202)
+    weather_names = ["", "Arctic", "Winter", "Cold", "Cool", "Normal", "Warm", "Hot", "Very hot", "Extreme heat"]
+    weather_name = weather_names[$weather_n.to_i] || "Normal"
+    puts "Weather pattern: ".fg(13) + weather_name.fg(51)
+    puts ""
+    puts "Legend:".fg(13)
+    puts "  Moon phases: New → Waxing → First Quarter → Full → Waning → Last Quarter".fg(111)
+    puts "  Special days: Religious festivals and important dates".fg(195)
 when 'town'
     # Use actual town generation from TUI
     require_relative 'includes/class_town.rb'
@@ -478,8 +598,16 @@ when 'town'
     town_size = params[1].is_a?(String) ? eval(params[1]) : (params[1] || rand(1..100))
     town_var = params[2].is_a?(String) ? eval(params[2]) : (params[2] || rand(1..6))
 
+    # Suppress progress output during town generation
+    require 'stringio'
+    original_stdout = $stdout
+    $stdout = StringIO.new
+
     # Generate town exactly as TUI does
     town = Town.new(town_name, town_size, town_var)
+
+    # Restore stdout
+    $stdout = original_stdout
 
     # Fix name formatting - add proper prefix
     display_name = town.town_name
@@ -497,18 +625,41 @@ when 'town'
     end
 
     puts display_name.fg(14).b
-    puts "=" * 60
-    puts "Population: ".fg(13) + town.town_residents.to_s.fg(202) + " in ".fg(7) + town.town_size.to_s.fg(202) + " houses".fg(7)
+    puts "─" * 60
+    puts "Population: ".fg(13) + town.town_residents.to_s.fg(202) + " residents in ".fg(7) + town.town_size.to_s.fg(202) + " houses".fg(7)
     puts ""
-    puts "ALL RESIDENTS:".fg(13)
 
-    # Show ALL residents like TUI does
+    # Show ALL residents organized by establishment
     if town.town && town.town.length > 0
-      town.town.each_with_index do |resident, idx|
-        if resident && resident.length > 1
-          puts "  " + (idx + 1).to_s.rjust(2).fg(202) + ". " + resident[0].fg(226) + " - " + resident[1].fg(7)
+      resident_count = 0
+      town.town.each_with_index do |establishment, est_idx|
+        next unless establishment && establishment.length > 0
+
+        # First element is establishment name
+        establishment_name = establishment[0]
+        puts establishment_name.upcase.fg(14).b + ":"
+
+        # Rest are residents
+        (1...establishment.length).each do |res_idx|
+          resident = establishment[res_idx]
+          if resident && !resident.empty?
+            resident_count += 1
+            puts "  " + resident_count.to_s.rjust(2).fg(202) + ". " + resident.fg(226)
+          end
         end
+        puts ""
       end
+
+      puts ""
+      puts "SUMMARY:".fg(14).b
+      puts "Total detailed residents: ".fg(13) + resident_count.to_s.fg(226).b
+      if resident_count < town.town_residents
+        remaining = town.town_residents - resident_count
+        puts "Additional population: ".fg(13) + remaining.to_s.fg(202) + " (families, workers, background NPCs)".fg(7)
+      end
+      puts "Settlement type: ".fg(13) + (town_size <= 5 ? "Castle" : town_size <= 25 ? "Village" : town_size <= 100 ? "Town" : "City").fg(51)
+    else
+      puts "No resident data available".fg(240)
     end
 when 'names'
     # Use actual name generation from TUI
@@ -579,6 +730,53 @@ when 'roll'
     end
     puts ""
     puts "Press any key to continue...".fg(240)
+when 'weather_pdf'
+    # Generate weather PDF using TUI system
+    require_relative 'includes/weather.rb'
+    require_relative 'includes/weather2latex.rb'
+    require_relative 'includes/tables/weather.rb'
+    require_relative 'includes/tables/month.rb'
+
+    # Get parameters from input or use defaults
+    params = {param_str} rescue [0, 5, 0]
+    month = params[0] || rand(1..13)
+    weather = params[1] || 5
+    wind = params[2] || 0
+
+    # Set weather globals
+    $mn = month
+    $weather_n = weather
+    $wind_dir_n = wind
+    $wind_str_n = 0
+
+    puts "WEATHER PDF GENERATOR".fg(14).b
+    puts "─" * 60
+    puts "Month: ".fg(13) + $Month[$mn].fg(226)
+    puts "Weather: ".fg(13) + ["", "Snow storm", "Heavy snow", "Light snow", "Hail", "Normal", "Sunny", "Hot", "Sweltering"][$weather_n].fg(51)
+    puts ""
+
+    # Generate weather month for PDF
+    w = Weather_month.new($mn, $weather_n, $wind_dir_n)
+
+    # Generate LaTeX content
+    latex_content = weather_out_latex(w, "cli")
+
+    # Write LaTeX file
+    Dir.mkdir("saved") unless Dir.exist?("saved")
+    latex_file = "saved/weather.tex"
+    File.write(latex_file, latex_content)
+
+    puts "LaTeX file generated: ".fg(13) + "saved/weather.tex".fg(226)
+    puts ""
+    puts "PDF Generation:".fg(14).b
+    puts "To generate PDF, run:".fg(7)
+    puts "  cd saved && pdflatex weather.tex".fg(51)
+    puts ""
+    puts "The PDF will contain:".fg(13)
+    puts "• Daily weather conditions for ".fg(7) + $Month[$mn].fg(226)
+    puts "• Temperature and wind patterns".fg(7)
+    puts "• Moon phases and special events".fg(7)
+    puts "• Printable calendar format".fg(7)
 when 'encounter_npc'
     # Get specific NPC from stored encounter with preserved stats
     require_relative 'cli_enc_output_new.rb'
@@ -708,6 +906,13 @@ def get_encounter_npc(npc_index):
     params = request.get_json() or {}
     params['npc_index'] = npc_index
     result = call_ruby_function('encounter_npc', params)
+    return jsonify(result)
+
+@app.route('/api/weather_pdf', methods=['POST'])
+def generate_weather_pdf():
+    """Generate weather PDF using TUI backend"""
+    params = request.get_json() or {}
+    result = call_ruby_function('weather_pdf', params)
     return jsonify(result)
 
 if __name__ == '__main__':
