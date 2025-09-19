@@ -4425,7 +4425,7 @@ def generate_weather_ui
                          when /Fal Munir/i then special_text.fg(139)     # Fal Munir color
                          when /new year/i then special_text.fg(239)      # Mestronorpha color
                          when /festival/i then special_text.fg(172)      # Maleko color
-                         when /harvest/i then special_text.fg(130)       # Man Peggon color
+                         when /Man Peggon|harvest/i then special_text.fg(130)  # Man Peggon brown
                          when /Taroc|solstice/i then special_text.fg(248)      # Taroc color
                          when /equinox/i then special_text.fg(172)       # Maleko color
                          else special_text.fg(226)                       # Default bright yellow for any other gods
@@ -4484,72 +4484,6 @@ def generate_weather_ui
         @content.pagedown
       when "PgUP"
         @content.pageup
-      when "p", "P"
-        # Generate PDF immediately from current weather data (like old CLI)
-        begin
-          # Generate LaTeX content using current weather month
-          # Weather_month expects (month, weather, wind) where wind combines dir+str
-          combined_wind = $wind_dir_n + ($wind_str_n * 8)
-          w = Weather_month.new($mn, $weather_n, combined_wind)
-
-          # Load weather2latex if not already loaded
-          weather2latex_file = File.join($pgmdir, "includes", "weather2latex.rb")
-          if File.exist?(weather2latex_file)
-            load weather2latex_file
-          end
-
-          # Capture output to prevent terminal bypass
-          original_stdout = $stdout
-          captured_output = StringIO.new
-          $stdout = captured_output
-
-          latex_content = weather_out_latex(w, "tui")  # Use "tui" mode to prevent terminal output
-
-          # Restore stdout
-          $stdout = original_stdout
-
-          # Generate PDF using pdflatex
-          save_dir = File.join($pgmdir, "saved")
-          Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
-
-          pdf_result = ""
-          Dir.chdir(save_dir) do
-            # Run pdflatex and capture output
-            pdf_output_capture = `pdflatex -interaction=nonstopmode weather.tex 2>&1`
-            if File.exist?("weather.pdf")
-              pdf_result = "SUCCESS: PDF created"
-            else
-              pdf_result = "ERROR: PDF generation failed"
-            end
-          end
-
-          # Show PDF generation status in TUI
-          status_output = "\n" + "PDF GENERATION COMPLETE".fg(10).b + "\n\n"
-          status_output += "Month: ".fg(14) + "#{$Month[$mn]}".fg(month_color).b + "\n"
-          status_output += "Status: ".fg(14) + pdf_result.fg(pdf_result.include?("SUCCESS") ? 46 : 196) + "\n"
-          status_output += "File: ".fg(14) + "saved/weather.pdf".fg(226) + "\n\n"
-          if pdf_result.include?("SUCCESS")
-            status_output += "PDF ready for printing and use at your gaming table!".fg(46) + "\n\n"
-          else
-            status_output += "Check that pdflatex is installed.".fg(196) + "\n\n"
-          end
-          status_output += "Press any key to return to weather view".fg(240)
-
-          show_content(status_output)
-          getchr  # Wait for keypress
-
-          # Return to weather view
-          show_content(output)
-          @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-        rescue => e
-          error_output = "PDF Generation Error".fg(196).b + "\n\n"
-          error_output += "#{e.message}\n\n"
-          error_output += "Press any key to continue".fg(240)
-          show_content(error_output)
-          getchr
-          show_content(output)
-          @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
-        end
       when "y"
         copy_to_clipboard(output)
         @footer.clear
