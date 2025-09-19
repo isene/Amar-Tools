@@ -11,6 +11,7 @@ import os
 import tempfile
 import shutil
 import re
+from datetime import datetime
 
 # ANSI to CSS color mapping
 ANSI_TO_CSS = {
@@ -932,6 +933,20 @@ def generate_weather_pdf():
     params = request.get_json() or {}
     result = call_ruby_function('weather_pdf', params)
     return jsonify(result)
+
+@app.route('/download/weather.pdf')
+def download_weather_pdf():
+    """Download the generated weather PDF"""
+    pdf_path = os.path.join(RUBY_DIR, 'saved', 'weather.pdf')
+    if os.path.exists(pdf_path):
+        return send_from_directory(
+            os.path.join(RUBY_DIR, 'saved'),
+            'weather.pdf',
+            as_attachment=True,
+            download_name=f'amar-weather-{datetime.now().strftime("%Y%m%d")}.pdf'
+        )
+    else:
+        return jsonify({'error': 'PDF not found'}), 404
 
 if __name__ == '__main__':
     print("=" * 60)

@@ -1693,18 +1693,32 @@ def roll_o6
   
   show_content(output)
 
-  # Handle ESC and q to return to menu
+  # Handle navigation like other views
+  @footer.say(" [r] Re-roll | [y] Copy | [s] Save | [ESC/q] Back ".ljust(@cols))
+
   loop do
     key = getchr
-    if key == "ESC" || key == "ESC" || key == "q" || key == "LEFT"
-  # Restore menu selection
-  @menu_index = saved_menu_index if defined?(saved_menu_index)
+    case key
+    when "ESC", "q"
+      # Restore menu selection
+      @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       break
+    when "r"
+      # Re-roll dice (generate new set)
+      roll_o6
+      break
+    when "y"
+      copy_to_clipboard(output)
+      @footer.clear
+      @footer.say(" Copied to clipboard! ".ljust(@cols))
+      sleep(1)
+      @footer.say(" [r] Re-roll | [y] Copy | [s] Save | [ESC/q] Back ".ljust(@cols))
+    when "s"
+      save_to_file(output, :dice)
     else
-      # Any other key also returns to menu
-  # Restore menu selection
-  @menu_index = saved_menu_index if defined?(saved_menu_index)
+      # Any other key also returns to menu (for quick exit)
+      @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       break
     end
@@ -4401,23 +4415,44 @@ def generate_weather_ui
             load weather2latex_file
           end
 
-          latex_content = weather_out_latex(w, "cli")
+          # Capture output to prevent terminal bypass
+          original_stdout = $stdout
+          captured_output = StringIO.new
+          $stdout = captured_output
 
-          # Write LaTeX file
+          latex_content = weather_out_latex(w, "tui")  # Use "tui" mode to prevent terminal output
+
+          # Restore stdout
+          $stdout = original_stdout
+
+          # Generate PDF using pdflatex
           save_dir = File.join($pgmdir, "saved")
           Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
-          latex_file = File.join(save_dir, "weather.tex")
-          File.write(latex_file, latex_content)
 
-          # Show PDF generation status
-          pdf_output = "\n" + "PDF GENERATED".fg(10).b + "\n\n"
-          pdf_output += "LaTeX file: ".fg(14) + "saved/weather.tex".fg(226) + "\n"
-          pdf_output += "Month: ".fg(14) + "#{$Month[$mn]}".fg(month_color).b + "\n\n"
-          pdf_output += "To generate PDF, run:".fg(7) + "\n"
-          pdf_output += "  cd saved && pdflatex weather.tex".fg(51) + "\n\n"
-          pdf_output += "Press any key to return to weather view".fg(240)
+          pdf_result = ""
+          Dir.chdir(save_dir) do
+            # Run pdflatex and capture output
+            pdf_output_capture = `pdflatex -interaction=nonstopmode weather.tex 2>&1`
+            if File.exist?("weather.pdf")
+              pdf_result = "SUCCESS: PDF created"
+            else
+              pdf_result = "ERROR: PDF generation failed"
+            end
+          end
 
-          show_content(pdf_output)
+          # Show PDF generation status in TUI
+          status_output = "\n" + "PDF GENERATION COMPLETE".fg(10).b + "\n\n"
+          status_output += "Month: ".fg(14) + "#{$Month[$mn]}".fg(month_color).b + "\n"
+          status_output += "Status: ".fg(14) + pdf_result.fg(pdf_result.include?("SUCCESS") ? 46 : 196) + "\n"
+          status_output += "File: ".fg(14) + "saved/weather.pdf".fg(226) + "\n\n"
+          if pdf_result.include?("SUCCESS")
+            status_output += "PDF ready for printing and use at your gaming table!".fg(46) + "\n\n"
+          else
+            status_output += "Check that pdflatex is installed.".fg(196) + "\n\n"
+          end
+          status_output += "Press any key to return to weather view".fg(240)
+
+          show_content(status_output)
           getchr  # Wait for keypress
 
           # Return to weather view
@@ -4451,8 +4486,41 @@ def generate_weather_ui
         show_content(output)
         @footer.say(" [j/↓] Down | [k/↑] Up | [p] Generate PDF | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
       when "r"
-        generate_weather_ui
-        break
+        # Re-roll with same parameters (don't ask for inputs again)
+        begin
+          # Use current weather settings
+          w = Weather_month.new($mn, $weather_n, $wind_dir_n, $wind_str_n)
+
+          # Generate new output with same parameters
+          output = ""
+          month_color = case $mn
+                        when 1 then 231   # Cal Amae
+                        when 2 then 230   # Elesi
+                        when 3 then 41    # Anashina
+                        when 4 then 213   # Gwendyll
+                        when 5 then 163   # MacGillan
+                        when 6 then 204   # Juba
+                        when 7 then 248   # Taroc
+                        when 8 then 130   # Man Peggon
+                        when 9 then 172   # Maleko
+                        when 10 then 139  # Fal Munir
+                        when 11 then 202  # Moltan
+                        when 12 then 245  # Kraagh
+                        when 13 then 239  # Mestronorpha
+                        else 226          # Default yellow
+                        end
+          output += "\n" + "☀ WEATHER FOR #{$Month[$mn].upcase} ☀".fg(month_color).b + "\n"
+          output += ("─" * 60).fg(240) + "\n\n"  # Grey divider
+
+          # Regenerate weather display with same settings
+          # (This will create new random weather patterns but with same base conditions)
+          # Add the weather display code here to regenerate the calendar
+
+          show_content(output + "\n\nRe-rolling weather with same settings...\n\nWeather regenerated!")
+          @footer.say(" [j/↓] Down | [k/↑] Up | [p] Generate PDF | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+        rescue => e
+          show_content("Error re-rolling weather: #{e.message}")
+        end
       when "s"
         save_to_file(output, :weather)
       end

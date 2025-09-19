@@ -1660,6 +1660,18 @@ Failed to connect to server: ${error.message}
             updateStatus(`${type.charAt(0).toUpperCase() + type.slice(1)} downloaded as ${filename}`);
         }
 
+        function downloadWeatherPDF() {
+            // Download the generated PDF file
+            const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+            const link = document.createElement('a');
+            link.href = '/download/weather.pdf';
+            link.download = `amar-weather-${timestamp}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            updateStatus('Weather PDF download initiated');
+        }
+
         async function generateWeatherPDF() {
             updateStatus('Generating weather PDF...');
 
@@ -1688,11 +1700,12 @@ Failed to connect to server: ${error.message}
                     output.innerHTML = `
                         <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
                             <button class="edit-btn" onclick="editOutput('weather-pdf', currentEditContent)">Edit PDF Info</button>
-                            <button class="edit-btn" onclick="downloadOutput('weather-pdf', currentEditContent)">Download</button>
+                            <button class="edit-btn" onclick="downloadOutput('weather-pdf', currentEditContent)">Download Info</button>
+                            <button class="edit-btn" onclick="downloadWeatherPDF()">Download PDF</button>
                         </div>
                         <div class="output">${result.output}</div>
                     `;
-                    updateStatus('Weather PDF LaTeX generated - Edit or Download available');
+                    updateStatus('Weather PDF generated - Download PDF button available');
                 } else {
                     output.innerHTML = `<div class="error">Error generating weather PDF: ${result.error}</div>`;
                     updateStatus('Error generating weather PDF');
