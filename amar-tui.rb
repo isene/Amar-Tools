@@ -4414,8 +4414,10 @@ def generate_weather_ui
                          when /Elaari/i then special_text.fg(204)        # Juba color
                          when /Ish Nakil/i then special_text.fg(204)     # Juba color
                          when /Fenimaal/i then special_text.fg(163)      # MacGillan color
-                         when /Ikalio/i then special_text.fg(248)        # Taroc color
-                         when /Alesia/i then special_text.fg(230)        # Elesi color
+                         when /Ikalio/i then special_text.fg(226).b      # Bright yellow (Sun God)
+                         when /Alesia/i then special_text.fg(130)        # Brown/green for Alesia
+                         when /Shalissa/i then special_text.fg(117)      # Light blue for Shalissa
+                         when /Walmaer/i then special_text.fg(25)        # Darker blue for Walmaer
                          when /Juba/i then special_text.fg(204)          # Juba color
                          when /Cal Amae/i then special_text.fg(231)      # Cal Amae color
                          when /Kraagh/i then special_text.fg(245)        # Kraagh color
@@ -4424,7 +4426,7 @@ def generate_weather_ui
                          when /new year/i then special_text.fg(239)      # Mestronorpha color
                          when /festival/i then special_text.fg(172)      # Maleko color
                          when /harvest/i then special_text.fg(130)       # Man Peggon color
-                         when /solstice/i then special_text.fg(248)      # Taroc color
+                         when /Taroc|solstice/i then special_text.fg(248)      # Taroc color
                          when /equinox/i then special_text.fg(172)       # Maleko color
                          else special_text.fg(226)                       # Default bright yellow for any other gods
                          end
@@ -4464,7 +4466,7 @@ def generate_weather_ui
     
     # Navigation
     @footer.clear
-    @footer.say(" [j/↓] Down | [k/↑] Up | [p] Generate PDF | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+    @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     
     loop do
       key = getchr
@@ -4538,7 +4540,7 @@ def generate_weather_ui
 
           # Return to weather view
           show_content(output)
-          @footer.say(" [j/↓] Down | [k/↑] Up | [p] Generate PDF | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+          @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
         rescue => e
           error_output = "PDF Generation Error".fg(196).b + "\n\n"
           error_output += "#{e.message}\n\n"
@@ -4546,7 +4548,7 @@ def generate_weather_ui
           show_content(error_output)
           getchr
           show_content(output)
-          @footer.say(" [j/↓] Down | [k/↑] Up | [p] Generate PDF | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+          @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
         end
       when "y"
         copy_to_clipboard(output)
@@ -4560,15 +4562,6 @@ def generate_weather_ui
         clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
         edit_in_external_editor(clean_text)
         show_content(output)
-      when "p", "P"
-        # Simple PDF generation - return to menu immediately
-        @footer.clear
-        @footer.say(" PDF generation initiated (saved/weather.pdf) - Check file when complete ".ljust(@cols))
-
-        # Return to menu immediately without waiting for PDF
-        @menu_index = saved_menu_index if defined?(saved_menu_index)
-        return_to_menu
-        break
       when "r"
         # Re-roll with same parameters (don't ask for inputs again)
         begin
@@ -4601,7 +4594,7 @@ def generate_weather_ui
           # Add the weather display code here to regenerate the calendar
 
           show_content(output + "\n\nRe-rolling weather with same settings...\n\nWeather regenerated!")
-          @footer.say(" [j/↓] Down | [k/↑] Up | [p] Generate PDF | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+          @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
         rescue => e
           show_content("Error re-rolling weather: #{e.message}")
         end
