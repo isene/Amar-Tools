@@ -1441,29 +1441,90 @@ def handle_menu_navigation
   when "q", "Q"
     return false
     
-  # Shortcuts - NEW 3-TIER SYSTEM
+  # Shortcuts - NEW 3-TIER SYSTEM (move cursor first, then execute)
   when "n", "N"
+    # First move menu cursor to NPC item, then execute
+    @menu_items.each_with_index do |item, idx|
+      if item.include?("Generate NPC")
+        @menu_index = idx
+        draw_menu
+        break
+      end
+    end
     generate_npc_new
   when "e", "E"
     # Only handle 'e' from menu focus for encounter generation
-    # Content editing is handled within each view's own loop
     if @focus == :menu
+      @menu_items.each_with_index do |item, idx|
+        if item.include?("Generate Encounter")
+          @menu_index = idx
+          draw_menu
+          break
+        end
+      end
       generate_encounter_new
-    else
     end
   when "m", "M"
+    # First move menu cursor to monster item, then execute
+    @menu_items.each_with_index do |item, idx|
+      if item.include?("Generate Monster")
+        @menu_index = idx
+        draw_menu
+        break
+      end
+    end
     generate_monster_new
 
   # WORLD BUILDING
   when "t", "T"
+    # First move menu cursor to town item, then execute
+    @menu_items.each_with_index do |item, idx|
+      if item.include?("Town/City Generator")
+        @menu_index = idx
+        draw_menu
+        break
+      end
+    end
     generate_town_ui
   when "r", "R"
+    # First move menu cursor to relations item, then execute
+    @menu_items.each_with_index do |item, idx|
+      if item.include?("Town Relations")
+        @menu_index = idx
+        draw_menu
+        break
+      end
+    end
     generate_town_relations
   when "v", "V"
+    # First move menu cursor to relations map item, then execute
+    @menu_items.each_with_index do |item, idx|
+      if item.include?("Relations Map")
+        @menu_index = idx
+        draw_menu
+        break
+      end
+    end
     show_latest_town_map
   when "w", "W"
+    # First move menu cursor to weather item, then execute
+    @menu_items.each_with_index do |item, idx|
+      if item.include?("Weather Generator")
+        @menu_index = idx
+        draw_menu
+        break
+      end
+    end
     generate_weather_ui
   when "g", "G"
+    # First move menu cursor to name item, then execute
+    @menu_items.each_with_index do |item, idx|
+      if item.include?("Name Generator")
+        @menu_index = idx
+        draw_menu
+        break
+      end
+    end
     generate_name_ui
 
   # AI TOOLS
@@ -1480,8 +1541,24 @@ def handle_menu_navigation
 
   # UTILITIES
   when "o", "O"
+    # First move menu cursor to dice roll item, then execute
+    @menu_items.each_with_index do |item, idx|
+      if item.include?("Roll Open Ended")
+        @menu_index = idx
+        draw_menu
+        break
+      end
+    end
     roll_o6
   when "?"
+    # First move menu cursor to help item, then execute
+    @menu_items.each_with_index do |item, idx|
+      if item.include?("Help")
+        @menu_index = idx
+        draw_menu
+        break
+      end
+    end
     show_help
 
   # LEGACY SYSTEM
@@ -4340,12 +4417,16 @@ def generate_weather_ui
                          when /Ikalio/i then special_text.fg(248)        # Taroc color
                          when /Alesia/i then special_text.fg(230)        # Elesi color
                          when /Juba/i then special_text.fg(204)          # Juba color
+                         when /Cal Amae/i then special_text.fg(231)      # Cal Amae color
+                         when /Kraagh/i then special_text.fg(245)        # Kraagh color
+                         when /Moltan/i then special_text.fg(202)        # Moltan color
+                         when /Fal Munir/i then special_text.fg(139)     # Fal Munir color
                          when /new year/i then special_text.fg(239)      # Mestronorpha color
                          when /festival/i then special_text.fg(172)      # Maleko color
                          when /harvest/i then special_text.fg(130)       # Man Peggon color
                          when /solstice/i then special_text.fg(248)      # Taroc color
                          when /equinox/i then special_text.fg(172)       # Maleko color
-                         else special_text.fg(229)                       # Light yellow default
+                         else special_text.fg(226)                       # Default bright yellow for any other gods
                          end
         line += special_colored
         current_length = line.pure.length
@@ -4480,11 +4561,14 @@ def generate_weather_ui
         edit_in_external_editor(clean_text)
         show_content(output)
       when "p", "P"
-        # Generate PDF from current weather
-        generate_weather_pdf
-        # Return to weather view after PDF generation
-        show_content(output)
-        @footer.say(" [j/↓] Down | [k/↑] Up | [p] Generate PDF | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+        # Simple PDF generation - return to menu immediately
+        @footer.clear
+        @footer.say(" PDF generation initiated (saved/weather.pdf) - Check file when complete ".ljust(@cols))
+
+        # Return to menu immediately without waiting for PDF
+        @menu_index = saved_menu_index if defined?(saved_menu_index)
+        return_to_menu
+        break
       when "r"
         # Re-roll with same parameters (don't ask for inputs again)
         begin
