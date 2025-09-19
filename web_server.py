@@ -456,7 +456,25 @@ when 'weather'
     w = Weather_month.new($mn, weather, wind)
 
     # Output with exact TUI colors
-    puts "☀ WEATHER FOR ".fg(14).b + $Month[$mn].upcase.fg(226).b + " ☀".fg(14).b
+    # Color month header with god-specific color
+    month_color = case $mn
+                 when 1 then 231   # Cal Amae
+                 when 2 then 230   # Elesi
+                 when 3 then 41    # Anashina
+                 when 4 then 213   # Gwendyll
+                 when 5 then 163   # MacGillan
+                 when 6 then 204   # Juba
+                 when 7 then 248   # Taroc
+                 when 8 then 130   # Man Peggon
+                 when 9 then 172   # Maleko
+                 when 10 then 139  # Fal Munir
+                 when 11 then 202  # Moltan
+                 when 12 then 245  # Kraagh
+                 when 13 then 239  # Mestronorpha
+                 else 226          # Default
+                 end
+
+    puts "☀ WEATHER FOR ".fg(14).b + $Month[$mn].upcase.fg(month_color).b + " ☀".fg(14).b
     puts "─" * 60
     puts ""
 
@@ -515,56 +533,56 @@ when 'weather'
                      else "● New"             # Beyond 4 weeks
                      end
 
-        # Check for special religious days (gods' holy days from wiki)
+        # Check for authentic Amar god holy days (from wiki mythology page)
         special_line = ""
         case $mn
-        when 2  # Frosgar
-          special_line = "★ Anashina" if day == 4  # Anashina's day
-        when 5  # Anselm (Anashina month)
-          if day == 4
-            special_line = "★ Anashina"  # Anashina's main holy day
-          elsif day == 18
-            special_line = "★ Fenimaal"  # Fenimaal's day
+        when 3  # Anashina month
+          special_line = "★ Anashina" if day == 4
+        when 4  # Gwendyll month
+          special_line = "★ Gwendyll" if day == 12
+        when 5  # MacGillan month
+          if day == 18
+            special_line = "★ Fenimaal"
           elsif day == 21
-            special_line = "★ Fionella"  # Fionella's day
+            special_line = "★ Fionella"
           end
-        when 6  # Juba
-          if day == 12
-            special_line = "★ Gwendyll"  # Gwendyll's day
-          elsif day == 15
-            special_line = "★ Ish Nakil" # Ish Nakil's day
+        when 6  # Juba month
+          if day == 15
+            special_line = "★ Ish Nakil"
           elsif day == 28
-            special_line = "★ Elaari"    # Elaari's day
+            special_line = "★ Elaari"
           end
-        when 7  # Taroc
-          if day == 1
-            special_line = "★ Summer Solstice"
-          elsif day == 14
-            special_line = "★ Ikalio"    # Ikalio's day
-          end
-        when 8  # Man Peggon
-          if day == 5
-            special_line = "★ Reaping Day"
-          elsif day == 20
-            special_line = "★ Harvest End"
-          end
-        when 13 # Mestronorpha
-          special_line = "★ New Year" if day == 1
+        when 7  # Taroc month
+          special_line = "★ Ikalio" if day == 14
         end
 
-        # Add recurring god days (like "★ Alesia" on day 8)
+        # Add recurring god observances (from TUI examples)
         if day == 8 && special_line.empty?
-          special_line = "★ Alesia"  # Alesia appears on 8th of many months
+          special_line = "★ Alesia"  # Alesia day (8th of various months)
         end
 
         # Format the complete line exactly like TUI
         base_line = day.to_s.rjust(2).fg(202) + ": " + weather_line.fg(7) + wind_line.fg(51)
 
-        # Add special events with proper spacing (centered in line)
+        # Add special events with god-specific colors
         if !special_line.empty?
-          # Calculate spacing to center the special event (approximation)
+          # Color based on authentic Amar god colors (from your table)
+          god_color = case special_line
+                     when /Anashina/ then 41    # Anashina (Nature goddess)
+                     when /Fionella/ then 163   # MacGillan month color (Fionella's month)
+                     when /Elaari/ then 204     # Juba month color (Elaari in Juba)
+                     when /Gwendyll/ then 213   # Gwendyll month color
+                     when /Ish Nakil/ then 204  # Juba month color (Ish Nakil in Juba)
+                     when /Fenimaal/ then 163   # MacGillan month color (Fenimaal in MacGillan)
+                     when /Ikalio/ then 248     # Taroc month color (Ikalio in Taroc)
+                     when /Alesia/ then 230     # Elesi month color (Alesia likely in Elesi)
+                     when /Juba/ then 204       # Juba month color
+                     when /Solstice|New Year|Harvest/ then 172  # Seasonal events (Maleko color)
+                     else 226                   # Default yellow
+                     end
+
           padding = " " * 15
-          puts base_line + padding + special_line.fg(226) + " " + moon_phase.fg(111)
+          puts base_line + padding + special_line.fg(god_color) + " " + moon_phase.fg(111)
         else
           # No special event, just add moon phase at the end with right alignment
           padding = " " * 50

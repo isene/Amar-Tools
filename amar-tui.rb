@@ -4353,7 +4353,7 @@ def generate_weather_ui
     
     # Navigation
     @footer.clear
-    @footer.say(" [j/↓] Down | [k/↑] Up | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
+    @footer.say(" [j/↓] Down | [k/↑] Up | [p] Generate PDF | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
     
     loop do
       key = getchr
@@ -4383,6 +4383,12 @@ def generate_weather_ui
         clean_text = output.respond_to?(:pure) ? output.pure : output.gsub(/\e\[\d+(?:;\d+)*m/, '')
         edit_in_external_editor(clean_text)
         show_content(output)
+      when "p", "P"
+        # Generate PDF from current weather
+        generate_weather_pdf
+        # Return to weather view after PDF generation
+        show_content(output)
+        @footer.say(" [j/↓] Down | [k/↑] Up | [p] Generate PDF | [y] Copy | [s] Save | [e] Edit | [r] Re-roll | [ESC/q] Back ".ljust(@cols))
       when "r"
         generate_weather_ui
         break
