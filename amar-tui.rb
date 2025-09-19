@@ -4408,27 +4408,32 @@ def generate_weather_ui
         # Use different colors for different special days
         special_text = "★ #{d.special}"
         special_colored = case d.special
-                         when /Anashina/i then special_text.fg(41)       # Anashina green
-                         when /Gwendyll/i then special_text.fg(213)      # Gwendyll magenta
-                         when /Fionella/i then special_text.fg(163)      # MacGillan color
-                         when /Elaari/i then special_text.fg(204)        # Juba color
-                         when /Ish Nakil/i then special_text.fg(204)     # Juba color
-                         when /Fenimaal/i then special_text.fg(163)      # MacGillan color
-                         when /Ikalio/i then special_text.fg(226).b      # Bright yellow (Sun God)
-                         when /Alesia/i then special_text.fg(130)        # Brown/green for Alesia
-                         when /Shalissa/i then special_text.fg(117)      # Light blue for Shalissa
-                         when /Walmaer/i then special_text.fg(25)        # Darker blue for Walmaer
-                         when /Juba/i then special_text.fg(204)          # Juba color
-                         when /Cal Amae/i then special_text.fg(231)      # Cal Amae color
-                         when /Kraagh/i then special_text.fg(245)        # Kraagh color
-                         when /Moltan/i then special_text.fg(202)        # Moltan color
+                         when /Ikalio/i then special_text.fg(226).b      # ONLY Ikalio gets bright yellow (Sun God)
+                         when /Anashina/i then special_text.fg(41)       # Anashina green (Nature)
+                         when /Gwendyll/i then special_text.fg(213)      # Gwendyll magenta (Water)
+                         when /Fionella/i then special_text.fg(126)      # Fionella new color (Love)
+                         when /Elaari/i then special_text.fg(204)        # Elaari Juba color (Earth)
+                         when /Ish Nakil/i then special_text.fg(196)     # Ish Nakil red (War)
+                         when /Fenimaal/i then special_text.fg(209)      # Fenimaal new color (Knowledge)
+                         when /Alesia/i then special_text.fg(130)        # Alesia brown/green (Magic)
+                         when /Shalissa/i then special_text.fg(117)      # Shalissa light blue (Healing)
+                         when /Walmaer/i then special_text.fg(25)        # Walmaer darker blue (Winter)
+                         when /Juba/i then special_text.fg(204)          # Juba storm color (Weather)
+                         when /Cal Amae/i then special_text.fg(231)      # Cal Amae white/light
+                         when /Kraagh/i then special_text.fg(245)        # Kraagh grey (Death)
+                         when /Moltan/i then special_text.fg(202)        # Moltan orange (Fire)
                          when /Fal Munir/i then special_text.fg(139)     # Fal Munir color
+                         when /MacGillan/i then special_text.fg(126)     # MacGillan new color
+                         when /Maleko/i then special_text.fg(172)        # Maleko color
+                         when /Mestronorpha/i then special_text.fg(239)  # Mestronorpha color
+                         when /Elesi/i then special_text.fg(230)         # Elesi color
+                         when /Ielina/i then special_text.fg(230)        # Ielina new color
+                         when /Man Peggon|harvest/i then special_text.fg(130)  # Man Peggon brown
+                         when /Taroc|solstice/i then special_text.fg(248)      # Taroc grey (Forge)
                          when /new year/i then special_text.fg(239)      # Mestronorpha color
                          when /festival/i then special_text.fg(172)      # Maleko color
-                         when /Man Peggon|harvest/i then special_text.fg(130)  # Man Peggon brown
-                         when /Taroc|solstice/i then special_text.fg(248)      # Taroc color
                          when /equinox/i then special_text.fg(172)       # Maleko color
-                         else special_text.fg(226)                       # Default bright yellow for any other gods
+                         else special_text.fg(245)                       # Default grey (not yellow)
                          end
         line += special_colored
         current_length = line.pure.length
