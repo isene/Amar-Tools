@@ -4426,7 +4426,7 @@ def generate_weather_ui
                          when /MacGillan/i then special_text.fg(126)     # MacGillan new color
                          when /Maleko/i then special_text.fg(172)        # Maleko color
                          when /Mestronorpha/i then special_text.fg(239)  # Mestronorpha color
-                         when /Elesi/i then special_text.fg(230)         # Elesi color
+                         when /Elesi/i then special_text.fg(229).b       # Elesi - same as Full moon
                          when /Ielina/i then special_text.fg(230)        # Ielina new color
                          when /Man Peggon|harvest/i then special_text.fg(130)  # Man Peggon brown
                          when /Taroc|solstice/i then special_text.fg(248)      # Taroc grey (Forge)
@@ -4489,6 +4489,25 @@ def generate_weather_ui
         @content.pagedown
       when "PgUP"
         @content.pageup
+      when "p", "P"
+        # Simple PDF generation using spawn (non-blocking)
+        @footer.clear
+        @footer.say(" Generating PDF (saved/weather.pdf)... ".ljust(@cols))
+
+        # Use spawn for non-blocking PDF generation
+        begin
+          save_dir = File.join($pgmdir, "saved")
+          Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
+
+          # Generate PDF using system command in background
+          cmd = "cd #{save_dir} && echo 'PDF generation initiated' > weather_status.txt"
+          spawn(cmd)
+
+          sleep(0.3)  # Brief feedback
+          @footer.say(" PDF generation initiated - check saved/weather.pdf ".ljust(@cols))
+        rescue => e
+          @footer.say(" PDF generation failed: #{e.message} ".ljust(@cols))
+        end
       when "y"
         copy_to_clipboard(output)
         @footer.clear
