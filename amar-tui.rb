@@ -4490,23 +4490,38 @@ def generate_weather_ui
       when "PgUP"
         @content.pageup
       when "p", "P"
-        # Simple PDF generation using spawn (non-blocking)
-        @footer.clear
-        @footer.say(" Generating PDF (saved/weather.pdf)... ".ljust(@cols))
-
-        # Use spawn for non-blocking PDF generation
+        # Generate PDF using RTFM-style simple command execution
         begin
-          save_dir = File.join($pgmdir, "saved")
-          Dir.mkdir(save_dir) unless Dir.exist?(save_dir)
+          # Generate LaTeX content with current weather
+          combined_wind = $wind_dir_n + ($wind_str_n * 8)
+          w = Weather_month.new($mn, $weather_n, combined_wind)
 
-          # Generate PDF using system command in background
-          cmd = "cd #{save_dir} && echo 'PDF generation initiated' > weather_status.txt"
-          spawn(cmd)
+          # Load weather2latex
+          weather2latex_file = File.join($pgmdir, "includes", "weather2latex.rb")
+          if File.exist?(weather2latex_file)
+            load weather2latex_file
 
-          sleep(0.3)  # Brief feedback
-          @footer.say(" PDF generation initiated - check saved/weather.pdf ".ljust(@cols))
+            # Generate LaTeX (this creates saved/weather.tex)
+            weather_out_latex(w, "web")  # Use "web" mode to minimize terminal output
+
+            # Execute pdflatex like RTFM colon command (simple and direct)
+            save_dir = File.join($pgmdir, "saved")
+            Dir.chdir(save_dir) do
+              system("pdflatex -interaction=nonstopmode weather.tex > /dev/null 2>&1")
+            end
+
+            @footer.clear
+            if File.exist?(File.join(save_dir, "weather.pdf"))
+              @footer.say(" PDF created: saved/weather.pdf for #{$Month[$mn]} ".ljust(@cols))
+            else
+              @footer.say(" PDF creation failed - LaTeX file saved to saved/weather.tex ".ljust(@cols))
+            end
+          else
+            @footer.say(" Error: weather2latex.rb not found ".ljust(@cols))
+          end
         rescue => e
-          @footer.say(" PDF generation failed: #{e.message} ".ljust(@cols))
+          @footer.clear
+          @footer.say(" PDF generation error: #{e.message} ".ljust(@cols))
         end
       when "y"
         copy_to_clipboard(output)
