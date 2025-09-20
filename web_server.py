@@ -11,7 +11,6 @@ import os
 import tempfile
 import shutil
 import re
-from datetime import datetime
 
 # ANSI to CSS color mapping
 ANSI_TO_CSS = {
@@ -195,11 +194,7 @@ def call_ruby_function(function_name, params=None):
                 town_name = params.get('town_name', '').strip()
                 town_size = params.get('town_size', 0)
                 town_var = params.get('town_var', 0)
-                # Limit town size to 200 for web to prevent server overload
-                if town_size == 0:
-                    town_size = 'rand(1..50)'  # Smaller random range for web
-                else:
-                    town_size = min(town_size, 200)  # Cap at 200
+                if town_size == 0: town_size = 'rand(1..100)'
                 if town_var == 0: town_var = 'rand(1..6)'
                 param_str = f'["{town_name}", {town_size}, {town_var}]'
             else:
@@ -211,10 +206,9 @@ def call_ruby_function(function_name, params=None):
                 terrain = params.get('terrain', 1)  # 0-7
                 level_mod = params.get('level_mod', 0)  # +/- modifier
                 race = params.get('race', 0)  # 0=random, 1-11 specific races
-                number = params.get('number', 0)  # 0=random, 1-20 specific number
-                param_str = f'[{time}, {terrain}, {level_mod}, {race}, {number}]'
+                param_str = f'[{time}, {terrain}, {level_mod}, {race}]'
             else:
-                param_str = '[1, 1, 0, 0, 0]'
+                param_str = '[1, 1, 0, 0]'
         elif function_name == 'monster':
             # Build parameter string for monster generation
             if params:
@@ -225,18 +219,6 @@ def call_ruby_function(function_name, params=None):
                 param_str = f'["{monster_type}", {level}]'
             else:
                 param_str = '["random", rand(1..3)]'
-        elif function_name == 'encounter_npc':
-            # Build parameter string for encounter NPC detail
-            if params:
-                npc_index = params.get('npc_index', 0)
-                name = params.get('name', '').strip()
-                sex = params.get('sex', '').strip()
-                type_val = params.get('type', '').strip()
-                level = params.get('level', 1)
-                age = params.get('age', 0)
-                param_str = f'[{npc_index}, "{name}", "{sex}", "{type_val}", {level}, {age}]'
-            else:
-                param_str = '[0, "", "", "", 1, 0]'
 
         # Create a temporary Ruby script that calls the function
         ruby_code = f"""
@@ -292,12 +274,11 @@ when 'encounter'
     require_relative 'cli_enc_output_new.rb'
 
     # Get parameters from input
-    params = {param_str} rescue [1, 1, 0, 0, 0]
+    params = {param_str} rescue [1, 1, 0, 0]
     time = params[0] || 1
     terrain = params[1] || 1
     level_mod = params[2] || 0
     race = params[3] || 0
-    number = params[4] || 0
 
     # Set global variables for encounter generation
     $Day = time
@@ -310,35 +291,7 @@ when 'encounter'
     selected_race = race == 0 ? "Random" : races[race]
 
     # Generate encounter with parameters - exact TUI approach
-    # Use number parameter (0 = random, specific number = that encounter)
-    enc = EncNew.new(selected_race, number, $Terraintype, level_mod)
-
-    # Store encounter object for detailed NPC views
-    encounter_file = File.join($pgmdir, "saved", "last_encounter.json")
-    Dir.mkdir(File.join($pgmdir, "saved")) unless Dir.exist?(File.join($pgmdir, "saved"))
-
-    # Serialize encounter NPCs for later retrieval
-    npc_data = []
-    if enc.npcs && enc.npcs.length > 0
-      enc.npcs.each_with_index do |npc, idx|
-        npc_data << {{
-          "index" => idx,
-          "name" => npc.name,
-          "type" => npc.type,
-          "level" => npc.level,
-          "sex" => npc.sex,
-          "age" => npc.age,
-          "area" => npc.area,
-          "height" => npc.height,
-          "weight" => npc.weight,
-          "description" => npc.description
-        }}
-      end
-    end
-
-    require 'json'
-    File.write(encounter_file, npc_data.to_json)
-
+    enc = EncNew.new(selected_race, 1, $Terraintype, level_mod)
     output = enc_output_new(enc, 'cli', 120)
     puts output
 when 'monster'
@@ -457,154 +410,20 @@ when 'weather'
     w = Weather_month.new($mn, weather, wind)
 
     # Output with exact TUI colors
-    # Color month header with god-specific color
-    month_color = case $mn
-                 when 1 then 231   # Cal Amae
-                 when 2 then 230   # Elesi
-                 when 3 then 41    # Anashina
-                 when 4 then 213   # Gwendyll
-                 when 5 then 163   # MacGillan
-                 when 6 then 204   # Juba
-                 when 7 then 248   # Taroc
-                 when 8 then 130   # Man Peggon
-                 when 9 then 172   # Maleko
-                 when 10 then 139  # Fal Munir
-                 when 11 then 202  # Moltan
-                 when 12 then 245  # Kraagh
-                 when 13 then 239  # Mestronorpha
-                 else 226          # Default
-                 end
-
-    puts "☀ WEATHER FOR ".fg(14).b + $Month[$mn].upcase.fg(month_color).b + " ☀".fg(14).b
-    puts "─" * 60
+    puts "WEATHER GENERATOR".fg(14).b
+    puts "=" * 40
+    puts "Month: ".fg(13) + $Month[$mn].fg(226)
     puts ""
 
+    # Show a full month of weather like TUI does
     (1..30).each do |day|
       day_weather = w.day[day-1]
       if day_weather
-        # Get weather condition and symbol
-        weather_condition = $Weather[day_weather.weather] || "Clear"
-        weather_symbol = case weather_condition
-                        when /Clear/ then "☀"
-                        when /cloud|Cloud/ then "☁"
-                        when /rain|Rain/ then "☂"
-                        when /lightning|thunder|storm/ then "⛈"
-                        when /fog|Fog|mist|Mist/ then "🌫"
-                        when /snow|Snow/ then "❄"
-                        else "☀"
-                        end
-
-        # Format weather with symbol and ". ." (temperature indicators)
-        weather_line = "#{weather_condition} #{weather_symbol}. . ".ljust(35)
-
-        # Format wind with symbols
-        wind_strength = $Wind_str[day_weather.wind_str] || "No wind"
-        wind_dir = $Wind_dir[day_weather.wind_dir] || ""
-        wind_symbol = case wind_strength
-                     when "No wind" then "○"
-                     when "Soft wind" then "◡"
-                     when "Windy" then "◐"
-                     when "Very windy" then "●"
-                     else "○"
-                     end
-
-        # Wind direction arrows
-        dir_arrow = case wind_dir
-                   when "N" then "↑"
-                   when "NE" then "↗"
-                   when "E" then "→"
-                   when "SE" then "↘"
-                   when "S" then "↓"
-                   when "SW" then "↙"
-                   when "W" then "←"
-                   when "NW" then "↖"
-                   else ""
-                   end
-
-        wind_line = wind_symbol + " " + wind_strength
-        wind_line += " " + dir_arrow + " " + wind_dir if wind_dir != ""
-        wind_line = wind_line.ljust(20)
-
-        # Calculate correct Amar moon phases with symbols
-        moon_phase = case ((day - 1) / 7).to_i
-                     when 0 then "● New"      # First week
-                     when 1 then "◐ Waxing"   # Second week
-                     when 2 then "○ Full"     # Third week
-                     when 3 then "◑ Waning"   # Fourth week
-                     else "● New"             # Beyond 4 weeks
-                     end
-
-        # Check for authentic Amar god holy days (from wiki mythology page)
-        special_line = ""
-        case $mn
-        when 3  # Anashina month
-          special_line = "★ Anashina" if day == 4
-        when 4  # Gwendyll month
-          special_line = "★ Gwendyll" if day == 12
-        when 5  # MacGillan month
-          if day == 18
-            special_line = "★ Fenimaal"
-          elsif day == 21
-            special_line = "★ Fionella"
-          end
-        when 6  # Juba month
-          if day == 15
-            special_line = "★ Ish Nakil"
-          elsif day == 28
-            special_line = "★ Elaari"
-          end
-        when 7  # Taroc month
-          special_line = "★ Ikalio" if day == 14
-        end
-
-        # Add recurring god observances (from TUI examples)
-        if day == 8 && special_line.empty?
-          special_line = "★ Alesia"  # Alesia day (8th of various months)
-        end
-
-        # Format the complete line exactly like TUI
-        base_line = day.to_s.rjust(2).fg(202) + ": " + weather_line.fg(7) + wind_line.fg(51)
-
-        # Add special events with god-specific colors
-        if !special_line.empty?
-          # Color based on authentic Amar god colors (from your table)
-          god_color = case special_line
-                     when /Anashina/ then 41    # Anashina (Nature goddess)
-                     when /Fionella/ then 163   # MacGillan month color (Fionella's month)
-                     when /Elaari/ then 204     # Juba month color (Elaari in Juba)
-                     when /Gwendyll/ then 213   # Gwendyll month color
-                     when /Ish Nakil/ then 204  # Juba month color (Ish Nakil in Juba)
-                     when /Fenimaal/ then 163   # MacGillan month color (Fenimaal in MacGillan)
-                     when /Ikalio/ then 248     # Taroc month color (Ikalio in Taroc)
-                     when /Alesia/ then 230     # Elesi month color (Alesia likely in Elesi)
-                     when /Juba/ then 204       # Juba month color
-                     when /Solstice|New Year|Harvest/ then 172  # Seasonal events (Maleko color)
-                     else 226                   # Default yellow
-                     end
-
-          padding = " " * 15
-          puts base_line + padding + special_line.fg(god_color) + " " + moon_phase.fg(111)
-        else
-          # No special event, just add moon phase at the end with right alignment
-          padding = " " * 50
-          puts base_line + padding + moon_phase.fg(111)
-        end
+        weather_text = $Weather[day_weather.weather] || "Unknown"
+        wind_text = ($Wind_str[day_weather.wind_str] || "No wind") + " " + ($Wind_dir[day_weather.wind_dir] || "")
+        puts "Day ".fg(202) + day.to_s.rjust(2).fg(202) + ": " + weather_text.fg(7) + " | " + wind_text.fg(51)
       end
-
-      # Add blank line after each week
-      puts "" if day % 7 == 0
     end
-
-    puts ""
-    puts "SUMMARY:".fg(14).b
-    puts "Month: ".fg(13) + $Month[$mn].fg(226) + " has ".fg(7) + "30 days".fg(202)
-    weather_names = ["", "Arctic", "Winter", "Cold", "Cool", "Normal", "Warm", "Hot", "Very hot", "Extreme heat"]
-    weather_name = weather_names[$weather_n.to_i] || "Normal"
-    puts "Weather pattern: ".fg(13) + weather_name.fg(51)
-    puts ""
-    puts "Legend:".fg(13)
-    puts "  Moon phases: New → Waxing → First Quarter → Full → Waning → Last Quarter".fg(111)
-    puts "  Special days: Religious festivals and important dates".fg(195)
 when 'town'
     # Use actual town generation from TUI
     require_relative 'includes/class_town.rb'
@@ -617,16 +436,8 @@ when 'town'
     town_size = params[1].is_a?(String) ? eval(params[1]) : (params[1] || rand(1..100))
     town_var = params[2].is_a?(String) ? eval(params[2]) : (params[2] || rand(1..6))
 
-    # Suppress progress output during town generation
-    require 'stringio'
-    original_stdout = $stdout
-    $stdout = StringIO.new
-
     # Generate town exactly as TUI does
     town = Town.new(town_name, town_size, town_var)
-
-    # Restore stdout
-    $stdout = original_stdout
 
     # Fix name formatting - add proper prefix
     display_name = town.town_name
@@ -644,41 +455,18 @@ when 'town'
     end
 
     puts display_name.fg(14).b
-    puts "─" * 60
-    puts "Population: ".fg(13) + town.town_residents.to_s.fg(202) + " residents in ".fg(7) + town.town_size.to_s.fg(202) + " houses".fg(7)
+    puts "=" * 60
+    puts "Population: ".fg(13) + town.town_residents.to_s.fg(202) + " in ".fg(7) + town.town_size.to_s.fg(202) + " houses".fg(7)
     puts ""
+    puts "ALL RESIDENTS:".fg(13)
 
-    # Show ALL residents organized by establishment
+    # Show ALL residents like TUI does
     if town.town && town.town.length > 0
-      resident_count = 0
-      town.town.each_with_index do |establishment, est_idx|
-        next unless establishment && establishment.length > 0
-
-        # First element is establishment name
-        establishment_name = establishment[0]
-        puts establishment_name.upcase.fg(14).b + ":"
-
-        # Rest are residents
-        (1...establishment.length).each do |res_idx|
-          resident = establishment[res_idx]
-          if resident && !resident.empty?
-            resident_count += 1
-            puts "  " + resident_count.to_s.rjust(2).fg(202) + ". " + resident.fg(226)
-          end
+      town.town.each_with_index do |resident, idx|
+        if resident && resident.length > 1
+          puts "  " + (idx + 1).to_s.rjust(2).fg(202) + ". " + resident[0].fg(226) + " - " + resident[1].fg(7)
         end
-        puts ""
       end
-
-      puts ""
-      puts "SUMMARY:".fg(14).b
-      puts "Total detailed residents: ".fg(13) + resident_count.to_s.fg(226).b
-      if resident_count < town.town_residents
-        remaining = town.town_residents - resident_count
-        puts "Additional population: ".fg(13) + remaining.to_s.fg(202) + " (families, workers, background NPCs)".fg(7)
-      end
-      puts "Settlement type: ".fg(13) + (town_size <= 5 ? "Castle" : town_size <= 25 ? "Village" : town_size <= 100 ? "Town" : "City").fg(51)
-    else
-      puts "No resident data available".fg(240)
     end
 when 'names'
     # Use actual name generation from TUI
@@ -741,106 +529,12 @@ when 'roll'
     end
 
     # Output exactly as TUI does
-    puts "OPEN ENDED D6 ROLLS (O6)".fg(14).b
-    puts "─" * 40
     puts ""
     results.each do |r|
       puts r
     end
     puts ""
     puts "Press any key to continue...".fg(240)
-when 'weather_pdf'
-    # Generate weather PDF using TUI system
-    require_relative 'includes/weather.rb'
-    require_relative 'includes/weather2latex.rb'
-    require_relative 'includes/tables/weather.rb'
-    require_relative 'includes/tables/month.rb'
-
-    # Get parameters from input or use defaults
-    params = {param_str} rescue [0, 5, 0]
-    month = params[0] || rand(1..13)
-    weather = params[1] || 5
-    wind = params[2] || 0
-
-    # Set weather globals
-    $mn = month
-    $weather_n = weather
-    $wind_dir_n = wind
-    $wind_str_n = 0
-
-    puts "WEATHER PDF GENERATOR".fg(14).b
-    puts "─" * 60
-    puts "Month: ".fg(13) + $Month[$mn].fg(226)
-    puts "Weather: ".fg(13) + ["", "Snow storm", "Heavy snow", "Light snow", "Hail", "Normal", "Sunny", "Hot", "Sweltering"][$weather_n].fg(51)
-    puts ""
-
-    # Generate weather month for PDF
-    w = Weather_month.new($mn, $weather_n, $wind_dir_n)
-
-    # Generate LaTeX content
-    latex_content = weather_out_latex(w, "cli")
-
-    # Write LaTeX file
-    Dir.mkdir("saved") unless Dir.exist?("saved")
-    latex_file = "saved/weather.tex"
-    File.write(latex_file, latex_content)
-
-    puts "LaTeX file generated: ".fg(13) + "saved/weather.tex".fg(226)
-    puts ""
-    puts "PDF Generation:".fg(14).b
-    puts "To generate PDF, run:".fg(7)
-    puts "  cd saved && pdflatex weather.tex".fg(51)
-    puts ""
-    puts "The PDF will contain:".fg(13)
-    puts "• Daily weather conditions for ".fg(7) + $Month[$mn].fg(226)
-    puts "• Temperature and wind patterns".fg(7)
-    puts "• Moon phases and special events".fg(7)
-    puts "• Printable calendar format".fg(7)
-when 'encounter_npc'
-    # Get specific NPC from stored encounter with preserved stats
-    require_relative 'cli_enc_output_new.rb'
-    require 'json'
-
-    # Load stored encounter data
-    encounter_file = File.join($pgmdir, "saved", "last_encounter.json")
-
-    if File.exist?(encounter_file)
-      # Parse parameters
-      params = {param_str} rescue [0, "", "", "", 0, 0]
-      name = params[1] || ""
-
-      # Load encounter NPCs
-      npc_data_array = JSON.parse(File.read(encounter_file))
-
-      # Find the NPC by name
-      npc_data = npc_data_array.find do |data|
-        data["name"] == name
-      end
-
-      if npc_data
-        # Recreate the EXACT same NPC with same parameters
-        # This should generate the same weapons/armor as the encounter
-        npc = NpcNew.new(
-          npc_data["name"],
-          npc_data["type"],
-          npc_data["level"],
-          npc_data["area"],
-          npc_data["sex"],
-          npc_data["age"],
-          npc_data["height"],
-          npc_data["weight"],
-          npc_data["description"]
-        )
-
-        # Generate full detailed output
-        output = npc_output_new(npc, 'cli', 120)
-        puts output
-      else
-        puts "NPC not found in stored encounter data"
-      end
-    else
-      puts "No stored encounter data found"
-    end
 else
     puts "Unknown function: {function_name}"
 end
@@ -918,35 +612,6 @@ def roll_dice():
     """Roll open-ended d6 using TUI backend"""
     result = call_ruby_function('roll', {})
     return jsonify(result)
-
-@app.route('/api/encounter_npc/<int:npc_index>', methods=['POST'])
-def get_encounter_npc(npc_index):
-    """Get specific NPC from last encounter with preserved stats"""
-    params = request.get_json() or {}
-    params['npc_index'] = npc_index
-    result = call_ruby_function('encounter_npc', params)
-    return jsonify(result)
-
-@app.route('/api/weather_pdf', methods=['POST'])
-def generate_weather_pdf():
-    """Generate weather PDF using TUI backend"""
-    params = request.get_json() or {}
-    result = call_ruby_function('weather_pdf', params)
-    return jsonify(result)
-
-@app.route('/download/weather.pdf')
-def download_weather_pdf():
-    """Download the generated weather PDF"""
-    pdf_path = os.path.join(RUBY_DIR, 'saved', 'weather.pdf')
-    if os.path.exists(pdf_path):
-        return send_from_directory(
-            os.path.join(RUBY_DIR, 'saved'),
-            'weather.pdf',
-            as_attachment=True,
-            download_name=f'amar-weather-{datetime.now().strftime("%Y%m%d")}.pdf'
-        )
-    else:
-        return jsonify({'error': 'PDF not found'}), 404
 
 if __name__ == '__main__':
     print("=" * 60)
