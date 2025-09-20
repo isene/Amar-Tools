@@ -1766,12 +1766,12 @@ def roll_o6
   output = colorize_output("OPEN ENDED D6 ROLLS (O6)", :header) + "\n"
   output += colorize_output("─" * content_width, :header) + "\n\n"
   results.each { |r| output += "#{r}\n" }
-  output += "\nPress any key to continue..."
+  output += "\n"
   
   show_content(output)
 
   # Handle navigation like other views
-  @footer.say(" [r] Re-roll | [y] Copy | [s] Save | [ESC/q] Back ".ljust(@cols))
+  @footer.say(" [r] Re-roll | [ENTER] Quick re-roll | [y] Copy | [ESC/q] Back ".ljust(@cols))
 
   loop do
     key = getchr
@@ -1790,10 +1790,8 @@ def roll_o6
       @footer.clear
       @footer.say(" Copied to clipboard! ".ljust(@cols))
       sleep(1)
-      @footer.say(" [r] Re-roll | [y] Copy | [s] Save | [ESC/q] Back ".ljust(@cols))
-    when "s"
-      save_to_file(output, :dice)
-    when " ", "d", "j", "k", "DOWN", "UP", "PgDOWN", "PgUP"
+      @footer.say(" [r] Re-roll | [ENTER] Quick re-roll | [y] Copy | [ESC/q] Back ".ljust(@cols))
+    when " ", "d", "j", "k", "DOWN", "UP", "PgDOWN", "PgUP", "s"
       # Ignore navigation keys that don't apply to dice roll
       # Just continue the loop
     else
@@ -2320,7 +2318,7 @@ def handle_npc_view(npc, output)
       # Copy output to clipboard
       copy_to_clipboard(output)
       # Show confirmation in footer briefly
-      footer_text = " ✓ Output copied to clipboard! Press any key to continue... "
+      footer_text = " ✓ Output copied to clipboard!  "
       @footer.bg = 28  # Dark green background for success
       @footer.say(footer_text.ljust(@cols))
       @footer.bg = 237  # Reset to medium grey
@@ -2897,7 +2895,7 @@ def handle_encounter_view(enc, output)
       # Copy output to clipboard
       copy_to_clipboard(output)
       # Show confirmation in footer briefly
-      footer_text = " ✓ Output copied to clipboard! Press any key to continue... "
+      footer_text = " ✓ Output copied to clipboard!  "
       @footer.bg = 28  # Dark green background for success
       @footer.say(footer_text.ljust(@cols))
       @footer.bg = 237  # Reset to medium grey
@@ -3184,7 +3182,13 @@ def save_to_file(object, type)
   FileUtils.mkdir_p("saved")
   File.write(filename, @content.text)
   
-  show_popup("SAVED", "Saved to: #{filename}\n\nPress any key to continue")
+  # Show save confirmation in footer with background color
+  @footer.clear
+  @footer.bg = 28  # Green background for success
+  @footer.say(" ✓ Saved to: #{File.basename(filename)} ".ljust(@cols))
+  sleep(1.5)
+  @footer.bg = 237  # Reset to normal grey
+  @footer.clear
 end
 
 def reapply_colors(text)
@@ -3523,7 +3527,7 @@ def handle_monster_view(monster, output)
       @content.pageup
     when "Y", "y"
       copy_to_clipboard(output)
-      footer_text = " ✓ Output copied to clipboard! Press any key to continue... "
+      footer_text = " ✓ Output copied to clipboard!  "
       @footer.bg = 28  # Dark green background for success
       @footer.say(footer_text.ljust(@cols))
       @footer.bg = 237  # Reset to medium grey
@@ -5034,7 +5038,7 @@ def generate_town_ui
 
   # Check if town was generated
   if town.nil?
-    show_content("Error: Failed to generate town. Please try again.\n\nPress any key to continue...")
+    show_content("Error: Failed to generate town. Please try again.\n\n")
     getchr
     return
   end
@@ -5532,7 +5536,7 @@ def generate_town_relations
   unless File.exist?(town_file)
     error_msg = colorize_output("FILE NOT FOUND", :error) + "\n\n"
     error_msg += "File not found: " + town_file.fg(196) + "\n\n"
-    error_msg += "Press any key to continue..."
+    error_msg += ""
     show_content(error_msg)
     getchr
   # Restore menu selection
@@ -5666,7 +5670,7 @@ def generate_town_relations
     debug e.backtrace.join("\n") if e.backtrace
     error_msg = colorize_output("ERROR", :error) + "\n\n"
     error_msg += "Failed to generate relations: " + e.message.fg(196) + "\n\n"
-    error_msg += "Press any key to continue..."
+    error_msg += ""
     show_content(error_msg)
     getchr
   end
@@ -5824,7 +5828,7 @@ def generate_adventure_ai
     output += "Add this line with your actual API key:\n"
     output += "@ai = \"your-actual-api-key\"\n\n"
     output += "If you already have a key in ~/.rtfm/conf, you can copy it.\n\n"
-    output += "Press any key to continue..."
+    output += ""
     show_content(output)
     key = getchr
   # Restore menu selection
@@ -5839,7 +5843,7 @@ def generate_adventure_ai
     output = colorize_output("MISSING PROMPT FILE", :header) + "\n\n"
     output += "Adventure prompt file not found:\n"
     output += "#{adv_file}\n\n"
-    output += "Press any key to continue..."
+    output += ""
     show_content(output)
     key = getchr
   # Restore menu selection
@@ -5941,12 +5945,12 @@ def generate_adventure_ai
       output = colorize_output("ERROR", :header) + "\n\n"
       output += "Failed to get response from OpenAI.\n\n"
       output += "Error: #{response}\n\n" if response && !response.empty?
-      output += "Press any key to continue..."
+      output += ""
       show_content(output)
       getchr
     end
   rescue => e
-    show_content("Error: #{e.message}\n\nPress any key to continue...")
+    show_content("Error: #{e.message}\n\n")
     getchr
   end
 
@@ -5998,7 +6002,7 @@ def describe_encounter_ai
     output = colorize_output("OpenAI NOT CONFIGURED", :header) + "\n\n"
     output += "The 'openai' command is not installed.\n\n"
     output += "Please install and configure OpenAI.\n\n"
-    output += "Press any key to continue..."
+    output += ""
     show_content(output)
     key = getchr
   # Restore menu selection
@@ -6028,7 +6032,7 @@ def describe_encounter_ai
     output = colorize_output("FILE NOT FOUND", :header) + "\n\n"
     output += "Encounter file not found:\n"
     output += "#{filepath}\n\n"
-    output += "Press any key to continue..."
+    output += ""
     show_content(output)
     getchr
   # Restore menu selection
@@ -6043,7 +6047,7 @@ def describe_encounter_ai
     output = colorize_output("MISSING PROMPT FILE", :header) + "\n\n"
     output += "Encounter prompt file not found:\n"
     output += "#{enc_prompt}\n\n"
-    output += "Press any key to continue..."
+    output += ""
     show_content(output)
     getchr
   # Restore menu selection
@@ -6135,12 +6139,12 @@ def describe_encounter_ai
       output = colorize_output("ERROR", :header) + "\n\n"
       output += "Failed to get response from OpenAI.\n\n"
       output += "Error: #{response}\n\n" if response && !response.empty?
-      output += "Press any key to continue..."
+      output += ""
       show_content(output)
       getchr
     end
   rescue => e
-    show_content("Error: #{e.message}\n\nPress any key to continue...")
+    show_content("Error: #{e.message}\n\n")
     getchr
   end
 
@@ -6197,7 +6201,7 @@ def describe_npc_ai
     output += "Add this line with your actual API key:\n"
     output += "@ai = \"your-actual-api-key\"\n\n"
     output += "If you already have a key in ~/.rtfm/conf, you can copy it.\n\n"
-    output += "Press any key to continue..."
+    output += ""
     show_content(output)
     key = getchr
   # Restore menu selection
@@ -6227,7 +6231,7 @@ def describe_npc_ai
     output = colorize_output("FILE NOT FOUND", :header) + "\n\n"
     output += "NPC file not found:\n"
     output += "#{filepath}\n\n"
-    output += "Press any key to continue..."
+    output += ""
     show_content(output)
     getchr
   # Restore menu selection
@@ -6242,7 +6246,7 @@ def describe_npc_ai
     output = colorize_output("MISSING PROMPT FILE", :header) + "\n\n"
     output += "NPC prompt file not found:\n"
     output += "#{npc_prompt}\n\n"
-    output += "Press any key to continue..."
+    output += ""
     show_content(output)
     getchr
   # Restore menu selection
@@ -6373,12 +6377,12 @@ def describe_npc_ai
       output = colorize_output("ERROR", :header) + "\n\n"
       output += "Failed to get response from OpenAI.\n\n"
       output += "Error: #{response}\n\n" if response && !response.empty?
-      output += "Press any key to continue..."
+      output += ""
       show_content(output)
       getchr
     end
   rescue => e
-    show_content("Error: #{e.message}\n\nPress any key to continue...")
+    show_content("Error: #{e.message}\n\n")
     getchr
   end
 
@@ -6616,7 +6620,7 @@ def generate_npc_image(description = nil)
   unless @ai && @ai != "your-openai-api-key-here" && !@ai.empty?
     output = colorize_output("OpenAI NOT CONFIGURED", :header) + "\n\n"
     output += "Please configure your OpenAI API key in: ~/.amar-tools/conf\n\n"
-    output += "Press any key to continue..."
+    output += ""
     show_content(output)
     getchr
     return
@@ -6640,7 +6644,7 @@ def generate_npc_image(description = nil)
       # Use last generated NPC
       npc_file = File.join(save_dir, "temp_new.npc")
       unless File.exist?(npc_file)
-        show_content("No recent NPC found. Please generate an NPC first.\n\nPress any key to continue...")
+        show_content("No recent NPC found. Please generate an NPC first.\n\n")
         getchr
         return
       end
@@ -6651,7 +6655,7 @@ def generate_npc_image(description = nil)
       end
       npc_file = File.join(save_dir, file_input)
       unless File.exist?(npc_file)
-        show_content("NPC file not found: #{npc_file}\n\nPress any key to continue...")
+        show_content("NPC file not found: #{npc_file}\n\n")
         getchr
         return
       end
@@ -6729,7 +6733,7 @@ def generate_npc_image(description = nil)
       # Load NPC prompt
       npc_prompt = File.join($pgmdir, "npc.txt")
       unless File.exist?(npc_prompt)
-        show_content("NPC prompt file not found.\n\nPress any key to continue...")
+        show_content("NPC prompt file not found.\n\n")
         getchr
         return
       end
@@ -6750,7 +6754,7 @@ def generate_npc_image(description = nil)
       description = api_response&.dig('choices', 0, 'message', 'content')
 
       if description.nil? || description.empty?
-        show_content("Failed to generate description.\n\nPress any key to continue...")
+        show_content("Failed to generate description.\n\n")
         getchr
         return
       end
@@ -6958,7 +6962,7 @@ def generate_npc_image(description = nil)
         # Don't show any text after displaying image - just wait for key
         getchr
       else
-        show_content("Error downloading image: #{response.code}\n\nPress any key to continue...")
+        show_content("Error downloading image: #{response.code}\n\n")
         getchr
       end
     else
@@ -6966,7 +6970,7 @@ def generate_npc_image(description = nil)
       if api_response
         error_msg += "Response: #{api_response.inspect[0..500]}\n\n"
       end
-      error_msg += "Press any key to continue..."
+      error_msg += ""
       show_content(error_msg)
       debug "Image generation failed. Response: #{api_response.inspect}"
       getchr
@@ -6991,7 +6995,7 @@ def generate_npc_image(description = nil)
       error_msg += "#{e.message}\n\n"
     end
 
-    error_msg += "Press any key to continue..."
+    error_msg += ""
     show_content(error_msg)
     getchr
   ensure
@@ -7047,7 +7051,7 @@ def show_latest_npc_image
     output = colorize_output("NO IMAGES FOUND", :header) + "\n\n"
     output += "No NPC images have been generated yet.\n\n"
     output += "Use 'I. Generate NPC Image' to create an image first.\n\n"
-    output += "Press any key to continue..."
+    output += ""
     show_content(output)
     getchr
   # Restore menu selection
@@ -7063,7 +7067,7 @@ def show_latest_npc_image
     output = colorize_output("NO IMAGES FOUND", :header) + "\n\n"
     output += "No NPC images have been generated yet.\n\n"
     output += "Use 'I. Generate NPC Image' to create an image first.\n\n"
-    output += "Press any key to continue..."
+    output += ""
     show_content(output)
     getchr
   # Restore menu selection
@@ -7166,7 +7170,7 @@ def show_latest_npc_image
         if image_files.empty?
           output = colorize_output("IMAGE DELETED", :success) + "\n\n"
           output += "No more images available.\n\n"
-          output += "Press any key to continue..."
+          output += ""
           show_content(output)
           getchr
           break
@@ -7211,7 +7215,7 @@ def show_latest_npc_image
       else
         output = "Cannot open image - no viewer available.\n"
         output += "Image path: #{latest_image}\n\n"
-        output += "Press any key to continue..."
+        output += ""
         show_content(output)
         getchr
 
@@ -7286,7 +7290,7 @@ def show_latest_town_map
     output = colorize_output("NO TOWN MAPS FOUND", :header) + "\n\n"
     output += "No town relationship maps have been generated yet.\n\n"
     output += "Use '7. Town Relations' to create a relationship map first.\n\n"
-    output += "Press any key to continue..."
+    output += ""
     show_content(output)
     getchr
   # Restore menu selection
@@ -7563,7 +7567,7 @@ def show_latest_town_map
         if png_files.empty?
           output = colorize_output("MAP DELETED", :success) + "\n\n"
           output += "No more maps available.\n\n"
-          output += "Press any key to continue..."
+          output += ""
           show_content(output)
           getchr
           break
