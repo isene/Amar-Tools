@@ -310,6 +310,10 @@
             <div class="menu-item separator" style="color: #855A85; text-align: left;">UTILITIES</div>
             <div class="menu-item" data-action="roll">O. Roll Open Ended d6</div>
             <div class="menu-item" data-action="help">?. Help</div>
+            <div class="menu-item empty"></div>
+            <div class="menu-item separator" style="color: #888888; text-align: left;">LEGACY SYSTEM</div>
+            <div class="menu-item" data-action="npc-old">1. Old NPC Generator</div>
+            <div class="menu-item" data-action="encounter-old">2. Old Encounter</div>
         </div>
 
         <div class="content-panel" id="contentPanel">
@@ -744,7 +748,9 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                         'w': 'weather',
                         'g': 'names',
                         'o': 'roll',
-                        '?': 'help'
+                        '?': 'help',
+                        '1': 'npc-old',
+                        '2': 'encounter-old'
                     };
 
                     if (shortcuts[key]) {
@@ -779,7 +785,9 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                         'w': 'weather',
                         'g': 'names',
                         'o': 'roll',
-                        '?': 'help'
+                        '?': 'help',
+                        '1': 'npc-old',
+                        '2': 'encounter-old'
                     };
 
                     if (shortcuts[key]) {
@@ -848,6 +856,12 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     break;
                 case 'help':
                     showHelp();
+                    break;
+                case 'npc-old':
+                    generateOldNPC();
+                    break;
+                case 'encounter-old':
+                    generateOldEncounter();
                     break;
                 default:
                     updateStatus('Unknown action');
@@ -1384,6 +1398,92 @@ Thank you for using Amar RPG Tools!
             });
 
             updateStatus('Close browser to exit | ESC to return to menu');
+        }
+
+        async function generateOldNPC() {
+            updateStatus('Generating old CLI NPC...');
+
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loading">Generating NPC using original CLI system...</div>';
+            output.style.display = 'block';
+
+            // Hide forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            try {
+                const response = await fetch('/api/npc_old', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    currentEditContent = result.output;
+                    output.innerHTML = `
+                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
+                            <button class="edit-btn" onclick="editOutput('npc-old', currentEditContent)">Edit Old NPC</button>
+                            <button class="edit-btn" onclick="downloadOutput('npc-old', currentEditContent)">Download</button>
+                        </div>
+                        <div class="output">${result.output}</div>
+                    `;
+                    updateStatus('Old CLI NPC generated - Edit or Download available');
+                } else {
+                    output.innerHTML = `<div class="error">Error generating old NPC: ${result.error}</div>`;
+                    updateStatus('Error generating old NPC');
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="error">Network error: ${error.message}</div>`;
+                updateStatus('Network error');
+            }
+        }
+
+        async function generateOldEncounter() {
+            updateStatus('Generating old CLI encounter...');
+
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loading">Generating encounter using original CLI system...</div>';
+            output.style.display = 'block';
+
+            // Hide forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            try {
+                const response = await fetch('/api/encounter_old', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    currentEditContent = result.output;
+                    output.innerHTML = `
+                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
+                            <button class="edit-btn" onclick="editOutput('encounter-old', currentEditContent)">Edit Old Encounter</button>
+                            <button class="edit-btn" onclick="downloadOutput('encounter-old', currentEditContent)">Download</button>
+                        </div>
+                        <div class="output">${result.output}</div>
+                    `;
+                    updateStatus('Old CLI encounter generated - Edit or Download available');
+                } else {
+                    output.innerHTML = `<div class="error">Error generating old encounter: ${result.error}</div>`;
+                    updateStatus('Error generating old encounter');
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="error">Network error: ${error.message}</div>`;
+                updateStatus('Network error');
+            }
         }
 
         function updateStatus(message) {

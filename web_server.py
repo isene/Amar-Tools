@@ -532,6 +532,49 @@ when 'roll'
     results.each do |r|
       puts r
     end
+when 'npc_old'
+    # Old NPC generation using exact TUI format
+    require_relative 'includes/class_npc.rb'
+
+    # Generate using old NPC class with random parameters
+    npc = Npc.new("", "", 0, "", "", 0, 0, 0, "")
+
+    # Format output like TUI does
+    puts "OLD SYSTEM NPC".fg(14).b
+    puts "─" * 40
+    puts ""
+    puts "Name: ".fg(13) + npc.name.fg(226)
+    puts "Type: ".fg(13) + npc.type.fg(7)
+    puts "Level: ".fg(13) + npc.level.to_s.fg(202)
+    puts "Area: ".fg(13) + npc.area.fg(7)
+    puts "Sex: ".fg(13) + npc.sex.fg(7)
+    puts "Age: ".fg(13) + npc.age.to_s.fg(7)
+    puts "Height: ".fg(13) + "#{npc.height} cm".fg(7)
+    puts "Weight: ".fg(13) + "#{npc.weight} kg".fg(7)
+    if npc.description && !npc.description.empty?
+      puts "Description: ".fg(13) + npc.description.fg(7)
+    end
+
+when 'encounter_old'
+    # Old encounter generation using exact TUI format
+    require_relative 'includes/class_enc.rb'
+
+    # Generate using old Enc class
+    enc = Enc.new("", 0)
+
+    # Format output like TUI does
+    puts "OLD SYSTEM ENCOUNTER".fg(14).b
+    puts "─" * 40
+    puts ""
+    if enc.encounter && enc.encounter.first
+      puts "Encounter: ".fg(13) + (enc.encounter.first["string"] || "Random encounter").fg(46)
+      puts "Attitude: ".fg(13) + enc.enc_attitude.fg(7) if enc.enc_attitude
+      puts "Number: ".fg(13) + enc.enc_number.to_s.fg(202) if enc.enc_number
+    else
+      puts "No encounter".fg(7)
+    end
+    puts ""
+    puts "Note: This is the original CLI encounter system.".fg(240)
 else
     puts "Unknown function: {function_name}"
 end
@@ -608,6 +651,20 @@ def generate_names():
 def roll_dice():
     """Roll open-ended d6 using TUI backend"""
     result = call_ruby_function('roll', {})
+    return jsonify(result)
+
+@app.route('/api/npc_old', methods=['POST'])
+def generate_npc_old():
+    """Generate NPC using old CLI system exactly as original"""
+    params = request.get_json() or {}
+    result = call_ruby_function('npc_old', params)
+    return jsonify(result)
+
+@app.route('/api/encounter_old', methods=['POST'])
+def generate_encounter_old():
+    """Generate encounter using old CLI system exactly as original"""
+    params = request.get_json() or {}
+    result = call_ruby_function('encounter_old', params)
     return jsonify(result)
 
 if __name__ == '__main__':
