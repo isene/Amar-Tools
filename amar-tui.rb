@@ -1781,8 +1781,8 @@ def roll_o6
       @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       break
-    when "r"
-      # Re-roll dice (generate new set)
+    when "r", "ENTER", "\r"
+      # Re-roll dice (generate new set) - ENTER for quick re-roll
       roll_o6
       break
     when "y"
@@ -1794,7 +1794,7 @@ def roll_o6
     when "s"
       save_to_file(output, :dice)
     else
-      # Any other key also returns to menu (for quick exit)
+      # Any other key returns to menu
       @menu_index = saved_menu_index if defined?(saved_menu_index)
       return_to_menu
       break
