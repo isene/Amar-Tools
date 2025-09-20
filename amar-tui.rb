@@ -3927,8 +3927,8 @@ def generate_npc_old
   return if description == :cancelled
 
   begin
-    # Generate using the old Npc class
-    npc = Npc.new(name, type, level, area, sex, age, height, weight, description)
+    # Generate using the MODERN NPC class for rich output (legacy in name only)
+    npc = NpcNew.new(name, type, level, area, sex, age, height, weight, description)
 
     # Format output
     content_width = @cols - 35
