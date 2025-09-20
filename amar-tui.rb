@@ -1793,11 +1793,19 @@ def roll_o6
       @footer.say(" [r] Re-roll | [y] Copy | [s] Save | [ESC/q] Back ".ljust(@cols))
     when "s"
       save_to_file(output, :dice)
+    when " ", "d", "j", "k", "DOWN", "UP", "PgDOWN", "PgUP"
+      # Ignore navigation keys that don't apply to dice roll
+      # Just continue the loop
     else
-      # Any other key returns to menu
-      @menu_index = saved_menu_index if defined?(saved_menu_index)
-      return_to_menu
-      break
+      # Any unhandled key safely returns to menu
+      begin
+        @menu_index = saved_menu_index if defined?(saved_menu_index)
+        return_to_menu
+        break
+      rescue => e
+        # If return_to_menu fails, just break out of loop
+        break
+      end
     end
   end
 end
