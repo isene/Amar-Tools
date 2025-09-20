@@ -528,13 +528,10 @@ when 'roll'
       end
     end
 
-    # Output exactly as TUI does
-    puts ""
+    # Clean dice output without header
     results.each do |r|
       puts r
     end
-    puts ""
-    puts "Press any key to continue...".fg(240)
 else
     puts "Unknown function: {function_name}"
 end

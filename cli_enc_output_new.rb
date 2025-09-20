@@ -204,7 +204,7 @@ def enc_output_new(e, cli, custom_width = nil)
           dmg = npc.missiledam || 0
           range = npc.missilerange ? "#{npc.missilerange}m" : "30m"
 
-          missile_weapons << "#{weapon_name} (#{skill}) R:#{range} #{@stat_color}d:#{dmg}#{@reset}"
+          missile_weapons << "#{weapon_name} (#{skill}) O:#{off} R:#{range} #{@stat_color}d:#{dmg}#{@reset}"
         end
         
         # Display weapons
