@@ -4169,10 +4169,35 @@ def generate_encounter_old
   return if level_input == :cancelled
   $Level = level_input.to_i
 
+  # Encounter type selection (like original CLI)
+  encounter_text = colorize_output("Select encounter type (0 for random):", :header) + "\n"
+  encounter_text += colorize_output("0", :dice) + ": Random encounter\n"
+
+  # Load encounter tables if available
+  if defined?($Encounters) && $Encounters && !$Encounters.empty?
+    encounter_types = $Encounters.keys.sort
+    encounter_types.each_with_index do |enc_type, i|
+      encounter_text += colorize_output((i+1).to_s.rjust(2), :dice) + ": " + colorize_output(enc_type, :value).ljust(25)
+      encounter_text += "\n" if (i+1) % 3 == 0
+    end
+  end
+
+  show_content(encounter_text + "\nEnter encounter type: ")
+  enc_input = get_text_input("")
+  return if enc_input == :cancelled
+
+  # Determine encounter specification
+  encounter_spec = ""
+  if defined?($Encounters) && $Encounters && enc_input.to_i > 0
+    encounter_types = $Encounters.keys.sort
+    if enc_input.to_i <= encounter_types.length
+      encounter_spec = encounter_types[enc_input.to_i - 1]
+    end
+  end
+
   begin
-    # Generate using the old Enc class with proper parameters
-    # First parameter is encounter spec (empty for random), second is number
-    enc = Enc.new("", 0)
+    # Generate using the old Enc class with encounter specification
+    enc = Enc.new(encounter_spec, 0)
 
     # Create EXACT original CLI encounter format
     require 'date'
