@@ -4174,29 +4174,69 @@ def generate_encounter_old
     # First parameter is encounter spec (empty for random), second is number
     enc = Enc.new("", 0)
 
-    # Format output
-    content_width = @cols - 35
-    output = colorize_output("OLD SYSTEM ENCOUNTER", :header) + "\n"
-    output += colorize_output("─" * content_width, :header) + "\n\n"
+    # Create EXACT original CLI encounter format
+    require 'date'
 
-    # Display encounter details
-    if enc.encounter && !enc.encounter.empty?
-      # enc.encounter is an array of hashes, get the first one's string
-      enc_str = enc.encounter[0]["string"] rescue "Unknown"
-      output += colorize_output("Encounter: ", :label) + colorize_output(enc_str, :success) + "\n"
+    output = ""
+    output += "############################<By Amar Tools>############################\n"
+
+    # Day/Night and terrain header
+    if $Day == 1
+      output += "Day:   "
     else
-      output += colorize_output("No encounter", :value) + "\n"
+      output += "Night: "
     end
 
-    if enc.enc_number && enc.enc_number > 0
-      output += colorize_output("Number: ", :label) + colorize_output(enc.enc_number.to_s, :dice) + "\n"
+    case $Terrain
+    when 0 then output += "City      "
+    when 1 then output += "Rural     "
+    when 2 then output += "Road      "
+    when 3 then output += "Plains    "
+    when 4 then output += "Hills     "
+    when 5 then output += "Mountains "
+    when 6 then output += "Woods     "
+    when 7 then output += "Wilderness"
     end
 
-    if enc.enc_attitude
-      output += colorize_output("Attitude: ", :label) + colorize_output(enc.enc_attitude, :value) + "\n"
+    output += " (Level mod = " + $Level.to_s + ")"
+    output += "Created: #{Date.today.to_s}".rjust(38) + "\n\n"
+
+    # Encounter content
+    if enc.encounter && !enc.encounter.empty?
+      if enc.encounter[0]["string"] == "NO ENCOUNTER"
+        output += "\nNO ENCOUNTER\n\n"
+      else
+        output += (enc.enc_attitude || "NEUTRAL") + ":\n"
+
+        (enc.enc_number || 1).times do |i|
+          encounter_entry = enc.encounter[i]
+          next unless encounter_entry
+
+          output += "  "
+
+          if encounter_entry["string"] =~ /animal/
+            output += encounter_entry["string"] + " (" + encounter_entry["sex"] + ")"
+          else
+            unless encounter_entry["string"] =~ /Event/
+              output += encounter_entry["string"] + " (#{encounter_entry["sex"]}, #{encounter_entry["name"]})"
+            else
+              output += encounter_entry["string"]
+            end
+          end
+
+          if encounter_entry["string"] =~ /Event:/
+            output += "\n\n"
+            break
+          else
+            output += " [Lvl " + encounter_entry["level"].to_s + "]\n"
+          end
+        end
+      end
+    else
+      output += "\nNO ENCOUNTER\n\n"
     end
 
-    output += "\n"
+    output += "\n############################<By Amar Tools>############################\n"
     output += "Note: This is a basic random encounter using the old system.\n"
     output += "For more detailed encounters, use the New System generator.\n"
 
