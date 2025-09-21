@@ -3927,13 +3927,33 @@ def generate_npc_old
   return if description == :cancelled
 
   begin
-    # Generate using the MODERN NPC class for rich output (legacy in name only)
-    npc = NpcNew.new(name, type, level, area, sex, age, height, weight, description)
+    # Generate using the ACTUAL old Npc class (true legacy system)
+    npc = Npc.new(name, type, level, area, sex, age, height, weight, description)
 
-    # Use FULL modern output for rich character sheets (legacy in name only)
-    content_width = @cols - 35
-    output = npc_output_new(npc, "cli", content_width)
+    # Load original CLI output and capture it (instead of printing to terminal)
+    require 'date'
+    require_relative 'cli_npc_output'
 
+    # Capture the output instead of letting it print to terminal
+    require 'stringio'
+    old_stdout = $stdout
+    $stdout = StringIO.new
+
+    # Call original CLI output function
+    npc_output(npc, "cli")
+
+    # Get the captured output
+    output = $stdout.string
+
+    # Restore stdout
+    $stdout = old_stdout
+
+    # Refresh all panes to fix display issues
+    refresh_all
+    draw_menu  # Ensure menu is visible
+    draw_borders if @config[:show_borders]
+
+    # Show the captured output in right pane
     show_content(output)
     
     # Simple navigation for old system output
