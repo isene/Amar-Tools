@@ -3930,36 +3930,9 @@ def generate_npc_old
     # Generate using the MODERN NPC class for rich output (legacy in name only)
     npc = NpcNew.new(name, type, level, area, sex, age, height, weight, description)
 
-    # Format output
+    # Use FULL modern output for rich character sheets (legacy in name only)
     content_width = @cols - 35
-    output = colorize_output("OLD SYSTEM NPC", :header) + "\n"
-    output += colorize_output("─" * content_width, :header) + "\n\n"
-
-    # Basic info
-    output += colorize_output("Name: ", :label) + colorize_output(npc.name, :name) + "\n"
-    output += colorize_output("Type: ", :label) + colorize_output(npc.type, :value) + "\n"
-    output += colorize_output("Level: ", :label) + colorize_output(npc.level.to_s, :dice) + "\n"
-    output += colorize_output("Area: ", :label) + colorize_output(npc.area, :value) + "\n"
-    output += colorize_output("Sex: ", :label) + colorize_output(npc.sex, :value) + "\n"
-    output += colorize_output("Age: ", :label) + colorize_output(npc.age.to_s, :value) + "\n"
-    output += colorize_output("Height: ", :label) + colorize_output("#{npc.height} cm", :value) + "\n"
-    output += colorize_output("Weight: ", :label) + colorize_output("#{npc.weight} kg", :value) + "\n"
-
-    if npc.description && !npc.description.empty?
-      output += colorize_output("Description: ", :label) + colorize_output(npc.description, :value) + "\n"
-    end
-
-    output += "\n"
-    output += colorize_output("Physical Stats:", :subheader) + "\n"
-    # Format SIZE for display
-    size_display = npc.SIZE % 1 == 0.5 ? "#{npc.SIZE.floor}½" : npc.SIZE.to_s
-    output += colorize_output("SIZE: ", :label) + colorize_output(size_display, :value)
-    output += "  " + colorize_output("BP: ", :label) + colorize_output(npc.BP.to_s, :value)
-    output += "  " + colorize_output("DB: ", :label) + colorize_output(npc.DB.to_s, :value)
-    output += "  " + colorize_output("MD: ", :label) + colorize_output(npc.MD.to_s, :value)
-    output += "  " + colorize_output("ENC: ", :label) + colorize_output(npc.ENC.to_s, :value) + "\n\n"
-
-    # Add more details as needed from the NPC object
+    output = npc_output_new(npc, "cli", content_width)
 
     show_content(output)
     
