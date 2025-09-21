@@ -3930,30 +3930,149 @@ def generate_npc_old
     # Generate using the ACTUAL old Npc class (true legacy system)
     npc = Npc.new(name, type, level, area, sex, age, height, weight, description)
 
-    # Load original CLI output and capture it (instead of printing to terminal)
+    # Simple manual legacy output (avoid problematic CLI function)
     require 'date'
-    require_relative 'cli_npc_output'
 
-    # Capture the output instead of letting it print to terminal
-    require 'stringio'
-    old_stdout = $stdout
-    $stdout = StringIO.new
+    output = ""
+    output += "############################<By Amar Tools>############################\n\n"
+    output += "Created: #{Date.today.to_s}".rjust(71) + "\n"
+    output += "Name:".ljust(9) + npc.name.to_s + "\n"
+    output += "Type:".ljust(9) + (npc.type.to_s + " (" + npc.level.to_s + ")").ljust(23)
+    output += "Sex:".ljust(5) + npc.sex.to_s.ljust(18)
+    output += "Height:".ljust(8) + npc.height.to_s + "\n"
+    output += "Area:".ljust(9) + npc.area.to_s.ljust(23)
+    output += "Age:".ljust(5) + npc.age.to_s.ljust(18)
+    output += "Weight:".ljust(8) + npc.weight.to_s + "\n"
+    output += "-----------------------------------------------------------------------\n"
+    output += "Description: #{npc.description || ''}\n"
+    output += "-----------------------------------------------------------------------\n"
 
-    # Call original CLI output function
-    npc_output(npc, "cli")
+    # Complete original 3-column stats layout
+    output += "SIZE:".ljust(9) + npc.size.to_s.ljust(11)
+    output += "Balance:".ljust(17) + npc.balance.to_s.ljust(9)
+    output += "Detect Traps:".ljust(17) + npc.dtraps.to_s.ljust(9) + "\n"
 
-    # Get the captured output
-    output = $stdout.string
+    output += "STRNG:".ljust(9) + npc.strng.to_s.ljust(11)
+    output += "Climb:".ljust(17) + npc.climb.to_s.ljust(9)
+    output += "Reaction Speed:".ljust(17) + npc.react.to_s.ljust(9) + "\n"
 
-    # Restore stdout
-    $stdout = old_stdout
+    output += "ENDUR:".ljust(9) + npc.endur.to_s.ljust(11)
+    output += "Dodge:".ljust(17) + npc.dodge.to_s.ljust(9)
+    output += "Tracking:".ljust(17) + npc.tracking.to_s.ljust(9) + "\n"
 
-    # Refresh all panes to fix display issues
-    refresh_all
-    draw_menu  # Ensure menu is visible
-    draw_borders if @config[:show_borders]
+    output += "COORD:".ljust(9) + npc.coord.to_s.ljust(11)
+    output += "Hide:".ljust(17) + (npc.hide.to_s + "/" + npc.modhide.to_s).ljust(9)
+    if npc.respond_to?(:percept1) && npc.percept1 && !npc.percept1.empty?
+      output += "*" + (npc.percept1 + ":").ljust(16) + npc.percept1s.to_s.ljust(9)
+    end
+    output += "\n"
 
-    # Show the captured output in right pane
+    output += "LEARN:".ljust(9) + npc.learn.to_s.ljust(11)
+    output += "Mvqt:".ljust(17) + (npc.mvqt.to_s + "/" + npc.modmvqt.to_s).ljust(9) + "\n"
+
+    output += "AWARE:".ljust(9) + npc.aware.to_s.ljust(11)
+    output += "Ride:".ljust(17) + npc.ride.to_s.ljust(9)
+    if npc.respond_to?(:medicall) && npc.medicall && npc.medicall > 0
+      output += "Medical lore:".ljust(17) + npc.medicall.to_s.ljust(9)
+    end
+    output += "\n"
+
+    output += "MAGAP:".ljust(9) + npc.magap.to_s.ljust(11)
+    output += "Sleight:".ljust(17) + npc.sleight.to_s.ljust(9)
+    if npc.respond_to?(:readwrite) && npc.readwrite && npc.readwrite > 0
+      output += "Read/write:".ljust(17) + npc.readwrite.to_s.ljust(9)
+    end
+    output += "\n"
+
+    # Additional skills row
+    output += " ".ljust(20)
+    output += "Swim:".ljust(17) + npc.swim.to_s.ljust(9)
+    if npc.respond_to?(:spoken) && npc.spoken && npc.spoken > 0
+      output += "Spoken:".ljust(17) + npc.spoken.to_s.ljust(9)
+    end
+    output += "\n"
+
+    # Combat stats with specialized skills
+    output += "DB:".ljust(9) + npc.db.to_s.ljust(11)
+    output += "Tumble:".ljust(17) + npc.tumble.to_s.ljust(9)
+    if npc.respond_to?(:lore1) && npc.lore1 && !npc.lore1.empty?
+      output += "*" + (npc.lore1 + ":").ljust(16) + npc.lore1s.to_s.ljust(9)
+    end
+    output += "\n"
+
+    output += "BP:".ljust(9) + npc.bp.to_s.ljust(11)
+    if npc.respond_to?(:physical1) && npc.physical1 && !npc.physical1.empty?
+      output += "*" + (npc.physical1 + ":").ljust(16) + npc.physical1s.to_s.ljust(9)
+    end
+    if npc.respond_to?(:lore2) && npc.lore2 && !npc.lore2.empty?
+      output += "*" + (npc.lore2 + ":").ljust(16) + npc.lore2s.to_s.ljust(9)
+    end
+    output += "\n"
+
+    output += "MD:".ljust(9) + npc.md.to_s.ljust(11)
+    if npc.respond_to?(:physical2) && npc.physical2 && !npc.physical2.empty?
+      output += "*" + (npc.physical2 + ":").ljust(16) + npc.physical2s.to_s.ljust(9)
+    end
+    if npc.respond_to?(:lore3) && npc.lore3 && !npc.lore3.empty?
+      output += "*" + (npc.lore3 + ":").ljust(16) + npc.lore3s.to_s.ljust(9)
+    end
+    output += "\n"
+
+    output += "-----------------------------------------------------------------------\n"
+
+    # Cult information
+    if npc.respond_to?(:cult) && npc.cult && !npc.cult.empty?
+      output += "Cult:".ljust(9) + npc.cult.to_s
+      if npc.respond_to?(:cultstat1) && npc.cultstat1
+        output += ", " + npc.cultstat1.to_s
+      end
+      if npc.respond_to?(:cs)
+        output += " (" + npc.cs.to_s + ")"
+      end
+      output += "\n-----------------------------------------------------------------------\n"
+    end
+
+    # Equipment and status
+    output += "ENC:".ljust(9) + npc.enc.to_s.ljust(11)
+    output += "Armour:".ljust(10) + (npc.armour || "None").ljust(15)
+    output += "Social status:".ljust(16) + (npc.socstatus || "MC").ljust(9) + "\n"
+
+    output += "Status:".ljust(9) + npc.status.to_s.ljust(11)
+    output += "AP:".ljust(10) + npc.ap.to_s.ljust(15)
+    output += "Money:".ljust(16) + npc.money.to_s.ljust(9) + "\n"
+
+    output += "-----------------------------------------------------------------------\n"
+
+    # Complete weapon table
+    output += "WEAPON             SKILL    INI     OFF    DEF    DAM    HP    RANGE\n"
+
+    # Unarmed
+    if npc.respond_to?(:unarmed)
+      output += "Unarmed".ljust(19) + (npc.unarmed || 0).to_s.ljust(9)
+      output += (npc.unarmed_ini || 2).to_s.ljust(8) + (npc.unarmed_off || -1).to_s.ljust(7)
+      output += (npc.unarmed_def || -3).to_s.ljust(7) + (npc.unarmed_dam || -2).to_s.ljust(7)
+      output += "0".ljust(6) + "\n"
+    end
+
+    # Melee weapons
+    if npc.respond_to?(:melee1) && npc.melee1 && !npc.melee1.empty?
+      output += npc.melee1.ljust(19) + npc.melee1s.to_s.ljust(9)
+      output += npc.melee1i.to_s.ljust(8) + npc.melee1o.to_s.ljust(7)
+      output += npc.melee1d.to_s.ljust(7) + npc.melee1dam.to_s.ljust(7)
+      output += npc.melee1hp.to_s.ljust(6) + "\n"
+    end
+
+    # Missile weapons
+    if npc.respond_to?(:missile) && npc.missile && !npc.missile.empty?
+      output += ("> " + npc.missile).ljust(19) + npc.missiles.to_s.ljust(9)
+      output += npc.missilei.to_s.ljust(8) + npc.missileo.to_s.ljust(7)
+      output += "-".ljust(7) + npc.missiledam.to_s.ljust(7)
+      output += "-".ljust(6) + npc.missilerange.to_s + "\n"
+    end
+
+    output += "\n#######################################################################\n"
+
+    # Show in right pane
     show_content(output)
     
     # Simple navigation for old system output
