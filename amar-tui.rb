@@ -4187,7 +4187,7 @@ def generate_encounter_old
 
   # Encounter type selection (like original CLI)
   encounter_text = colorize_output("Select encounter type (0 for random):", :header) + "\n"
-  encounter_text += colorize_output("0", :dice) + ": Random encounter\n"
+  encounter_text += colorize_output(" 0: Random encounter".ljust(30), :value) + "\n"
 
   # Load encounter tables if available
   if defined?($Encounters) && $Encounters && !$Encounters.empty?
