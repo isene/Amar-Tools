@@ -4199,30 +4199,89 @@ def generate_encounter_old
     # Generate using the old Enc class with encounter specification
     enc = Enc.new(encounter_spec, 0)
 
-    # Use EXACT original CLI output function (same successful approach as NPC)
+    # Manual format building (same successful approach as legacy NPC)
     require 'date'
-    require_relative 'cli_enc_output'
 
-    # Capture the output instead of letting it print to terminal
-    require 'stringio'
-    old_stdout = $stdout
-    $stdout = StringIO.new
+    # Build the exact original CLI encounter format
+    e = enc.encounter
+    f = ""
+    f += "############################<By Amar Tools>############################\n"
 
-    # Call original CLI encounter output function
-    enc_output(enc, "cli")
-
-    # Get the captured output
-    output = $stdout.string
-
-    # Restore stdout
-    $stdout = old_stdout
-
-    # Debug: Check if output was captured
-    if output.nil? || output.empty?
-      output = "Error: No output captured from legacy encounter function\n"
-      output += "Encounter created: #{!enc.nil?}\n"
-      output += "Encounter data: #{enc.encounter.length if enc.encounter} entries\n" if enc.encounter
+    # Header line exactly like original
+    $Day == 1 ? f += "Day:   " : f += "Night: "
+    case $Terrain
+    when 0 then f += "City      "
+    when 1 then f += "Rural     "
+    when 2 then f += "Road      "
+    when 3 then f += "Plains    "
+    when 4 then f += "Hills     "
+    when 5 then f += "Mountains "
+    when 6 then f += "Woods     "
+    when 7 then f += "Wilderness"
     end
+
+    f += " (Level mod = " + $Level.to_s + ")"
+    f += "Created: #{Date.today.to_s}".rjust(38) + "\n\n"
+
+    # Encounter content exactly like original CLI
+    if e && !e.empty? && e[0]["string"] != "NO ENCOUNTER"
+      f += enc.enc_attitude + ":\n"
+
+      enc.enc_number.times do |i|
+        encounter_entry = e[i]
+        next unless encounter_entry
+
+        f += "  "
+
+        # Format character name like original
+        if encounter_entry["string"] =~ /animal/
+          encounter_entry["string"] += " (" + encounter_entry["sex"] + ")"
+        else
+          unless encounter_entry["string"] =~ /Event/
+            encounter_entry["string"] += " (#{encounter_entry["sex"]}, #{encounter_entry["name"]})"
+          end
+        end
+
+        f += encounter_entry["string"]
+
+        if encounter_entry["string"] =~ /Event:/
+          f += "\n\n"
+          break
+        else
+          f += " [Lvl " + encounter_entry["level"].to_s + "]\n"
+
+          # Add character stats exactly like original CLI
+          f += "".ljust(15)
+          f += " SIZ=" + encounter_entry["size"].to_s
+          f += "  STR=" + encounter_entry["strength"].to_s
+          f += "  END=" + encounter_entry["endurance"].to_s
+          f += "  AWR=" + encounter_entry["awareness"].to_s
+          f += "  MAG=" + encounter_entry["mag"].to_s
+          f += "  RS=" + encounter_entry["reaction"].to_s
+          f += " Ddg=" + encounter_entry["dodge"].to_s
+          f += "  (S:" + encounter_entry["status"].to_s + ")"
+
+          # Add magic lore if present
+          if encounter_entry["mag_lore"] && encounter_entry["mag_lore"] > 0
+            f += "\n".ljust(17) + encounter_entry["mag_type"] + " Lore=" + encounter_entry["mag_lore"].to_s
+            f += ", # of spells: " + encounter_entry["spells"].to_s
+          end
+          f += "\n"
+
+          # Weapon information exactly like original
+          f += "  " + encounter_entry["wpn_name"].ljust(14) + "Skill=" + encounter_entry["wpn_skill"].to_s.rjust(2)
+          f += ", Ini:" + encounter_entry["wpn_ini"].to_s + ", Off:" + encounter_entry["wpn_off"].to_s.rjust(2)
+          f += ", Def:" + encounter_entry["wpn_def"].to_s.rjust(2) + ", Dam:" + encounter_entry["wpn_dam"].to_s.rjust(2)
+          f += "    AP:" + encounter_entry["ap"].to_s + ", BP:" + encounter_entry["bp"].to_s + "\n"
+        end
+      end
+    else
+      f += "\nNO ENCOUNTER\n\n"
+    end
+
+    f += "\n#######################################################################\n\n"
+
+    output = f
 
     # Refresh display and show output in right pane (same as legacy NPC)
     refresh_all
