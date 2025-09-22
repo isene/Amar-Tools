@@ -4195,9 +4195,17 @@ def generate_encounter_old
     end
   end
 
+  # Number of encounters (like original CLI)
+  show_content(colorize_output("Number of encounters (0 for random, max 10):", :header) + " ")
+  num_input = get_text_input("")
+  return if num_input == :cancelled
+  encounter_number = num_input.to_i
+  encounter_number = rand(1..6) if encounter_number == 0  # Random 1-6 if 0
+  encounter_number = [encounter_number, 10].min  # Max 10
+
   begin
-    # Generate using the old Enc class with encounter specification
-    enc = Enc.new(encounter_spec, 0)
+    # Generate using the old Enc class with encounter specification and number
+    enc = Enc.new(encounter_spec, encounter_number)
 
     # Manual format building (same successful approach as legacy NPC)
     require 'date'
@@ -4250,16 +4258,16 @@ def generate_encounter_old
         else
           f += " [Lvl " + encounter_entry["level"].to_s + "]\n"
 
-          # Add character stats exactly like original CLI
+          # Add character stats with better column alignment
           f += "".ljust(15)
-          f += " SIZ=" + encounter_entry["size"].to_s
-          f += "  STR=" + encounter_entry["strength"].to_s
-          f += "  END=" + encounter_entry["endurance"].to_s
-          f += "  AWR=" + encounter_entry["awareness"].to_s
-          f += "  MAG=" + encounter_entry["mag"].to_s
-          f += "  RS=" + encounter_entry["reaction"].to_s
-          f += " Ddg=" + encounter_entry["dodge"].to_s
-          f += "  (S:" + encounter_entry["status"].to_s + ")"
+          f += " SIZ=" + encounter_entry["size"].to_s.ljust(3)
+          f += " STR=" + encounter_entry["strength"].to_s.ljust(3)
+          f += " END=" + encounter_entry["endurance"].to_s.ljust(3)
+          f += " AWR=" + encounter_entry["awareness"].to_s.ljust(3)
+          f += " MAG=" + encounter_entry["mag"].to_s.ljust(3)
+          f += " RS=" + encounter_entry["reaction"].to_s.ljust(3)
+          f += " Ddg=" + encounter_entry["dodge"].to_s.ljust(3)
+          f += " (S:" + encounter_entry["status"].to_s + ")"
 
           # Add magic lore if present
           if encounter_entry["mag_lore"] && encounter_entry["mag_lore"] > 0
