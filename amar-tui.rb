@@ -2190,8 +2190,15 @@ def get_text_input(prompt)
     when "ESC"
       @original_content = nil  # Clean up
       @focus = :menu  # Ensure menu focus is restored
+
+      # Update borders properly (like 'q' key does)
+      if @config[:show_borders]
+        @menu.border = true      # Add border to focused menu pane
+        @content.border = false  # Remove border from content pane
+      end
+
       draw_footer
-      refresh_all  # Refresh to update border focus
+      refresh_all  # Refresh to update display
       return :cancelled
     when "ENTER", "\r"
       # Display the final input in cyan without underscore
