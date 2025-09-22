@@ -2725,16 +2725,16 @@ def enc_input_new_tui
   $Day = key == "0" ? 0 : 1
   debug "Day/Night: #{$Day}"
   
-  # Get terrain with beautiful colors
+  # Get terrain with beautiful colors in clean 2x4 table
   terrain_text = colorize_output("Select terrain type:", :header) + "\n"
-  terrain_text += colorize_output("0", :dice) + ": " + "City".fg(130) + "\n"        # Brown
-  terrain_text += colorize_output("1", :dice) + ": " + "Rural".fg(208) + "\n"       # Orange
-  terrain_text += colorize_output("2", :dice) + ": " + "Road".fg(101) + "\n"        # Grey-brown
-  terrain_text += colorize_output("3", :dice) + ": " + "Plains".fg(229) + "\n"      # Light yellow
-  terrain_text += colorize_output("4", :dice) + ": " + "Hills".fg(154) + "\n"       # Light green
-  terrain_text += colorize_output("5", :dice) + ": " + "Mountains".fg(245) + "\n"   # Grey
-  terrain_text += colorize_output("6", :dice) + ": " + "Woods".fg(22) + "\n"        # Darker green
-  terrain_text += colorize_output("7", :dice) + ": " + "Wilderness".fg(23) + "\n\n" # Dark blue-green
+  terrain_text += (colorize_output("0", :dice) + ": " + "City".fg(130)).ljust(13)      # Brown
+  terrain_text += (colorize_output("1", :dice) + ": " + "Rural".fg(208)).ljust(13)     # Orange
+  terrain_text += (colorize_output("2", :dice) + ": " + "Road".fg(101)).ljust(13)      # Grey-brown
+  terrain_text += (colorize_output("3", :dice) + ": " + "Plains".fg(229)) + "\n"       # Light yellow
+  terrain_text += (colorize_output("4", :dice) + ": " + "Hills".fg(154)).ljust(13)     # Light green
+  terrain_text += (colorize_output("5", :dice) + ": " + "Mountains".fg(245)).ljust(13) # Grey
+  terrain_text += (colorize_output("6", :dice) + ": " + "Woods".fg(22)).ljust(13)      # Darker green
+  terrain_text += (colorize_output("7", :dice) + ": " + "Wilderness".fg(23)) + "\n\n"  # Dark blue-green
   terrain_text += "Press number key:".fg(240)
   
   show_content(terrain_text)
@@ -4168,16 +4168,16 @@ def generate_encounter_old
   return if day_input == :cancelled
   $Day = day_input == "0" ? 0 : 1
 
-  # Terrain with beautiful colors
+  # Terrain with beautiful colors in clean 2x4 table
   terrain_text = colorize_output("Terrain:", :header) + "\n"
-  terrain_text += colorize_output("0", :dice) + ": " + "City".fg(130) + "      "  # Brown
-  terrain_text += colorize_output("1", :dice) + ": " + "Rural".fg(208) + "     "  # Orange
-  terrain_text += colorize_output("2", :dice) + ": " + "Road".fg(101) + "      "  # Grey-brown
-  terrain_text += colorize_output("3", :dice) + ": " + "Plains".fg(229) + "\n"     # Light yellow
-  terrain_text += colorize_output("4", :dice) + ": " + "Hills".fg(154) + "      "  # Light green
-  terrain_text += colorize_output("5", :dice) + ": " + "Mountains".fg(245) + "  "  # Grey
-  terrain_text += colorize_output("6", :dice) + ": " + "Woods".fg(22) + "     "    # Darker green
-  terrain_text += colorize_output("7", :dice) + ": " + "Wilderness".fg(23) + "\n\n" # Dark blue-green
+  terrain_text += (colorize_output("0", :dice) + ": " + "City".fg(130)).ljust(13)      # Brown
+  terrain_text += (colorize_output("1", :dice) + ": " + "Rural".fg(208)).ljust(13)     # Orange
+  terrain_text += (colorize_output("2", :dice) + ": " + "Road".fg(101)).ljust(13)      # Grey-brown
+  terrain_text += (colorize_output("3", :dice) + ": " + "Plains".fg(229)) + "\n"       # Light yellow
+  terrain_text += (colorize_output("4", :dice) + ": " + "Hills".fg(154)).ljust(13)     # Light green
+  terrain_text += (colorize_output("5", :dice) + ": " + "Mountains".fg(245)).ljust(13) # Grey
+  terrain_text += (colorize_output("6", :dice) + ": " + "Woods".fg(22)).ljust(13)      # Darker green
+  terrain_text += (colorize_output("7", :dice) + ": " + "Wilderness".fg(23)) + "\n\n"  # Dark blue-green
   show_content(terrain_text + "Enter terrain (default=1): ")
   terrain_input = get_text_input("")
   return if terrain_input == :cancelled
