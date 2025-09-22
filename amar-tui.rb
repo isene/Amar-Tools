@@ -4199,72 +4199,25 @@ def generate_encounter_old
     # Generate using the old Enc class with encounter specification
     enc = Enc.new(encounter_spec, 0)
 
-    # Create EXACT original CLI encounter format
+    # Use EXACT original CLI output function (same successful approach as NPC)
     require 'date'
+    require_relative 'cli_enc_output'
 
-    output = ""
-    output += "############################<By Amar Tools>############################\n"
+    # Capture the output instead of letting it print to terminal
+    require 'stringio'
+    old_stdout = $stdout
+    $stdout = StringIO.new
 
-    # Day/Night and terrain header
-    if $Day == 1
-      output += "Day:   "
-    else
-      output += "Night: "
-    end
+    # Call original CLI encounter output function
+    enc_output(enc, "cli")
 
-    case $Terrain
-    when 0 then output += "City      "
-    when 1 then output += "Rural     "
-    when 2 then output += "Road      "
-    when 3 then output += "Plains    "
-    when 4 then output += "Hills     "
-    when 5 then output += "Mountains "
-    when 6 then output += "Woods     "
-    when 7 then output += "Wilderness"
-    end
+    # Get the captured output
+    output = $stdout.string
 
-    output += " (Level mod = " + $Level.to_s + ")"
-    output += "Created: #{Date.today.to_s}".rjust(38) + "\n\n"
+    # Restore stdout
+    $stdout = old_stdout
 
-    # Encounter content
-    if enc.encounter && !enc.encounter.empty?
-      if enc.encounter[0]["string"] == "NO ENCOUNTER"
-        output += "\nNO ENCOUNTER\n\n"
-      else
-        output += (enc.enc_attitude || "NEUTRAL") + ":\n"
-
-        (enc.enc_number || 1).times do |i|
-          encounter_entry = enc.encounter[i]
-          next unless encounter_entry
-
-          output += "  "
-
-          if encounter_entry["string"] =~ /animal/
-            output += encounter_entry["string"] + " (" + encounter_entry["sex"] + ")"
-          else
-            unless encounter_entry["string"] =~ /Event/
-              output += encounter_entry["string"] + " (#{encounter_entry["sex"]}, #{encounter_entry["name"]})"
-            else
-              output += encounter_entry["string"]
-            end
-          end
-
-          if encounter_entry["string"] =~ /Event:/
-            output += "\n\n"
-            break
-          else
-            output += " [Lvl " + encounter_entry["level"].to_s + "]\n"
-          end
-        end
-      end
-    else
-      output += "\nNO ENCOUNTER\n\n"
-    end
-
-    output += "\n############################<By Amar Tools>############################\n"
-    output += "Note: This is a basic random encounter using the old system.\n"
-    output += "For more detailed encounters, use the New System generator.\n"
-
+    # Show the captured original CLI output
     show_content(output)
     
     # Simple navigation
