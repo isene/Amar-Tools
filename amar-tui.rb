@@ -2771,29 +2771,11 @@ def enc_input_new_tui
   $Level = level_input.to_i if level_input
   debug "Level modifier: #{$Level}"
   
-  # Race selection for humanoid encounters
-  races = [
-    "Human", "Elf", "Half-elf", "Dwarf", "Goblin", "Lizard Man",
-    "Centaur", "Ogre", "Troll", "Araxi", "Faerie"
-  ]
-  
-  race_text = colorize_output("Select race (for humanoid encounters):", :header) + "\n"
-  race_text += colorize_output(" 0", :dice) + ": " + colorize_output("Random", :value) + " (default)\n"
-  races.each_with_index do |race, index|
-    race_text += colorize_output((index + 1).to_s.rjust(2), :dice) + ": " + colorize_output(race, :value) + "\n"
+  # Load encounter tables for complete encounter type selection
+  unless defined?($Encounters)
+    debug "Loading encounters table"
+    load File.join($pgmdir, "includes/tables/encounters.rb")
   end
-  race_text += "\n" + "Enter race number: "
-
-  show_content(race_text)
-  race_input = get_text_input("")
-  return nil if race_input == :cancelled
-
-  race = ""
-  if race_input && race_input.match?(/^\d+$/)
-    race_idx = race_input.to_i
-    race = races[race_idx - 1] if race_idx > 0 && race_idx <= races.length
-  end
-  debug "Selected race: #{race.empty? ? 'Random' : race}"
   
   # Get specific encounter type selection (all 90 types from legacy system)
   encounter_text = colorize_output("Select encounter type (0 for random):", :header) + "\n"
