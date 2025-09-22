@@ -2189,7 +2189,9 @@ def get_text_input(prompt)
     case key
     when "ESC"
       @original_content = nil  # Clean up
+      @focus = :menu  # Ensure menu focus is restored
       draw_footer
+      refresh_all  # Refresh to update border focus
       return :cancelled
     when "ENTER", "\r"
       # Display the final input in cyan without underscore
@@ -2727,13 +2729,13 @@ def enc_input_new_tui
   
   # Get terrain with beautiful colors in clean 2x4 table
   terrain_text = colorize_output("Select terrain type:", :header) + "\n"
-  terrain_text += (colorize_output("0", :dice) + ": " + "City".fg(130)).ljust(13)      # Brown
-  terrain_text += (colorize_output("1", :dice) + ": " + "Rural".fg(208)).ljust(13)     # Orange
-  terrain_text += (colorize_output("2", :dice) + ": " + "Road".fg(101)).ljust(13)      # Grey-brown
+  terrain_text += (colorize_output("0", :dice) + ": " + "City".fg(130)).ljust(15)      # Brown
+  terrain_text += (colorize_output("1", :dice) + ": " + "Rural".fg(208)).ljust(15)     # Orange
+  terrain_text += (colorize_output("2", :dice) + ": " + "Road".fg(101)).ljust(15)      # Grey-brown
   terrain_text += (colorize_output("3", :dice) + ": " + "Plains".fg(229)) + "\n"       # Light yellow
-  terrain_text += (colorize_output("4", :dice) + ": " + "Hills".fg(154)).ljust(13)     # Light green
-  terrain_text += (colorize_output("5", :dice) + ": " + "Mountains".fg(245)).ljust(13) # Grey
-  terrain_text += (colorize_output("6", :dice) + ": " + "Woods".fg(22)).ljust(13)      # Darker green
+  terrain_text += (colorize_output("4", :dice) + ": " + "Hills".fg(154)).ljust(15)     # Light green
+  terrain_text += (colorize_output("5", :dice) + ": " + "Mountains".fg(245)).ljust(15) # Grey
+  terrain_text += (colorize_output("6", :dice) + ": " + "Woods".fg(22)).ljust(15)      # Darker green
   terrain_text += (colorize_output("7", :dice) + ": " + "Wilderness".fg(23)) + "\n\n"  # Dark blue-green
   terrain_text += "Press number key:".fg(240)
   
@@ -4170,13 +4172,13 @@ def generate_encounter_old
 
   # Terrain with beautiful colors in clean 2x4 table
   terrain_text = colorize_output("Terrain:", :header) + "\n"
-  terrain_text += (colorize_output("0", :dice) + ": " + "City".fg(130)).ljust(13)      # Brown
-  terrain_text += (colorize_output("1", :dice) + ": " + "Rural".fg(208)).ljust(13)     # Orange
-  terrain_text += (colorize_output("2", :dice) + ": " + "Road".fg(101)).ljust(13)      # Grey-brown
+  terrain_text += (colorize_output("0", :dice) + ": " + "City".fg(130)).ljust(15)      # Brown
+  terrain_text += (colorize_output("1", :dice) + ": " + "Rural".fg(208)).ljust(15)     # Orange
+  terrain_text += (colorize_output("2", :dice) + ": " + "Road".fg(101)).ljust(15)      # Grey-brown
   terrain_text += (colorize_output("3", :dice) + ": " + "Plains".fg(229)) + "\n"       # Light yellow
-  terrain_text += (colorize_output("4", :dice) + ": " + "Hills".fg(154)).ljust(13)     # Light green
-  terrain_text += (colorize_output("5", :dice) + ": " + "Mountains".fg(245)).ljust(13) # Grey
-  terrain_text += (colorize_output("6", :dice) + ": " + "Woods".fg(22)).ljust(13)      # Darker green
+  terrain_text += (colorize_output("4", :dice) + ": " + "Hills".fg(154)).ljust(15)     # Light green
+  terrain_text += (colorize_output("5", :dice) + ": " + "Mountains".fg(245)).ljust(15) # Grey
+  terrain_text += (colorize_output("6", :dice) + ": " + "Woods".fg(22)).ljust(15)      # Darker green
   terrain_text += (colorize_output("7", :dice) + ": " + "Wilderness".fg(23)) + "\n\n"  # Dark blue-green
   show_content(terrain_text + "Enter terrain (default=1): ")
   terrain_input = get_text_input("")
