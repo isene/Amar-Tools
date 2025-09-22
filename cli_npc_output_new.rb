@@ -366,16 +366,41 @@ def npc_output_new(n, cli, custom_width = nil)
   equipment_list = equipment + [money_str]
   f += "EQUIPMENT: #{equipment_list.join(", ")}\n"
   
-  # Spells section with headers (more compact)
-  if n.spells && n.spells.length > 0
+  # Creative Spells section using new spell catalog
+  require_relative 'includes/spell_catalog'
+  spells = assign_spells_to_npc(n)
+
+  if !spells.empty?
     f += "─" * width + "\n"
-    # Use color 111 for SPELLS title
-    spell_title_color = cli == "cli" ? "\e[38;5;111m" : ""
-    f += "#{spell_title_color}SPELLS (#{n.spells.length}):#{@reset}\n"
-    # Narrower headers with DR added, Duration abbreviated to Dur
-    f += "Spell (Domain)".ljust(28) + "DR  CT   CD  Range     Dur      │ "
-    f += "Spell (Domain)".ljust(28) + "DR  CT   CD  Range     Dur\n"
-    f += "─" * 60 + "┼" + "─" * 59 + "\n"
+    # Use color 165 for SPELLS title (purple for magic)
+    spell_title_color = cli == "cli" ? "\e[38;5;165m\e[1m" : ""
+    f += "#{spell_title_color}SPELLS (#{spells.length}):#{@reset}\n"
+
+    spells.each do |spell|
+      # Spell name and basic info
+      spell_name_color = cli == "cli" ? "\e[38;5;226m\e[1m" : ""
+      difficulty_color = cli == "cli" ? "\e[38;5;202m" : ""
+      desc_color = cli == "cli" ? "\e[38;5;51m" : ""
+
+      f += "  • #{spell_name_color}#{spell[:name]}#{@reset} (Difficulty: #{difficulty_color}#{spell[:difficulty]}#{@reset}, Cooldown: #{difficulty_color}#{spell[:cooldown]}h#{@reset})\n"
+      f += "    #{desc_color}#{spell[:description]}#{@reset}\n"
+
+      # Casting path and details
+      path_color = cli == "cli" ? "\e[38;5;111m" : ""
+      detail_color = cli == "cli" ? "\e[38;5;240m" : ""
+
+      f += "    #{detail_color}Cast via: #{path_color}#{spell[:skill_path]}#{@reset}\n"
+      f += "    #{detail_color}Range: #{@reset}#{spell[:range]}, #{detail_color}Duration: #{@reset}#{spell[:duration]}\n"
+
+      if spell[:side_effects] && !spell[:side_effects].empty?
+        side_effect_color = cli == "cli" ? "\e[38;5;196m" : ""
+        f += "    #{detail_color}Side effect: #{side_effect_color}#{spell[:side_effects]}#{@reset}\n"
+      end
+      f += "\n"
+    end
+  end
+
+  # Equipment section
     
     # Format spells in two columns
     spell_pairs = n.spells.each_slice(2).to_a
