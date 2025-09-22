@@ -4217,6 +4217,13 @@ def generate_encounter_old
     # Restore stdout
     $stdout = old_stdout
 
+    # Debug: Check if output was captured
+    if output.nil? || output.empty?
+      output = "Error: No output captured from legacy encounter function\n"
+      output += "Encounter created: #{!enc.nil?}\n"
+      output += "Encounter data: #{enc.encounter.length if enc.encounter} entries\n" if enc.encounter
+    end
+
     # Refresh display and show output in right pane (same as legacy NPC)
     refresh_all
     draw_menu
