@@ -4217,6 +4217,10 @@ def generate_encounter_old
     # Restore stdout
     $stdout = old_stdout
 
+    # Refresh display and show output in right pane (same as legacy NPC)
+    refresh_all
+    draw_menu
+
     # Show the captured original CLI output
     show_content(output)
     
