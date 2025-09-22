@@ -2187,7 +2187,7 @@ def get_text_input(prompt)
     key = getchr
 
     case key
-    when "ESC", "\e"
+    when "ESC"
       @original_content = nil  # Clean up
       draw_footer
       return :cancelled
