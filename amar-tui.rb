@@ -1561,10 +1561,26 @@ def handle_menu_navigation
     end
     show_help
 
-  # LEGACY SYSTEM
+  # LEGACY SYSTEM (move cursor first, then execute)
   when "1"
+    # First move menu cursor to legacy NPC item, then execute
+    @menu_items.each_with_index do |item, idx|
+      if item.include?("Old NPC Generator")
+        @menu_index = idx
+        draw_menu
+        break
+      end
+    end
     generate_npc_old
   when "2"
+    # First move menu cursor to legacy encounter item, then execute
+    @menu_items.each_with_index do |item, idx|
+      if item.include?("Old Encounter")
+        @menu_index = idx
+        draw_menu
+        break
+      end
+    end
     generate_encounter_old
   when "\t"  # Tab to switch focus
     @focus = (@focus == :menu) ? :content : :menu
