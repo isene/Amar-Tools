@@ -2787,12 +2787,16 @@ def enc_input_new_tui
     load File.join($pgmdir, "includes/tables/encounters.rb")
   end
 
-  # Add all 90 encounter types
+  # Add all 90 encounter types in 3-column format (same as legacy system)
   if defined?($Encounters) && $Encounters && !$Encounters.empty?
     encounter_types = $Encounters.keys.sort
     encounter_types.each_with_index do |enc_type, i|
-      encounter_text += colorize_output((i+1).to_s.rjust(2), :dice) + ": " + colorize_output(enc_type, :value) + "\n"
+      # Format exactly like legacy system: "number: name".ljust(30)
+      entry_text = "#{(i+1).to_s.rjust(2)}: #{enc_type}"
+      encounter_text += colorize_output(entry_text.ljust(30), :value)
+      encounter_text += "\n" if (i+1) % 3 == 0  # New line every 3 items
     end
+    encounter_text += "\n" if encounter_types.length % 3 != 0  # Final newline if needed
   end
 
   show_content(encounter_text + "\nEnter encounter type: ")
