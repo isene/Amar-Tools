@@ -4088,6 +4088,53 @@ def generate_npc_old
 
     output += "-----------------------------------------------------------------------\n"
 
+    # Magic and spells section (like original CLI)
+    if npc.respond_to?(:maglore) && npc.maglore && npc.maglore > 0
+      output += "Magick lore:".ljust(14) + npc.maglore.to_s.ljust(6)
+      if npc.respond_to?(:magtype1) && npc.magtype1
+        output += "Magick type:".ljust(14) + npc.magtype1.ljust(12)
+      end
+      if npc.respond_to?(:splore) && npc.splore
+        output += "Spell lore:".ljust(14) + npc.splore.to_s.ljust(6)
+      end
+      output += "\n"
+    end
+
+    # Spell table (if character has spells)
+    has_spells = false
+    if npc.respond_to?(:spell0)
+      (0..8).each do |i|
+        if npc.respond_to?("spell#{i}".to_sym) && npc.send("spell#{i}", 0) != 0
+          has_spells = true
+          break
+        end
+      end
+    end
+
+    if has_spells
+      output += "\n"
+      output += "SPELL               LEVEL  DR  A?  R?  CT  DUR  RNG  WT    AoE\n"
+
+      (0..8).each do |i|
+        spell_method = "spell#{i}".to_sym
+        if npc.respond_to?(spell_method) && npc.send(spell_method, 0) != 0
+          output += npc.send(spell_method, 1).ljust(22)      # Spell name
+          output += npc.send(spell_method, 0).to_s.ljust(5)  # Level
+          output += npc.send(spell_method, 5).to_s.ljust(4)  # DR
+          output += npc.send(spell_method, 2).ljust(4)       # A?
+          output += npc.send(spell_method, 3).ljust(4)       # R?
+          output += npc.send(spell_method, 4).ljust(4)       # CT
+          output += npc.send(spell_method, 6).ljust(5)       # DUR
+          output += npc.send(spell_method, 7).ljust(5)       # RNG
+          output += npc.send(spell_method, 8).ljust(6)       # WT
+          output += npc.send(spell_method, 9) + "\n"         # AoE
+        end
+      end
+      output += "\n"
+    end
+
+    output += "-----------------------------------------------------------------------\n"
+
     # Complete weapon table
     output += "WEAPON             SKILL    INI     OFF    DEF    DAM    HP    RANGE\n"
 
