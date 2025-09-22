@@ -2779,7 +2779,7 @@ def enc_input_new_tui
   
   # Get specific encounter type selection (all 90 types from legacy system)
   encounter_text = colorize_output("Select encounter type (0 for random):", :header) + "\n"
-  encounter_text += colorize_output(" 0: Random encounter", :value) + "\n"
+  encounter_text += colorize_output(" 0", :dice) + ": " + colorize_output("Random encounter", :value) + "\n"
 
   # Load encounter tables if not loaded
   unless defined?($Encounters)
@@ -2791,9 +2791,9 @@ def enc_input_new_tui
   if defined?($Encounters) && $Encounters && !$Encounters.empty?
     encounter_types = $Encounters.keys.sort
     encounter_types.each_with_index do |enc_type, i|
-      # Format with red numbers like successful NPC character types
+      # Format with red numbers and fixed spacing (no .ljust on colored text)
       encounter_text += colorize_output((i+1).to_s.rjust(2), :dice) + ": "
-      encounter_text += colorize_output(enc_type, :value).ljust(28)
+      encounter_text += colorize_output(enc_type.ljust(28), :value)  # ljust BEFORE coloring
       encounter_text += "\n" if (i+1) % 3 == 0  # New line every 3 items
     end
     encounter_text += "\n" if encounter_types.length % 3 != 0  # Final newline if needed
