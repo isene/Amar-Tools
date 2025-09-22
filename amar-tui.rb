@@ -2191,6 +2191,9 @@ def get_text_input(prompt)
       @original_content = nil  # Clean up
       @focus = :menu  # Ensure menu focus is restored
 
+      # Clear right pane content (like other input wizards)
+      @content.clear
+
       # Update borders properly using rcurses border_refresh
       if @config[:show_borders]
         @menu.border = true      # Add border to focused menu pane
@@ -2792,16 +2795,45 @@ def enc_input_new_tui
   end
   debug "Selected race: #{race.empty? ? 'Random' : race}"
   
-  # Get specific encounter or random
-  encounter = ""
-  enc_number = 0
-  
+  # Get specific encounter type selection (all 90 types from legacy system)
+  encounter_text = colorize_output("Select encounter type (0 for random):", :header) + "\n"
+  encounter_text += colorize_output(" 0: Random encounter", :value) + "\n"
+
   # Load encounter tables if not loaded
   unless defined?($Encounters)
     debug "Loading encounters table"
     load File.join($pgmdir, "includes/tables/encounters.rb")
   end
-  
+
+  # Add all 90 encounter types
+  if defined?($Encounters) && $Encounters && !$Encounters.empty?
+    encounter_types = $Encounters.keys.sort
+    encounter_types.each_with_index do |enc_type, i|
+      encounter_text += colorize_output((i+1).to_s.rjust(2), :dice) + ": " + colorize_output(enc_type, :value) + "\n"
+    end
+  end
+
+  show_content(encounter_text + "\nEnter encounter type: ")
+  enc_input = get_text_input("")
+  return nil if enc_input == :cancelled
+
+  # Determine encounter specification
+  encounter = ""
+  if defined?($Encounters) && $Encounters && enc_input.to_i > 0
+    encounter_types = $Encounters.keys.sort
+    if enc_input.to_i <= encounter_types.length
+      encounter = encounter_types[enc_input.to_i - 1]
+    end
+  end
+
+  # Get number of encounters
+  show_content(colorize_output("Number of encounters (0 for random, max 10):", :header) + " ")
+  num_input = get_text_input("")
+  return nil if num_input == :cancelled
+  enc_number = num_input.to_i
+  enc_number = rand(1..6) if enc_number == 0  # Random 1-6 if 0
+  enc_number = [enc_number, 10].min  # Max 10
+
   # Return the encounter settings
   [encounter, enc_number, $Terraintype, $Level]
 end
