@@ -2191,10 +2191,12 @@ def get_text_input(prompt)
       @original_content = nil  # Clean up
       @focus = :menu  # Ensure menu focus is restored
 
-      # Update borders properly (like 'q' key does)
+      # Update borders properly using rcurses border_refresh
       if @config[:show_borders]
         @menu.border = true      # Add border to focused menu pane
         @content.border = false  # Remove border from content pane
+        @menu.border_refresh     # Refresh menu border
+        @content.border_refresh  # Refresh content border
       end
 
       draw_footer
