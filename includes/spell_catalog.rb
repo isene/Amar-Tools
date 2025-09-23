@@ -5,7 +5,7 @@ $SpellCatalog = {
   # FIRE MAGIC - Usually cast via Spirit->Casting->Fire
   "Crimson Burst" => {
     description: "A red fireball that leaves lingering embers",
-    skill_path: ["Spirit", "Casting", "Fire"],
+    skill_path: ["Spirit", "Attunement", "Fire"],
     difficulty: 10,
     cooldown: 3,
     range: "30m",
@@ -15,7 +15,7 @@ $SpellCatalog = {
 
   "Blue Fireball" => {
     description: "Cold fire that burns but doesn't spread flames",
-    skill_path: ["Spirit", "Casting", "Fire"],
+    skill_path: ["Spirit", "Attunement", "Fire"],
     difficulty: 12,
     cooldown: 2,
     range: "25m",
@@ -25,7 +25,7 @@ $SpellCatalog = {
 
   "Forge Heart" => {
     description: "Heats metal objects to forging temperature",
-    skill_path: ["Spirit", "Casting", "Fire"],
+    skill_path: ["Spirit", "Attunement", "Fire"],
     difficulty: 8,
     cooldown: 1,
     range: "Touch",
@@ -36,7 +36,7 @@ $SpellCatalog = {
   # WATER/ICE MAGIC
   "Frostbite Touch" => {
     description: "Freezes water on contact, gives caster a cold",
-    skill_path: ["Spirit", "Casting", "Water"],
+    skill_path: ["Spirit", "Attunement", "Water"],
     difficulty: 9,
     cooldown: 4,
     range: "Touch",
@@ -46,7 +46,7 @@ $SpellCatalog = {
 
   "Misty Veil" => {
     description: "Creates concealing fog around caster",
-    skill_path: ["Spirit", "Casting", "Water"],
+    skill_path: ["Spirit", "Attunement", "Water"],
     difficulty: 7,
     cooldown: 2,
     range: "Self",
@@ -67,7 +67,7 @@ $SpellCatalog = {
 
   "Whisper Wind" => {
     description: "Carries a message on the wind to distant target",
-    skill_path: ["Spirit", "Casting", "Air"],
+    skill_path: ["Spirit", "Attunement", "Air"],
     difficulty: 11,
     cooldown: 1,
     range: "10 km",
@@ -78,7 +78,7 @@ $SpellCatalog = {
   # EARTH MAGIC
   "Stone Skin" => {
     description: "Hardens skin like granite, reduces damage",
-    skill_path: ["Spirit", "Casting", "Earth"],
+    skill_path: ["Spirit", "Attunement", "Earth"],
     difficulty: 13,
     cooldown: 6,
     range: "Self",
@@ -88,7 +88,7 @@ $SpellCatalog = {
 
   "Tremor Step" => {
     description: "Each footstep creates small earthquake",
-    skill_path: ["Spirit", "Casting", "Earth"],
+    skill_path: ["Spirit", "Attunement", "Earth"],
     difficulty: 16,
     cooldown: 8,
     range: "Self",
@@ -109,7 +109,7 @@ $SpellCatalog = {
 
   "Confusion Aura" => {
     description: "Enemies in area attack randomly",
-    skill_path: ["Spirit", "Casting", "Mind"],
+    skill_path: ["Spirit", "Attunement", "Mind"],
     difficulty: 14,
     cooldown: 4,
     range: "10m radius",
@@ -130,7 +130,7 @@ $SpellCatalog = {
 
   "Lucky Coin" => {
     description: "Enchants coin to always land on chosen side",
-    skill_path: ["Spirit", "Casting", "Fate"],
+    skill_path: ["Spirit", "Attunement", "Fate"],
     difficulty: 6,
     cooldown: 1,
     range: "Touch",
@@ -140,7 +140,7 @@ $SpellCatalog = {
 
   "Shadow Step" => {
     description: "Teleport between shadows up to 50 meters",
-    skill_path: ["Spirit", "Casting", "Shadow"],
+    skill_path: ["Spirit", "Attunement", "Shadow"],
     difficulty: 12,
     cooldown: 3,
     range: "50m",
@@ -160,7 +160,7 @@ $SpellCatalog = {
 
   "Time Pocket" => {
     description: "Small area experiences slower time flow",
-    skill_path: ["Spirit", "Casting", "Time"],
+    skill_path: ["Spirit", "Attunement", "Time"],
     difficulty: 20,
     cooldown: 24,
     range: "3m radius",
@@ -181,7 +181,7 @@ $SpellCatalog = {
   # HEALING MAGIC
   "Gentle Mend" => {
     description: "Heals minor wounds and bruises",
-    skill_path: ["Spirit", "Casting", "Life"],
+    skill_path: ["Spirit", "Attunement", "Life"],
     difficulty: 8,
     cooldown: 1,
     range: "Touch",
@@ -191,7 +191,7 @@ $SpellCatalog = {
 
   "Life Link" => {
     description: "Share life force between caster and target",
-    skill_path: ["Spirit", "Casting", "Life"],
+    skill_path: ["Spirit", "Attunement", "Life"],
     difficulty: 15,
     cooldown: 6,
     range: "Touch",
@@ -202,7 +202,7 @@ $SpellCatalog = {
   # ILLUSION MAGIC
   "Mirror Self" => {
     description: "Creates perfect illusory duplicate",
-    skill_path: ["Spirit", "Casting", "Illusion"],
+    skill_path: ["Spirit", "Attunement", "Illusion"],
     difficulty: 14,
     cooldown: 4,
     range: "Self",
@@ -223,7 +223,7 @@ $SpellCatalog = {
   # NATURE MAGIC
   "Plant Growth" => {
     description: "Accelerates plant growth dramatically",
-    skill_path: ["Spirit", "Casting", "Nature"],
+    skill_path: ["Spirit", "Attunement", "Nature"],
     difficulty: 9,
     cooldown: 2,
     range: "10m radius",
@@ -244,7 +244,7 @@ $SpellCatalog = {
   # PROTECTION MAGIC
   "Ward Circle" => {
     description: "Creates protective barrier against hostile magic",
-    skill_path: ["Spirit", "Casting", "Protection"],
+    skill_path: ["Spirit", "Attunement", "Protection"],
     difficulty: 11,
     cooldown: 4,
     range: "5m radius",
@@ -254,7 +254,7 @@ $SpellCatalog = {
 
   "Truth Shield" => {
     description: "Protects against lies and deception",
-    skill_path: ["Spirit", "Casting", "Protection"],
+    skill_path: ["Spirit", "Attunement", "Protection"],
     difficulty: 13,
     cooldown: 5,
     range: "Self",
@@ -265,7 +265,7 @@ $SpellCatalog = {
   # DARK MAGIC
   "Fear Whisper" => {
     description: "Instills paralyzing fear in target",
-    skill_path: ["Spirit", "Casting", "Shadow"],
+    skill_path: ["Spirit", "Attunement", "Shadow"],
     difficulty: 12,
     cooldown: 3,
     range: "30m",
@@ -275,7 +275,7 @@ $SpellCatalog = {
 
   "Soul Glimpse" => {
     description: "Briefly see target's deepest secrets",
-    skill_path: ["Spirit", "Casting", "Shadow"],
+    skill_path: ["Spirit", "Attunement", "Shadow"],
     difficulty: 16,
     cooldown: 7,
     range: "Touch",
@@ -286,7 +286,7 @@ $SpellCatalog = {
   # UTILITY SPELLS
   "Mend Object" => {
     description: "Repairs broken non-living items",
-    skill_path: ["Spirit", "Casting", "Matter"],
+    skill_path: ["Spirit", "Attunement", "Matter"],
     difficulty: 7,
     cooldown: 1,
     range: "Touch",
@@ -306,7 +306,7 @@ $SpellCatalog = {
 
   "Night Eyes" => {
     description: "See perfectly in complete darkness",
-    skill_path: ["Spirit", "Casting", "Light"],
+    skill_path: ["Spirit", "Attunement", "Light"],
     difficulty: 8,
     cooldown: 1,
     range: "Self",
@@ -359,14 +359,28 @@ $SpellCatalog = {
 
 # Spell assignment logic based on character type and skills
 def assign_spells_to_npc(npc)
-  return [] unless npc.tiers["SPIRIT"] && npc.tiers["SPIRIT"]["Casting"]
+  return [] unless npc.tiers["SPIRIT"] && (npc.tiers["SPIRIT"]["Casting"] || npc.tiers["SPIRIT"]["Attunement"])
 
   assigned_spells = []
-  max_spells = [npc.get_skill_total("SPIRIT", "Casting", "Total") / 5, 5].min
+  # More spells for competent magic users
+  casting_total = npc.get_skill_total("SPIRIT", "Casting", "Total") rescue 0
+  attunement_total = npc.get_skill_total("SPIRIT", "Attunement", "Total") rescue 0
+  magic_skill = [casting_total, attunement_total].max
 
-  # Get character's strongest casting domains
-  casting_skills = npc.tiers["SPIRIT"]["Casting"]["skills"] || {}
-  preferred_domains = casting_skills.select { |skill, value| value > 0 }.keys
+  max_spells = case magic_skill
+               when 0..5 then 0      # No spells for beginners
+               when 6..10 then 1     # 1 spell for novices
+               when 11..15 then 2    # 2 spells for competent
+               when 16..20 then 3    # 3 spells for skilled
+               when 21..25 then 4    # 4 spells for experts
+               else 5                # 5 spells for masters
+               end
+
+  # Get character's strongest magical domains
+  casting_skills = npc.tiers["SPIRIT"]["Casting"]["skills"] || {} rescue {}
+  attunement_skills = npc.tiers["SPIRIT"]["Attunement"]["skills"] || {} rescue {}
+  all_magic_skills = casting_skills.merge(attunement_skills)
+  preferred_domains = all_magic_skills.select { |skill, value| value > 0 }.keys
 
   # Filter spells based on character type and skills
   suitable_spells = $SpellCatalog.select do |spell_name, spell_data|
@@ -375,14 +389,17 @@ def assign_spells_to_npc(npc)
     spell_data[:skill_path].each do |skill_part|
       # Simplified check - character should have some relevant skills
       case skill_part
-      when "Fire" then can_cast &&= (casting_skills["Fire"] || 0) > 0
-      when "Water" then can_cast &&= (casting_skills["Water"] || 0) > 0
-      when "Air" then can_cast &&= (casting_skills["Air"] || 0) > 0
-      when "Earth" then can_cast &&= (casting_skills["Earth"] || 0) > 0
-      when "Mind" then can_cast &&= (casting_skills["Mind"] || 0) > 0
-      when "Nature" then can_cast &&= (casting_skills["Nature"] || 0) > 0
-      when "Protection" then can_cast &&= (casting_skills["Protection"] || 0) > 0
-      when "Illusion" then can_cast &&= (casting_skills["Illusion"] || 0) > 0
+      when "Fire" then can_cast &&= (all_magic_skills["Fire"] || 0) > 0
+      when "Water" then can_cast &&= (all_magic_skills["Water"] || 0) > 0
+      when "Air" then can_cast &&= (all_magic_skills["Air"] || 0) > 0
+      when "Earth" then can_cast &&= (all_magic_skills["Earth"] || 0) > 0
+      when "Mind" then can_cast &&= (all_magic_skills["Mind"] || 0) > 0
+      when "Nature" then can_cast &&= (all_magic_skills["Nature"] || 0) > 0
+      when "Protection" then can_cast &&= (all_magic_skills["Protection"] || 0) > 0
+      when "Illusion" then can_cast &&= (all_magic_skills["Illusion"] || 0) > 0
+      when "Shadow" then can_cast &&= (all_magic_skills["Shadow"] || 0) > 0
+      when "Self" then can_cast &&= (all_magic_skills["Self"] || 0) > 0
+      when "Life" then can_cast &&= (all_magic_skills["Life"] || 0) > 0
       end
     end
     can_cast
