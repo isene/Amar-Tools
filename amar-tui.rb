@@ -3911,7 +3911,8 @@ def generate_npc_old
   types = [""] + $Chartype.keys.sort
   types.each_with_index do |t, i|
     next if i == 0
-    type_text += colorize_output(i.to_s.rjust(2), :dice) + ": " + colorize_output(t, :value).ljust(25)
+    # Format with proper spacing (ljust BEFORE coloring to fix spacing)
+    type_text += colorize_output(i.to_s.rjust(2), :dice) + ": " + colorize_output(t.ljust(25), :value)
     type_text += "\n" if i % 3 == 0
   end
   show_content(type_text + "\n\nEnter number: ")
