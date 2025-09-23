@@ -845,6 +845,17 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
 
         function handleContentKeyboard(e) {
             switch(e.key) {
+                case 'Enter':
+                    e.preventDefault();
+                    // Find and click any visible Generate button
+                    const generateButtons = document.querySelectorAll('.btn:not(.hidden)');
+                    for (let button of generateButtons) {
+                        if (button.textContent.includes('Generate') && button.offsetParent !== null) {
+                            button.click();
+                            break;
+                        }
+                    }
+                    break;
                 case 'Escape':
                     e.preventDefault();
                     showMainView();
