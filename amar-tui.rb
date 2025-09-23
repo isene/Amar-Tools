@@ -2026,6 +2026,7 @@ def npc_input_new_tui
   # Add newline if we didn't end on a full row
   type_text += "\n" if types.length % cols != 0
   type_text += "\n"
+  type_text += "Enter character type number: "
 
   show_content(type_text)
   type_input = get_text_input("")
@@ -3947,7 +3948,7 @@ def generate_npc_old
          end
 
   # Sex
-  sex_text = "\n" + colorize_output("Sex (M/F or ENTER for random):", :header) + " "
+  sex_text = colorize_output("Sex (M/F or ENTER for random):", :header) + " "
   show_content(sex_text)
   sex_input = get_text_input("")
   return if sex_input == :cancelled
