@@ -1793,10 +1793,15 @@ def roll_o6
     key = getchr
     case key
     when "ESC", "q"
-      # Restore menu selection
-      @menu_index = saved_menu_index if defined?(saved_menu_index)
-      return_to_menu
-      break
+      # Restore menu selection safely
+      begin
+        @menu_index = saved_menu_index if defined?(saved_menu_index)
+        return_to_menu
+        break
+      rescue => e
+        # If return_to_menu fails, just break out safely
+        break
+      end
     when "r", "ENTER", "\r"
       # Re-roll dice (generate new set) - ENTER for quick re-roll
       roll_o6
