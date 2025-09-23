@@ -1960,7 +1960,7 @@ def npc_input_new_tui
   races.each_with_index do |race, index|
     race_text += colorize_output((index + 1).to_s.rjust(2), :dice) + ": " + colorize_output(race, :value) + "\n"
   end
-  race_text += "\n" + "Enter race number: "
+  race_text += "Enter race number: "
 
   show_content(race_text)
   race_input = get_text_input("")
@@ -4488,7 +4488,7 @@ def generate_weather_ui
     mstring += (i+7).to_s.rjust(2).fg(202) + ": "
     mstring += $Month[i+7].fg(7) + "\n"
   end
-  mstring += "\n" + "Enter month".fg(13) + " (default=#{$mn}): "
+  mstring += "Enter month".fg(13) + " (default=#{$mn}): "
 
   show_content(mstring)
   month_input = get_text_input("")
@@ -4516,7 +4516,7 @@ def generate_weather_ui
   weather_text += " 7".fg(202) + ": " + "Hot".fg(196) + "\n"  # Red
   weather_text += " 8".fg(202) + ": " + "Very hot".fg(160) + "\n"  # Dark red
   weather_text += " 9".fg(202) + ": " + "Extreme heat".fg(124) + "\n"  # Very dark red
-  weather_text += "\n" + "Enter weather condition".fg(13) + " (default=#{$weather_n}): "
+  weather_text += "Enter weather condition".fg(13) + " (default=#{$weather_n}): "
 
   show_content(weather_text)
   weather_input = get_text_input("")
@@ -5172,7 +5172,7 @@ def generate_town_ui
   town_name = "" if town_name.nil?
   
   # Get Town size
-  prompt_text = "\n" + colorize_output("Enter number of houses", :label)
+  prompt_text = colorize_output("Enter number of houses", :label)
   prompt_text += " (1-1000, default=1): "
   show_content(prompt_text)
   size_input = get_text_input("")
