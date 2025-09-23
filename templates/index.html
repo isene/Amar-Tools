@@ -858,7 +858,11 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     break;
                 case 'Escape':
                     e.preventDefault();
-                    showMainView();
+                    // Return focus to menu (like TUI 'q' behavior)
+                    currentFocus = 'menu';
+                    document.getElementById('menuPanel').classList.add('focused');
+                    document.getElementById('contentPanel').classList.remove('focused');
+                    updateStatus('Focus returned to menu - Use shortcuts or arrow keys');
                     break;
                 case 'Tab':
                     e.preventDefault();
@@ -867,6 +871,17 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                 default:
                     // Handle letter shortcuts from content panel too
                     const key = e.key.toLowerCase();
+
+                    if (key === 'q') {
+                        e.preventDefault();
+                        // 'q' returns focus to menu (like TUI)
+                        currentFocus = 'menu';
+                        document.getElementById('menuPanel').classList.add('focused');
+                        document.getElementById('contentPanel').classList.remove('focused');
+                        updateStatus('Focus returned to menu - Use shortcuts or arrow keys');
+                        return;
+                    }
+
                     const shortcuts = {
                         'n': 'npc',
                         'e': 'encounter',
