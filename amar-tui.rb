@@ -1225,7 +1225,7 @@ def show_help
   help_text = colorize_output("AMAR RPG TOOLS - REVOLUTIONARY TUI v2.0", :header) + "\n"
   help_text += colorize_output("═" * content_width, :header) + "\n\n"
 
-  help_text += colorize_output("🎭 DUAL SYSTEM ARCHITECTURE", :subheader) + "\n"
+  help_text += colorize_output("★ DUAL SYSTEM ARCHITECTURE", :subheader) + "\n"
   help_text += "  " + colorize_output("Modern 3-Tier System", :success) + " - Advanced BODY/MIND/SPIRIT progression\n"
   help_text += "  " + colorize_output("Authentic Legacy System", :success) + " - Historical d6gaming.org accuracy\n"
   help_text += "  " + colorize_output("Revolutionary Magic", :success) + " - Creative spells with flexible casting\n\n"
@@ -1238,15 +1238,15 @@ def show_help
   help_text += "  " + colorize_output("W", :dice) + " - Generate Weather (god colors, moon phases, holy days)\n"
   help_text += "  " + colorize_output("G", :dice) + " - Generate Names (authentic databases, 20 names)\n\n"
 
-  help_text += colorize_output("📜 LEGACY SYSTEM (Original CLI)", :subheader) + "\n"
+  help_text += colorize_output("◆ LEGACY SYSTEM (Original CLI)", :subheader) + "\n"
   help_text += "  " + colorize_output("1", :dice) + " - Old NPC Generator (original stats: SIZE, STRNG, ENDUR)\n"
   help_text += "  " + colorize_output("2", :dice) + " - Old Encounter Generator (original CLI format)\n\n"
 
-  help_text += colorize_output("🎲 UTILITIES", :subheader) + "\n"
+  help_text += colorize_output("◊ UTILITIES", :subheader) + "\n"
   help_text += "  " + colorize_output("O", :dice) + " - Roll Open Ended d6 (10 dice, fumbles/criticals)\n"
   help_text += "  " + colorize_output("?", :dice) + " - Show this help\n\n"
 
-  help_text += colorize_output("🎨 VISUAL FEATURES", :subheader) + "\n"
+  help_text += colorize_output("♦ VISUAL FEATURES", :subheader) + "\n"
   help_text += "  • " + "Authentic god colors".fg(41) + " - Each deity in domain colors\n"
   help_text += "  • " + "Immersive terrain colors".fg(229) + " - City, Plains, Woods, etc.\n"
   help_text += "  • " + "Moon phases".fg(111) + " - Amar astronomical system\n"
@@ -1257,7 +1257,7 @@ def show_help
   help_text += "  • Press " + colorize_output("ENTER", :dice) + " for " + "instant re-generation".fg(46) + "\n"
   help_text += "  • " + colorize_output("ESC/q", :dice) + " returns to menu from anywhere\n\n"
 
-  help_text += colorize_output("🎭 REVOLUTIONARY MAGIC", :subheader) + "\n"
+  help_text += colorize_output("★ REVOLUTIONARY MAGIC", :subheader) + "\n"
   help_text += "  • " + "Creative unique spells".fg(165) + " - Blue Fireball, Memory Thief\n"
   help_text += "  • " + "Flexible casting".fg(51) + " - Spirit → Attunement → Domain\n"
   help_text += "  • " + "Realistic side effects".fg(196) + " - Immersive consequences\n"
