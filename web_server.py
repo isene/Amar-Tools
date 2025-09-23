@@ -615,6 +615,24 @@ def roll_dice():
     result = call_ruby_function('roll', {})
     return jsonify(result)
 
+@app.route('/api/encounter_npc/<int:npc_index>', methods=['POST'])
+def get_encounter_npc(npc_index):
+    """Get specific NPC from encounter with preserved stats"""
+    params = request.get_json() or {}
+
+    # Generate detailed NPC using the encounter character's stats
+    npc_params = {
+        'name': params.get('name', ''),
+        'type': params.get('type', ''),
+        'level': params.get('level', 1),
+        'sex': params.get('sex', ''),
+        'age': params.get('age', 0)
+    }
+
+    # Use the regular NPC generation with encounter character parameters
+    result = call_ruby_function('npc', npc_params)
+    return jsonify(result)
+
 if __name__ == '__main__':
     print("=" * 60)
     print("  Amar RPG Tools - Web Interface")
