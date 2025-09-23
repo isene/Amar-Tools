@@ -1222,37 +1222,58 @@ def show_help
   content_width = @cols - 35
 
   # Show TUI version in header
-  help_text = colorize_output("HELP - TUI Version 1.0.0", :header) + "\n"
-  help_text += colorize_output("─" * content_width, :header) + "\n\n"
+  help_text = colorize_output("AMAR RPG TOOLS - REVOLUTIONARY TUI v2.0", :header) + "\n"
+  help_text += colorize_output("═" * content_width, :header) + "\n\n"
 
-  # Add subtle coloring to help content
-  help_lines = @help.split("\n")
-  help_lines.each do |line|
-    if line.start_with?("  ")
-      # Indented lines - commands/items
-      if line.include?(" - ")
-        parts = line.split(" - ", 2)
-        help_text += colorize_output(parts[0], :value) + " - " + parts[1].fg(240) + "\n"
-      else
-        help_text += colorize_output(line, :value) + "\n"
-      end
-    elsif line.end_with?(":")
-      # Section headers
-      help_text += colorize_output(line, :subheader) + "\n"
-    else
-      # Regular text
-      help_text += line.fg(7) + "\n"
-    end
-  end
+  help_text += colorize_output("🎭 DUAL SYSTEM ARCHITECTURE", :subheader) + "\n"
+  help_text += "  " + colorize_output("Modern 3-Tier System", :success) + " - Advanced BODY/MIND/SPIRIT progression\n"
+  help_text += "  " + colorize_output("Authentic Legacy System", :success) + " - Historical d6gaming.org accuracy\n"
+  help_text += "  " + colorize_output("Revolutionary Magic", :success) + " - Creative spells with flexible casting\n\n"
 
-  help_text += "\n" + colorize_output("─" * content_width, :header) + "\n"
+  help_text += colorize_output("⚔️ MODERN SYSTEM FEATURES", :subheader) + "\n"
+  help_text += "  " + colorize_output("N", :dice) + " - Generate NPC (64+ character types, original weapons)\n"
+  help_text += "  " + colorize_output("E", :dice) + " - Generate Encounter (90+ encounter types, clickable NPCs)\n"
+  help_text += "  " + colorize_output("M", :dice) + " - Generate Monster (realistic stats, original names)\n"
+  help_text += "  " + colorize_output("T", :dice) + " - Generate Town (complete settlements, all residents)\n"
+  help_text += "  " + colorize_output("W", :dice) + " - Generate Weather (god colors, moon phases, holy days)\n"
+  help_text += "  " + colorize_output("G", :dice) + " - Generate Names (authentic databases, 20 names)\n\n"
+
+  help_text += colorize_output("📜 LEGACY SYSTEM (Original CLI)", :subheader) + "\n"
+  help_text += "  " + colorize_output("1", :dice) + " - Old NPC Generator (original stats: SIZE, STRNG, ENDUR)\n"
+  help_text += "  " + colorize_output("2", :dice) + " - Old Encounter Generator (original CLI format)\n\n"
+
+  help_text += colorize_output("🎲 UTILITIES", :subheader) + "\n"
+  help_text += "  " + colorize_output("O", :dice) + " - Roll Open Ended d6 (10 dice, fumbles/criticals)\n"
+  help_text += "  " + colorize_output("?", :dice) + " - Show this help\n\n"
+
+  help_text += colorize_output("🎨 VISUAL FEATURES", :subheader) + "\n"
+  help_text += "  • " + "Authentic god colors".fg(41) + " - Each deity in domain colors\n"
+  help_text += "  • " + "Immersive terrain colors".fg(229) + " - City, Plains, Woods, etc.\n"
+  help_text += "  • " + "Moon phases".fg(111) + " - Amar astronomical system\n"
+  help_text += "  • " + "Holy days".fg(226) + " - Complete religious calendar\n\n"
+
+  help_text += colorize_output("⌨️ ENHANCED SHORTCUTS", :subheader) + "\n"
+  help_text += "  • All shortcuts " + "position cursor".fg(51) + " then execute\n"
+  help_text += "  • Press " + colorize_output("ENTER", :dice) + " for " + "instant re-generation".fg(46) + "\n"
+  help_text += "  • " + colorize_output("ESC/q", :dice) + " returns to menu from anywhere\n\n"
+
+  help_text += colorize_output("🎭 REVOLUTIONARY MAGIC", :subheader) + "\n"
+  help_text += "  • " + "Creative unique spells".fg(165) + " - Blue Fireball, Memory Thief\n"
+  help_text += "  • " + "Flexible casting".fg(51) + " - Spirit → Attunement → Domain\n"
+  help_text += "  • " + "Realistic side effects".fg(196) + " - Immersive consequences\n"
+  help_text += "  • " + "Skill-based scaling".fg(202) + " - More spells for experts\n\n"
+
+  help_text += colorize_output("⚔️ HYBRID WEAPON SYSTEM", :subheader) + "\n"
+  help_text += "  • " + "Modern calculations".fg(46) + " - 3-tier skill system\n"
+  help_text += "  • " + "Original weapons".fg(226) + " - Knife, Rock [2], Lt. mace\n"
+  help_text += "  • " + "Authentic combat".fg(202) + " - Same Off/Def/Dam/HP/Range\n\n"
+
+  help_text += colorize_output("─" * content_width, :header) + "\n"
   help_text += colorize_output("NAVIGATION:", :subheader) + "\n"
-  help_text += colorize_output("  →/RIGHT", :value) + "     - Activate menu item (when in menu)".fg(240) + "\n"
-  help_text += colorize_output("  ←/LEFT", :value) + "      - Return to menu (when viewing content)".fg(240) + "\n"
-  help_text += colorize_output("  TAB", :value) + "         - Switch between panes".fg(240) + "\n"
-  help_text += "\n" + colorize_output("SCROLLING:", :subheader) + "\n"
-  help_text += colorize_output("  j / DOWN", :value) + "    - Scroll down".fg(240) + "\n"
-  help_text += colorize_output("  k / UP", :value) + "      - Scroll up".fg(240) + "\n"
+  help_text += colorize_output("  →/ENTER", :value) + "    - Activate menu item\n"
+  help_text += colorize_output("  ESC/q", :value) + "      - Return to menu\n"
+  help_text += colorize_output("  TAB", :value) + "         - Switch pane focus\n"
+  help_text += colorize_output("  j/k ↓/↑", :value) + "     - Scroll content\n"
   help_text += colorize_output("  SPACE/PgDn", :value) + "  - Page down".fg(240) + "\n"
   help_text += colorize_output("  b / PgUp", :value) + "    - Page up".fg(240) + "\n"
   help_text += colorize_output("  g / HOME", :value) + "    - Go to top".fg(240) + "\n"
