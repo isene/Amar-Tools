@@ -1924,6 +1924,15 @@ Failed to connect to server: ${error.message}
         // Click handlers for menu items and focus switching
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('menu-item') && !e.target.classList.contains('separator') && !e.target.classList.contains('empty')) {
+                // Update menu selection to clicked item
+                const menuItems = document.querySelectorAll('.menu-item:not(.separator):not(.empty)');
+                for (let i = 0; i < menuItems.length; i++) {
+                    if (menuItems[i] === e.target) {
+                        selectedMenuItem = i;
+                        updateMenuSelection();
+                        break;
+                    }
+                }
                 activateMenuItem(e.target);
             }
 
