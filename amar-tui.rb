@@ -5423,7 +5423,10 @@ def generate_town_ui
   draw_header
   draw_menu
 
-  # Refresh all panes to ensure UI is properly displayed
+  # Comprehensive refresh to ensure all panes are properly displayed
+  refresh_all  # Full system refresh
+  draw_header  # Ensure header is visible
+  draw_menu    # Ensure menu is visible
   @header.refresh
   @menu.refresh
   @content.refresh
