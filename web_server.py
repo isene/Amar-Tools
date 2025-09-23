@@ -205,10 +205,11 @@ def call_ruby_function(function_name, params=None):
                 time = params.get('time', 1)  # 1=day, 0=night
                 terrain = params.get('terrain', 1)  # 0-7
                 level_mod = params.get('level_mod', 0)  # +/- modifier
-                race = params.get('race', 0)  # 0=random, 1-11 specific races
-                param_str = f'[{time}, {terrain}, {level_mod}, {race}]'
+                encounter_type = params.get('encounter_type', '')  # Specific encounter type from 90 options
+                number = params.get('number', 0)  # 0=random, 1-10 specific number
+                param_str = f'[{time}, {terrain}, {level_mod}, "{encounter_type}", {number}]'
             else:
-                param_str = '[1, 1, 0, 0]'
+                param_str = '[1, 1, 0, "", 0]'
         elif function_name == 'monster':
             # Build parameter string for monster generation
             if params:
@@ -274,11 +275,12 @@ when 'encounter'
     require_relative 'cli_enc_output_new.rb'
 
     # Get parameters from input
-    params = {param_str} rescue [1, 1, 0, 0]
+    params = {param_str} rescue [1, 1, 0, "", 0]
     time = params[0] || 1
     terrain = params[1] || 1
     level_mod = params[2] || 0
-    race = params[3] || 0
+    encounter_type = params[3] || ""
+    number = params[4] || 0
 
     # Set global variables for encounter generation
     $Day = time
@@ -286,12 +288,12 @@ when 'encounter'
     $Terraintype = terrain + (8 * time)
     $Level = level_mod
 
-    # Map race parameter to race name
-    races = ["Random", "Human", "Elf", "Half-elf", "Dwarf", "Goblin", "Lizard Man", "Centaur", "Ogre", "Troll", "Araxi", "Faerie"]
-    selected_race = race == 0 ? "Random" : races[race]
+    # Use encounter type directly (supports all 90 encounter types from TUI)
+    selected_type = encounter_type.empty? ? "" : encounter_type
+    enc_number = number == 0 ? rand(1..6) : number
 
-    # Generate encounter with parameters - exact TUI approach
-    enc = EncNew.new(selected_race, 1, $Terraintype, level_mod)
+    # Generate encounter with specific encounter type (modern system with 90 types)
+    enc = EncNew.new(selected_type, enc_number, $Terraintype, level_mod)
     output = enc_output_new(enc, 'cli', 120)
     puts output
 when 'monster'
@@ -528,53 +530,13 @@ when 'roll'
       end
     end
 
-    # Clean dice output without header
+    # Output exactly as TUI does
+    puts ""
     results.each do |r|
       puts r
     end
-when 'npc_old'
-    # Old NPC generation using exact TUI format
-    require_relative 'includes/class_npc.rb'
-
-    # Generate using old NPC class with random parameters
-    npc = Npc.new("", "", 0, "", "", 0, 0, 0, "")
-
-    # Format output like TUI does
-    puts "OLD SYSTEM NPC".fg(14).b
-    puts "─" * 40
     puts ""
-    puts "Name: ".fg(13) + npc.name.fg(226)
-    puts "Type: ".fg(13) + npc.type.fg(7)
-    puts "Level: ".fg(13) + npc.level.to_s.fg(202)
-    puts "Area: ".fg(13) + npc.area.fg(7)
-    puts "Sex: ".fg(13) + npc.sex.fg(7)
-    puts "Age: ".fg(13) + npc.age.to_s.fg(7)
-    puts "Height: ".fg(13) + "#{npc.height} cm".fg(7)
-    puts "Weight: ".fg(13) + "#{npc.weight} kg".fg(7)
-    if npc.description && !npc.description.empty?
-      puts "Description: ".fg(13) + npc.description.fg(7)
-    end
-
-when 'encounter_old'
-    # Old encounter generation using exact TUI format
-    require_relative 'includes/class_enc.rb'
-
-    # Generate using old Enc class
-    enc = Enc.new("", 0)
-
-    # Format output like TUI does
-    puts "OLD SYSTEM ENCOUNTER".fg(14).b
-    puts "─" * 40
-    puts ""
-    if enc.encounter && enc.encounter.first
-      puts "Encounter: ".fg(13) + (enc.encounter.first["string"] || "Random encounter").fg(46)
-      puts "Attitude: ".fg(13) + enc.enc_attitude.fg(7) if enc.enc_attitude
-      puts "Number: ".fg(13) + enc.enc_number.to_s.fg(202) if enc.enc_number
-    else
-      puts "No encounter".fg(7)
-    end
-    puts ""
-    puts "Note: This is the original CLI encounter system.".fg(240)
+    puts "Press any key to continue...".fg(240)
 else
     puts "Unknown function: {function_name}"
 end
@@ -651,20 +613,6 @@ def generate_names():
 def roll_dice():
     """Roll open-ended d6 using TUI backend"""
     result = call_ruby_function('roll', {})
-    return jsonify(result)
-
-@app.route('/api/npc_old', methods=['POST'])
-def generate_npc_old():
-    """Generate NPC using old CLI system exactly as original"""
-    params = request.get_json() or {}
-    result = call_ruby_function('npc_old', params)
-    return jsonify(result)
-
-@app.route('/api/encounter_old', methods=['POST'])
-def generate_encounter_old():
-    """Generate encounter using old CLI system exactly as original"""
-    params = request.get_json() or {}
-    result = call_ruby_function('encounter_old', params)
     return jsonify(result)
 
 if __name__ == '__main__':

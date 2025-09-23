@@ -1,7 +1,7 @@
-2025-09-20 17:03:15 +0200: undefined local variable or method `browse_saved_files' for main
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:1676:in `execute_menu_item'
+2025-09-23 11:10:38 +0200: undefined local variable or method `browse_saved_files' for main
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:1692:in `execute_menu_item'
 /home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:1435:in `handle_menu_navigation'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:5445:in `main_loop'
-/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:7676:in `<top (required)>'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:5763:in `main_loop'
+/home/geir/Main/G/GIT-isene/Amar-Tools/amar-tui.rb:8000:in `<top (required)>'
 ./amar-tui:7:in `require_relative'
 ./amar-tui:7:in `<main>'

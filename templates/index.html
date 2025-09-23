@@ -628,20 +628,99 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                         <input type="number" id="encLevel" min="-5" max="5" value="0" style="width: 80px;">
                     </div>
                     <div class="form-group">
-                        <label for="encRace">Race:</label>
-                        <select id="encRace" style="width: 100px;">
-                            <option value="0">Random</option>
-                            <option value="1">Human</option>
-                            <option value="2">Elf</option>
-                            <option value="3">Half-elf</option>
-                            <option value="4">Dwarf</option>
-                            <option value="5">Goblin</option>
-                            <option value="6">Lizard Man</option>
-                            <option value="7">Centaur</option>
-                            <option value="8">Ogre</option>
-                            <option value="9">Troll</option>
-                            <option value="10">Araxi</option>
-                            <option value="11">Faerie</option>
+                        <label for="encType">Encounter Type:</label>
+                        <select id="encType" style="width: 140px;">
+                            <option value="">Random</option>
+                            <option value="Animal trainer">Animal trainer</option>
+                            <option value="Archer">Archer</option>
+                            <option value="Armour smith">Armour smith</option>
+                            <option value="Army officer">Army officer</option>
+                            <option value="Assassin">Assassin</option>
+                            <option value="Baker/Cook">Baker/Cook</option>
+                            <option value="Barbarian">Barbarian</option>
+                            <option value="Bard">Bard</option>
+                            <option value="Battle Mage">Battle Mage</option>
+                            <option value="Berserker">Berserker</option>
+                            <option value="Boatbuilder">Boatbuilder</option>
+                            <option value="Body guard">Body guard</option>
+                            <option value="Builder">Builder</option>
+                            <option value="Bureaucrat">Bureaucrat</option>
+                            <option value="Carpenter">Carpenter</option>
+                            <option value="Clergyman">Clergyman</option>
+                            <option value="Crafts (fine)">Crafts (fine)</option>
+                            <option value="Crafts (heavy)">Crafts (heavy)</option>
+                            <option value="Entertainer">Entertainer</option>
+                            <option value="Executioner">Executioner</option>
+                            <option value="Farmer">Farmer</option>
+                            <option value="Fine artist">Fine artist</option>
+                            <option value="Fine smith">Fine smith</option>
+                            <option value="Fisherman">Fisherman</option>
+                            <option value="Gladiator">Gladiator</option>
+                            <option value="Guard">Guard</option>
+                            <option value="High class">High class</option>
+                            <option value="Highwayman">Highwayman</option>
+                            <option value="House wife">House wife</option>
+                            <option value="Hunter">Hunter</option>
+                            <option value="Jeweller">Jeweller</option>
+                            <option value="Large animal: Predator">Large animal: Predator</option>
+                            <option value="Large animal: Prey">Large animal: Prey</option>
+                            <option value="Mapmaker">Mapmaker</option>
+                            <option value="Mason">Mason</option>
+                            <option value="Merchant">Merchant</option>
+                            <option value="Messenger">Messenger</option>
+                            <option value="Monk">Monk</option>
+                            <option value="Monster: Ancient Dragon">Monster: Ancient Dragon</option>
+                            <option value="Monster: Basilisk">Monster: Basilisk</option>
+                            <option value="Monster: Black Dragon">Monster: Black Dragon</option>
+                            <option value="Monster: Blue Dragon">Monster: Blue Dragon</option>
+                            <option value="Monster: Dragon">Monster: Dragon</option>
+                            <option value="Monster: Drake">Monster: Drake</option>
+                            <option value="Monster: Faerie">Monster: Faerie</option>
+                            <option value="Monster: Giant">Monster: Giant</option>
+                            <option value="Monster: Gold Dragon">Monster: Gold Dragon</option>
+                            <option value="Monster: Green Dragon">Monster: Green Dragon</option>
+                            <option value="Monster: Hydra">Monster: Hydra</option>
+                            <option value="Monster: Lizardman">Monster: Lizardman</option>
+                            <option value="Monster: Red Dragon">Monster: Red Dragon</option>
+                            <option value="Monster: Skeleton">Monster: Skeleton</option>
+                            <option value="Monster: Special">Monster: Special</option>
+                            <option value="Monster: Troll (large)">Monster: Troll (large)</option>
+                            <option value="Monster: Troll (small)">Monster: Troll (small)</option>
+                            <option value="Monster: Vampire">Monster: Vampire</option>
+                            <option value="Monster: Werewolf">Monster: Werewolf</option>
+                            <option value="Monster: Wyvern">Monster: Wyvern</option>
+                            <option value="Monster: Zombie">Monster: Zombie</option>
+                            <option value="Nanny">Nanny</option>
+                            <option value="Navigator">Navigator</option>
+                            <option value="Noble">Noble</option>
+                            <option value="Prostitute">Prostitute</option>
+                            <option value="Ranger">Ranger</option>
+                            <option value="Sage">Sage</option>
+                            <option value="Sailor">Sailor</option>
+                            <option value="Scout">Scout</option>
+                            <option value="Scribe">Scribe</option>
+                            <option value="Seer">Seer</option>
+                            <option value="Shaman">Shaman</option>
+                            <option value="Small animal: Predator">Small animal: Predator</option>
+                            <option value="Small animal: Prey">Small animal: Prey</option>
+                            <option value="Smith">Smith</option>
+                            <option value="Soldier">Soldier</option>
+                            <option value="Sorcerer">Sorcerer</option>
+                            <option value="Sports contender">Sports contender</option>
+                            <option value="Summoner">Summoner</option>
+                            <option value="Tailor">Tailor</option>
+                            <option value="Tanner">Tanner</option>
+                            <option value="Thief">Thief</option>
+                            <option value="Tracker">Tracker</option>
+                            <option value="Warrior">Warrior</option>
+                            <option value="Witch (black)">Witch (black)</option>
+                            <option value="Witch (white)">Witch (white)</option>
+                            <option value="Wizard (air)">Wizard (air)</option>
+                            <option value="Wizard (earth)">Wizard (earth)</option>
+                            <option value="Wizard (fire)">Wizard (fire)</option>
+                            <option value="Wizard (prot.)">Wizard (prot.)</option>
+                            <option value="Wizard (water)">Wizard (water)</option>
+                            <option value="Worker">Worker</option>
                         </select>
                     </div>
                 </div>
@@ -1049,7 +1128,7 @@ Failed to connect to server: ${error.message}
                 time: parseInt(document.getElementById('encTime').value),
                 terrain: parseInt(document.getElementById('encTerrain').value),
                 level_mod: parseInt(document.getElementById('encLevel').value) || 0,
-                race: parseInt(document.getElementById('encRace').value) || 0,
+                encounter_type: document.getElementById('encType').value || '',
                 number: parseInt(document.getElementById('encNumber').value) || 0
             };
 
