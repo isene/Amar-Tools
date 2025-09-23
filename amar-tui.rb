@@ -6763,12 +6763,18 @@ def clear_terminal_image
       px = ((34 + 1) * char_w).to_i  # Column 35 (34 + 1 for border)
       py = ((3 + 1) * char_h).to_i   # Row 4 (3 + 1 for border)
 
-      # Size: content pane width/height minus borders
-      max_w = ((@cols - 35 - 2) * char_w).to_i  # -2 for left and right borders
-      max_h = ((@rows - 4 - 3) * char_h).to_i   # -3 to stay away from bottom border
+      # Size: content pane width/height with EXTRA pixels to prevent residues
+      max_w = ((@cols - 35 - 2) * char_w).to_i + 10  # +10 extra pixels right
+      max_h = ((@rows - 4 - 3) * char_h).to_i + 5    # +5 extra pixels bottom
 
-      # Clear only the inside of the content pane
-      `echo "6;#{px};#{py};#{max_w};#{max_h};\n4;\n3;" | #{w3m} 2>/dev/null`
+      # Clear area with extra margins to prevent image residues
+      clear_px = px - 5  # Start 5 pixels earlier
+      clear_py = py - 5  # Start 5 pixels higher
+      clear_w = max_w + 15  # Clear 15 extra pixels width
+      clear_h = max_h + 10  # Clear 10 extra pixels height
+
+      # Clear with expanded area to eliminate residues
+      `echo "6;#{clear_px};#{clear_py};#{clear_w};#{clear_h};\n4;\n3;" | #{w3m} 2>/dev/null`
       return true
     end
   rescue Timeout::Error
