@@ -401,35 +401,6 @@ def npc_output_new(n, cli, custom_width = nil)
   end
 
   # Equipment section
-    
-    # Format spells in two columns
-    spell_pairs = n.spells.each_slice(2).to_a
-    
-    spell_pairs.each do |spell_pair|
-      spell1 = spell_pair[0]
-      dr1 = spell1['dr'] ? spell1['dr'].first.to_s : "?"
-      ct1 = spell1['casting_time'] ? spell1['casting_time'].gsub(/ rounds?/, 'r').gsub(/ minutes?/, 'm') : "?"
-      cd1 = spell1['cooldown'] ? "#{spell1['cooldown']}h" : "?"
-      # Abbreviate duration
-      dur1 = spell1['duration'].to_s.gsub(/minutes?/, 'min').gsub(/hours?/, 'hr').gsub(/Instant/, 'Inst').gsub(/Concentration/, 'Conc.').gsub(/Permanent/, 'Perm')
-      line1 = "#{spell1['name']} (#{spell1['domain']})".ljust(28)
-      line1 += "#{dr1.rjust(2)}  #{ct1.ljust(4)} #{cd1.ljust(3)}  #{spell1['distance'].to_s.ljust(8)} #{dur1.ljust(8)}"
-      
-      if spell_pair[1]
-        spell2 = spell_pair[1]
-        dr2 = spell2['dr'] ? spell2['dr'].first.to_s : "?"
-        ct2 = spell2['casting_time'] ? spell2['casting_time'].gsub(/ rounds?/, 'r').gsub(/ minutes?/, 'm') : "?"
-        cd2 = spell2['cooldown'] ? "#{spell2['cooldown']}h" : "?"
-        # Abbreviate duration
-        dur2 = spell2['duration'].to_s.gsub(/minutes?/, 'min').gsub(/hours?/, 'hr').gsub(/Instant/, 'Inst').gsub(/Concentration/, 'Conc.').gsub(/Permanent/, 'Perm')
-        line2 = "#{spell2['name']} (#{spell2['domain']})".ljust(28)
-        line2 += "#{dr2.rjust(2)}  #{ct2.ljust(4)} #{cd2.ljust(3)}  #{spell2['distance'].to_s.ljust(8)} #{dur2.ljust(8)}"
-        f += "#{line1.ljust(57)} │ #{line2}\n"
-      else
-        f += "#{line1.ljust(57)} │\n"
-      end
-    end
-  end
 
   # Output handling
   if cli == "cli_direct"
