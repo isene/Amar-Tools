@@ -332,6 +332,7 @@
             flex-direction: column !important;
             min-height: 100vh;
             display: flex !important;
+            padding-bottom: 50px; /* Space for status bar */
         }
 
         .modern-theme .header {
@@ -360,6 +361,8 @@
             margin: 0;
             width: 100%;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 10;
         }
 
         .modern-theme .menu-item {
@@ -400,15 +403,18 @@
             background: #fefbf3;
             border: 2px solid #d2b48c;
             border-radius: 8px;
-            margin: 120px auto 15px auto;
+            margin: 15px auto;
             padding: 20px;
-            padding-bottom: 60px;
+            padding-bottom: 20px;
             min-height: 400px;
             font-family: Georgia, serif;
             width: calc(100% - 30px);
             max-width: 1140px;
             box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-            overflow: hidden;
+            overflow: auto;
+            position: relative;
+            z-index: 1;
+            flex: 1;
         }
 
         .modern-theme .form-container {
@@ -439,14 +445,28 @@
         }
 
         .modern-theme .status-bar {
-            background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
-            color: #f4f1e8;
+            background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%) !important;
+            color: #f4f1e8 !important;
             border-radius: 0 0 0 0;
             padding: 12px 30px;
             font-weight: bold;
             font-family: Georgia, serif;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            margin-top: auto;
+            position: fixed !important;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            border-top: 3px solid #654321;
+            width: 100%;
+            max-width: 1200px;
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        .modern-theme .status-bar a {
+            color: #f4f1e8 !important;
+            text-decoration: underline;
         }
 
         .modern-theme .container {
@@ -457,6 +477,7 @@
             flex-direction: column !important;
             min-height: 100vh;
             display: flex !important;
+            padding-bottom: 50px; /* Space for status bar */
         }
 
         .modern-theme .output {
@@ -474,40 +495,87 @@
 
         .modern-theme #themeToggle {
             background: #228b22;
-            color: white;
+            color: white !important;
             border: 2px solid #1e7b1e;
             padding: 10px 18px;
             border-radius: 8px;
             font-weight: bold;
             font-family: Georgia, serif;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            opacity: 1 !important;
         }
 
         .modern-theme #themeToggle:hover {
             background: #1e7b1e;
             transform: scale(1.02);
+            color: white !important;
         }
 
         /* Fix ALL readability issues in modern theme - much darker colors */
-        .modern-theme .fg-14 { color: #4a2c2a !important; } /* very dark brown instead of cyan */
-        .modern-theme .fg-46 { color: #2c5530 !important; } /* darker readable green instead of bright green */
-        .modern-theme .fg-226 { color: #654321 !important; } /* dark brown instead of bright yellow */
-        .modern-theme .fg-202 { color: #8b4513 !important; } /* brown instead of orange */
-        .modern-theme .fg-7 { color: #333333 !important; } /* darker gray instead of light gray */
-        .modern-theme .fg-13 { color: #4a2c2a !important; } /* very dark brown instead of magenta */
-        .modern-theme .fg-229 { color: #654321 !important; } /* dark brown instead of light yellow */
-        .modern-theme .fg-15 { color: #2c3e50 !important; } /* dark instead of white */
-        .modern-theme .fg-10 { color: #1a3009 !important; } /* very dark green instead of bright green */
-        .modern-theme .fg-88 { color: #8b0000 !important; } /* dark red for fumbles */
-        .modern-theme .fg-124 { color: #a0522d !important; } /* darker brown for moderate values */
-        .modern-theme .fg-154 { color: #4a2c2a !important; } /* very dark brown for good values */
-        .modern-theme .fg-118 { color: #1a3009 !important; } /* very dark green for success */
-        .modern-theme .fg-82 { color: #2d5016 !important; } /* dark forest green */
-        .modern-theme .fg-196 { color: #8b0000 !important; } /* dark red */
+        .modern-theme .output .fg-14 { color: #4a2c2a !important; } /* very dark brown instead of cyan */
+        .modern-theme .output .fg-46 { color: #2d5016 !important; } /* forest green with good contrast */
+        .modern-theme .output .fg-226 { color: #4b3619 !important; } /* very dark brown for 4 in O6 */
+        .modern-theme .output .fg-202 { color: #8b4513 !important; } /* brown instead of orange */
+        .modern-theme .output .fg-7 { color: #333333 !important; } /* darker gray instead of light gray */
+        .modern-theme .output .fg-13 { color: #4a2c2a !important; } /* very dark brown instead of magenta */
+        .modern-theme .output .fg-229 { color: #654321 !important; } /* dark brown instead of light yellow */
+        .modern-theme .output .fg-15 { color: #2c3e50 !important; } /* dark instead of white */
+        .modern-theme .output .fg-10 { color: #2d5016 !important; } /* forest green with good contrast */
+        .modern-theme .output .fg-88 { color: #8b0000 !important; } /* dark red for fumbles */
+        .modern-theme .output .fg-124 { color: #8b2500 !important; } /* dark orange-red for -3 in O6 */
+        .modern-theme .output .fg-154 { color: #3b5323 !important; } /* darker forest green for 5 in O6 */
+        .modern-theme .output .fg-118 { color: #2d5016 !important; } /* dark green for 6 in O6 */
+        .modern-theme .output .fg-82 { color: #2d5016 !important; } /* dark forest green */
+        .modern-theme .output .fg-196 { color: #8b0000 !important; } /* dark red */
 
-        /* Fix inline style colors */
-        .modern-theme [style*="color: #00ffff"] { color: #654321 !important; } /* cyan to brown */
-        .modern-theme [style*="color: #008080"] { color: #2d5016 !important; } /* teal to dark green */
+        /* O6 Dice Roll Colors - Full gradient from red to green with STRONG contrast */
+        .modern-theme .output .fg-160 { color: #8b0000 !important; } /* dark red for -2 */
+        .modern-theme .output .fg-166 { color: #8b2500 !important; } /* dark orange-red for -1 */
+        .modern-theme .output .fg-172 { color: #8b4513 !important; } /* saddle brown for 0 */
+        .modern-theme .output .fg-178 { color: #6b4423 !important; } /* dark brown for 1 */
+        .modern-theme .output .fg-184 { color: #5b4033 !important; } /* darker brown for 2 */
+        .modern-theme .output .fg-190 { color: #4b3619 !important; } /* very dark goldenrod for 3 */
+        .modern-theme .output .fg-40 { color: #228b22 !important; } /* forest green for 9 */
+        .modern-theme .output .fg-34 { color: #006400 !important; } /* dark green for 10-11 */
+        .modern-theme .output .fg-28 { color: #004d00 !important; } /* darker green for 12-14 */
+        .modern-theme .output .fg-22 { color: #003300 !important; } /* very dark green for 15+ */
+
+        /* Fix inline style colors - override hardcoded colors from Python */
+        /* Cyan text - make it all dark brown */
+        .modern-theme .output span[style*="color: #00ffff"] { color: #4a2c2a !important; font-weight: bold !important; } /* cyan to dark brown */
+        .modern-theme span[style*="color: #00ffff"] { color: #4a2c2a !important; font-weight: bold !important; } /* cyan everywhere */
+        .modern-theme [style*="color: #00ffff"] { color: #4a2c2a !important; } /* cyan in any element */
+
+        /* O6 Dice gradient colors - from red through brown to green - ALL BOLD */
+        .modern-theme .output span[style*="color: #870000"] { color: #8b0000 !important; font-weight: bold !important; } /* -3 and worse: dark red */
+        .modern-theme .output span[style*="color: #af0000"] { color: #8b0000 !important; font-weight: bold !important; } /* -3: dark red */
+        .modern-theme .output span[style*="color: #d70000"] { color: #a52a2a !important; font-weight: bold !important; } /* -2: brown-red */
+        .modern-theme .output span[style*="color: #d75f00"] { color: #8b4513 !important; font-weight: bold !important; } /* -1: saddle brown */
+        .modern-theme .output span[style*="color: #d78700"] { color: #a0522d !important; font-weight: bold !important; } /* 0: sienna */
+        .modern-theme .output span[style*="color: #d7af00"] { color: #8b6914 !important; font-weight: bold !important; } /* 1: dark goldenrod */
+        .modern-theme .output span[style*="color: #d7d700"] { color: #b8860b !important; font-weight: bold !important; } /* 2: darker goldenrod */
+        .modern-theme .output span[style*="color: #d7ff00"] { color: #daa520 !important; font-weight: bold !important; } /* 3: goldenrod */
+        .modern-theme .output span[style*="color: #ffff00"] { color: #cd853f !important; font-weight: bold !important; } /* 4: peru */
+        .modern-theme .output span[style*="color: #afff00"] { color: #556b2f !important; font-weight: bold !important; } /* 5: dark olive green */
+        .modern-theme .output span[style*="color: #87ff00"] { color: #228b22 !important; font-weight: bold !important; } /* 6: forest green */
+        .modern-theme .output span[style*="color: #5fff00"] { color: #228b22 !important; font-weight: bold !important; } /* 7: forest green */
+        .modern-theme .output span[style*="color: #00ff00"] { color: #228b22 !important; font-weight: bold !important; } /* 8: bright green, help text */
+        .modern-theme .output span[style*="color: #00d700"] { color: #228b22 !important; font-weight: bold !important; } /* 9: forest green */
+        .modern-theme .output span[style*="color: #00af00"] { color: #006400 !important; font-weight: bold !important; } /* 10-11: dark green */
+        .modern-theme .output span[style*="color: #008700"] { color: #004d00 !important; font-weight: bold !important; } /* 12+: darker green */
+
+        /* Town output colors - improved contrast and differentiation */
+        .modern-theme .output span[style*="color: #ff5f00"] { color: #8b4513 !important; font-weight: bold !important; } /* orange to saddle brown - names */
+        .modern-theme .output span[style*="color: #ff8700"] { color: #a0522d !important; } /* orange to sienna */
+        .modern-theme .output span[style*="color: #ffaf00"] { color: #8b6914 !important; } /* gold to dark goldenrod */
+        .modern-theme .output span[style*="color: #ff0000"] { color: #8b0000 !important; } /* bright red to dark red */
+        .modern-theme .output span[style*="color: #d7ffff"] { color: #4682b4 !important; } /* light cyan to steel blue */
+        .modern-theme .output span[style*="color: #87afff"] { color: #4682b4 !important; } /* light blue to steel blue */
+        .modern-theme .output span[style*="color: #808080"] { color: #696969 !important; } /* gray to dim gray for less important text */
+        .modern-theme .output span[style*="color: #c0c0c0"] { color: #2c3e50 !important; } /* light gray to dark for main text */
+
+        /* Other colors */
+        .modern-theme .output span[style*="color: #008080"] { color: #2d5016 !important; } /* teal to dark green */
         .modern-theme [style*="color: #ffffff"] { color: #2c3e50 !important; } /* white to dark */
         .modern-theme [style*="color: #ffff00"] { color: #8b4513 !important; } /* yellow to brown */
         .modern-theme [style*="color: #ff00ff"] { color: #654321 !important; } /* magenta to brown */
@@ -1037,7 +1105,8 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
         </div>
 
         <div class="status-bar" id="statusBar">
-            Ready | Click menu options to get started | TAB to switch panes | ESC to return to menu
+            <span>AMAR RPG Tools v2.0</span> |
+            <a href="https://d6gaming.org/" target="_blank" style="color: #f4f1e8 !important; text-decoration: underline;">Visit AMAR RPG Wiki at d6gaming.org</a>
         </div>
     </div>
 
@@ -1790,25 +1859,25 @@ Failed to connect to server: ${error.message}
 • 🎨 Theme toggle in header switches between Geek/Fantasy modes
 
 <div style="color: #ffff00; margin: 15px 0;">Revolutionary 3-Tier System Features:</div>
-• <span style="color: #00ff00;">Generate NPC</span> - Enhanced characters with weapon assignment
-• <span style="color: #00ff00;">Generate Encounter</span> - 90 encounter types with detailed stats
-• <span style="color: #00ff00;">Generate Monster</span> - Complete monster system with abilities
+• <span style="color: #228b22;">Generate NPC</span> - Enhanced characters with weapon assignment
+• <span style="color: #228b22;">Generate Encounter</span> - 90 encounter types with detailed stats
+• <span style="color: #228b22;">Generate Monster</span> - Complete monster system with abilities
 • <span style="color: #00ff00;">Town/City Generator</span> - With relationships and progress bars
 • <span style="color: #00ff00;">Weather Generator</span> - Enhanced with god colors and cycles
 • <span style="color: #00ff00;">Name Generator</span> - Multiple cultures and types
 • <span style="color: #00ff00;">Roll Open Ended d6</span> - Perfect Amar RPG dice system
 
 <div style="color: #ffff00; margin: 15px 0;">Revolutionary Weapon System:</div>
-• <span style="color: #32cd32;">STR/Skill-Based Assignment</span> - Characters get appropriate weapons
-• <span style="color: #32cd32;">Dual Weapon Types</span> - Both melee and missile weapons
-• <span style="color: #32cd32;">Perfect Initiative</span> - Reaction Speed + weapon modifiers
-• <span style="color: #32cd32;">Official Compliance</span> - Following d6gaming.org combat rules
+• <span style="color: #228b22;">STR/Skill-Based Assignment</span> - Characters get appropriate weapons
+• <span style="color: #228b22;">Dual Weapon Types</span> - Both melee and missile weapons
+• <span style="color: #228b22;">Perfect Initiative</span> - Reaction Speed + weapon modifiers
+• <span style="color: #228b22;">Official Compliance</span> - Following d6gaming.org combat rules
 
 <div style="color: #ffff00; margin: 15px 0;">Enhanced Features:</div>
-• <span style="color: #32cd32;">Realistic Ages</span> - Including younglings (13-17) and elders
-• <span style="color: #32cd32;">Integrated Combat Stats</span> - Reaction and Dodge prominently displayed
-• <span style="color: #32cd32;">Beautiful Progress Bars</span> - Enhanced town generation experience
-• <span style="color: #32cd32;">Dynamic Relationships</span> - Town relationship diagrams
+• <span style="color: #228b22;">Realistic Ages</span> - Including younglings (13-17) and elders
+• <span style="color: #228b22;">Integrated Combat Stats</span> - Reaction and Dodge prominently displayed
+• <span style="color: #228b22;">Beautiful Progress Bars</span> - Enhanced town generation experience
+• <span style="color: #228b22;">Dynamic Relationships</span> - Town relationship diagrams
 
 <div style="color: #ffff00; margin: 15px 0;">Legacy System:</div>
 • Available at: <span style="color: #00ffff;">https://isene.com/amar.html</span>

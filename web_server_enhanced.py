@@ -432,7 +432,7 @@ when 'monster'
       end
     end
 when 'weather'
-    # Use FULL TUI weather generation with moon phases and holy days
+    # Use actual weather generation from TUI
     require_relative 'includes/weather.rb'
     require_relative 'includes/tables/weather.rb'
     require_relative 'includes/tables/month.rb'
@@ -452,7 +452,7 @@ when 'weather'
     # Generate full weather month as TUI does
     w = Weather_month.new($mn, weather, wind)
 
-    # Authentic Amar god colors for each month
+    # God colors for each month
     month_color = case $mn
                   when 1 then 231   # Cal Amae
                   when 2 then 230   # Elesi
@@ -470,165 +470,91 @@ when 'weather'
                   else 14           # Default cyan
                   end
 
-    # Output with exact TUI colors, moon phases, and holy days
+    # Output with exact TUI colors
     puts "WEATHER GENERATOR".fg(14).b
-    puts ("═" * 90)
+    puts "═" * 78
     puts "Month: ".fg(13).b + $Month[$mn].fg(month_color).b
     puts ""
+
+    # Moon phase symbols
+    moon_symbols = {{
+      1 => ["●", "New"],      # New moon
+      8 => ["◐", "Waxing"],   # First quarter
+      15 => ["○", "Full"],    # Full moon
+      22 => ["◑", "Waning"]   # Last quarter
+    }}
 
     # Show a full month of weather with moon phases and holy days
     w.day.each_with_index do |day_weather, idx|
       day = idx + 1
       line = ""
 
-      # Day column - fixed width with dark red bold
-      day_text = "Day " + day.to_s.rjust(2)
-      line += day_text.fg(88).b + ": "
+      # Day number
+      line += "Day ".fg(13) + day.to_s.rjust(2).fg(202) + ": "
 
-      # Weather column - 35 chars, appropriate colors
+      # Weather with gradient colors
       weather_text = $Weather[day_weather.weather] || "Unknown"
       weather_colored = case weather_text.downcase
-                       when /blizzard/ then weather_text.fg(231).b           # Pure white bold
-                       when /snow storm/ then weather_text.fg(255).b         # Bright white bold
-                       when /heavy snow/ then weather_text.fg(195)           # Light cyan
-                       when /snow/ then weather_text.fg(255)                 # White
-                       when /hail/ then weather_text.fg(159)                 # Light blue
-                       when /lightning.*thunder|thunder.*lightning/ then weather_text.fg(208).b  # Orange bold
-                       when /lightning/ then weather_text.fg(214).b          # Orange bold
-                       when /thunder/ then weather_text.fg(172)              # Orange
-                       when /storm/ then weather_text.fg(196).b              # Red bold
-                       when /heavy rain/ then weather_text.fg(21).b          # Deep blue bold
-                       when /rain.*lightning/ then weather_text.fg(208)      # Orange
-                       when /rain/ then weather_text.fg(33)                  # Blue
-                       when /drizzle/ then weather_text.fg(75)               # Light blue
-                       when /misty.*overcast/ then weather_text.fg(245)      # Mid gray
-                       when /overcast/ then weather_text.fg(242)             # Dark gray
-                       when /misty/ then weather_text.fg(249)                # Light gray
-                       when /fog.*rain/ then weather_text.fg(240)            # Darker gray
-                       when /foggy|fog/ then weather_text.fg(247)            # Fog gray
-                       when /cloudy.*rainy|cloudy.*rain/ then weather_text.fg(69)   # Blue-gray
-                       when /cloudy.*lucid/ then weather_text.fg(250)        # Very light gray
-                       when /cloudy.*gray|gray/ then weather_text.fg(244)    # Medium gray
-                       when /partly cloudy/ then weather_text.fg(250)        # Lighter gray
-                       when /cloudy/ then weather_text.fg(247)               # Light gray
-                       when /clear skies/ then weather_text.fg(51).b         # Cyan bold
-                       when /mainly clear/ then weather_text.fg(87)          # Light cyan
-                       when /mainly cloudy/ then weather_text.fg(246)        # Gray
-                       when /mainly/ then weather_text.fg(252)               # Very light gray
-                       when /clear/ then weather_text.fg(45).b               # Turquoise bold
-                       when /lucid/ then weather_text.fg(123)                # Light cyan
-                       when /sunny/ then weather_text.fg(226).b              # Yellow bold
+                       when /blizzard/ then weather_text.fg(231).b
+                       when /snow storm/ then weather_text.fg(255).b
+                       when /heavy snow/ then weather_text.fg(195)
+                       when /snow/ then weather_text.fg(255)
+                       when /hail/ then weather_text.fg(253)
+                       when /thunder/ then weather_text.fg(93).b
+                       when /lightning/ then weather_text.fg(226).b
+                       when /storm/ then weather_text.fg(202).b
+                       when /heavy rain/ then weather_text.fg(21)
+                       when /rain/ then weather_text.fg(33)
+                       when /drizzle/ then weather_text.fg(75)
+                       when /overcast/ then weather_text.fg(245)
+                       when /cloudy/ then weather_text.fg(252)
+                       when /foggy|fog/ then weather_text.fg(249)
+                       when /partly/ then weather_text.fg(228)
+                       when /clear|lucid/ then weather_text.fg(226)
+                       when /sunny/ then weather_text.fg(226).b
                        else weather_text.fg(7)
                        end
+      line += weather_colored.ljust(35)
 
-      # Fixed width for weather column
-      weather_plain = weather_text
-      padding_needed = 35 - weather_plain.length
-      weather_padded = weather_colored + (" " * [padding_needed, 0].max)
-      line += weather_padded
-
-      # Wind column - 22 chars, shades of blue
-      wind_column = ""
+      # Wind
       if day_weather.wind_str > 0
-        wind_base = $Wind_str[day_weather.wind_str]
-        wind_dir = $Wind_dir[day_weather.wind_dir]
-
-        # Graduated blue colors based on wind strength
-        wind_color = case day_weather.wind_str
-                     when 1 then 117  # Soft - lighter blue
-                     when 2 then 75   # Windy - light blue
-                     when 3 then 39   # Very windy - blue
-                     when 4 then 33   # Strong - medium blue
-                     when 5 then 27   # Very strong - deep blue
-                     when 6 then 21   # Gale - dark blue
-                     else 51          # Default cyan
-                     end
-
-        wind_text = wind_base + " (" + wind_dir + ")"
-        wind_column = wind_text.fg(wind_color).to_s  # Ensure it's a string
+        wind_text = $Wind_str[day_weather.wind_str] + " (" + $Wind_dir[day_weather.wind_dir] + ")"
+        line += wind_text.fg(51).ljust(20)
+      else
+        line += " " * 20
       end
 
-      # Pad wind column to fixed width
-      wind_plain = wind_column.to_s.gsub(/\e\[[0-9;]*m/, '')
-      wind_padding = 22 - wind_plain.length
-      wind_padded = wind_column.to_s + (" " * [wind_padding, 0].max)
-      line += wind_padded
+      # Check for special/holy days
+      if day_weather.respond_to?(:special) && day_weather.special && !day_weather.special.empty?
+        special_colored = case day_weather.special
+                         when /Ikalio/i then "★ #{{day_weather.special}}".fg(226).b
+                         when /Anashina/i then "★ #{{day_weather.special}}".fg(41)
+                         when /Gwendyll/i then "★ #{{day_weather.special}}".fg(213)
+                         when /Elesi/i then "★ #{{day_weather.special}}".fg(229).b
+                         when /Moltan/i then "★ #{{day_weather.special}}".fg(202)
+                         when /Taroc/i then "★ #{{day_weather.special}}".fg(248)
+                         else "★ #{{day_weather.special}}".fg(245)
+                         end
+        line += special_colored
+      end
 
-      # Moon phases first (so they don't overlap with holy days)
-      moon_symbols = {{
-        1 => ["\u25cf", "New"],      # New moon
-        8 => ["\u25d0", "Waxing"],   # First quarter
-        15 => ["\u25cb", "Full"],    # Full moon
-        22 => ["\u25d1", "Waning"]   # Last quarter
-      }}
-
-      moon_text = ""
+      # Moon phases
       if moon_symbols.key?(day)
         moon_sym, moon_name = moon_symbols[day]
-        moon_raw = "#{{moon_sym}} #{{moon_name}}"
-        moon_text = case day
-                    when 1 then moon_raw.fg(238)    # Dark gray for new
-                    when 8 then moon_raw.fg(252)    # Light gray for waxing
-                    when 15 then moon_raw.fg(229).b # Bold yellow for full
-                    when 22 then moon_raw.fg(245)   # Medium gray for waning
-                    end
+        moon_text = " #{{moon_sym}} #{{moon_name}}"
+        moon_colored = case day
+                      when 1 then moon_text.fg(238)    # Dark gray for new
+                      when 8 then moon_text.fg(252)    # Light gray for waxing
+                      when 15 then moon_text.fg(229).b # Bold yellow for full
+                      when 22 then moon_text.fg(245)   # Medium gray for waning
+                      end
+        line += moon_colored
       end
 
-      # Holy days column - proper god colors
-      holy_text = ""
-      if day_weather.respond_to?(:special) && day_weather.special && !day_weather.special.empty?
-        special_text = day_weather.special
-        # Match EXACT TUI colors from amar-tui.rb lines 4760-4786
-        holy_text = case special_text
-                   when /Ikalio/i then "\u2605 #{{special_text}}".fg(226).b      # ONLY Ikalio gets bright yellow bold (Sun God)
-                   when /Anashina/i then "\u2605 #{{special_text}}".fg(41)       # Anashina green (Nature)
-                   when /Gwendyll/i then "\u2605 #{{special_text}}".fg(213)      # Gwendyll magenta (Water)
-                   when /Fionella/i then "\u2605 #{{special_text}}".fg(126)      # Fionella purple (Love)
-                   when /Elaari/i then "\u2605 #{{special_text}}".fg(204)        # Elaari color (Earth)
-                   when /Ish Nakil/i then "\u2605 #{{special_text}}".fg(196)     # Ish Nakil red (War)
-                   when /Fenimaal/i then "\u2605 #{{special_text}}".fg(209)      # Fenimaal color (Knowledge)
-                   when /Alesia/i then "\u2605 #{{special_text}}".fg(130)        # Alesia brown/green (Magic)
-                   when /Shalissa/i then "\u2605 #{{special_text}}".fg(117)      # Shalissa light blue (Healing)
-                   when /Walmaer/i then "\u2605 #{{special_text}}".fg(25)        # Walmaer darker blue (Winter)
-                   when /Juba/i then "\u2605 #{{special_text}}".fg(204)          # Juba storm color (Weather)
-                   when /Cal Amae/i then "\u2605 #{{special_text}}".fg(231)      # Cal Amae white/light
-                   when /Kraagh/i then "\u2605 #{{special_text}}".fg(245)        # Kraagh grey (Death)
-                   when /Moltan/i then "\u2605 #{{special_text}}".fg(202)        # Moltan orange (Fire)
-                   when /Fal Munir/i then "\u2605 #{{special_text}}".fg(139)     # Fal Munir color
-                   when /MacGillan/i then "\u2605 #{{special_text}}".fg(126)     # MacGillan purple
-                   when /Maleko/i then "\u2605 #{{special_text}}".fg(172)        # Maleko color
-                   when /Mestronorpha/i then "\u2605 #{{special_text}}".fg(239)  # Mestronorpha color
-                   when /Elesi/i then "\u2605 #{{special_text}}".fg(229).b       # Elesi - same as Full moon bold
-                   when /Ielina/i then "\u2605 #{{special_text}}".fg(230)        # Ielina color
-                   when /Man Peggon|harvest/i then "\u2605 #{{special_text}}".fg(130)  # Man Peggon brown
-                   when /Taroc|solstice/i then "\u2605 #{{special_text}}".fg(248)      # Taroc grey (Forge)
-                   when /new year/i then "\u2605 #{{special_text}}".fg(239)      # Mestronorpha color
-                   when /festival/i then "\u2605 #{{special_text}}".fg(172)      # Maleko color
-                   when /equinox/i then "\u2605 #{{special_text}}".fg(172)       # Maleko color
-                   else "\u2605 #{{special_text}}".fg(245)                       # Default grey
-                   end
-      end
-
-      # Holy day column - 20 chars fixed width
-      holy_column = ""
-      if !holy_text.empty?
-        holy_column = holy_text
-      end
-      holy_plain = holy_column.gsub(/\e\[[0-9;]*m/, '')
-      holy_padding = 20 - holy_plain.length
-      holy_padded = holy_column + (" " * [holy_padding, 0].max)
-      line += holy_padded
-
-      # Moon phase column - at the end
-      if !moon_text.empty?
-        line += moon_text
-      end
-
-      # Properly terminate all colors and reset
-      puts line.to_s + "\e[0m"
+      puts line
 
       # Add separator every 7 days
-      puts ("─" * 90) if (day % 7) == 0 && day != w.day.length
+      puts "─" * 78 if (day % 7) == 0 && day != w.day.length
     end
 when 'town'
     # Use actual town generation from TUI
