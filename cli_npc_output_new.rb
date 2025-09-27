@@ -60,7 +60,8 @@ def npc_output_new(n, cli, custom_width = nil)
   status_part = "Social Status: #{social_status}"
   spaces_needed = width - area_part.length - status_part.length
   f += "#{area_part}#{' ' * spaces_needed}#{status_part}\n"
-  
+
+
   # Add religion line for priests and anyone with Attunement
   attunement_level = 0
   if n.tiers && n.tiers["SPIRIT"] && n.tiers["SPIRIT"]["Attunement"]
@@ -210,8 +211,11 @@ def npc_output_new(n, cli, custom_width = nil)
   
   # Format SIZE for display (3.5 becomes "3½")
   size_display = n.SIZE % 1 == 0.5 ? "#{n.SIZE.floor}½" : n.SIZE.to_s
-  f += "#{@stat_color}SIZE:#{size_display.rjust(3)}    BP:#{n.BP.to_s.rjust(2)}    DB:#{n.DB.to_s.rjust(2)}    MD:#{n.MD.to_s.rjust(2)}    "
-  f += "Weight Carried:#{total_weight.to_s.rjust(5)}kg    ENC Penalty:#{enc_penalty.to_s.rjust(3)}#{@reset}\n"
+  # Calculate combat totals for the summary line
+  dodge_total = n.get_skill_total("BODY", "Athletics", "Dodge") rescue 0
+  reaction_total = n.get_skill_total("BODY", "Athletics", "Reaction Speed") rescue 0
+
+  f += "#{@stat_color}SIZE: #{size_display}  BP:#{n.BP.to_s}  DB: #{n.DB.to_s}  MD: #{n.MD.to_s}  Reaction: #{reaction_total}  Dodge: #{dodge_total}   Carried: #{total_weight}kg  ENC: #{enc_penalty}#{@reset}\n"
   
   # Armor section - use original format if available
   f += "─" * width + "\n"

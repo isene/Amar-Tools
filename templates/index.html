@@ -210,6 +210,33 @@
             animation: blink 1s infinite;
         }
 
+        .progress-container {
+            margin: 20px 0;
+            background-color: transparent;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: linear-gradient(90deg, #00ff00, #ffff00, #ff8800);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #000;
+            font-weight: bold;
+            font-size: 12px;
+            z-index: 1;
+        }
+
         @keyframes blink {
             0%, 50% { opacity: 1; }
             51%, 100% { opacity: 0.5; }
@@ -288,38 +315,280 @@
         .fg-10 { color: #00ff00; }  /* bright green */
         .fg-202 { color: #ff5f00; } /* red-orange */
         .bold { font-weight: bold; }
+
+        /* Modern Theme Styles - Fantasy RPG inspired */
+        .modern-theme {
+            background: linear-gradient(135deg, #4a5d3a 0%, #6b8e5a 100%);
+            color: #2c3e50;
+            font-family: Georgia, serif;
+            min-height: 100vh;
+        }
+
+        .modern-theme .container {
+            background: #f4f1e8;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            flex-direction: column !important;
+            min-height: 100vh;
+            display: flex !important;
+        }
+
+        .modern-theme .header {
+            background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+            color: #f4f1e8;
+            padding: 20px 30px;
+            border-bottom: 3px solid #654321;
+        }
+
+        .modern-theme .title {
+            font-family: Georgia, serif;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            color: #f4f1e8 !important;
+        }
+
+        /* Horizontal menu layout - full width across top */
+        .modern-theme .menu-panel {
+            display: flex;
+            flex-wrap: wrap;
+            background: linear-gradient(135deg, #2d5016 0%, #3a6b1c 100%);
+            border: none;
+            border-radius: 0;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .modern-theme .menu-item {
+            color: #e8f5e8;
+            padding: 8px 15px;
+            border-radius: 0;
+            margin: 0;
+            border-right: 1px solid #1a3009;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            min-width: 120px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            font-size: 12px;
+        }
+
+        .modern-theme .menu-item:hover {
+            background: #228b22;
+            color: white;
+            transform: none;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .modern-theme .menu-item.selected {
+            background: #8b4513;
+            color: #f4f1e8;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        .modern-theme .menu-item.separator {
+            display: none;
+        }
+
+        /* Content panel - full width below menu with proper spacing */
+        .modern-theme .content-panel {
+            background: #fefbf3;
+            border: 2px solid #d2b48c;
+            border-radius: 8px;
+            margin: 120px auto 15px auto;
+            padding: 20px;
+            padding-bottom: 60px;
+            min-height: 400px;
+            font-family: Georgia, serif;
+            width: calc(100% - 30px);
+            max-width: 1140px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .modern-theme .form-container {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 20px 0;
+            margin: 15px 0;
+            box-shadow: none;
+        }
+
+        .modern-theme .btn {
+            background: linear-gradient(135deg, #228b22 0%, #32cd32 100%);
+            color: white;
+            border: 2px solid #1e7b1e;
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(34, 139, 34, 0.3);
+            font-family: Georgia, serif;
+        }
+
+        .modern-theme .btn:hover {
+            background: linear-gradient(135deg, #1e7b1e 0%, #228b22 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(34, 139, 34, 0.4);
+        }
+
+        .modern-theme .status-bar {
+            background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+            color: #f4f1e8;
+            border-radius: 0 0 0 0;
+            padding: 12px 30px;
+            font-weight: bold;
+            font-family: Georgia, serif;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            margin-top: auto;
+        }
+
+        .modern-theme .container {
+            background: #f4f1e8;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            flex-direction: column !important;
+            min-height: 100vh;
+            display: flex !important;
+        }
+
+        .modern-theme .output {
+            background: #fefbf3;
+            padding: 15px;
+            border: 2px solid #d2b48c;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .modern-theme #themeToggle {
+            background: #228b22;
+            color: white;
+            border: 2px solid #1e7b1e;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-family: Georgia, serif;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .modern-theme #themeToggle:hover {
+            background: #1e7b1e;
+            transform: scale(1.02);
+        }
+
+        /* Fix ALL readability issues in modern theme - much darker colors */
+        .modern-theme .fg-14 { color: #4a2c2a !important; } /* very dark brown instead of cyan */
+        .modern-theme .fg-46 { color: #2c5530 !important; } /* darker readable green instead of bright green */
+        .modern-theme .fg-226 { color: #654321 !important; } /* dark brown instead of bright yellow */
+        .modern-theme .fg-202 { color: #8b4513 !important; } /* brown instead of orange */
+        .modern-theme .fg-7 { color: #333333 !important; } /* darker gray instead of light gray */
+        .modern-theme .fg-13 { color: #4a2c2a !important; } /* very dark brown instead of magenta */
+        .modern-theme .fg-229 { color: #654321 !important; } /* dark brown instead of light yellow */
+        .modern-theme .fg-15 { color: #2c3e50 !important; } /* dark instead of white */
+        .modern-theme .fg-10 { color: #1a3009 !important; } /* very dark green instead of bright green */
+        .modern-theme .fg-88 { color: #8b0000 !important; } /* dark red for fumbles */
+        .modern-theme .fg-124 { color: #a0522d !important; } /* darker brown for moderate values */
+        .modern-theme .fg-154 { color: #4a2c2a !important; } /* very dark brown for good values */
+        .modern-theme .fg-118 { color: #1a3009 !important; } /* very dark green for success */
+        .modern-theme .fg-82 { color: #2d5016 !important; } /* dark forest green */
+        .modern-theme .fg-196 { color: #8b0000 !important; } /* dark red */
+
+        /* Fix inline style colors */
+        .modern-theme [style*="color: #00ffff"] { color: #654321 !important; } /* cyan to brown */
+        .modern-theme [style*="color: #008080"] { color: #2d5016 !important; } /* teal to dark green */
+        .modern-theme [style*="color: #ffffff"] { color: #2c3e50 !important; } /* white to dark */
+        .modern-theme [style*="color: #ffff00"] { color: #8b4513 !important; } /* yellow to brown */
+        .modern-theme [style*="color: #ff00ff"] { color: #654321 !important; } /* magenta to brown */
+
+        /* Fix form label colors */
+        .modern-theme h3 { color: #654321 !important; } /* dark brown form titles */
+        .modern-theme label { color: #4a4a4a !important; } /* readable gray labels */
+
+        /* Fix loading/blinking text */
+        .modern-theme .loading {
+            color: #8b4513 !important;
+        }
+
+        /* Fix additional color issues */
+        .modern-theme [style*="color: #008000"] { color: #2d5016 !important; } /* green to dark green */
+        .modern-theme [style*="color: #ffffaf"] { color: #8b4513 !important; } /* light yellow to brown */
+        .modern-theme [style*="color: #c0c0c0"] { color: #4a4a4a !important; } /* light gray to dark gray */
+        .modern-theme span[style*="font-weight: bold"][style*="color: #ffffff"] { color: #2c3e50 !important; } /* bold white to dark */
+
+        /* Remove outer output frame in modern theme */
+        .modern-theme .output {
+            background: transparent;
+            padding: 10px 0;
+            border: none;
+            border-radius: 0;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            box-shadow: none;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        /* Fix button colors in modern theme - simple flat style */
+        .modern-theme .edit-btn,
+        .modern-theme .btn {
+            background: #228b22 !important;
+            color: white !important;
+            border: 1px solid #1e7b1e !important;
+            border-radius: 4px !important;
+            padding: 8px 16px !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+            font-weight: normal !important;
+            font-size: 13px !important;
+        }
+
+        .modern-theme .edit-btn:hover,
+        .modern-theme .btn:hover {
+            background: #1e7b1e !important;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="title">AMAR RPG TOOLS - Web Interface v1.0.0</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div class="title">AMAR RPG TOOLS</div>
+                <button id="themeToggle" onclick="toggleTheme()" style="background: #333; color: #00ffff; border: 1px solid #555; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 12px;">
+                    <span id="themeToggleText">🎨 Modern UI</span>
+                </button>
+            </div>
         </div>
 
         <div class="menu-panel focused" id="menuPanel">
             <div class="menu-item separator" style="color: #2AA52A; text-align: left;">NEW 3-TIER SYSTEM</div>
-            <div class="menu-item" data-action="npc">N. Generate NPC</div>
-            <div class="menu-item" data-action="encounter">E. Generate Encounter</div>
-            <div class="menu-item" data-action="monster">M. Generate Monster</div>
-            <div class="menu-item empty"></div>
+            <div class="menu-item" data-action="npc">Generate NPC</div>
+            <div class="menu-item" data-action="encounter">Generate Encounter</div>
+            <div class="menu-item" data-action="monster">Generate Monster</div>
             <div class="menu-item separator" style="color: #42A5A5; text-align: left;">WORLD BUILDING</div>
-            <div class="menu-item" data-action="town">T. Town/City Generator</div>
-            <div class="menu-item" data-action="weather">W. Weather Generator</div>
-            <div class="menu-item" data-action="names">G. Name Generator</div>
-            <div class="menu-item empty"></div>
+            <div class="menu-item" data-action="town">Town/City Generator</div>
+            <div class="menu-item" data-action="weather">Weather Generator</div>
+            <div class="menu-item" data-action="names">Name Generator</div>
             <div class="menu-item separator" style="color: #855A85; text-align: left;">UTILITIES</div>
-            <div class="menu-item" data-action="roll">O. Roll Open Ended d6</div>
-            <div class="menu-item" data-action="help">?. Help</div>
-            <div class="menu-item empty"></div>
-            <div class="menu-item separator" style="color: #888888; text-align: left;">LEGACY SYSTEM</div>
-            <div class="menu-item" data-action="npc-old">1. Old NPC Generator</div>
-            <div class="menu-item" data-action="encounter-old">2. Old Encounter</div>
+            <div class="menu-item" data-action="roll">Roll Open Ended d6</div>
+            <div class="menu-item" data-action="help">Help</div>
         </div>
 
         <div class="content-panel" id="contentPanel">
             <div class="output" id="output">Welcome to the Amar RPG Tools Web Interface!
 
-Select an option from the menu on the left to get started.
+Select an option from the menu to get started.
 
 This web interface provides the exact same functionality as the TUI version,
 with all the same generators and tools available through a convenient web browser.
@@ -581,7 +850,7 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     </div>
                     <div class="form-group">
                         <label for="townSize">Houses:</label>
-                        <input type="number" id="townSize" min="1" max="200" value="0" placeholder="Random (max 200)" style="width: 120px;">
+                        <input type="number" id="townSize" min="1" max="200" value="1" placeholder="1" style="width: 120px;">
                     </div>
                     <div class="form-group">
                         <label for="townVar">Variation:</label>
@@ -763,10 +1032,12 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                 </div>
                 <button class="btn" onclick="generateMonster()" style="margin: 8px 0 0 5px; display: block;">Generate Monster</button>
             </div>
+
+            </div>
         </div>
 
         <div class="status-bar" id="statusBar">
-            Ready | Use menu or keyboard shortcuts | TAB to switch panes | ESC to return to menu
+            Ready | Click menu options to get started | TAB to switch panes | ESC to return to menu
         </div>
     </div>
 
@@ -817,28 +1088,7 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                     switchFocus();
                     break;
                 default:
-                    // Handle letter shortcuts
-                    const key = e.key.toLowerCase();
-                    const shortcuts = {
-                        'n': 'npc',
-                        'e': 'encounter',
-                        'm': 'monster',
-                        't': 'town',
-                        'w': 'weather',
-                        'g': 'names',
-                        'o': 'roll',
-                        '?': 'help',
-                        '1': 'npc-old',
-                        '2': 'encounter-old'
-                    };
-
-                    if (shortcuts[key]) {
-                        e.preventDefault();
-                        const item = document.querySelector(`[data-action="${shortcuts[key]}"]`);
-                        if (item) {
-                            activateMenuItem(item);
-                        }
-                    }
+                    // No keyboard shortcuts - prevents interference with form inputs
                     break;
             }
         }
@@ -891,11 +1141,13 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                         'g': 'names',
                         'o': 'roll',
                         '?': 'help',
-                        '1': 'npc-old',
-                        '2': 'encounter-old'
                     };
 
                     if (shortcuts[key]) {
+                        // Don't activate shortcuts when typing in form fields
+                        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+                            return;
+                        }
                         e.preventDefault();
                         const item = document.querySelector(`[data-action="${shortcuts[key]}"]`);
                         if (item) {
@@ -962,11 +1214,9 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
                 case 'help':
                     showHelp();
                     break;
-                case 'npc-old':
-                    generateOldNPC();
+                    showOldNPCForm();
                     break;
-                case 'encounter-old':
-                    generateOldEncounter();
+                    showOldEncounterForm();
                     break;
                 default:
                     updateStatus('Unknown action');
@@ -1080,6 +1330,36 @@ Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
             updateStatus('Select encounter parameters and click Generate | ESC to return to menu');
         }
 
+        function showOldNPCForm() {
+            // Hide all other content first
+            document.getElementById('output').style.display = 'none';
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            // Show old NPC form
+            document.getElementById('npcOldForm').classList.remove('hidden');
+            currentFocus = 'content';
+            document.getElementById('menuPanel').classList.remove('focused');
+            document.getElementById('contentPanel').classList.add('focused');
+            updateStatus('Fill in legacy NPC details and click Generate | ESC to return to menu');
+        }
+
+        function showOldEncounterForm() {
+            // Hide all other content first
+            document.getElementById('output').style.display = 'none';
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            // Show old encounter form
+            document.getElementById('encounterOldForm').classList.remove('hidden');
+            currentFocus = 'content';
+            document.getElementById('menuPanel').classList.remove('focused');
+            document.getElementById('contentPanel').classList.add('focused');
+            updateStatus('Select legacy encounter parameters and click Generate | ESC to return to menu');
+        }
+
         function showNotImplemented(feature) {
             const output = document.getElementById('output');
             output.innerHTML = `<div class="error">Feature Not Yet Implemented</div>
@@ -1122,8 +1402,8 @@ This feature exists in the TUI version and will be ported to the web interface s
                 const result = await response.json();
 
                 if (result.success) {
-                    output.innerHTML = `<div class="success">Open Ended d6 Roll Result</div>
-
+                    output.innerHTML = `<div style="color: #00ffff; font-weight: bold; font-size: 16px;">OPEN ENDED D6 ROLL RESULT</div>
+<div style="color: #00ffff;">────────────────────────────────────────────────────────────</div>
 <div style="color: #00ffff; font-size: 18px; font-weight: bold; margin: 20px 0;">
 ${result.output}
 </div>
@@ -1276,21 +1556,30 @@ Failed to connect to server: ${error.message}
         async function generateTown() {
             const params = {
                 town_name: document.getElementById('townName').value,
-                town_size: parseInt(document.getElementById('townSize').value) || 0,
+                town_size: parseInt(document.getElementById('townSize').value) || 1,
                 town_var: parseInt(document.getElementById('townVar').value) || 0
             };
 
-            const output = document.getElementById('output');
-            const houseCount = params.town_size || 0;
+            updateStatus('Generating town...');
 
-            if (houseCount > 50) {
-                updateStatus(`Generating large town (${houseCount} houses) - this may take a moment...`);
-                output.innerHTML = `<div class="loading">Generating town with ${houseCount} houses...<br>Please wait, this may take up to a minute for large towns.</div>`;
+            const output = document.getElementById('output');
+            const houseCount = params.town_size;
+
+            if (houseCount > 5) {
+                output.innerHTML = `
+                    <div class="loading">Generating town with ${houseCount} houses...</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="townProgressBar">
+                            <div class="progress-text" id="townProgressText">0%</div>
+                        </div>
+                    </div>
+                    <div id="townProgressStatus">Initializing town generation...</div>
+                `;
+                // Start progress simulation
+                startTownProgress(houseCount);
             } else {
-                updateStatus('Generating town...');
                 output.innerHTML = '<div class="loading">Generating town, please wait...</div>';
             }
-
             output.style.display = 'block';
 
             // Hide forms
@@ -1310,9 +1599,52 @@ Failed to connect to server: ${error.message}
                 const result = await response.json();
 
                 if (result.success) {
-                    output.innerHTML = `<div class="output">${result.output}</div>
-`;
-                    updateStatus('Town generated successfully | ESC to return to menu');
+                    // Clear progress interval
+                    if (townProgressInterval) {
+                        clearInterval(townProgressInterval);
+                        townProgressInterval = null;
+                    }
+
+                    currentEditContent = result.output;
+
+                    // Check if town has multiple residents for relationship generation
+                    // Need to check for HTML-encoded content since output contains spans
+                    const containsHouse1 = result.output.includes('#1') || result.output.includes('#2') || result.output.includes('Stronghold');
+                    const residentsMatch = result.output.match(/Residents: <[^>]*>(\d+)/);
+                    const residentCount = residentsMatch ? parseInt(residentsMatch[1]) : 0;
+                    const hasMultipleResidents = containsHouse1 || residentCount > 5;
+
+                    console.log('DEBUG: Checking for multiple residents...');
+                    console.log('DEBUG: Contains house markers:', containsHouse1);
+                    console.log('DEBUG: Resident count:', residentCount);
+                    console.log('DEBUG: hasMultipleResidents:', hasMultipleResidents);
+
+                    let relationshipSection = '';
+                    if (hasMultipleResidents) {
+                        console.log('DEBUG: Adding relationship section...');
+                        relationshipSection = `
+                            <div style="margin-top: 30px; color: #00ffff; font-weight: bold;">
+────────────────────────────────────────────────────────────
+                            </div>
+                            <div style="color: #00ffff; font-weight: bold; margin: 15px 0;">TOWN RELATIONSHIPS</div>
+                            <div id="relationshipImage">
+                                <div class="loading">Generating relationship diagram...</div>
+                            </div>
+                        `;
+
+                        // Start relationship generation after a short delay
+                        setTimeout(() => generateTownRelationships(), 500);
+                    }
+
+                    output.innerHTML = `
+                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
+                            <button class="edit-btn" onclick="editOutput('town', currentEditContent)">Edit Town</button>
+                            <button class="edit-btn" onclick="downloadOutput('town', currentEditContent)">Download</button>
+                        </div>
+                        <div class="output">${result.output}</div>
+                        ${relationshipSection}
+                    `;
+                    updateStatus('Town generated successfully - Edit or Download available');
                 } else {
                     output.innerHTML = `<div class="error">Error generating town</div>
 
@@ -1448,29 +1780,45 @@ Failed to connect to server: ${error.message}
 
         function showHelp() {
             const output = document.getElementById('output');
-            output.innerHTML = `<div style="color: #00ffff; font-weight: bold; font-size: 18px;">AMAR RPG TOOLS - Help</div>
+            output.innerHTML = `<div style="color: #00ffff; font-weight: bold; font-size: 18px;">AMAR RPG TOOLS v2.0 - Enhanced 3-Tier System</div>
+<div style="color: #00ffff;">────────────────────────────────────────────────────────────</div>
 
 <div style="color: #ffff00; margin: 15px 0;">Navigation:</div>
-• Use arrow keys or J/K to navigate menu
-• Press Enter or Space to select menu items
-• Use letter shortcuts (N for NPC, E for Encounter, etc.)
+• Click menu options to access generators
 • Tab to switch between menu and content panels
 • ESC to return to main menu from any form
+• 🎨 Theme toggle in header switches between Geek/Fantasy modes
 
-<div style="color: #ffff00; margin: 15px 0;">Features:</div>
-• <span style="color: #00ff00;">NPC Generator</span> - Create detailed characters with stats
-• <span style="color: #888;">Encounter Generator</span> - Coming soon
-• <span style="color: #888;">Monster Generator</span> - Coming soon
-• <span style="color: #888;">World Building Tools</span> - Coming soon
-• <span style="color: #888;">AI Tools</span> - Coming soon
-• <span style="color: #00ff00;">Dice Rolling</span> - Open-ended d6 system
-• <span style="color: #888;">Legacy Tools</span> - Coming soon
+<div style="color: #ffff00; margin: 15px 0;">Revolutionary 3-Tier System Features:</div>
+• <span style="color: #00ff00;">Generate NPC</span> - Enhanced characters with weapon assignment
+• <span style="color: #00ff00;">Generate Encounter</span> - 90 encounter types with detailed stats
+• <span style="color: #00ff00;">Generate Monster</span> - Complete monster system with abilities
+• <span style="color: #00ff00;">Town/City Generator</span> - With relationships and progress bars
+• <span style="color: #00ff00;">Weather Generator</span> - Enhanced with god colors and cycles
+• <span style="color: #00ff00;">Name Generator</span> - Multiple cultures and types
+• <span style="color: #00ff00;">Roll Open Ended d6</span> - Perfect Amar RPG dice system
+
+<div style="color: #ffff00; margin: 15px 0;">Revolutionary Weapon System:</div>
+• <span style="color: #32cd32;">STR/Skill-Based Assignment</span> - Characters get appropriate weapons
+• <span style="color: #32cd32;">Dual Weapon Types</span> - Both melee and missile weapons
+• <span style="color: #32cd32;">Perfect Initiative</span> - Reaction Speed + weapon modifiers
+• <span style="color: #32cd32;">Official Compliance</span> - Following d6gaming.org combat rules
+
+<div style="color: #ffff00; margin: 15px 0;">Enhanced Features:</div>
+• <span style="color: #32cd32;">Realistic Ages</span> - Including younglings (13-17) and elders
+• <span style="color: #32cd32;">Integrated Combat Stats</span> - Reaction and Dodge prominently displayed
+• <span style="color: #32cd32;">Beautiful Progress Bars</span> - Enhanced town generation experience
+• <span style="color: #32cd32;">Dynamic Relationships</span> - Town relationship diagrams
+
+<div style="color: #ffff00; margin: 15px 0;">Legacy System:</div>
+• Available at: <span style="color: #00ffff;">https://isene.com/amar.html</span>
+• TUI version includes both legacy and 3-tier systems
 
 <div style="color: #ffff00; margin: 15px 0;">About:</div>
-This web interface provides the same functionality as the TUI version,
-allowing you to access all Amar RPG tools through your web browser.
+This enhanced web interface focuses on the revolutionary 3-tier system
+with weapon assignment and modern enhancements.
 
-Version: 1.0.0
+Version: 2.0.0
 Based on: Amar RPG System by Geir Isene
 `;
             output.style.display = 'block';
@@ -1506,10 +1854,22 @@ Thank you for using Amar RPG Tools!
         }
 
         async function generateOldNPC() {
-            updateStatus('Generating old CLI NPC...');
+            const params = {
+                name: document.getElementById('npcOldName').value,
+                type: document.getElementById('npcOldType').value,
+                level: parseInt(document.getElementById('npcOldLevel').value) || 0,
+                area: document.getElementById('npcOldArea').value,
+                sex: document.getElementById('npcOldSex').value,
+                age: parseInt(document.getElementById('npcOldAge').value) || 0,
+                height: parseInt(document.getElementById('npcOldHeight').value) || 0,
+                weight: parseInt(document.getElementById('npcOldWeight').value) || 0,
+                description: document.getElementById('npcOldDesc').value
+            };
+
+            updateStatus('Generating legacy NPC...');
 
             const output = document.getElementById('output');
-            output.innerHTML = '<div class="loading">Generating NPC using original CLI system...</div>';
+            output.innerHTML = '<div class="loading">Generating NPC using legacy system...</div>';
             output.style.display = 'block';
 
             // Hide forms
@@ -1523,7 +1883,7 @@ Thank you for using Amar RPG Tools!
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({})
+                    body: JSON.stringify(params)
                 });
 
                 const result = await response.json();
@@ -1532,12 +1892,10 @@ Thank you for using Amar RPG Tools!
                     currentEditContent = result.output;
                     output.innerHTML = `
                         <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
-                            <button class="edit-btn" onclick="editOutput('npc-old', currentEditContent)">Edit Old NPC</button>
-                            <button class="edit-btn" onclick="downloadOutput('npc-old', currentEditContent)">Download</button>
                         </div>
                         <div class="output">${result.output}</div>
                     `;
-                    updateStatus('Old CLI NPC generated - Edit or Download available');
+                    updateStatus('Legacy NPC generated - Edit or Download available');
                 } else {
                     output.innerHTML = `<div class="error">Error generating old NPC: ${result.error}</div>`;
                     updateStatus('Error generating old NPC');
@@ -1549,10 +1907,18 @@ Thank you for using Amar RPG Tools!
         }
 
         async function generateOldEncounter() {
-            updateStatus('Generating old CLI encounter...');
+            const params = {
+                time: parseInt(document.getElementById('encOldTime').value),
+                terrain: parseInt(document.getElementById('encOldTerrain').value),
+                level_mod: parseInt(document.getElementById('encOldLevel').value) || 0,
+                encounter_type: document.getElementById('encOldType').value,
+                number: parseInt(document.getElementById('encOldNumber').value) || 0
+            };
+
+            updateStatus('Generating legacy encounter...');
 
             const output = document.getElementById('output');
-            output.innerHTML = '<div class="loading">Generating encounter using original CLI system...</div>';
+            output.innerHTML = '<div class="loading">Generating encounter using legacy system...</div>';
             output.style.display = 'block';
 
             // Hide forms
@@ -1566,7 +1932,7 @@ Thank you for using Amar RPG Tools!
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({})
+                    body: JSON.stringify(params)
                 });
 
                 const result = await response.json();
@@ -1575,12 +1941,10 @@ Thank you for using Amar RPG Tools!
                     currentEditContent = result.output;
                     output.innerHTML = `
                         <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
-                            <button class="edit-btn" onclick="editOutput('encounter-old', currentEditContent)">Edit Old Encounter</button>
-                            <button class="edit-btn" onclick="downloadOutput('encounter-old', currentEditContent)">Download</button>
                         </div>
                         <div class="output">${result.output}</div>
                     `;
-                    updateStatus('Old CLI encounter generated - Edit or Download available');
+                    updateStatus('Legacy encounter generated - Edit or Download available');
                 } else {
                     output.innerHTML = `<div class="error">Error generating old encounter: ${result.error}</div>`;
                     updateStatus('Error generating old encounter');
@@ -1594,6 +1958,32 @@ Thank you for using Amar RPG Tools!
         function updateStatus(message) {
             document.getElementById('statusBar').textContent = message;
         }
+
+        function toggleTheme() {
+            const body = document.body;
+            const toggleButton = document.getElementById('themeToggleText');
+
+            if (body.classList.contains('modern-theme')) {
+                // Switch back to authentic geek mode
+                body.classList.remove('modern-theme');
+                toggleButton.textContent = '🎨 Modern UI';
+                localStorage.setItem('amarTheme', 'geek');
+            } else {
+                // Switch to modern fancy mode
+                body.classList.add('modern-theme');
+                toggleButton.textContent = '🖥️ Geek UI';
+                localStorage.setItem('amarTheme', 'modern');
+            }
+        }
+
+        // Load saved theme preference on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('amarTheme');
+            if (savedTheme === 'modern') {
+                document.body.classList.add('modern-theme');
+                document.getElementById('themeToggleText').textContent = '🖥️ Geek UI';
+            }
+        });
 
         async function generateNPC() {
             const params = {
@@ -1787,6 +2177,50 @@ Failed to connect to server: ${error.message}
 
         // Store original content for editing
         let currentEditContent = '';
+        let townProgressInterval = null;
+
+        function startTownProgress(houseCount) {
+            let progress = 0;
+            const progressBar = document.getElementById('townProgressBar');
+            const progressText = document.getElementById('townProgressText');
+            const progressStatus = document.getElementById('townProgressStatus');
+
+            if (!progressBar) return;
+
+            const totalTime = Math.max(3000, houseCount * 800); // Min 3 seconds, 800ms per house
+            const updateInterval = 50; // Update every 50ms
+            const increment = (100 * updateInterval) / totalTime;
+
+            const statusMessages = [
+                'Initializing town generation...',
+                'Creating town layout...',
+                'Generating houses...',
+                'Adding residents...',
+                'Assigning professions...',
+                'Creating families...',
+                'Finalizing demographics...',
+                'Calculating relationships...'
+            ];
+
+            townProgressInterval = setInterval(() => {
+                progress += increment;
+
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(townProgressInterval);
+                    progressStatus.textContent = 'Completing town generation...';
+                }
+
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+
+                // Update status message based on progress
+                const statusIndex = Math.floor((progress / 100) * statusMessages.length);
+                if (statusIndex < statusMessages.length) {
+                    progressStatus.textContent = statusMessages[statusIndex];
+                }
+            }, updateInterval);
+        }
 
         function editOutput(type, content) {
             // Store content for editing operations
@@ -1863,6 +2297,42 @@ Failed to connect to server: ${error.message}
             URL.revokeObjectURL(url);
 
             updateStatus(`${type.charAt(0).toUpperCase() + type.slice(1)} downloaded as ${filename}`);
+        }
+
+        async function generateTownRelationships() {
+            console.log('DEBUG: Starting relationship generation...');
+            console.log('DEBUG: Town data:', currentEditContent);
+
+            try {
+                const response = await fetch('/api/town_relationships', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        town_data: currentEditContent
+                    })
+                });
+
+                const result = await response.json();
+                console.log('DEBUG: Relationship API response:', result);
+
+                const relationshipDiv = document.getElementById('relationshipImage');
+
+                if (result.success && relationshipDiv) {
+                    console.log('DEBUG: Setting relationship image:', result.image_url);
+                    relationshipDiv.innerHTML = `<img src="${result.image_url}?t=${Date.now()}" style="max-width: 100%; border: 1px solid #555;" alt="Town Relationships">`;
+                } else {
+                    console.log('DEBUG: Relationship generation failed:', result.error);
+                    relationshipDiv.innerHTML = `<div style="color: #ff6666;">Unable to generate relationship diagram<br>Error: ${result.error || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                console.log('DEBUG: Relationship generation exception:', error);
+                const relationshipDiv = document.getElementById('relationshipImage');
+                if (relationshipDiv) {
+                    relationshipDiv.innerHTML = `<div style="color: #ff6666;">Error generating relationships: ${error.message}</div>`;
+                }
+            }
         }
 
         function downloadWeatherPDF() {

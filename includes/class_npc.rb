@@ -73,7 +73,19 @@ class Npc
       "Other"     => 1)
   end
 
-  @age = @level * 5 + oD6.abs * 3 + rand(10) if @age == 0
+  # Age generation with full range including youngsters
+  if @age == 0
+    base_age = @level * 2 + rand(10) + 16  # Base: 16-40s range
+    # 20% chance for youngling (13-17), 10% chance for elder (45-65)
+    age_modifier = rand(1..10)
+    if age_modifier <= 2  # 20% youngsters
+      @age = rand(13..17)
+    elsif age_modifier == 10  # 10% elders
+      @age = rand(45..65)
+    else  # 70% normal range
+      @age = base_age
+    end
+  end
           
   if @height == 0
     @height = 160 + oD6 * 2 + oD6 + rand(10) 

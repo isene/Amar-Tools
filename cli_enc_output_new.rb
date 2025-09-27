@@ -132,8 +132,11 @@ def enc_output_new(e, cli, custom_width = nil)
         end
         f += "\n"
         
-        # Line 2: Derived stats and armor (highlight BP/DB/MD)
-        f += "   #{@skill_color}BP:#{@reset}#{@stat_color}#{bp_value}#{@reset} #{@skill_color}DB:#{@reset}#{@stat_color}#{db_value}#{@reset} #{@skill_color}MD:#{@reset}#{@stat_color}#{md_value}#{@reset}"
+        # Line 2: Derived stats and armor with combat totals (highlight BP/DB/MD/Reaction/Dodge)
+        dodge_total = npc.get_skill_total("BODY", "Athletics", "Dodge") rescue 0
+        reaction_total = npc.get_skill_total("BODY", "Athletics", "Reaction Speed") rescue 0
+
+        f += "   #{@skill_color}BP:#{@reset}#{@stat_color}#{bp_value}#{@reset} #{@skill_color}DB:#{@reset}#{@stat_color}#{db_value}#{@reset} #{@skill_color}MD:#{@reset}#{@stat_color}#{md_value}#{@reset} #{@skill_color}Reaction:#{@reset}#{@stat_color}#{reaction_total}#{@reset} #{@skill_color}Dodge:#{@reset}#{@stat_color}#{dodge_total}#{@reset}"
         if npc.armor
           f += " Armor:#{npc.armor[:name]}(#{npc.armor[:ap]})"
         end
