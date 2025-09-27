@@ -482,8 +482,8 @@ when 'weather'
       line = ""
 
       # Day column - fixed width with dark red bold
-      day_text = "Day " + day.to_s.rjust(2)
-      line += day_text.fg(88).b + ": "
+      day_label = "Day " + day.to_s.rjust(2) + ": "
+      line = day_label.fg(88).b
 
       # Weather column - 35 chars, appropriate colors
       weather_text = $Weather[day_weather.weather] || "Unknown"
@@ -524,8 +524,8 @@ when 'weather'
       # Fixed width for weather column
       weather_plain = weather_text
       padding_needed = 35 - weather_plain.length
-      weather_padded = weather_colored + (" " * [padding_needed, 0].max)
-      line += weather_padded
+      spaces = " " * [padding_needed, 0].max
+      line = line.to_s + weather_colored.to_s + spaces
 
       # Wind column - 22 chars, shades of blue
       wind_column = ""
@@ -545,14 +545,18 @@ when 'weather'
                      end
 
         wind_text = wind_base + " (" + wind_dir + ")"
-        wind_column = wind_text.fg(wind_color).to_s  # Ensure it's a string
+        wind_column = wind_text.fg(wind_color)
       end
 
       # Pad wind column to fixed width
-      wind_plain = wind_column.to_s.gsub(/\e\[[0-9;]*m/, '')
-      wind_padding = 22 - wind_plain.length
-      wind_padded = wind_column.to_s + (" " * [wind_padding, 0].max)
-      line += wind_padded
+      if wind_column != ""
+        wind_plain = wind_column.respond_to?(:pure) ? wind_column.pure : wind_column.to_s
+        wind_padding = 22 - wind_plain.length
+        spaces = " " * [wind_padding, 0].max
+        line = line.to_s + wind_column.to_s + spaces
+      else
+        line = line.to_s + (" " * 22)
+      end
 
       # Moon phases first (so they don't overlap with holy days)
       moon_symbols = {{
@@ -610,22 +614,22 @@ when 'weather'
       end
 
       # Holy day column - 20 chars fixed width
-      holy_column = ""
       if !holy_text.empty?
-        holy_column = holy_text
+        holy_plain = holy_text.respond_to?(:pure) ? holy_text.pure : holy_text.to_s
+        holy_padding = 20 - holy_plain.length
+        spaces = " " * [holy_padding, 0].max
+        line = line.to_s + holy_text.to_s + spaces
+      else
+        line = line.to_s + (" " * 20)
       end
-      holy_plain = holy_column.gsub(/\e\[[0-9;]*m/, '')
-      holy_padding = 20 - holy_plain.length
-      holy_padded = holy_column + (" " * [holy_padding, 0].max)
-      line += holy_padded
 
       # Moon phase column - at the end
       if !moon_text.empty?
-        line += moon_text
+        line = line.to_s + moon_text.to_s
       end
 
-      # Properly terminate all colors and reset
-      puts line.to_s + "\e[0m"
+      # Output the line (rcurses handles color termination)
+      puts line.to_s
 
       # Add separator every 7 days
       puts ("─" * 90) if (day % 7) == 0 && day != w.day.length
