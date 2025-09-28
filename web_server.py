@@ -479,11 +479,10 @@ when 'weather'
     # Show a full month of weather with moon phases and holy days
     w.day.each_with_index do |day_weather, idx|
       day = idx + 1
-      line = ""
 
+      # Build each element separately with its own color
       # Day column - fixed width with dark red bold
-      day_text = "Day " + day.to_s.rjust(2) + ": "
-      line += day_text.fg(88).b
+      day_element = ("Day " + day.to_s.rjust(2) + ": ").fg(88).b
 
       # Weather column - 35 chars, appropriate colors
       weather_text = $Weather[day_weather.weather] || "Unknown"
@@ -521,20 +520,20 @@ when 'weather'
                        else weather_text.fg(7)
                        end
 
-      # Fixed width for weather column
-      weather_plain = weather_text
-      padding_needed = 35 - weather_plain.length
-      line += weather_colored
-      line += " " * [padding_needed, 0].max
+      # Weather element with padding
+      weather_element = weather_colored.to_s
+      weather_padding = " " * [35 - weather_text.length, 0].max
 
-      # Wind column - 22 chars, shades of blue
+      # Wind element - 22 chars, shades of blue
+      wind_element = ""
+      wind_padding = ""
       if day_weather.wind_str > 0
         wind_base = $Wind_str[day_weather.wind_str]
         wind_dir = $Wind_dir[day_weather.wind_dir]
         wind_text = wind_base + " (" + wind_dir + ")"
 
         # Graduated blue colors based on wind strength
-        wind_colored = case day_weather.wind_str
+        wind_element = case day_weather.wind_str
                       when 1 then wind_text.fg(117)  # Soft - lighter blue
                       when 2 then wind_text.fg(75)   # Windy - light blue
                       when 3 then wind_text.fg(39)   # Very windy - blue
@@ -542,13 +541,10 @@ when 'weather'
                       when 5 then wind_text.fg(27)   # Very strong - deep blue
                       when 6 then wind_text.fg(21)   # Gale - dark blue
                       else wind_text.fg(51)          # Default cyan
-                      end
-
-        line += wind_colored
-        wind_padding = 22 - wind_text.length
-        line += " " * [wind_padding, 0].max
+                      end.to_s
+        wind_padding = " " * [22 - wind_text.length, 0].max
       else
-        line += " " * 22
+        wind_padding = " " * 22
       end
 
       # Moon phases first (so they don't overlap with holy days)
@@ -606,23 +602,23 @@ when 'weather'
                    end
       end
 
-      # Holy day column - 20 chars fixed width
+      # Holy day element - 20 chars fixed width
+      holy_element = ""
+      holy_padding = ""
       if !holy_text.empty?
-        line += holy_text
+        holy_element = holy_text.to_s
         holy_plain = holy_text.respond_to?(:pure) ? holy_text.pure : holy_text.to_s
-        holy_padding = 20 - holy_plain.length
-        line += " " * [holy_padding, 0].max
+        holy_padding = " " * [20 - holy_plain.length, 0].max
       else
-        line += " " * 20
+        holy_padding = " " * 20
       end
 
-      # Moon phase column - at the end
-      if !moon_text.empty?
-        line += moon_text
-      end
+      # Moon phase element - at the end
+      moon_element = moon_text.to_s
 
-      # Output the complete line
-      puts line
+      # Now assemble the complete line from all elements
+      # Each element is already properly colored
+      puts day_element.to_s + weather_element + weather_padding + wind_element + wind_padding + holy_element + holy_padding + moon_element
 
       # Add separator every 7 days
       puts ("─" * 90) if (day % 7) == 0 && day != w.day.length
