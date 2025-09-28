@@ -479,11 +479,11 @@ when 'weather'
     # Show a full month of weather with moon phases and holy days
     w.day.each_with_index do |day_weather, idx|
       day = idx + 1
+      line = ""
 
-      # Build the entire line as components
       # Day column - fixed width with dark red bold
       day_text = "Day " + day.to_s.rjust(2) + ": "
-      day_col = day_text.fg(88).b
+      line += day_text.fg(88).b
 
       # Weather column - 35 chars, appropriate colors
       weather_text = $Weather[day_weather.weather] || "Unknown"
@@ -524,10 +524,10 @@ when 'weather'
       # Fixed width for weather column
       weather_plain = weather_text
       padding_needed = 35 - weather_plain.length
-      weather_col = weather_colored.to_s + (" " * [padding_needed, 0].max)
+      line += weather_colored
+      line += " " * [padding_needed, 0].max
 
       # Wind column - 22 chars, shades of blue
-      wind_col = ""
       if day_weather.wind_str > 0
         wind_base = $Wind_str[day_weather.wind_str]
         wind_dir = $Wind_dir[day_weather.wind_dir]
@@ -544,10 +544,11 @@ when 'weather'
                       else wind_text.fg(51)          # Default cyan
                       end
 
+        line += wind_colored
         wind_padding = 22 - wind_text.length
-        wind_col = wind_colored.to_s + (" " * [wind_padding, 0].max)
+        line += " " * [wind_padding, 0].max
       else
-        wind_col = " " * 22
+        line += " " * 22
       end
 
       # Moon phases first (so they don't overlap with holy days)
@@ -606,20 +607,22 @@ when 'weather'
       end
 
       # Holy day column - 20 chars fixed width
-      holy_col = ""
       if !holy_text.empty?
+        line += holy_text
         holy_plain = holy_text.respond_to?(:pure) ? holy_text.pure : holy_text.to_s
         holy_padding = 20 - holy_plain.length
-        holy_col = holy_text.to_s + (" " * [holy_padding, 0].max)
+        line += " " * [holy_padding, 0].max
       else
-        holy_col = " " * 20
+        line += " " * 20
       end
 
       # Moon phase column - at the end
-      moon_col = moon_text.to_s
+      if !moon_text.empty?
+        line += moon_text
+      end
 
-      # Output the complete line at once
-      puts day_col.to_s + weather_col + wind_col + holy_col + moon_col
+      # Output the complete line
+      puts line
 
       # Add separator every 7 days
       puts ("─" * 90) if (day % 7) == 0 && day != w.day.length
