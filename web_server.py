@@ -479,11 +479,10 @@ when 'weather'
     # Show a full month of weather with moon phases and holy days
     w.day.each_with_index do |day_weather, idx|
       day = idx + 1
-      line = ""
 
       # Day column - fixed width with dark red bold
       day_label = "Day " + day.to_s.rjust(2) + ": "
-      line = day_label.fg(88).b
+      print day_label.fg(88).b
 
       # Weather column - 35 chars, appropriate colors
       weather_text = $Weather[day_weather.weather] || "Unknown"
@@ -524,8 +523,8 @@ when 'weather'
       # Fixed width for weather column
       weather_plain = weather_text
       padding_needed = 35 - weather_plain.length
-      spaces = " " * [padding_needed, 0].max
-      line = line.to_s + weather_colored.to_s + spaces
+      print weather_colored
+      print " " * [padding_needed, 0].max
 
       # Wind column - 22 chars, shades of blue
       wind_column = ""
@@ -552,10 +551,10 @@ when 'weather'
       if wind_column != ""
         wind_plain = wind_column.respond_to?(:pure) ? wind_column.pure : wind_column.to_s
         wind_padding = 22 - wind_plain.length
-        spaces = " " * [wind_padding, 0].max
-        line = line.to_s + wind_column.to_s + spaces
+        print wind_column
+        print " " * [wind_padding, 0].max
       else
-        line = line.to_s + (" " * 22)
+        print " " * 22
       end
 
       # Moon phases first (so they don't overlap with holy days)
@@ -617,19 +616,19 @@ when 'weather'
       if !holy_text.empty?
         holy_plain = holy_text.respond_to?(:pure) ? holy_text.pure : holy_text.to_s
         holy_padding = 20 - holy_plain.length
-        spaces = " " * [holy_padding, 0].max
-        line = line.to_s + holy_text.to_s + spaces
+        print holy_text
+        print " " * [holy_padding, 0].max
       else
-        line = line.to_s + (" " * 20)
+        print " " * 20
       end
 
       # Moon phase column - at the end
       if !moon_text.empty?
-        line = line.to_s + moon_text.to_s
+        print moon_text
       end
 
-      # Output the line (rcurses handles color termination)
-      puts line.to_s
+      # End the line
+      puts ""
 
       # Add separator every 7 days
       puts ("─" * 90) if (day % 7) == 0 && day != w.day.length
