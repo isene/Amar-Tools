@@ -78,6 +78,21 @@
             color: #ccc;
         }
 
+        .logo-container {
+            position: fixed;
+            bottom: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .logo-container img {
+            max-height: 60px;
+            width: auto;
+            opacity: 0.7;
+        }
+
         .menu-item {
             padding: 2px 5px;
             cursor: pointer;
@@ -626,13 +641,241 @@
         .modern-theme .btn:hover {
             background: #1e7b1e !important;
         }
+
+        /* Welcome image alignment */
+        .modern-theme #welcomeImage {
+            text-align: center;
+        }
+
+        body:not(.modern-theme) #welcomeImage {
+            text-align: left;
+        }
+
+        /* Hamburger Menu for Mobile */
+        .hamburger-menu {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 10px;
+            z-index: 1001;
+            background: #333;
+            border: 2px solid #555;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 20px;
+            color: #00ffff;
+            border-radius: 5px;
+        }
+
+        .mobile-menu-dropdown {
+            display: none;
+            position: fixed;
+            top: 105px;
+            left: 10px;
+            background: #1a1a1a;
+            border: 2px solid #555;
+            border-radius: 5px;
+            max-width: 300px;
+            width: calc(100% - 20px);
+            max-height: 70vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+        }
+
+        .mobile-menu-dropdown.active {
+            display: block;
+        }
+
+        .mobile-menu-dropdown .menu-item {
+            display: block;
+            padding: 12px 15px;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .mobile-menu-dropdown .menu-item:hover {
+            background: #2a2a2a;
+        }
+
+        .mobile-menu-dropdown .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Modern theme dropdown */
+        .modern-theme .mobile-menu-dropdown {
+            background: linear-gradient(135deg, #2d5016 0%, #3a6b1c 100%);
+            border-color: #4a7c2c;
+        }
+
+        .modern-theme .mobile-menu-dropdown .menu-item {
+            border-bottom-color: rgba(255,255,255,0.1);
+        }
+
+        .modern-theme .mobile-menu-dropdown .menu-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto 1fr auto;
+            }
+
+            /* Hide regular menu panel on mobile */
+            .menu-panel {
+                display: none !important;
+            }
+
+            /* Show hamburger menu on mobile */
+            .hamburger-menu {
+                display: block;
+            }
+
+            .content-panel {
+                padding: 80px 10px 10px 10px; /* Add top padding to prevent hamburger overlap */
+            }
+
+            .header {
+                padding: 8px;
+            }
+
+            .title {
+                font-size: 14px;
+            }
+
+            #themeToggle {
+                padding: 5px 10px !important;
+                font-size: 11px !important;
+            }
+
+            .menu-item {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .output {
+                font-size: 11px;
+                line-height: 1.4;
+            }
+
+            .form-container {
+                padding: 10px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .form-group {
+                width: 100%;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                width: 100% !important;
+                max-width: none !important;
+            }
+
+            #welcomeImage {
+                text-align: center !important;
+            }
+
+            #welcomeImage img {
+                max-width: 100% !important;
+                max-height: 40vh !important;
+            }
+
+            .btn, .edit-btn {
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+
+            /* Adjust status bar for mobile */
+            .status-bar {
+                font-size: 10px;
+                padding: 8px;
+            }
+
+            /* Stack menu items in groups for better mobile UX */
+            .menu-panel {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .menu-item {
+                flex: 0 0 calc(50% - 5px);
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 12px;
+            }
+
+            .menu-item {
+                flex: 0 0 calc(33.333% - 5px);
+                padding: 6px;
+                font-size: 11px;
+            }
+
+            #welcomeImage img {
+                max-height: 30vh !important;
+            }
+
+            .output {
+                font-size: 10px;
+            }
+        }
+
+        /* Touch-friendly adjustments */
+        @media (pointer: coarse) {
+            .menu-item {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .btn, .edit-btn {
+                min-height: 44px;
+            }
+
+            input, select, textarea {
+                min-height: 44px;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Hamburger Menu for Mobile -->
+    <button class="hamburger-menu" id="hamburgerMenu" onclick="toggleMobileMenu()">
+        ☰
+    </button>
+    <div class="mobile-menu-dropdown" id="mobileMenuDropdown">
+        <div class="menu-item" data-action="npc" onclick="handleMobileMenuClick('npc')">Generate NPC</div>
+        <div class="menu-item" data-action="encounter" onclick="handleMobileMenuClick('encounter')">Generate Encounter</div>
+        <div class="menu-item" data-action="monster" onclick="handleMobileMenuClick('monster')">Generate Monster</div>
+        <div class="menu-item" style="color: #42A5A5; font-weight: bold; background: rgba(66,165,165,0.1);">WORLD BUILDING</div>
+        <div class="menu-item" data-action="town" onclick="handleMobileMenuClick('town')">Town/City Generator</div>
+        <div class="menu-item" data-action="weather" onclick="handleMobileMenuClick('weather')">Weather Generator</div>
+        <div class="menu-item" data-action="names" onclick="handleMobileMenuClick('names')">Name Generator</div>
+        <div class="menu-item" style="color: #855A85; font-weight: bold; background: rgba(133,90,133,0.1);">UTILITIES</div>
+        <div class="menu-item" data-action="roll" onclick="handleMobileMenuClick('roll')">Roll Open Ended d6</div>
+        <div class="menu-item" data-action="help" onclick="handleMobileMenuClick('help')">Help</div>
+    </div>
+
     <div class="container">
         <div class="header">
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <div class="title">AMAR RPG TOOLS</div>
+                <div class="title"><a href="https://d6gaming.org/" target="_blank" style="color: #00ffff; text-decoration: none;">AMAR RPG</a> TOOLS</div>
                 <button id="themeToggle" onclick="toggleTheme()" style="background: #333; color: #00ffff; border: 1px solid #555; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 12px;">
                     <span id="themeToggleText">🎨 Modern UI</span>
                 </button>
@@ -654,22 +897,14 @@
         </div>
 
         <div class="content-panel" id="contentPanel">
-            <div class="output" id="output">Welcome to the Amar RPG Tools Web Interface!
+            <div class="output" id="output">Welcome to the <a href="https://d6gaming.org/" target="_blank" style="color: #00ffff;">Amar RPG</a> Tools! Select an option from the menu to get started.
 
-Select an option from the menu to get started.
+This web interface provides the exact same functionality as the <a href="https://github.com/isene/Amar-Tools" target="_blank" style="color: #00ffff;">terminal version</a>.
+<span id="geekUIText">To have a whiff of how the terminal version looks like, try the Geek UI.</span>
 
-This web interface provides the exact same functionality as the TUI version,
-with all the same generators and tools available through a convenient web browser.
-
-Key Features:
-• Generate NPCs with full character stats
-• Create encounters and monsters
-• Build towns and generate weather
-• AI-powered adventure and description tools
-• Name generators for various cultures
-• Roll dice and access utilities
-
-Navigation: Click on menu items or use keyboard shortcuts (N, E, M, etc.)
+<div id="welcomeImage" style="margin-top: 20px;">
+    <img src="/static/amar0.jpg" alt="AMAR RPG" style="max-width: 90%; max-height: 60vh; object-fit: contain; opacity: 0.9;">
+</div>
             </div>
 
             <!-- NPC Generation Form -->
@@ -2028,29 +2263,70 @@ Thank you for using Amar RPG Tools!
             document.getElementById('statusBar').textContent = message;
         }
 
+        function toggleMobileMenu() {
+            const dropdown = document.getElementById('mobileMenuDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        function handleMobileMenuClick(action) {
+            // Close the dropdown
+            document.getElementById('mobileMenuDropdown').classList.remove('active');
+
+            // Find the corresponding menu item and trigger its click event
+            const menuItems = document.querySelectorAll('#menuPanel .menu-item');
+            menuItems.forEach(item => {
+                if (item.dataset.action === action) {
+                    item.click();
+                }
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('mobileMenuDropdown');
+            const hamburger = document.getElementById('hamburgerMenu');
+
+            if (!dropdown.contains(event.target) && event.target !== hamburger) {
+                dropdown.classList.remove('active');
+            }
+        });
+
         function toggleTheme() {
             const body = document.body;
             const toggleButton = document.getElementById('themeToggleText');
+            const geekUIText = document.getElementById('geekUIText');
 
             if (body.classList.contains('modern-theme')) {
                 // Switch back to authentic geek mode
                 body.classList.remove('modern-theme');
                 toggleButton.textContent = '🎨 Modern UI';
                 localStorage.setItem('amarTheme', 'geek');
+                if (geekUIText) {
+                    geekUIText.innerHTML = 'You can get the TUI version as a Ruby gem. Just hop on over to the <a href="https://github.com/isene/Amar-Tools" target="_blank" style="color: #00ffff;">github repo</a>.';
+                }
             } else {
                 // Switch to modern fancy mode
                 body.classList.add('modern-theme');
                 toggleButton.textContent = '🖥️ Geek UI';
                 localStorage.setItem('amarTheme', 'modern');
+                if (geekUIText) {
+                    geekUIText.textContent = 'To have a whiff of how the terminal version looks like, try the Geek UI.';
+                }
             }
         }
 
         // Load saved theme preference on page load
         window.addEventListener('DOMContentLoaded', function() {
             const savedTheme = localStorage.getItem('amarTheme');
+            const geekUIText = document.getElementById('geekUIText');
             if (savedTheme === 'modern') {
                 document.body.classList.add('modern-theme');
                 document.getElementById('themeToggleText').textContent = '🖥️ Geek UI';
+                if (geekUIText) {
+                    geekUIText.textContent = 'To have a whiff of how the terminal version looks like, try the Geek UI.';
+                }
+            } else if (savedTheme === 'geek' && geekUIText) {
+                geekUIText.innerHTML = 'You can get the TUI version as a Ruby gem. Just hop on over to the <a href="https://github.com/isene/Amar-Tools" target="_blank" style="color: #00ffff;">github repo</a>.';
             }
         });
 
