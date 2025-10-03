@@ -7,6 +7,11 @@
 
 <img src="images/amarcover.jpg" align="left" width="150" height="150"> Welcome to the swiss army knife for the Amar Role-Playing Game (http://d6gaming.org).
 
+## Version 2.0 Released!
+
+Complete rewrite with both Terminal User Interface (TUI) and Web interface.
+Install the gem with `gem install amar-tui` and run with `amar-tui`.
+
 This program suite runs on any GNU/Linux system where the scripting
 language Ruby is installed. Ruby is available as tar.gz, rpm packages or
 deb-packages as needed for your specific Linux distribution. For more info
@@ -15,7 +20,7 @@ on Ruby, see http://www.ruby-lang.org.
 This tool box for the Amar RPG is designed for generating random
 or specific encounters and Non-Player Characters for the Amar RPG, random
 settlements and relationship maps for inhabitants of villages/towns/cities
-as well as random names for various races and for making Open Ended Dice Rolls. 
+as well as random names for various races and for making Open Ended Dice Rolls.
 
 In order to make real use of this program, you should be running an Amar
 game as the Game Master.
@@ -23,7 +28,7 @@ game as the Game Master.
 For more info on the Amar RPG, game rules, adventures and more, see
 http://www.d6gaming.org/.
 
-For an online version of this program, go to http://isene.org
+For an online version of this program, go to https://isene.com/amar3.html
 
 ## Requirements
 GraphViz is a requirement for generating relationship maps for towns and
