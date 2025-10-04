@@ -231,8 +231,9 @@ def npc_output_new(n, cli, custom_width = nil)
   end
   
   # Check if we have original weapon data and display it
-  if n.respond_to?(:melee1) && !n.melee1.to_s.empty?
-    # Display ORIGINAL weapon format
+  # DISABLED: Old weapon format only shows 2-3 weapons, new format shows all skills
+  if false && n.respond_to?(:melee1) && !n.melee1.to_s.empty?
+    # Display ORIGINAL weapon format (DEPRECATED)
     f += "─" * width + "\n"
     f += "#{@weapon_color}WEAPON             SKILL    INI     OFF    DEF    DAM    HP    RANGE#{@reset}\n"
 
@@ -273,68 +274,67 @@ def npc_output_new(n, cli, custom_width = nil)
       f += "\n"
     end
   else
-    # Fall back to 3-tier weapon display
-    melee_weapons = n.tiers["BODY"]["Melee Combat"]["skills"].select { |_, v| v > 0 }
-    missile_weapons = n.tiers["BODY"]["Missile Combat"]["skills"].select { |_, v| v > 0 }
-  
+    # 3-tier weapon display - show ALL weapon skills
+    melee_weapons = n.tiers["BODY"]["Melee Combat"]["skills"].select { |_, v| v > 0 } rescue {}
+    missile_weapons = n.tiers["BODY"]["Missile Combat"]["skills"].select { |_, v| v > 0 } rescue {}
+
   if melee_weapons.any? || missile_weapons.any?
     f += "─" * width + "\n"
-    f += "#{@weapon_color}WEAPONS:#{@reset}\n"
-    
-    # Headers
-    melee_header = "Melee Weapon".ljust(15) + "Skill  Init  Off  Def  Damage"
-    missile_header = "Missile Weapon".ljust(15) + "Skill  Range     Damage"
-    f += "#{melee_header.ljust(60)} │ #{missile_header}\n"
-    f += "─" * 61 + "┼" + "─" * 58 + "\n"
-    
-    # Format weapons with calculated totals
-    melee_lines = []
-    missile_lines = []
-    
+    f += "#{@weapon_color}WEAPON             SKILL    INI     OFF    DEF    DAM    HP    RANGE#{@reset}\n"
+
     body_char = n.get_characteristic("BODY")
-    
+
     # Calculate Dodge bonus for defense (Dodge/5 rounded down)
     dodge_total = n.get_skill_total("BODY", "Athletics", "Dodge") || 0
     dodge_bonus = (dodge_total / 5).to_i
-    
-    melee_weapons.each do |weapon, skill|
+
+    # Get reaction speed for initiative
+    reaction_speed = n.get_skill_total("MIND", "Awareness", "Reaction speed") || 0
+
+    # Display melee weapons
+    melee_weapons.sort_by { |_, skill| -skill }.each do |weapon, skill|
       wpn_stats = get_weapon_stats(weapon)
       attr = n.get_attribute("BODY", "Melee Combat") || 0
       skill_total = body_char + attr + skill
-      
-      # Calculate weapon totals with correct initiative formula
-      # Initiative = Weapon Init + Reaction Speed skill total
-      reaction_speed = n.get_skill_total("MIND", "Awareness", "Reaction speed") || 0
+
       init = reaction_speed + (wpn_stats[:init] || 0)
       off = skill_total + (wpn_stats[:off] || 0)
-      defense = skill_total + (wpn_stats[:def] || 0) + dodge_bonus  # Include Dodge/5
+      defense = skill_total + (wpn_stats[:def] || 0) + dodge_bonus
       dmg_mod = wpn_stats[:dmg].to_s =~ /special/ ? 0 : (wpn_stats[:dmg].to_s.to_i || 0)
       dmg = (n.DB || 0) + dmg_mod
-      
-      line = "#{weapon.ljust(15)} #{skill_total.to_s.rjust(3)}  #{init.to_s.rjust(4)}  #{off.to_s.rjust(3)}  #{defense.to_s.rjust(3)}  #{dmg.to_s.rjust(3)}"
-      melee_lines << line
+      hp = wpn_stats[:hp] || 0
+
+      f += "#{weapon.ljust(19)}"
+      f += "#{skill_total.to_s.ljust(9)}"
+      f += "#{init.to_s.ljust(8)}"
+      f += "#{off.to_s.ljust(7)}"
+      f += "#{defense.to_s.ljust(7)}"
+      f += "#{dmg.to_s.ljust(7)}"
+      f += "#{hp.to_s.ljust(6)}"
+      f += "\n"
     end
-    
-    missile_weapons.each do |weapon, skill|
+
+    # Display missile weapons
+    missile_weapons.sort_by { |_, skill| -skill }.each do |weapon, skill|
       wpn_stats = get_missile_stats(weapon)
       attr = n.get_attribute("BODY", "Missile Combat") || 0
       skill_total = body_char + attr + skill
-      
+
+      off = skill_total + (wpn_stats[:off] || 0)
       range = wpn_stats[:range] || "30m"
       dmg_mod = wpn_stats[:dmg].to_s =~ /special/ ? 0 : (wpn_stats[:dmg].to_s.to_i || 0)
       dmg = (n.DB || 0) + dmg_mod
-      
-      line = "#{weapon.ljust(15)} #{skill_total.to_s.rjust(3)}  #{range.ljust(10)} #{dmg.to_s.rjust(3)}"
-      missile_lines << line
-    end
-    
-    # Balance weapon columns
-    max_wpn_lines = [melee_lines.length, missile_lines.length].max
-    melee_lines += [""] * (max_wpn_lines - melee_lines.length)
-    missile_lines += [""] * (max_wpn_lines - missile_lines.length)
-    
-    max_wpn_lines.times do |i|
-      f += "#{melee_lines[i].ljust(60)} │ #{missile_lines[i]}\n"
+      hp = wpn_stats[:hp] || 0
+
+      f += "#{weapon.ljust(19)}"
+      f += "#{skill_total.to_s.ljust(9)}"
+      f += "#{' '.ljust(8)}"  # No init for missile
+      f += "#{off.to_s.ljust(7)}"
+      f += "#{' '.ljust(7)}"  # No def for missile
+      f += "#{dmg.to_s.ljust(7)}"
+      f += "#{hp.to_s.ljust(6)}"
+      f += "#{range}"
+      f += "\n"
     end
   end
   end  # Close the original/3-tier weapon display if/else block

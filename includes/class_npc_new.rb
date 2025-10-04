@@ -406,9 +406,19 @@ class NpcNew
                   else 0.5
                   end
     
-    # Use square root for more realistic progression
-    level = (base * Math.sqrt(npc_level + 1) * growth_rate).to_i
-    
+    # Use more gradual progression for low levels
+    # Level 1-2: Start with basics (0.5x base)
+    # Level 3-4: Build competence (0.7x base)
+    # Level 5+: Approach mastery (sqrt scaling)
+    if npc_level <= 2
+      level = (base * 0.5 * growth_rate).to_i
+    elsif npc_level <= 4
+      level = (base * 0.7 * growth_rate).to_i
+    else
+      # Original square root scaling for higher levels
+      level = (base * Math.sqrt(npc_level + 1) * growth_rate).to_i
+    end
+
     # Add minimal variation ONLY if base > 0
     if base > 0
       variation = rand(3) - 1  # -1, 0, or 1
