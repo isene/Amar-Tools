@@ -787,7 +787,7 @@ class NpcNew
       get_skill_total("BODY", "Missile Combat", "Sling")
     when /javelin/
       get_skill_total("BODY", "Missile Combat", "Javelin")
-    when /rock|stone|throwing/
+    when /rock|stone|throwing|th\s|knife/
       get_skill_total("BODY", "Missile Combat", "Throwing")
     else
       get_skill_total("BODY", "Missile Combat", "Bow") || 0
