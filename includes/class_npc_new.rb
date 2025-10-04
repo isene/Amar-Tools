@@ -406,20 +406,22 @@ class NpcNew
                   else 0.5
                   end
     
-    # Use more gradual progression for low levels
-    # Level 1-2: Start with basics (0.5x base)
-    # Level 3-4: Build competence (0.7x base)
-    # Level 5+: Approach mastery (sqrt scaling)
-    if npc_level <= 2
-      level = (base * 0.5 * growth_rate).to_i
-    elsif npc_level <= 4
-      level = (base * 0.7 * growth_rate).to_i
-    else
-      # Original square root scaling for higher levels
-      level = (base * Math.sqrt(npc_level + 1) * growth_rate).to_i
-    end
+    # Use scaling that produces desired total skill progression
+    # Target totals: L1: 4-5, L2: 6-7, L3: 8-9, L4: 10-11, L5: 12-13, L6: 14+
+    # Typical warrior has BODY 1-2, Melee Combat 2-3, Weapon skill 2-3 at mid-levels
+    level_multiplier = case npc_level
+                       when 1 then 0.7
+                       when 2 then 0.95
+                       when 3 then 1.2
+                       when 4 then 1.45
+                       when 5 then 1.7
+                       when 6 then 1.95
+                       else 2.2
+                       end
 
-    # Add minimal variation ONLY if base > 0
+    level = (base * level_multiplier * growth_rate).to_i
+
+    # Add variation ONLY if base > 0
     if base > 0
       variation = rand(3) - 1  # -1, 0, or 1
       level += variation
@@ -459,20 +461,42 @@ class NpcNew
   end
   
   def add_weapon_skills(template)
-    # Add melee weapon skills
+    # Add melee weapon skills with primary weapon specialization
     if template["melee_weapons"]
       @tiers["BODY"]["Melee Combat"]["skills"] ||= {}
-      template["melee_weapons"].each do |weapon, skill_level|
+
+      # Find primary weapon (highest base value)
+      primary_weapon = template["melee_weapons"].max_by { |_, v| v }
+
+      template["melee_weapons"].each_with_index do |(weapon, skill_level), index|
         base_level = calculate_tier_level(skill_level, @level, 0.6)
+
+        # Boost primary weapon by 1-2 points for specialization
+        if weapon == primary_weapon[0] && skill_level >= 4
+          boost = rand(2) + 1  # +1 or +2
+          base_level += boost
+        end
+
         @tiers["BODY"]["Melee Combat"]["skills"][weapon] = base_level
       end
     end
-    
+
     # Add missile weapon skills
     if template["missile_weapons"]
       @tiers["BODY"]["Missile Combat"]["skills"] ||= {}
+
+      # Find primary missile weapon
+      primary_missile = template["missile_weapons"].max_by { |_, v| v }
+
       template["missile_weapons"].each do |weapon, skill_level|
         base_level = calculate_tier_level(skill_level, @level, 0.6)
+
+        # Boost primary missile weapon
+        if weapon == primary_missile[0] && skill_level >= 3
+          boost = rand(2) + 1  # +1 or +2
+          base_level += boost
+        end
+
         @tiers["BODY"]["Missile Combat"]["skills"][weapon] = base_level
       end
     end
