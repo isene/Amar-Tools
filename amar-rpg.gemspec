@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "amar-rpg"
-  spec.version       = "2.1.0"
+  spec.version       = "2.1.1"
   spec.authors       = ["Geir Isene"]
   spec.email         = ["g@isene.com"]
 
@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.post_install_message = <<-MESSAGE
 
   ===========================================
-  AMAR RPG Tools v2.1.0 has been installed!
+  AMAR RPG Tools v2.1.1 has been installed!
   ===========================================
 
   To start the application:
