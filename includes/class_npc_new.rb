@@ -508,16 +508,17 @@ class NpcNew
         "Rock [2]"
       end
     else
-      # Select from $Melee table based on strength (like original system)
-      # Determine weapon level range based on BODY characteristic
+      # Select from $Melee table based on Wield Weapon total (replaces old STRENGTH)
+      # This is BODY + Strength + Wield weapon skill
+      # Determine weapon level range based on Wield Weapon total
       wpn_level = case strength_char
                   when 0..1 then 2
-                  when 2 then 4
-                  when 3 then 11
-                  when 4 then 18
-                  when 5 then 22
-                  when 6 then 26
-                  when 7..8 then 28
+                  when 2..3 then 4
+                  when 4..6 then 11
+                  when 7..9 then 18
+                  when 10..12 then 22
+                  when 13..15 then 26
+                  when 16..18 then 28
                   else 30
                   end
 
@@ -543,8 +544,9 @@ class NpcNew
       # Find primary weapon (highest base value)
       primary_weapon = template["melee_weapons"].max_by { |_, v| v }
 
-      # Get BODY characteristic for weapon table selection (like original system)
-      body_char = get_characteristic("BODY") || 1
+      # Get Wield Weapon total for weapon table selection (replaces old STRENGTH)
+      # This is BODY + Strength + Wield weapon skill
+      wield_total = get_skill_total("BODY", "Strength", "Wield weapon") rescue 3
 
       template["melee_weapons"].each_with_index do |(weapon, skill_level), index|
         base_level = calculate_tier_level(skill_level, @level, 0.6)
@@ -557,8 +559,8 @@ class NpcNew
 
         @tiers["BODY"]["Melee Combat"]["skills"][weapon] = base_level
 
-        # Select actual weapon from $Melee table based on BODY characteristic
-        actual_weapon = select_actual_weapon_from_table(weapon, body_char, false)
+        # Select actual weapon from $Melee table based on Wield Weapon total
+        actual_weapon = select_actual_weapon_from_table(weapon, wield_total, false)
         @tiers["BODY"]["Melee Combat"]["actual_weapons"][weapon] = actual_weapon
       end
     end
@@ -571,8 +573,8 @@ class NpcNew
       # Find primary missile weapon
       primary_missile = template["missile_weapons"].max_by { |_, v| v }
 
-      # Get BODY characteristic for weapon selection
-      body_char = get_characteristic("BODY") || 1
+      # Get Wield Weapon total for missile weapon selection (bow strength requirements)
+      wield_total = get_skill_total("BODY", "Strength", "Wield weapon") rescue 3
 
       template["missile_weapons"].each do |weapon, skill_level|
         base_level = calculate_tier_level(skill_level, @level, 0.6)
@@ -585,8 +587,8 @@ class NpcNew
 
         @tiers["BODY"]["Missile Combat"]["skills"][weapon] = base_level
 
-        # Select actual weapon based on skill type and strength
-        actual_weapon = select_actual_weapon_from_table(weapon, body_char, true)
+        # Select actual weapon based on Wield Weapon total
+        actual_weapon = select_actual_weapon_from_table(weapon, wield_total, true)
         @tiers["BODY"]["Missile Combat"]["actual_weapons"][weapon] = actual_weapon
       end
     end
