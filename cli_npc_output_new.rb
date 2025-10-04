@@ -94,10 +94,21 @@ def npc_output_new(n, cli, custom_width = nil)
   n.tiers["BODY"].each do |attr_name, attr_data|
     # Skip if attr_data is not a hash or doesn't have skills
     next unless attr_data.is_a?(Hash) && attr_data["skills"].is_a?(Hash)
-    
+
     non_zero_skills = attr_data["skills"].select { |_, v| v > 0 }
+
+    # For Melee Combat and Missile Combat, show attribute but not individual weapon skills
+    if attr_name == "Melee Combat" || attr_name == "Missile Combat"
+      # Show attribute only if there are any skills
+      if non_zero_skills.any?
+        attr_level = attr_data["level"]
+        body_lines << " #{@attr_color}#{attr_name} (#{attr_level.to_s.rjust(2)})#{@reset}"
+      end
+      next  # Skip individual weapon skills
+    end
+
     next if non_zero_skills.empty?
-    
+
     attr_level = attr_data["level"]
     body_lines << " #{@attr_color}#{attr_name} (#{attr_level.to_s.rjust(2)})#{@reset}"
     non_zero_skills.each do |skill_name, skill_level|
