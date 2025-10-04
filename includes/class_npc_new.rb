@@ -460,9 +460,9 @@ class NpcNew
     level
   end
   
-  def select_actual_weapon(skill_name, strength_total, is_missile = false)
-    # Map skill name to actual weapon from $Melee or $Missile table
-    # Load weapon tables if needed
+  def select_actual_weapon_from_table(skill_name, strength_char, is_missile = false)
+    # Select actual weapon from $Melee or $Missile table based on skill and strength
+    # This mimics the original weapon selection system
     unless defined?($Melee)
       load File.join($pgmdir, "includes/tables/melee.rb")
     end
@@ -471,75 +471,71 @@ class NpcNew
     end
 
     if is_missile
-      # Map missile skill names to actual weapons
+      # Select from $Missile table based on skill type
       case skill_name.downcase
       when /bow/
         # Select bow based on strength: L(2), M(4), H(6), H2(8), H3(10)
-        if strength_total >= 10
+        if strength_char >= 10
           "Bow(H3) [1]"
-        elsif strength_total >= 8
+        elsif strength_char >= 8
           "Bow(H2) [1]"
-        elsif strength_total >= 6
+        elsif strength_char >= 6
           "Bow(H)  [1]"
-        elsif strength_total >= 4
+        elsif strength_char >= 4
           "Bow(M) [1]"
         else
           "Bow(L) [1]"
         end
       when /crossbow|x-bow/
-        # Select crossbow based on strength
-        if strength_total >= 4
+        if strength_char >= 4
           "X-bow(H) [¼]"
-        elsif strength_total >= 3
+        elsif strength_char >= 3
           "X-bow(M) [⅓]"
         else
           "X-bow(L) [½]"
         end
-      when /throwing|knife/
+      when /throwing/
         "Th Knife [2]"
       when /javelin/
         "Javelin [1]"
       when /sling/
         "Sling [1]"
       when /net/
-        skill_name  # Net is just "Net"
+        "Net"
       when /spear/
-        "Javelin [1]"  # Thrown spear = javelin
+        "Javelin [1]"
       else
-        "Rock [2]"  # Default
+        "Rock [2]"
       end
     else
-      # Map melee skill names to actual weapons from $Melee table
-      case skill_name.downcase
-      when /sword/
-        strength_total >= 4 ? "Longsword" : "Short sword"
-      when /axe/
-        strength_total >= 4 ? "B. axe 2H" : "Hatchet"
-      when /spear/
-        strength_total >= 4 ? "Spear 2H" : "Spear"
-      when /mace/
-        strength_total >= 4 ? "H. mace 2H" : "Light mace"
-      when /dagger|knife/
-        "Knife"
-      when /staff/
-        "Staff"
-      when /club/
-        "Club"
-      when /net/
-        "Net"
-      when /shield/
-        "Buckler"
-      when /unarmed/
-        "Unarmed"
+      # Select from $Melee table based on strength (like original system)
+      # Determine weapon level range based on BODY characteristic
+      wpn_level = case strength_char
+                  when 0..1 then 2
+                  when 2 then 4
+                  when 3 then 11
+                  when 4 then 18
+                  when 5 then 22
+                  when 6 then 26
+                  when 7..8 then 28
+                  else 30
+                  end
+
+      # Select random weapon from available range
+      weapon_idx = rand(wpn_level) + 1
+      weapon_data = $Melee[weapon_idx]
+
+      if weapon_data
+        weapon_data[0].strip  # Return weapon name like "Longsword/Buc"
       else
-        skill_name  # Return as-is if no match
+        skill_name  # Fallback to skill name
       end
     end
   end
 
   def add_weapon_skills(template)
     # Add melee weapon skills with primary weapon specialization
-    # Also store actual weapon selections based on skill names
+    # Also store actual weapon selections from $Melee/$Missile tables
     if template["melee_weapons"]
       @tiers["BODY"]["Melee Combat"]["skills"] ||= {}
       @tiers["BODY"]["Melee Combat"]["actual_weapons"] ||= {}
@@ -547,8 +543,8 @@ class NpcNew
       # Find primary weapon (highest base value)
       primary_weapon = template["melee_weapons"].max_by { |_, v| v }
 
-      # Get strength total for weapon selection
-      strength_total = get_skill_total("BODY", "Strength", "Wield weapon") rescue 3
+      # Get BODY characteristic for weapon table selection (like original system)
+      body_char = get_characteristic("BODY") || 1
 
       template["melee_weapons"].each_with_index do |(weapon, skill_level), index|
         base_level = calculate_tier_level(skill_level, @level, 0.6)
@@ -561,8 +557,8 @@ class NpcNew
 
         @tiers["BODY"]["Melee Combat"]["skills"][weapon] = base_level
 
-        # Select actual weapon based on skill name and strength
-        actual_weapon = select_actual_weapon(weapon, strength_total, false)
+        # Select actual weapon from $Melee table based on BODY characteristic
+        actual_weapon = select_actual_weapon_from_table(weapon, body_char, false)
         @tiers["BODY"]["Melee Combat"]["actual_weapons"][weapon] = actual_weapon
       end
     end
@@ -575,8 +571,8 @@ class NpcNew
       # Find primary missile weapon
       primary_missile = template["missile_weapons"].max_by { |_, v| v }
 
-      # Get strength total for missile weapon selection
-      strength_total = get_skill_total("BODY", "Strength", "Wield weapon") rescue 3
+      # Get BODY characteristic for weapon selection
+      body_char = get_characteristic("BODY") || 1
 
       template["missile_weapons"].each do |weapon, skill_level|
         base_level = calculate_tier_level(skill_level, @level, 0.6)
@@ -589,8 +585,8 @@ class NpcNew
 
         @tiers["BODY"]["Missile Combat"]["skills"][weapon] = base_level
 
-        # Select actual weapon based on skill name and strength
-        actual_weapon = select_actual_weapon(weapon, strength_total, true)
+        # Select actual weapon based on skill type and strength
+        actual_weapon = select_actual_weapon_from_table(weapon, body_char, true)
         @tiers["BODY"]["Missile Combat"]["actual_weapons"][weapon] = actual_weapon
       end
     end
