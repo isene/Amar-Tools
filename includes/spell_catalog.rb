@@ -369,11 +369,13 @@ def assign_spells_to_npc(npc)
 
   max_spells = case magic_skill
                when 0..5 then 0      # No spells for beginners
-               when 6..10 then 1     # 1 spell for novices
-               when 11..15 then 2    # 2 spells for competent
-               when 16..20 then 3    # 3 spells for skilled
-               when 21..25 then 4    # 4 spells for experts
-               else 5                # 5 spells for masters
+               when 6..8 then 2      # 2 spells for novices
+               when 9..11 then 4     # 4 spells for apprentices
+               when 12..14 then 6    # 6 spells for competent
+               when 15..17 then 8    # 8 spells for skilled
+               when 18..20 then 10   # 10 spells for experts
+               when 21..25 then 12   # 12 spells for masters
+               else 15               # 15 spells for legendary
                end
 
   # Get character's strongest magical domains
@@ -388,6 +390,7 @@ def assign_spells_to_npc(npc)
     can_cast = true
     spell_data[:skill_path].each do |skill_part|
       # Simplified check - character should have some relevant skills
+      # Also check abbreviated names (e.g., "Prot." for "Protection")
       case skill_part
       when "Fire" then can_cast &&= (all_magic_skills["Fire"] || 0) > 0
       when "Water" then can_cast &&= (all_magic_skills["Water"] || 0) > 0
@@ -395,11 +398,13 @@ def assign_spells_to_npc(npc)
       when "Earth" then can_cast &&= (all_magic_skills["Earth"] || 0) > 0
       when "Mind" then can_cast &&= (all_magic_skills["Mind"] || 0) > 0
       when "Nature" then can_cast &&= (all_magic_skills["Nature"] || 0) > 0
-      when "Protection" then can_cast &&= (all_magic_skills["Protection"] || 0) > 0
-      when "Illusion" then can_cast &&= (all_magic_skills["Illusion"] || 0) > 0
+      when "Protection" then can_cast &&= ((all_magic_skills["Protection"] || 0) > 0 || (all_magic_skills["Prot."] || 0) > 0)
+      when "Illusion" then can_cast &&= ((all_magic_skills["Illusion"] || 0) > 0 || (all_magic_skills["Ill."] || 0) > 0)
       when "Shadow" then can_cast &&= (all_magic_skills["Shadow"] || 0) > 0
       when "Self" then can_cast &&= (all_magic_skills["Self"] || 0) > 0
       when "Life" then can_cast &&= (all_magic_skills["Life"] || 0) > 0
+      when "Time" then can_cast &&= (all_magic_skills["Time"] || 0) > 0
+      when "Death" then can_cast &&= (all_magic_skills["Death"] || 0) > 0
       end
     end
     can_cast

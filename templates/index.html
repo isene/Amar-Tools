@@ -134,10 +134,11 @@
 
         .output {
             font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
+            white-space: pre;
             line-height: 1.2;
             width: 100%;
             align-self: stretch;
+            overflow-x: auto;
         }
 
         .form-group {
@@ -2303,9 +2304,9 @@ Thank you for using Amar RPG Tools!
             }
         }
 
-        // Load saved theme preference on page load
+        // Load saved theme preference on page load - DEFAULT TO MODERN
         window.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('amarTheme');
+            const savedTheme = localStorage.getItem('amarTheme') || 'modern'; // Default to modern
             const geekUIText = document.getElementById('geekUIText');
             if (savedTheme === 'modern') {
                 document.body.classList.add('modern-theme');

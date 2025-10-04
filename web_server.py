@@ -153,8 +153,8 @@ def convert_ansi_to_css(text):
     if '<span' in result and result.count('<span') > result.count('</span>'):
         result += '</span>'
 
-    # Convert line breaks to HTML
-    result = result.replace('\n', '<br>')
+    # Don't convert line breaks - let white-space: pre handle formatting
+    # This preserves exact alignment of vertical lines and columns
 
     return result
 
