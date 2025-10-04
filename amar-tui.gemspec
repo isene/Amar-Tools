@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "amar-tui"
-  spec.version       = "2.0.1"
+  spec.version       = "2.1.0"
   spec.authors       = ["Geir Isene"]
   spec.email         = ["g@isene.com"]
 
@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.post_install_message = <<-MESSAGE
 
   ==========================================
-  AMAR Tools TUI v2.0.1 has been installed!
+  AMAR Tools TUI v2.1.0 has been installed!
   ==========================================
 
   NOTE: This gem has been renamed to 'amar-rpg'.
