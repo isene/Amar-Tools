@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "amar-tui"
-  spec.version       = "2.0.0"
+  spec.version       = "2.0.1"
   spec.authors       = ["Geir Isene"]
   spec.email         = ["g@isene.com"]
 
@@ -30,9 +30,9 @@ Gem::Specification.new do |spec|
 
   spec.post_install_message = <<-MESSAGE
 
-  ========================================
-  AMAR Tools TUI v2.0 has been installed!
-  ========================================
+  ==========================================
+  AMAR Tools TUI v2.0.1 has been installed!
+  ==========================================
 
   To start the TUI application:
     amar-tui.rb

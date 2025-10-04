@@ -60,7 +60,7 @@ require 'stringio'  # For suppressing output
 require 'fcntl'  # For non-blocking IO
 
 # GLOBAL VARS & CONSTANTS
-@version = "1.0.0"
+@version = "2.0.1"
 $pgmdir = File.dirname(__FILE__)  # Global for includes
 
 # Debug logging
