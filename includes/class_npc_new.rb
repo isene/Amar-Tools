@@ -460,13 +460,95 @@ class NpcNew
     level
   end
   
+  def select_actual_weapon(skill_name, strength_total, is_missile = false)
+    # Map skill name to actual weapon from $Melee or $Missile table
+    # Load weapon tables if needed
+    unless defined?($Melee)
+      load File.join($pgmdir, "includes/tables/melee.rb")
+    end
+    unless defined?($Missile)
+      load File.join($pgmdir, "includes/tables/missile.rb")
+    end
+
+    if is_missile
+      # Map missile skill names to actual weapons
+      case skill_name.downcase
+      when /bow/
+        # Select bow based on strength: L(2), M(4), H(6), H2(8), H3(10)
+        if strength_total >= 10
+          "Bow(H3) [1]"
+        elsif strength_total >= 8
+          "Bow(H2) [1]"
+        elsif strength_total >= 6
+          "Bow(H)  [1]"
+        elsif strength_total >= 4
+          "Bow(M) [1]"
+        else
+          "Bow(L) [1]"
+        end
+      when /crossbow|x-bow/
+        # Select crossbow based on strength
+        if strength_total >= 4
+          "X-bow(H) [¼]"
+        elsif strength_total >= 3
+          "X-bow(M) [⅓]"
+        else
+          "X-bow(L) [½]"
+        end
+      when /throwing|knife/
+        "Th Knife [2]"
+      when /javelin/
+        "Javelin [1]"
+      when /sling/
+        "Sling [1]"
+      when /net/
+        skill_name  # Net is just "Net"
+      when /spear/
+        "Javelin [1]"  # Thrown spear = javelin
+      else
+        "Rock [2]"  # Default
+      end
+    else
+      # Map melee skill names to actual weapons from $Melee table
+      case skill_name.downcase
+      when /sword/
+        strength_total >= 4 ? "Longsword" : "Short sword"
+      when /axe/
+        strength_total >= 4 ? "B. axe 2H" : "Hatchet"
+      when /spear/
+        strength_total >= 4 ? "Spear 2H" : "Spear"
+      when /mace/
+        strength_total >= 4 ? "H. mace 2H" : "Light mace"
+      when /dagger|knife/
+        "Knife"
+      when /staff/
+        "Staff"
+      when /club/
+        "Club"
+      when /net/
+        "Net"
+      when /shield/
+        "Buckler"
+      when /unarmed/
+        "Unarmed"
+      else
+        skill_name  # Return as-is if no match
+      end
+    end
+  end
+
   def add_weapon_skills(template)
     # Add melee weapon skills with primary weapon specialization
+    # Also store actual weapon selections based on skill names
     if template["melee_weapons"]
       @tiers["BODY"]["Melee Combat"]["skills"] ||= {}
+      @tiers["BODY"]["Melee Combat"]["actual_weapons"] ||= {}
 
       # Find primary weapon (highest base value)
       primary_weapon = template["melee_weapons"].max_by { |_, v| v }
+
+      # Get strength total for weapon selection
+      strength_total = get_skill_total("BODY", "Strength", "Wield weapon") rescue 3
 
       template["melee_weapons"].each_with_index do |(weapon, skill_level), index|
         base_level = calculate_tier_level(skill_level, @level, 0.6)
@@ -478,15 +560,23 @@ class NpcNew
         end
 
         @tiers["BODY"]["Melee Combat"]["skills"][weapon] = base_level
+
+        # Select actual weapon based on skill name and strength
+        actual_weapon = select_actual_weapon(weapon, strength_total, false)
+        @tiers["BODY"]["Melee Combat"]["actual_weapons"][weapon] = actual_weapon
       end
     end
 
     # Add missile weapon skills
     if template["missile_weapons"]
       @tiers["BODY"]["Missile Combat"]["skills"] ||= {}
+      @tiers["BODY"]["Missile Combat"]["actual_weapons"] ||= {}
 
       # Find primary missile weapon
       primary_missile = template["missile_weapons"].max_by { |_, v| v }
+
+      # Get strength total for missile weapon selection
+      strength_total = get_skill_total("BODY", "Strength", "Wield weapon") rescue 3
 
       template["missile_weapons"].each do |weapon, skill_level|
         base_level = calculate_tier_level(skill_level, @level, 0.6)
@@ -498,6 +588,10 @@ class NpcNew
         end
 
         @tiers["BODY"]["Missile Combat"]["skills"][weapon] = base_level
+
+        # Select actual weapon based on skill name and strength
+        actual_weapon = select_actual_weapon(weapon, strength_total, true)
+        @tiers["BODY"]["Missile Combat"]["actual_weapons"][weapon] = actual_weapon
       end
     end
     

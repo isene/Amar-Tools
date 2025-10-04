@@ -274,11 +274,21 @@ def npc_output_new(n, cli, custom_width = nil)
       f += "\n"
     end
   else
-    # 3-tier weapon display - show ALL weapon skills
+    # 3-tier weapon display - show ALL weapon skills with actual weapon names
     melee_weapons = n.tiers["BODY"]["Melee Combat"]["skills"].select { |_, v| v > 0 } rescue {}
     missile_weapons = n.tiers["BODY"]["Missile Combat"]["skills"].select { |_, v| v > 0 } rescue {}
+    actual_melee = n.tiers["BODY"]["Melee Combat"]["actual_weapons"] rescue {}
+    actual_missile = n.tiers["BODY"]["Missile Combat"]["actual_weapons"] rescue {}
 
   if melee_weapons.any? || missile_weapons.any?
+    # Load weapon tables for stats lookup
+    unless defined?($Melee)
+      load File.join($pgmdir, "includes/tables/melee.rb")
+    end
+    unless defined?($Missile)
+      load File.join($pgmdir, "includes/tables/missile.rb")
+    end
+
     f += "─" * width + "\n"
     f += "#{@weapon_color}WEAPON             SKILL    INI     OFF    DEF    DAM    HP    RANGE#{@reset}\n"
 
@@ -292,19 +302,35 @@ def npc_output_new(n, cli, custom_width = nil)
     reaction_speed = n.get_skill_total("MIND", "Awareness", "Reaction speed") || 0
 
     # Display melee weapons
-    melee_weapons.sort_by { |_, skill| -skill }.each do |weapon, skill|
-      wpn_stats = get_weapon_stats(weapon)
+    melee_weapons.sort_by { |_, skill| -skill }.each do |weapon_skill, skill|
+      # Get actual weapon name
+      actual_weapon_name = actual_melee[weapon_skill] || weapon_skill
+
+      # Find weapon in $Melee table
+      weapon_data = $Melee.find { |w| w && w[0] && w[0].strip == actual_weapon_name.strip }
+
       attr = n.get_attribute("BODY", "Melee Combat") || 0
       skill_total = body_char + attr + skill
 
-      init = reaction_speed + (wpn_stats[:init] || 0)
-      off = skill_total + (wpn_stats[:off] || 0)
-      defense = skill_total + (wpn_stats[:def] || 0) + dodge_bonus
-      dmg_mod = wpn_stats[:dmg].to_s =~ /special/ ? 0 : (wpn_stats[:dmg].to_s.to_i || 0)
-      dmg = (n.DB || 0) + dmg_mod
-      hp = wpn_stats[:hp] || 0
+      if weapon_data
+        # Use actual weapon stats from table: [Name, Type, Str, Dam, Init, Off, Def, HP, Wt]
+        init = reaction_speed + weapon_data[4]
+        off = skill_total + weapon_data[5]
+        defense = skill_total + weapon_data[6] + dodge_bonus
+        dmg = (n.DB || 0) + weapon_data[3]
+        hp = weapon_data[7]
+      else
+        # Fallback to pattern matching
+        wpn_stats = get_weapon_stats(actual_weapon_name)
+        init = reaction_speed + (wpn_stats[:init] || 0)
+        off = skill_total + (wpn_stats[:off] || 0)
+        defense = skill_total + (wpn_stats[:def] || 0) + dodge_bonus
+        dmg_mod = wpn_stats[:dmg].to_s =~ /special/ ? 0 : (wpn_stats[:dmg].to_s.to_i || 0)
+        dmg = (n.DB || 0) + dmg_mod
+        hp = wpn_stats[:hp] || 0
+      end
 
-      f += "#{weapon.ljust(19)}"
+      f += "#{actual_weapon_name.ljust(19)}"
       f += "#{skill_total.to_s.ljust(9)}"
       f += "#{init.to_s.ljust(8)}"
       f += "#{off.to_s.ljust(7)}"
@@ -315,18 +341,33 @@ def npc_output_new(n, cli, custom_width = nil)
     end
 
     # Display missile weapons
-    missile_weapons.sort_by { |_, skill| -skill }.each do |weapon, skill|
-      wpn_stats = get_missile_stats(weapon)
+    missile_weapons.sort_by { |_, skill| -skill }.each do |weapon_skill, skill|
+      # Get actual weapon name
+      actual_weapon_name = actual_missile[weapon_skill] || weapon_skill
+
+      # Find weapon in $Missile table
+      weapon_data = $Missile.find { |w| w && w[0] && w[0].strip == actual_weapon_name.strip }
+
       attr = n.get_attribute("BODY", "Missile Combat") || 0
       skill_total = body_char + attr + skill
 
-      off = skill_total + (wpn_stats[:off] || 0)
-      range = wpn_stats[:range] || "30m"
-      dmg_mod = wpn_stats[:dmg].to_s =~ /special/ ? 0 : (wpn_stats[:dmg].to_s.to_i || 0)
-      dmg = (n.DB || 0) + dmg_mod
-      hp = wpn_stats[:hp] || 0
+      if weapon_data
+        # Use actual weapon stats from table: [Name, Type, Str, Dam, Off, Rng, Max, Init, Wt]
+        off = skill_total + weapon_data[4]
+        dmg = (n.DB || 0) + weapon_data[3]
+        range = "#{weapon_data[5]}m"
+        hp = weapon_data[7]
+      else
+        # Fallback to pattern matching
+        wpn_stats = get_missile_stats(actual_weapon_name)
+        off = skill_total + (wpn_stats[:off] || 0)
+        range = wpn_stats[:range] || "30m"
+        dmg_mod = wpn_stats[:dmg].to_s =~ /special/ ? 0 : (wpn_stats[:dmg].to_s.to_i || 0)
+        dmg = (n.DB || 0) + dmg_mod
+        hp = wpn_stats[:hp] || 0
+      end
 
-      f += "#{weapon.ljust(19)}"
+      f += "#{actual_weapon_name.ljust(19)}"
       f += "#{skill_total.to_s.ljust(9)}"
       f += "#{' '.ljust(8)}"  # No init for missile
       f += "#{off.to_s.ljust(7)}"
