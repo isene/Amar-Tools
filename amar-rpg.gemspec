@@ -1,10 +1,10 @@
 Gem::Specification.new do |spec|
-  spec.name          = "amar-tui"
+  spec.name          = "amar-rpg"
   spec.version       = "2.0.1"
   spec.authors       = ["Geir Isene"]
   spec.email         = ["g@isene.com"]
 
-  spec.summary       = "AMAR Tools TUI - Terminal UI for Amar RPG"
+  spec.summary       = "AMAR RPG Tools - Terminal UI and utilities for Amar RPG"
   spec.description   = "A comprehensive terminal UI for the Amar RPG with character generation, encounter management, weather generation, and complete campaign tools. Features both modern 3-tier and classic 2-tier character systems."
   spec.homepage      = "https://github.com/isene/Amar-Tools"
   spec.license       = "Unlicense"
@@ -30,15 +30,11 @@ Gem::Specification.new do |spec|
 
   spec.post_install_message = <<-MESSAGE
 
-  ==========================================
-  AMAR Tools TUI v2.0.1 has been installed!
-  ==========================================
+  ===========================================
+  AMAR RPG Tools v2.0.1 has been installed!
+  ===========================================
 
-  NOTE: This gem has been renamed to 'amar-rpg'.
-  Please install 'amar-rpg' instead:
-    gem install amar-rpg
-
-  To start the TUI application:
+  To start the application:
     amar-tui.rb
 
   For more information:
