@@ -2048,17 +2048,20 @@ def npc_input_new_tui
   show_content(type_text)
   type_input = get_text_input("")
   return nil if type_input == :cancelled
-  
+
   type = ""
   if type_input && type_input.to_i > 0 && type_input.to_i <= types.length
     type = types[type_input.to_i - 1]
+  else
+    # Random type selection (0 or empty input)
+    type = types.sample
   end
-  
+
   # If race is not Human and type doesn't already include race, prepend it
   if race != "Human" && !type.include?(":")
     type = "#{race}: #{type}" if !type.empty?
   end
-  
+
   inputs << type
   
   # Level selection
