@@ -1258,6 +1258,16 @@ class NpcNew
     unless @tiers["MIND"]["Awareness"]["skills"].key?("Reaction speed")
       @tiers["MIND"]["Awareness"]["skills"]["Reaction speed"] = 0
     end
+
+    # Ensure Social Knowledge attribute exists for Spoken Language
+    @tiers["MIND"]["Social Knowledge"] ||= {"level" => 0, "skills" => {}}
+    @tiers["MIND"]["Social Knowledge"]["skills"] ||= {}
+
+    # Add Spoken Language with base value of 2 (native tongue) if missing
+    # All characters start with 2 in Spoken Language per character creation rules
+    unless @tiers["MIND"]["Social Knowledge"]["skills"].key?("Spoken Language")
+      @tiers["MIND"]["Social Knowledge"]["skills"]["Spoken Language"] = 2
+    end
   end
 
   def apply_predetermined_stats
