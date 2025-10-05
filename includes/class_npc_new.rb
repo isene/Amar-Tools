@@ -18,7 +18,7 @@ class NpcNew
     # Generate random values for missing data
     @name = name && !name.empty? ? name : generate_random_name(sex)
     @type = type
-    @level = level.to_i
+    @level = level.to_i > 0 ? level.to_i : rand(1..6)  # Random level 1-6 if 0 or invalid
     @area = area && !area.empty? ? area : ["Amaronir", "Merisir", "Calaronir", "Feronir", "Rauinir"].sample
     @sex = sex && !sex.empty? ? sex : ["M", "F"].sample
     
