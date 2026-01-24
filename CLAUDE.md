@@ -1,5 +1,24 @@
 # Claude Code Instructions for Amar-Tools
 
+## CRITICAL: Dual Gem Release
+
+**When releasing a new version, ALWAYS release BOTH gems:**
+
+1. Update version in BOTH `amar-rpg.gemspec` AND `amar-tui.gemspec`
+2. Build both gems:
+   ```bash
+   gem build amar-rpg.gemspec
+   gem build amar-tui.gemspec
+   ```
+3. Push both to RubyGems:
+   ```bash
+   gem push amar-rpg-<version>.gem
+   gem push amar-tui-<version>.gem
+   ```
+4. Commit and push to GitHub
+
+Both gems are identical - `amar-tui` is the legacy name (more downloads), `amar-rpg` is the proper name.
+
 ## CRITICAL: Always Use rcurses
 
 **NEVER use raw ANSI escape codes!** Always use rcurses string extensions for ALL terminal operations:
