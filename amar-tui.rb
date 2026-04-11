@@ -26,13 +26,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -41,10 +41,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -79,13 +79,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -94,10 +94,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -123,13 +123,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -138,10 +138,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -221,13 +221,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -236,10 +236,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -338,13 +338,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -353,10 +353,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -380,13 +380,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -395,10 +395,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -511,13 +511,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -526,10 +526,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -555,13 +555,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -570,10 +570,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -624,13 +624,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -639,10 +639,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -664,13 +664,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -679,10 +679,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -707,16 +707,16 @@ def draw_menu
                 when /UTILITIES/ then 133    # Light magenta
                 else 36  # Default cyan
                 end
-        menu_text += item.fg(color).b + "\n"
+        menu_text += item.fg(color).bd + "\n"
       else
         menu_text += item + "\n"
       end
     elsif idx == @menu_index
       # Highlighted item - RTFM style (bold arrow, underlined item)
       if true
-        menu_text += "→ ".b + item.u + "\n"  # Bold arrow, underlined item
+        menu_text += "→ ".bd + item.ul + "\n"  # Bold arrow, underlined item
       else
-        menu_text += "→ " + item.u + "\n"  # Underlined item
+        menu_text += "→ " + item.ul + "\n"  # Underlined item
       end
     else
       # Grey out legacy items
@@ -738,13 +738,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -753,10 +753,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -787,13 +787,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -802,10 +802,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -838,13 +838,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -853,10 +853,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -896,13 +896,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -911,10 +911,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -937,13 +937,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -952,10 +952,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -986,13 +986,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -1001,10 +1001,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -1048,13 +1048,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -1063,10 +1063,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -1160,7 +1160,7 @@ def convert_ansi_to_rcurses(text)
           # Apply rcurses color
           if code.start_with?('1;')
             # Bold + color
-            result += colored_text.fg(color).b
+            result += colored_text.fg(color).bd
           else
             result += colored_text.fg(color)
           end
@@ -1191,13 +1191,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -1206,10 +1206,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -1311,13 +1311,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -1326,10 +1326,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -1382,13 +1382,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -1397,10 +1397,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -1636,13 +1636,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -1651,10 +1651,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -1723,13 +1723,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -1738,10 +1738,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -1782,9 +1782,9 @@ def roll_o6
     roll_str = roll.to_s.rjust(3).fg(roll_color)
 
     if roll >= 10
-      results << "#{roll_str} " + "(Critical!)".fg(46).b
+      results << "#{roll_str} " + "(Critical!)".fg(46).bd
     elsif roll <= -3
-      results << "#{roll_str} " + "(Fumble!)".fg(196).b
+      results << "#{roll_str} " + "(Fumble!)".fg(196).bd
     else
       results << "#{roll_str}"
     end
@@ -1848,13 +1848,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -1863,10 +1863,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -1925,13 +1925,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -1940,10 +1940,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -2160,13 +2160,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -2175,10 +2175,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -2265,13 +2265,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -2280,10 +2280,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -2428,13 +2428,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -2443,10 +2443,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -2489,13 +2489,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -2504,10 +2504,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -2562,13 +2562,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -2577,10 +2577,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -2637,13 +2637,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -2652,10 +2652,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -2711,13 +2711,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -2726,10 +2726,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -2852,13 +2852,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -2867,10 +2867,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -3008,13 +3008,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -3023,10 +3023,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -3077,13 +3077,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -3092,10 +3092,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -3131,13 +3131,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -3146,10 +3146,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -3214,13 +3214,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -3229,10 +3229,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -3264,13 +3264,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -3279,10 +3279,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -3298,9 +3298,9 @@ def colorize_output(text, type = :default)
   # Always apply colors
   case type
   when :header
-    text.fg(14).b  # Bright cyan bold
+    text.fg(14).bd  # Bright cyan bold
   when :subheader
-    text.fg(11).b  # Bright yellow bold
+    text.fg(11).bd  # Bright yellow bold
   when :label
     text.fg(13)  # Bright magenta (no bold)
   when :value
@@ -3314,7 +3314,7 @@ def colorize_output(text, type = :default)
   when :dice
     text.fg(202)   # Orange (for dice/skill values)
   when :name
-    text.fg(15).b  # Bright white bold
+    text.fg(15).bd  # Bright white bold
   else
     text
   end
@@ -3327,13 +3327,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -3342,10 +3342,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -3382,13 +3382,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -3397,10 +3397,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -3430,13 +3430,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -3445,10 +3445,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -3544,13 +3544,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -3559,10 +3559,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -3639,13 +3639,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -3654,10 +3654,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -3890,13 +3890,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -3905,10 +3905,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -4225,13 +4225,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -4240,10 +4240,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -4457,13 +4457,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -4472,10 +4472,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -4500,8 +4500,8 @@ def generate_weather_ui
   end
 
   # Get Month - Always use colors for weather UI
-  mstring = "WEATHER GENERATOR".fg(14).b + "\n"
-  mstring += "Select month:".fg(14).b + "\n"
+  mstring = "WEATHER GENERATOR".fg(14).bd + "\n"
+  mstring += "Select month:".fg(14).bd + "\n"
   7.times do |i|
     mstring += i.to_s.rjust(2).fg(202) + ": "  # Orange for numbers
     mstring += $Month[i].fg(7).ljust(30)  # White for month names
@@ -4526,7 +4526,7 @@ def generate_weather_ui
   $mn = month
   
   # Get weather conditions - Always use colors
-  weather_text = "\n" + "Select weather conditions:".fg(14).b + "\n\n"
+  weather_text = "\n" + "Select weather conditions:".fg(14).bd + "\n\n"
   weather_text += " 1".fg(202) + ": " + "Arctic".fg(51) + "\n"  # Cyan for cold
   weather_text += " 2".fg(202) + ": " + "Winter".fg(195) + "\n"  # Light blue
   weather_text += " 3".fg(202) + ": " + "Cold".fg(117) + "\n"  # Light cyan
@@ -4553,13 +4553,13 @@ def generate_weather_ui
   weather = 9 if weather > 9
   
   # Get wind - Always use colors
-  wind_text = "\n" + "Select wind conditions:".fg(14).b + "\n\n"
-  wind_text += "Wind Direction:".fg(11).b + "\n"
+  wind_text = "\n" + "Select wind conditions:".fg(14).bd + "\n\n"
+  wind_text += "Wind Direction:".fg(11).bd + "\n"
   wind_text += " 0".fg(202) + ": N   " + "1".fg(202) + ": NE   "
   wind_text += "2".fg(202) + ": E   " + "3".fg(202) + ": SE\n"
   wind_text += " 4".fg(202) + ": S   " + "5".fg(202) + ": SW   "
   wind_text += "6".fg(202) + ": W   " + "7".fg(202) + ": NW\n\n"
-  wind_text += "Wind Strength:".fg(11).b + "\n"
+  wind_text += "Wind Strength:".fg(11).bd + "\n"
   wind_text += " 0".fg(202) + ": Calm   " + "8".fg(202) + ": Light   "
   wind_text += "16".fg(202) + ": Medium   " + "24".fg(202) + ": Strong\n\n"
   wind_text += "Enter combined value".fg(13) + " (0-31, default=#{$wind_dir_n + $wind_str_n * 8}): "
@@ -4604,7 +4604,7 @@ def generate_weather_ui
                   when 13 then 239  # Mestronorpha
                   else 226          # Default yellow
                   end
-    output += "\n" + "☀ WEATHER FOR #{$Month[month].upcase} ☀".fg(month_color).b + "\n"
+    output += "\n" + "☀ WEATHER FOR #{$Month[month].upcase} ☀".fg(month_color).bd + "\n"
     output += ("─" * 60).fg(240) + "\n\n"  # Grey divider
     
     # Weather symbols
@@ -4640,14 +4640,14 @@ def generate_weather_ui
       # Weather description with enhanced gradient coloring
       weather_text = $Weather[d.weather]
       weather_colored = case weather_text
-                       when /blizzard/i then weather_text.fg(231).b       # Bold white for blizzard
-                       when /snow storm/i then weather_text.fg(255).b      # Bold white for snow storm
+                       when /blizzard/i then weather_text.fg(231).bd       # Bold white for blizzard
+                       when /snow storm/i then weather_text.fg(255).bd      # Bold white for snow storm
                        when /heavy snow/i then weather_text.fg(195)        # Light blue-white for heavy snow
                        when /snow/i then weather_text.fg(255)              # White for snow
                        when /hail/i then weather_text.fg(253)              # Light gray for hail
-                       when /thunder/i then weather_text.fg(93).b          # Bold purple for thunder
-                       when /lightning/i then weather_text.fg(226).b       # Bold yellow for lightning
-                       when /storm/i then weather_text.fg(202).b           # Bold orange for storm
+                       when /thunder/i then weather_text.fg(93).bd          # Bold purple for thunder
+                       when /lightning/i then weather_text.fg(226).bd       # Bold yellow for lightning
+                       when /storm/i then weather_text.fg(202).bd           # Bold orange for storm
                        when /heavy rain/i then weather_text.fg(21)         # Deep blue for heavy rain
                        when /rain/i then weather_text.fg(33)               # Blue for rain
                        when /drizzle/i then weather_text.fg(111)           # Light blue for drizzle
@@ -4664,8 +4664,8 @@ def generate_weather_ui
                        when /lucid/i then weather_text.fg(252)             # Very light gray
                        when /warm/i then weather_text.fg(214)              # Orange for warm
                        when /hot/i then weather_text.fg(196)               # Red for hot
-                       when /scorching/i then weather_text.fg(160).b       # Bold dark red for scorching
-                       when /freezing/i then weather_text.fg(45).b         # Bold cyan for freezing
+                       when /scorching/i then weather_text.fg(160).bd       # Bold dark red for scorching
+                       when /freezing/i then weather_text.fg(45).bd         # Bold cyan for freezing
                        when /cold/i then weather_text.fg(51)               # Cyan for cold
                        when /cool/i then weather_text.fg(117)              # Light cyan for cool
                        when /breeze/i then weather_text.fg(159)            # Light blue for breeze
@@ -4676,13 +4676,13 @@ def generate_weather_ui
       # Add weather symbol with color matching the weather
       symbol_added = false
       if weather_text =~ /blizzard|snow storm/i
-        line += " " + "❄".fg(231).b
+        line += " " + "❄".fg(231).bd
         symbol_added = true
       elsif weather_text =~ /snow/i
         line += " " + "❄".fg(255)
         symbol_added = true
       elsif weather_text =~ /thunder|lightning|storm/i
-        line += " " + "⛈".fg(226).b
+        line += " " + "⛈".fg(226).bd
         symbol_added = true
       elsif weather_text =~ /rain/i
         line += " " + "☂".fg(33)
@@ -4751,7 +4751,7 @@ def generate_weather_ui
         # Use different colors for different special days
         special_text = "★ #{d.special}"
         special_colored = case d.special
-                         when /Ikalio/i then special_text.fg(226).b      # ONLY Ikalio gets bright yellow (Sun God)
+                         when /Ikalio/i then special_text.fg(226).bd      # ONLY Ikalio gets bright yellow (Sun God)
                          when /Anashina/i then special_text.fg(41)       # Anashina green (Nature)
                          when /Gwendyll/i then special_text.fg(213)      # Gwendyll magenta (Water)
                          when /Fionella/i then special_text.fg(126)      # Fionella new color (Love)
@@ -4769,7 +4769,7 @@ def generate_weather_ui
                          when /MacGillan/i then special_text.fg(126)     # MacGillan new color
                          when /Maleko/i then special_text.fg(172)        # Maleko color
                          when /Mestronorpha/i then special_text.fg(239)  # Mestronorpha color
-                         when /Elesi/i then special_text.fg(229).b       # Elesi - same as Full moon
+                         when /Elesi/i then special_text.fg(229).bd       # Elesi - same as Full moon
                          when /Ielina/i then special_text.fg(230)        # Ielina new color
                          when /Man Peggon|harvest/i then special_text.fg(130)  # Man Peggon brown
                          when /Taroc|solstice/i then special_text.fg(248)      # Taroc grey (Forge)
@@ -4796,7 +4796,7 @@ def generate_weather_ui
         moon_colored = case i
                       when 0 then moon_text.fg(238)    # Dark gray for new moon
                       when 7 then moon_text.fg(252)    # Light gray for waxing
-                      when 14 then moon_text.fg(229).b # Bold light yellow for full
+                      when 14 then moon_text.fg(229).bd # Bold light yellow for full
                       when 21 then moon_text.fg(245)   # Medium gray for waning
                       end
         line += moon_colored
@@ -4902,7 +4902,7 @@ def generate_weather_ui
                         when 13 then 239  # Mestronorpha
                         else 226          # Default yellow
                         end
-          output += "\n" + "☀ WEATHER FOR #{$Month[$mn].upcase} ☀".fg(month_color).b + "\n"
+          output += "\n" + "☀ WEATHER FOR #{$Month[$mn].upcase} ☀".fg(month_color).bd + "\n"
           output += ("─" * 60).fg(240) + "\n\n"  # Grey divider
 
           # Regenerate weather display with same settings
@@ -4935,13 +4935,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -4950,10 +4950,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -4980,8 +4980,8 @@ def generate_weather_pdf
   end
 
   # Get Month
-  mstring = "WEATHER PDF GENERATOR".fg(14).b + "\n"
-  mstring += "Select month for PDF:".fg(14).b + "\n"
+  mstring = "WEATHER PDF GENERATOR".fg(14).bd + "\n"
+  mstring += "Select month for PDF:".fg(14).bd + "\n"
   7.times do |i|
     mstring += i.to_s.rjust(2).fg(202) + ": "
     mstring += $Month[i].fg(7).ljust(30)
@@ -5024,9 +5024,9 @@ def generate_weather_pdf
   $mn = month_input.to_i unless month_input.empty?
 
   # Get Weather condition
-  wstring = "WEATHER PDF GENERATOR".fg(14).b + "\n"
-  wstring += "Month: #{$Month[$mn]}".fg(45).b + "\n"
-  wstring += "Select weather condition:".fg(14).b + "\n"
+  wstring = "WEATHER PDF GENERATOR".fg(14).bd + "\n"
+  wstring += "Month: #{$Month[$mn]}".fg(45).bd + "\n"
+  wstring += "Select weather condition:".fg(14).bd + "\n"
   ["1: Snow storm", "2: Heavy snow", "3: Light snow", "4: Hail",
    "5: Normal", "6: Sunny", "7: Hot", "8: Sweltering"].each do |w|
     wstring += w.fg(7) + "\n"
@@ -5090,8 +5090,8 @@ def generate_weather_pdf
 
     pdf_file = "saved/weather.pdf"
     if File.exist?(pdf_file)
-      output = "WEATHER PDF GENERATED".fg(10).b + "\n\n"
-      output += "Month: ".fg(14) + "#{$Month[$mn]}".fg(45).b + "\n"
+      output = "WEATHER PDF GENERATED".fg(10).bd + "\n\n"
+      output += "Month: ".fg(14) + "#{$Month[$mn]}".fg(45).bd + "\n"
       output += "Weather: ".fg(14) + ["", "Snow storm", "Heavy snow", "Light snow", "Hail",
                                        "Normal", "Sunny", "Hot", "Sweltering"][$weather_n].fg(45) + "\n\n"
       output += "PDF saved to: ".fg(14) + pdf_file.fg(10) + "\n\n"
@@ -5147,13 +5147,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -5162,10 +5162,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -5609,13 +5609,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -5624,10 +5624,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -5720,13 +5720,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -5735,10 +5735,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -5809,13 +5809,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -5824,10 +5824,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -5909,10 +5909,10 @@ def generate_town_relations
       txt_content.lines.each do |line|
         if line.include?("===")
           # Strong alliance (double positive)
-          output += line.fg(10).b  # Bright green bold
+          output += line.fg(10).bd  # Bright green bold
         elsif line.include?("---")
           # Strong hate (double negative)
-          output += line.fg(196).b  # Bright red bold
+          output += line.fg(196).bd  # Bright red bold
         elsif line.include?("+++")
           # Complex relationship
           output += line.fg(226)  # Yellow
@@ -6021,13 +6021,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -6036,10 +6036,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -6082,13 +6082,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -6097,10 +6097,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -6121,13 +6121,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -6136,10 +6136,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -6300,13 +6300,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -6315,10 +6315,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -6494,13 +6494,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -6509,10 +6509,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -6732,13 +6732,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -6747,10 +6747,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -6812,13 +6812,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -6827,10 +6827,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -6922,13 +6922,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -6937,10 +6937,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -7353,13 +7353,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -7368,10 +7368,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -7584,13 +7584,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -7599,10 +7599,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -7678,9 +7678,9 @@ def show_latest_town_map
       txt_content = File.read(txt_file)
       txt_content.lines.each do |line|
         if line.include?("===")
-          output += line.fg(10).b  # Bright green bold for strong alliance
+          output += line.fg(10).bd  # Bright green bold for strong alliance
         elsif line.include?("---")
-          output += line.fg(196).b  # Bright red bold for deep hate
+          output += line.fg(196).bd  # Bright red bold for deep hate
         elsif line.include?("+++")
           output += line.fg(226)  # Yellow for complex
         elsif line.include?("--")
@@ -7734,9 +7734,9 @@ def show_latest_town_map
             txt_content = File.read(txt_file)
             txt_content.lines.each do |line|
               if line.include?("===")
-                output += line.fg(10).b
+                output += line.fg(10).bd
               elsif line.include?("---")
-                output += line.fg(196).b
+                output += line.fg(196).bd
               elsif line.include?("+++")
                 output += line.fg(226)
               elsif line.include?("--")
@@ -7784,9 +7784,9 @@ def show_latest_town_map
             txt_content = File.read(txt_file)
             txt_content.lines.each do |line|
               if line.include?("===")
-                output += line.fg(10).b
+                output += line.fg(10).bd
               elsif line.include?("---")
-                output += line.fg(196).b
+                output += line.fg(196).bd
               elsif line.include?("+++")
                 output += line.fg(226)
               elsif line.include?("--")
@@ -7831,9 +7831,9 @@ def show_latest_town_map
             txt_content = File.read(txt_file)
             txt_content.lines.each do |line|
               if line.include?("===")
-                output += line.fg(10).b
+                output += line.fg(10).bd
               elsif line.include?("---")
-                output += line.fg(196).b
+                output += line.fg(196).bd
               elsif line.include?("+++")
                 output += line.fg(226)
               elsif line.include?("--")
@@ -7961,13 +7961,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -7976,10 +7976,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -8037,13 +8037,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -8052,10 +8052,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end
@@ -8072,13 +8072,13 @@ def reapply_colors(text)
     case line
     when /^(\w+.*\([MF] \d+\).*H\/W:.*$)/
       # Character name line - bright cyan
-      line.fg(14).b
+      line.fg(14).bd
     when /^(Description:.*$)/
       # Description line - light yellow
       line.fg(229)
     when /^(BODY|MIND|SPIRIT)\s*\(/
       # Characteristic headers - bright yellow
-      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).b }
+      line.gsub(/^(BODY|MIND|SPIRIT)/) { |match| match.fg(15).bd }
     when /^\s+([A-Z][a-z]+)\s*\(/
       # Attribute names - bright magenta
       line.gsub(/^(\s+)([A-Z][a-z]+)/) { $1 + $2.fg(13) }
@@ -8087,10 +8087,10 @@ def reapply_colors(text)
       line.fg(7)
     when /^(SIZE:.*BP:.*DB:.*MD:.*)/
       # Stats line - bright green
-      line.fg(10).b
+      line.fg(10).bd
     when /^(ARMOR:|WEAPON|WEAPONS:|EQUIPMENT:)/
       # Weapons/armor/equipment - red
-      line.fg(202).b
+      line.fg(202).bd
     else
       line
     end

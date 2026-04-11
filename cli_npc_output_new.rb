@@ -288,8 +288,8 @@ def npc_output_new(n, cli, custom_width = nil)
     # 3-tier weapon display - show ALL weapon skills with actual weapon names
     melee_weapons = n.tiers["BODY"]["Melee Combat"]["skills"].select { |_, v| v > 0 } rescue {}
     missile_weapons = n.tiers["BODY"]["Missile Combat"]["skills"].select { |_, v| v > 0 } rescue {}
-    actual_melee = n.tiers["BODY"]["Melee Combat"]["actual_weapons"] rescue {}
-    actual_missile = n.tiers["BODY"]["Missile Combat"]["actual_weapons"] rescue {}
+    actual_melee = (n.tiers["BODY"]["Melee Combat"]["actual_weapons"] rescue nil) || {}
+    actual_missile = (n.tiers["BODY"]["Missile Combat"]["actual_weapons"] rescue nil) || {}
 
   if melee_weapons.any? || missile_weapons.any?
     # Load weapon tables for stats lookup

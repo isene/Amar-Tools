@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "amar-rpg"
-  spec.version       = "2.1.5"
+  spec.version       = "2.1.6"
   spec.authors       = ["Geir Isene"]
   spec.email         = ["g@isene.com"]
 
@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib", "includes"]
 
   # Runtime dependencies
-  spec.add_runtime_dependency "rcurses", "~> 0.9"
+  spec.add_runtime_dependency "rcurses", "~> 7.0"
 
   # Development dependencies
   spec.add_development_dependency "bundler", "~> 2.0"

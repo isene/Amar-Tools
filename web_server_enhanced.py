@@ -238,7 +238,7 @@ require_relative 'cli_npc_output_new.rb'
 # Define colorize_output function (simplified for web)
 def colorize_output(text, type)
   case type
-  when :header then text.fg(14).b
+  when :header then text.fg(14).bd
   when :subheader then text.fg(13)
   when :label then text.fg(13)
   when :value then text.fg(7)
@@ -471,9 +471,9 @@ when 'weather'
                   end
 
     # Output with exact TUI colors
-    puts "WEATHER GENERATOR".fg(14).b
+    puts "WEATHER GENERATOR".fg(14).bd
     puts "═" * 78
-    puts "Month: ".fg(13).b + $Month[$mn].fg(month_color).b
+    puts "Month: ".fg(13).bd + $Month[$mn].fg(month_color).bd
     puts ""
 
     # Moon phase symbols
@@ -495,14 +495,14 @@ when 'weather'
       # Weather with gradient colors
       weather_text = $Weather[day_weather.weather] || "Unknown"
       weather_colored = case weather_text.downcase
-                       when /blizzard/ then weather_text.fg(231).b
-                       when /snow storm/ then weather_text.fg(255).b
+                       when /blizzard/ then weather_text.fg(231).bd
+                       when /snow storm/ then weather_text.fg(255).bd
                        when /heavy snow/ then weather_text.fg(195)
                        when /snow/ then weather_text.fg(255)
                        when /hail/ then weather_text.fg(253)
-                       when /thunder/ then weather_text.fg(93).b
-                       when /lightning/ then weather_text.fg(226).b
-                       when /storm/ then weather_text.fg(202).b
+                       when /thunder/ then weather_text.fg(93).bd
+                       when /lightning/ then weather_text.fg(226).bd
+                       when /storm/ then weather_text.fg(202).bd
                        when /heavy rain/ then weather_text.fg(21)
                        when /rain/ then weather_text.fg(33)
                        when /drizzle/ then weather_text.fg(75)
@@ -511,7 +511,7 @@ when 'weather'
                        when /foggy|fog/ then weather_text.fg(249)
                        when /partly/ then weather_text.fg(228)
                        when /clear|lucid/ then weather_text.fg(226)
-                       when /sunny/ then weather_text.fg(226).b
+                       when /sunny/ then weather_text.fg(226).bd
                        else weather_text.fg(7)
                        end
       line += weather_colored.ljust(35)
@@ -527,10 +527,10 @@ when 'weather'
       # Check for special/holy days
       if day_weather.respond_to?(:special) && day_weather.special && !day_weather.special.empty?
         special_colored = case day_weather.special
-                         when /Ikalio/i then "★ #{{day_weather.special}}".fg(226).b
+                         when /Ikalio/i then "★ #{{day_weather.special}}".fg(226).bd
                          when /Anashina/i then "★ #{{day_weather.special}}".fg(41)
                          when /Gwendyll/i then "★ #{{day_weather.special}}".fg(213)
-                         when /Elesi/i then "★ #{{day_weather.special}}".fg(229).b
+                         when /Elesi/i then "★ #{{day_weather.special}}".fg(229).bd
                          when /Moltan/i then "★ #{{day_weather.special}}".fg(202)
                          when /Taroc/i then "★ #{{day_weather.special}}".fg(248)
                          else "★ #{{day_weather.special}}".fg(245)
@@ -545,7 +545,7 @@ when 'weather'
         moon_colored = case day
                       when 1 then moon_text.fg(238)    # Dark gray for new
                       when 8 then moon_text.fg(252)    # Light gray for waxing
-                      when 15 then moon_text.fg(229).b # Bold yellow for full
+                      when 15 then moon_text.fg(229).bd # Bold yellow for full
                       when 22 then moon_text.fg(245)   # Medium gray for waning
                       end
         line += moon_colored
@@ -587,7 +587,7 @@ when 'town'
                 else "CITY"
                 end
 
-    puts town_type.fg(14).b + " OF " + town.town_name.upcase.fg(46)
+    puts town_type.fg(14).bd + " OF " + town.town_name.upcase.fg(46)
     puts "─" * 60
     puts "Houses: ".fg(13) + town.town.size.to_s.fg(7) + "  " + "Residents: ".fg(13) + town.town_residents.to_s.fg(7)
     puts ""
@@ -595,7 +595,7 @@ when 'town'
     # Show houses with enhanced coloring for better differentiation
     town.town.each_with_index do |house, house_idx|
       # House header with distinct color
-      puts "#" + house_idx.to_s.fg(202) + ": ".fg(13) + house[0].fg(226).b
+      puts "#" + house_idx.to_s.fg(202) + ": ".fg(13) + house[0].fg(226).bd
       house[1..-1].each do |resident|
         if resident =~ /(.+?) \\(([MF]) (\\d+)\\) (.+?) \\[(\\d+)\\] (.+)/
           name = $1
@@ -633,7 +633,7 @@ when 'town'
                                else personality.fg(252)
                                end
 
-          puts "  " + name.fg(226) + " (" + sex_colored + " " + age_colored + ") " + race_colored + " [" + level.fg(202).b + "] " + personality_colored
+          puts "  " + name.fg(226) + " (" + sex_colored + " " + age_colored + ") " + race_colored + " [" + level.fg(202).bd + "] " + personality_colored
         else
           puts "  " + resident.fg(7)
         end
@@ -653,7 +653,7 @@ when 'names'
     name_idx = rand($Names.length) if name_idx == 0
 
     # Generate names exactly as TUI does
-    puts $Names[name_idx][0].upcase.fg(14).b + " NAMES"
+    puts $Names[name_idx][0].upcase.fg(14).bd + " NAMES"
     puts "─" * 40
     puts ""
 
@@ -691,9 +691,9 @@ when 'roll'
                    end
       roll_str = roll.to_s.rjust(3).fg(roll_color)
       if roll >= 10
-        results << "#{{roll_str}} " + "(Critical!)".fg(46).b
+        results << "#{{roll_str}} " + "(Critical!)".fg(46).bd
       elsif roll <= -3
-        results << "#{{roll_str}} " + "(Fumble!)".fg(196).b
+        results << "#{{roll_str}} " + "(Fumble!)".fg(196).bd
       else
         results << "#{{roll_str}}"
       end

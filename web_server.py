@@ -271,7 +271,7 @@ require '{RUBY_DIR}/cli_npc_output_new.rb'
 # Define colorize_output function (simplified for web)
 def colorize_output(text, type)
   case type
-  when :header then text.fg(14).b
+  when :header then text.fg(14).bd
   when :subheader then text.fg(13)
   when :label then text.fg(13)
   when :value then text.fg(7)
@@ -505,7 +505,7 @@ when 'weather'
                   end
 
     # Output with exact TUI colors, moon phases, and holy days
-    puts "WEATHER GENERATOR".fg(14).b
+    puts "WEATHER GENERATOR".fg(14).bd
     puts ("═" * 90)
     # EXPLICIT TEST: Make MacGillan purple
     month_name = $Month[$mn]
@@ -514,7 +514,7 @@ when 'weather'
     else
       month_name = month_name.fg(month_color)
     end
-    puts "Month: ".fg(13).b + month_name.b
+    puts "Month: ".fg(13).bd + month_name.bd
     puts ""
 
     # Show a full month of weather with moon phases and holy days
@@ -523,31 +523,31 @@ when 'weather'
 
       # Build complete line
       line = ""
-      line += ("Day " + day.to_s.rjust(2) + ": ").fg(88).b
+      line += ("Day " + day.to_s.rjust(2) + ": ").fg(88).bd
 
       # Weather column
       weather_text = $Weather[day_weather.weather] || "Unknown"
       weather_colored = case weather_text.downcase
-                       when /clear skies/ then weather_text.fg(51).b         # Cyan bold
-                       when /clear/ then weather_text.fg(45).b               # Turquoise bold
-                       when /sunny/ then weather_text.fg(226).b              # Yellow bold
-                       when /lucid/ then weather_text.fg(123).b              # Light cyan bold
-                       when /partly cloudy/ then weather_text.fg(250).b      # Lighter gray bold
-                       when /mainly cloudy/ then weather_text.fg(246).b      # Gray bold
-                       when /mainly clear/ then weather_text.fg(87).b        # Light cyan bold
-                       when /cloudy and gray/ then weather_text.fg(244).b    # Medium gray bold
-                       when /cloudy/ then weather_text.fg(247).b             # Light gray bold
-                       when /overcast/ then weather_text.fg(242).b           # Dark gray bold
-                       when /misty/ then weather_text.fg(249).b              # Light gray bold
-                       when /fog/ then weather_text.fg(247).b                # Fog gray bold
-                       when /rain/ then weather_text.fg(33).b                # Blue bold
-                       when /drizzle/ then weather_text.fg(75).b             # Light blue bold
-                       when /storm/ then weather_text.fg(196).b              # Red bold
-                       when /lightning/ then weather_text.fg(214).b          # Orange bold
-                       when /thunder/ then weather_text.fg(172).b            # Orange bold
-                       when /snow/ then weather_text.fg(255).b               # White bold
-                       when /blizzard/ then weather_text.fg(231).b           # Pure white bold
-                       else weather_text.fg(7).b
+                       when /clear skies/ then weather_text.fg(51).bd         # Cyan bold
+                       when /clear/ then weather_text.fg(45).bd               # Turquoise bold
+                       when /sunny/ then weather_text.fg(226).bd              # Yellow bold
+                       when /lucid/ then weather_text.fg(123).bd              # Light cyan bold
+                       when /partly cloudy/ then weather_text.fg(250).bd      # Lighter gray bold
+                       when /mainly cloudy/ then weather_text.fg(246).bd      # Gray bold
+                       when /mainly clear/ then weather_text.fg(87).bd        # Light cyan bold
+                       when /cloudy and gray/ then weather_text.fg(244).bd    # Medium gray bold
+                       when /cloudy/ then weather_text.fg(247).bd             # Light gray bold
+                       when /overcast/ then weather_text.fg(242).bd           # Dark gray bold
+                       when /misty/ then weather_text.fg(249).bd              # Light gray bold
+                       when /fog/ then weather_text.fg(247).bd                # Fog gray bold
+                       when /rain/ then weather_text.fg(33).bd                # Blue bold
+                       when /drizzle/ then weather_text.fg(75).bd             # Light blue bold
+                       when /storm/ then weather_text.fg(196).bd              # Red bold
+                       when /lightning/ then weather_text.fg(214).bd          # Orange bold
+                       when /thunder/ then weather_text.fg(172).bd            # Orange bold
+                       when /snow/ then weather_text.fg(255).bd               # White bold
+                       when /blizzard/ then weather_text.fg(231).bd           # Pure white bold
+                       else weather_text.fg(7).bd
                        end
       line += weather_colored
       # Add plain padding (no color)
@@ -560,13 +560,13 @@ when 'weather'
         wind_dir = $Wind_dir[day_weather.wind_dir]
         wind_text = wind_base + " (" + wind_dir + ")"
         wind_colored = case day_weather.wind_str
-                      when 1 then wind_text.fg(117).b  # Soft - lighter blue bold
-                      when 2 then wind_text.fg(75).b   # Windy - light blue bold
-                      when 3 then wind_text.fg(39).b   # Very windy - blue bold
-                      when 4 then wind_text.fg(33).b   # Strong - medium blue bold
-                      when 5 then wind_text.fg(27).b   # Very strong - deep blue bold
-                      when 6 then wind_text.fg(21).b   # Gale - dark blue bold
-                      else wind_text.fg(51).b          # Default cyan bold
+                      when 1 then wind_text.fg(117).bd  # Soft - lighter blue bold
+                      when 2 then wind_text.fg(75).bd   # Windy - light blue bold
+                      when 3 then wind_text.fg(39).bd   # Very windy - blue bold
+                      when 4 then wind_text.fg(33).bd   # Strong - medium blue bold
+                      when 5 then wind_text.fg(27).bd   # Very strong - deep blue bold
+                      when 6 then wind_text.fg(21).bd   # Gale - dark blue bold
+                      else wind_text.fg(51).bd          # Default cyan bold
                       end
         line += wind_colored
         # Add plain padding
@@ -580,30 +580,30 @@ when 'weather'
       if day_weather.respond_to?(:special) && day_weather.special && !day_weather.special.empty?
         special_text = day_weather.special
         holy_colored = case special_text
-                      when /Ikalio/i then ("★ " + special_text).fg(226).b
-                      when /MacGillan/i then ("★ " + special_text).fg(126).b
-                      when /Macgillan/i then ("★ " + special_text).fg(126).b  # Lowercase variant
-                      when /Anashina/i then ("★ " + special_text).fg(41).b
-                      when /Gwendyll/i then ("★ " + special_text).fg(213).b
-                      when /Fionella/i then ("★ " + special_text).fg(126).b
-                      when /Elaari/i then ("★ " + special_text).fg(204).b
-                      when /Ish Nakil/i then ("★ " + special_text).fg(196).b
-                      when /Fenimaal/i then ("★ " + special_text).fg(209).b
-                      when /Alesia/i then ("★ " + special_text).fg(130).b
-                      when /Shalissa/i then ("★ " + special_text).fg(117).b
-                      when /Walmaer/i then ("★ " + special_text).fg(25).b
-                      when /Juba/i then ("★ " + special_text).fg(204).b
-                      when /Cal Amae/i then ("★ " + special_text).fg(231).b
-                      when /Kraagh/i then ("★ " + special_text).fg(245).b
-                      when /Moltan/i then ("★ " + special_text).fg(202).b
-                      when /Fal Munir/i then ("★ " + special_text).fg(139).b
-                      when /Maleko/i then ("★ " + special_text).fg(172).b
-                      when /Mestronorpha/i then ("★ " + special_text).fg(239).b
-                      when /Elesi/i then ("★ " + special_text).fg(229).b
-                      when /Ielina/i then ("★ " + special_text).fg(230).b
-                      when /Man Peggon|harvest/i then ("★ " + special_text).fg(130).b
-                      when /Taroc|solstice/i then ("★ " + special_text).fg(248).b
-                      else ("★ " + special_text).fg(245).b
+                      when /Ikalio/i then ("★ " + special_text).fg(226).bd
+                      when /MacGillan/i then ("★ " + special_text).fg(126).bd
+                      when /Macgillan/i then ("★ " + special_text).fg(126).bd  # Lowercase variant
+                      when /Anashina/i then ("★ " + special_text).fg(41).bd
+                      when /Gwendyll/i then ("★ " + special_text).fg(213).bd
+                      when /Fionella/i then ("★ " + special_text).fg(126).bd
+                      when /Elaari/i then ("★ " + special_text).fg(204).bd
+                      when /Ish Nakil/i then ("★ " + special_text).fg(196).bd
+                      when /Fenimaal/i then ("★ " + special_text).fg(209).bd
+                      when /Alesia/i then ("★ " + special_text).fg(130).bd
+                      when /Shalissa/i then ("★ " + special_text).fg(117).bd
+                      when /Walmaer/i then ("★ " + special_text).fg(25).bd
+                      when /Juba/i then ("★ " + special_text).fg(204).bd
+                      when /Cal Amae/i then ("★ " + special_text).fg(231).bd
+                      when /Kraagh/i then ("★ " + special_text).fg(245).bd
+                      when /Moltan/i then ("★ " + special_text).fg(202).bd
+                      when /Fal Munir/i then ("★ " + special_text).fg(139).bd
+                      when /Maleko/i then ("★ " + special_text).fg(172).bd
+                      when /Mestronorpha/i then ("★ " + special_text).fg(239).bd
+                      when /Elesi/i then ("★ " + special_text).fg(229).bd
+                      when /Ielina/i then ("★ " + special_text).fg(230).bd
+                      when /Man Peggon|harvest/i then ("★ " + special_text).fg(130).bd
+                      when /Taroc|solstice/i then ("★ " + special_text).fg(248).bd
+                      else ("★ " + special_text).fg(245).bd
                       end
         line += holy_colored
         holy_len = ("★ " + special_text).length
@@ -626,10 +626,10 @@ when 'weather'
         moon_sym, moon_name = moon_symbols[day]
         moon_text = moon_sym + " " + moon_name
         moon_colored = case day
-                      when 1 then moon_text.fg(238).b    # Dark gray for new bold
-                      when 8 then moon_text.fg(252).b    # Light gray for waxing bold
-                      when 15 then moon_text.fg(229).b   # Bold yellow for full
-                      when 22 then moon_text.fg(245).b   # Medium gray for waning bold
+                      when 1 then moon_text.fg(238).bd    # Dark gray for new bold
+                      when 8 then moon_text.fg(252).bd    # Light gray for waxing bold
+                      when 15 then moon_text.fg(229).bd   # Bold yellow for full
+                      when 22 then moon_text.fg(245).bd   # Medium gray for waning bold
                       end
         line += moon_colored
       end
@@ -671,7 +671,7 @@ when 'town'
                 else "CITY"
                 end
 
-    puts town_type.fg(14).b + " OF " + town.town_name.upcase.fg(46)
+    puts town_type.fg(14).bd + " OF " + town.town_name.upcase.fg(46)
     puts "─" * 60
     puts "Houses: ".fg(13) + town.town.size.to_s.fg(7) + "  " + "Residents: ".fg(13) + town.town_residents.to_s.fg(7)
     puts ""
@@ -679,7 +679,7 @@ when 'town'
     # Show houses with enhanced coloring for better differentiation
     town.town.each_with_index do |house, house_idx|
       # House header with distinct color
-      puts "#" + house_idx.to_s.fg(202) + ": ".fg(13) + house[0].fg(226).b
+      puts "#" + house_idx.to_s.fg(202) + ": ".fg(13) + house[0].fg(226).bd
       house[1..-1].each do |resident|
         if resident =~ /(.+?) \\(([MF]) (\\d+)\\) (.+?) \\[(\\d+)\\] (.+)/
           name = $1
@@ -717,7 +717,7 @@ when 'town'
                                else personality.fg(252)
                                end
 
-          puts "  " + name.fg(226) + " (" + sex_colored + " " + age_colored + ") " + race_colored + " [" + level.fg(202).b + "] " + personality_colored
+          puts "  " + name.fg(226) + " (" + sex_colored + " " + age_colored + ") " + race_colored + " [" + level.fg(202).bd + "] " + personality_colored
         else
           puts "  " + resident.fg(7)
         end
@@ -737,7 +737,7 @@ when 'names'
     name_idx = rand($Names.length) if name_idx == 0
 
     # Generate names exactly as TUI does
-    puts $Names[name_idx][0].upcase.fg(14).b + " NAMES"
+    puts $Names[name_idx][0].upcase.fg(14).bd + " NAMES"
     puts "─" * 40
     puts ""
 
@@ -775,9 +775,9 @@ when 'roll'
                    end
       roll_str = roll.to_s.rjust(3).fg(roll_color)
       if roll >= 10
-        results << "#{{roll_str}} " + "(Critical!)".fg(46).b
+        results << "#{{roll_str}} " + "(Critical!)".fg(46).bd
       elsif roll <= -3
-        results << "#{{roll_str}} " + "(Fumble!)".fg(196).b
+        results << "#{{roll_str}} " + "(Fumble!)".fg(196).bd
       else
         results << "#{{roll_str}}"
       end
