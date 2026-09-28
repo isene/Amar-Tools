@@ -3,914 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amar RPG Tools - Web Interface</title>
+    <title>Amar Tools – Amar RPG</title>
+    <link rel="icon" href="static/icon.png">
+    <script>try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t } catch (e) {}</script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Courier New', monospace;
-            background-color: #000;
-            color: #fff;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .container {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            grid-template-rows: auto 1fr auto;
-            height: 100vh;
-            gap: 2px;
-        }
-
-        .header {
-            grid-column: 1 / -1;
-            background-color: #1a1a1a;
-            padding: 10px;
-            border: 2px solid #555;
-            text-align: center;
-        }
-
-        .title {
-            color: #00ffff;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .menu-panel {
-            background-color: #000;
-            border: 2px solid #555;
-            padding: 10px;
-            overflow-y: auto;
-        }
-
-        .menu-panel.focused {
-            border-color: #00ffff;
-        }
-
-        .content-panel {
-            background-color: #000;
-            border: 2px solid #555;
-            padding: 5px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            font-family: 'Courier New', monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
-        }
-
-        .content-panel.focused {
-            border-color: #00ffff;
-        }
-
-        .status-bar {
-            grid-column: 1 / -1;
-            background-color: #333;
-            padding: 5px 10px;
-            border: 1px solid #555;
-            font-size: 12px;
-            color: #ccc;
-        }
-
-        .logo-container {
-            position: fixed;
-            bottom: 45px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        .logo-container img {
-            max-height: 60px;
-            width: auto;
-            opacity: 0.7;
-        }
-
-        .menu-item {
-            padding: 2px 5px;
-            cursor: pointer;
-            border-radius: 2px;
-            margin: 1px 0;
-        }
-
-        .menu-item.separator {
-            color: #888;
-            cursor: default;
-            font-weight: bold;
-            text-align: center;
-            margin: 5px 0;
-        }
-
-        .menu-item.empty {
-            height: 10px;
-            cursor: default;
-        }
-
-        .menu-item:hover:not(.separator):not(.empty) {
-            background-color: #333;
-        }
-
-        .menu-item.selected {
-            background-color: #444;
-            color: #00ffff;
-            font-weight: bold;
-        }
-
-        .form-container {
-            margin: 0;
-            padding: 0;
-            background-color: transparent;
-            border: none;
-            width: 100%;
-            align-self: stretch;
-        }
-
-        .output {
-            font-family: 'Courier New', monospace;
-            white-space: pre;
-            line-height: 1.2;
-            width: 100%;
-            align-self: stretch;
-            overflow-x: auto;
-        }
-
-        .form-group {
-            margin: 4px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .form-group label {
-            color: #00ffff;
-            font-weight: bold;
-            min-width: 70px;
-            font-size: 16px;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 12px;
-            margin: 4px 0;
-            flex-wrap: wrap;
-        }
-
-        .form-col {
-            flex: 1;
-            min-width: 140px;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            padding: 6px 8px;
-            background-color: #333;
-            border: 1px solid #555;
-            color: #fff;
-            font-family: 'Courier New', monospace;
-            border-radius: 3px;
-            font-size: 16px;
-            height: 36px;
-        }
-
-        /* Remove number input spinners */
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=number]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #00ffff;
-            box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
-        }
-
-        .btn {
-            background-color: #444;
-            color: #00ffff;
-            border: 1px solid #00ffff;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            border-radius: 3px;
-            margin: 0;
-        }
-
-        .btn:hover {
-            background-color: #555;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-        }
-
-        .btn:disabled {
-            background-color: #222;
-            color: #666;
-            border-color: #666;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-
-        .loading {
-            color: #ffff00;
-            animation: blink 1s infinite;
-        }
-
-        .progress-container {
-            margin: 20px 0;
-            background-color: transparent;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 20px;
-            background: linear-gradient(90deg, #00ff00, #ffff00, #ff8800);
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 4px;
-            position: relative;
-        }
-
-        .progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #000;
-            font-weight: bold;
-            font-size: 12px;
-            z-index: 1;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.5; }
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .error {
-            color: #ff4444;
-            background-color: #330000;
-            padding: 10px;
-            border: 1px solid #ff4444;
-            border-radius: 3px;
-            margin: 10px 0;
-        }
-
-        .success {
-            color: #44ff44;
-            background-color: #003300;
-            padding: 10px;
-            border: 1px solid #44ff44;
-            border-radius: 3px;
-            margin: 10px 0;
-        }
-
-        .edit-container {
-            margin: 10px 0;
-            padding: 0;
-        }
-
-        .edit-textarea {
-            width: 100%;
-            min-height: 400px;
-            background-color: #000;
-            color: #fff;
-            border: 1px solid #555;
-            padding: 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            line-height: 1.2;
-            resize: vertical;
-            white-space: pre;
-        }
-
-        .edit-buttons {
-            margin: 10px 0;
-            display: flex;
-            gap: 10px;
-        }
-
-        .edit-btn {
-            background-color: #444;
-            color: #00ffff;
-            border: 1px solid #00ffff;
-            padding: 6px 12px;
-            cursor: pointer;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-
-        .edit-btn:hover {
-            background-color: #555;
-            box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
-        }
-
-        /* Color classes for TUI output */
-        .fg-14 { color: #00ffff; }  /* bright cyan */
-        .fg-229 { color: #ffffaf; } /* light yellow */
-        .fg-15 { color: #ffffff; }  /* bright white */
-        .fg-13 { color: #ff00ff; }  /* bright magenta */
-        .fg-7 { color: #c0c0c0; }   /* white */
-        .fg-10 { color: #00ff00; }  /* bright green */
-        .fg-202 { color: #ff5f00; } /* red-orange */
-        .bold { font-weight: bold; }
-
-        /* Modern Theme Styles - Fantasy RPG inspired */
-        .modern-theme {
-            background: linear-gradient(135deg, #4a5d3a 0%, #6b8e5a 100%);
-            color: #2c3e50;
-            font-family: Georgia, serif;
-            min-height: 100vh;
-        }
-
-        .modern-theme .container {
-            background: #f4f1e8;
-            max-width: 1200px;
-            margin: 0 auto;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            flex-direction: column !important;
-            min-height: 100vh;
-            display: flex !important;
-            padding-bottom: 50px; /* Space for status bar */
-        }
-
-        .modern-theme .header {
-            background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
-            color: #f4f1e8;
-            padding: 20px 30px;
-            border-bottom: 3px solid #654321;
-        }
-
-        .modern-theme .title {
-            font-family: Georgia, serif;
-            font-size: 28px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            color: #f4f1e8 !important;
-        }
-
-        /* Horizontal menu layout - full width across top */
-        .modern-theme .menu-panel {
-            display: flex;
-            flex-wrap: wrap;
-            background: linear-gradient(135deg, #2d5016 0%, #3a6b1c 100%);
-            border: none;
-            border-radius: 0;
-            padding: 0;
-            margin: 0;
-            width: 100%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            position: relative;
-            z-index: 10;
-        }
-
-        .modern-theme .menu-item {
-            color: #e8f5e8;
-            padding: 8px 15px;
-            border-radius: 0;
-            margin: 0;
-            border-right: 1px solid #1a3009;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            flex: 1;
-            text-align: center;
-            min-width: 120px;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            font-size: 12px;
-        }
-
-        .modern-theme .menu-item:hover {
-            background: #228b22;
-            color: white;
-            transform: none;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .modern-theme .menu-item.selected {
-            background: #8b4513;
-            color: #f4f1e8;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
-        }
-
-        .modern-theme .menu-item.separator {
-            display: none;
-        }
-
-        /* Content panel - full width below menu with proper spacing */
-        .modern-theme .content-panel {
-            background: #fefbf3;
-            border: 2px solid #d2b48c;
-            border-radius: 8px;
-            margin: 15px auto;
-            padding: 20px;
-            padding-bottom: 20px;
-            min-height: 400px;
-            font-family: Georgia, serif;
-            width: calc(100% - 30px);
-            max-width: 1140px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-            overflow: auto;
-            position: relative;
-            z-index: 1;
-            flex: 1;
-        }
-
-        .modern-theme .form-container {
-            background: transparent;
-            border: none;
-            border-radius: 0;
-            padding: 20px 0;
-            margin: 15px 0;
-            box-shadow: none;
-        }
-
-        .modern-theme .btn {
-            background: linear-gradient(135deg, #228b22 0%, #32cd32 100%);
-            color: white;
-            border: 2px solid #1e7b1e;
-            border-radius: 8px;
-            padding: 12px 25px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 3px 8px rgba(34, 139, 34, 0.3);
-            font-family: Georgia, serif;
-        }
-
-        .modern-theme .btn:hover {
-            background: linear-gradient(135deg, #1e7b1e 0%, #228b22 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 5px 12px rgba(34, 139, 34, 0.4);
-        }
-
-        .modern-theme .status-bar {
-            background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%) !important;
-            color: #f4f1e8 !important;
-            border-radius: 0 0 0 0;
-            padding: 12px 30px;
-            font-weight: bold;
-            font-family: Georgia, serif;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            position: fixed !important;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-            border-top: 3px solid #654321;
-            width: 100%;
-            max-width: 1200px;
-            display: block !important;
-            visibility: visible !important;
-        }
-
-        .modern-theme .status-bar a {
-            color: #f4f1e8 !important;
-            text-decoration: underline;
-        }
-
-        .modern-theme .container {
-            background: #f4f1e8;
-            max-width: 1200px;
-            margin: 0 auto;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            flex-direction: column !important;
-            min-height: 100vh;
-            display: flex !important;
-            padding-bottom: 50px; /* Space for status bar */
-        }
-
-        .modern-theme .output {
-            background: #fefbf3;
-            padding: 15px;
-            border: 2px solid #d2b48c;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-            overflow-x: auto;
-            max-width: 100%;
-        }
-
-        .modern-theme #themeToggle {
-            background: #228b22;
-            color: white !important;
-            border: 2px solid #1e7b1e;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-family: Georgia, serif;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            opacity: 1 !important;
-        }
-
-        .modern-theme #themeToggle:hover {
-            background: #1e7b1e;
-            transform: scale(1.02);
-            color: white !important;
-        }
-
-        /* Fix ALL readability issues in modern theme - much darker colors */
-        .modern-theme .output .fg-14 { color: #4a2c2a !important; } /* very dark brown instead of cyan */
-        .modern-theme .output .fg-46 { color: #2d5016 !important; } /* forest green with good contrast */
-        .modern-theme .output .fg-226 { color: #4b3619 !important; } /* very dark brown for 4 in O6 */
-        .modern-theme .output .fg-202 { color: #8b4513 !important; } /* brown instead of orange */
-        .modern-theme .output .fg-7 { color: #333333 !important; } /* darker gray instead of light gray */
-        .modern-theme .output .fg-13 { color: #4a2c2a !important; } /* very dark brown instead of magenta */
-        .modern-theme .output .fg-229 { color: #654321 !important; } /* dark brown instead of light yellow */
-        .modern-theme .output .fg-15 { color: #2c3e50 !important; } /* dark instead of white */
-        .modern-theme .output .fg-10 { color: #2d5016 !important; } /* forest green with good contrast */
-        .modern-theme .output .fg-88 { color: #8b0000 !important; } /* dark red for fumbles */
-        .modern-theme .output .fg-124 { color: #8b2500 !important; } /* dark orange-red for -3 in O6 */
-        .modern-theme .output .fg-154 { color: #3b5323 !important; } /* darker forest green for 5 in O6 */
-        .modern-theme .output .fg-118 { color: #2d5016 !important; } /* dark green for 6 in O6 */
-        .modern-theme .output .fg-82 { color: #2d5016 !important; } /* dark forest green */
-        .modern-theme .output .fg-196 { color: #8b0000 !important; } /* dark red */
-
-        /* O6 Dice Roll Colors - Full gradient from red to green with STRONG contrast */
-        .modern-theme .output .fg-160 { color: #8b0000 !important; } /* dark red for -2 */
-        .modern-theme .output .fg-166 { color: #8b2500 !important; } /* dark orange-red for -1 */
-        .modern-theme .output .fg-172 { color: #8b4513 !important; } /* saddle brown for 0 */
-        .modern-theme .output .fg-178 { color: #6b4423 !important; } /* dark brown for 1 */
-        .modern-theme .output .fg-184 { color: #5b4033 !important; } /* darker brown for 2 */
-        .modern-theme .output .fg-190 { color: #4b3619 !important; } /* very dark goldenrod for 3 */
-        .modern-theme .output .fg-40 { color: #228b22 !important; } /* forest green for 9 */
-        .modern-theme .output .fg-34 { color: #006400 !important; } /* dark green for 10-11 */
-        .modern-theme .output .fg-28 { color: #004d00 !important; } /* darker green for 12-14 */
-        .modern-theme .output .fg-22 { color: #003300 !important; } /* very dark green for 15+ */
-
-        /* Fix inline style colors - override hardcoded colors from Python */
-        /* Cyan text - make it all dark brown */
-        .modern-theme .output span[style*="color: #00ffff"] { color: #4a2c2a !important; font-weight: bold !important; } /* cyan to dark brown */
-        .modern-theme span[style*="color: #00ffff"] { color: #4a2c2a !important; font-weight: bold !important; } /* cyan everywhere */
-        .modern-theme [style*="color: #00ffff"] { color: #4a2c2a !important; } /* cyan in any element */
-
-        /* O6 Dice gradient colors - from red through brown to green - ALL BOLD */
-        .modern-theme .output span[style*="color: #870000"] { color: #8b0000 !important; font-weight: bold !important; } /* -3 and worse: dark red */
-        .modern-theme .output span[style*="color: #af0000"] { color: #8b0000 !important; font-weight: bold !important; } /* -3: dark red */
-        .modern-theme .output span[style*="color: #d70000"] { color: #a52a2a !important; font-weight: bold !important; } /* -2: brown-red */
-        .modern-theme .output span[style*="color: #d75f00"] { color: #8b4513 !important; font-weight: bold !important; } /* -1: saddle brown */
-        .modern-theme .output span[style*="color: #d78700"] { color: #a0522d !important; font-weight: bold !important; } /* 0: sienna */
-        .modern-theme .output span[style*="color: #d7af00"] { color: #8b6914 !important; font-weight: bold !important; } /* 1: dark goldenrod */
-        .modern-theme .output span[style*="color: #d7d700"] { color: #b8860b !important; font-weight: bold !important; } /* 2: darker goldenrod */
-        .modern-theme .output span[style*="color: #d7ff00"] { color: #daa520 !important; font-weight: bold !important; } /* 3: goldenrod */
-        .modern-theme .output span[style*="color: #ffff00"] { color: #cd853f !important; font-weight: bold !important; } /* 4: peru */
-        .modern-theme .output span[style*="color: #afff00"] { color: #556b2f !important; font-weight: bold !important; } /* 5: dark olive green */
-        .modern-theme .output span[style*="color: #87ff00"] { color: #228b22 !important; font-weight: bold !important; } /* 6: forest green */
-        .modern-theme .output span[style*="color: #5fff00"] { color: #228b22 !important; font-weight: bold !important; } /* 7: forest green */
-        .modern-theme .output span[style*="color: #00ff00"] { color: #228b22 !important; font-weight: bold !important; } /* 8: bright green, help text */
-        .modern-theme .output span[style*="color: #00d700"] { color: #228b22 !important; font-weight: bold !important; } /* 9: forest green */
-        .modern-theme .output span[style*="color: #00af00"] { color: #006400 !important; font-weight: bold !important; } /* 10-11: dark green */
-        .modern-theme .output span[style*="color: #008700"] { color: #004d00 !important; font-weight: bold !important; } /* 12+: darker green */
-
-        /* Town output colors - improved contrast and differentiation */
-        .modern-theme .output span[style*="color: #ff5f00"] { color: #8b4513 !important; font-weight: bold !important; } /* orange to saddle brown - names */
-        .modern-theme .output span[style*="color: #ff8700"] { color: #a0522d !important; } /* orange to sienna */
-        .modern-theme .output span[style*="color: #ffaf00"] { color: #8b6914 !important; } /* gold to dark goldenrod */
-        .modern-theme .output span[style*="color: #ff0000"] { color: #8b0000 !important; } /* bright red to dark red */
-        .modern-theme .output span[style*="color: #d7ffff"] { color: #4682b4 !important; } /* light cyan to steel blue */
-        .modern-theme .output span[style*="color: #87afff"] { color: #4682b4 !important; } /* light blue to steel blue */
-        .modern-theme .output span[style*="color: #808080"] { color: #696969 !important; } /* gray to dim gray for less important text */
-        .modern-theme .output span[style*="color: #c0c0c0"] { color: #2c3e50 !important; } /* light gray to dark for main text */
-
-        /* Other colors */
-        .modern-theme .output span[style*="color: #008080"] { color: #2d5016 !important; } /* teal to dark green */
-        .modern-theme [style*="color: #ffffff"] { color: #2c3e50 !important; } /* white to dark */
-        .modern-theme [style*="color: #ffff00"] { color: #8b4513 !important; } /* yellow to brown */
-        .modern-theme [style*="color: #ff00ff"] { color: #654321 !important; } /* magenta to brown */
-
-        /* Fix form label colors */
-        .modern-theme h3 { color: #654321 !important; } /* dark brown form titles */
-        .modern-theme label { color: #4a4a4a !important; } /* readable gray labels */
-
-        /* Fix loading/blinking text */
-        .modern-theme .loading {
-            color: #8b4513 !important;
-        }
-
-        /* Fix additional color issues */
-        .modern-theme [style*="color: #008000"] { color: #2d5016 !important; } /* green to dark green */
-        .modern-theme [style*="color: #ffffaf"] { color: #8b4513 !important; } /* light yellow to brown */
-        .modern-theme [style*="color: #c0c0c0"] { color: #4a4a4a !important; } /* light gray to dark gray */
-        .modern-theme span[style*="font-weight: bold"][style*="color: #ffffff"] { color: #2c3e50 !important; } /* bold white to dark */
-
-        /* Remove outer output frame in modern theme */
-        .modern-theme .output {
-            background: transparent;
-            padding: 10px 0;
-            border: none;
-            border-radius: 0;
-            margin: 10px 0;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            box-shadow: none;
-            overflow-x: auto;
-            max-width: 100%;
-        }
-
-        /* Fix button colors in modern theme - simple flat style */
-        .modern-theme .edit-btn,
-        .modern-theme .btn {
-            background: #228b22 !important;
-            color: white !important;
-            border: 1px solid #1e7b1e !important;
-            border-radius: 4px !important;
-            padding: 8px 16px !important;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-            font-weight: normal !important;
-            font-size: 13px !important;
-        }
-
-        .modern-theme .edit-btn:hover,
-        .modern-theme .btn:hover {
-            background: #1e7b1e !important;
-        }
-
-        /* Welcome image alignment */
-        .modern-theme #welcomeImage {
-            text-align: center;
-        }
-
-        body:not(.modern-theme) #welcomeImage {
-            text-align: left;
-        }
-
-        /* Hamburger Menu for Mobile */
-        .hamburger-menu {
-            display: none;
-            position: fixed;
-            top: 60px;
-            left: 10px;
-            z-index: 1001;
-            background: #333;
-            border: 2px solid #555;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 20px;
-            color: #00ffff;
-            border-radius: 5px;
-        }
-
-        .mobile-menu-dropdown {
-            display: none;
-            position: fixed;
-            top: 105px;
-            left: 10px;
-            background: #1a1a1a;
-            border: 2px solid #555;
-            border-radius: 5px;
-            max-width: 300px;
-            width: calc(100% - 20px);
-            max-height: 70vh;
-            overflow-y: auto;
-            z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
-        }
-
-        .mobile-menu-dropdown.active {
-            display: block;
-        }
-
-        .mobile-menu-dropdown .menu-item {
-            display: block;
-            padding: 12px 15px;
-            border-bottom: 1px solid #333;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .mobile-menu-dropdown .menu-item:hover {
-            background: #2a2a2a;
-        }
-
-        .mobile-menu-dropdown .menu-item:last-child {
-            border-bottom: none;
-        }
-
-        /* Modern theme dropdown */
-        .modern-theme .mobile-menu-dropdown {
-            background: linear-gradient(135deg, #2d5016 0%, #3a6b1c 100%);
-            border-color: #4a7c2c;
-        }
-
-        .modern-theme .mobile-menu-dropdown .menu-item {
-            border-bottom-color: rgba(255,255,255,0.1);
-        }
-
-        .modern-theme .mobile-menu-dropdown .menu-item:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        /* Mobile Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto 1fr auto;
-            }
-
-            /* Hide regular menu panel on mobile */
-            .menu-panel {
-                display: none !important;
-            }
-
-            /* Show hamburger menu on mobile */
-            .hamburger-menu {
-                display: block;
-            }
-
-            .content-panel {
-                padding: 80px 10px 10px 10px; /* Add top padding to prevent hamburger overlap */
-            }
-
-            .header {
-                padding: 8px;
-            }
-
-            .title {
-                font-size: 14px;
-            }
-
-            #themeToggle {
-                padding: 5px 10px !important;
-                font-size: 11px !important;
-            }
-
-            .menu-item {
-                padding: 8px;
-                font-size: 12px;
-            }
-
-            .output {
-                font-size: 11px;
-                line-height: 1.4;
-            }
-
-            .form-container {
-                padding: 10px;
-            }
-
-            .form-row {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .form-group {
-                width: 100%;
-            }
-
-            .form-group input,
-            .form-group select,
-            .form-group textarea {
-                width: 100% !important;
-                max-width: none !important;
-            }
-
-            #welcomeImage {
-                text-align: center !important;
-            }
-
-            #welcomeImage img {
-                max-width: 100% !important;
-                max-height: 40vh !important;
-            }
-
-            .btn, .edit-btn {
-                padding: 8px 12px;
-                font-size: 11px;
-            }
-
-            /* Adjust status bar for mobile */
-            .status-bar {
-                font-size: 10px;
-                padding: 8px;
-            }
-
-            /* Stack menu items in groups for better mobile UX */
-            .menu-panel {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 5px;
-            }
-
-            .menu-item {
-                flex: 0 0 calc(50% - 5px);
-                text-align: center;
+        /* Amar Tools in the look of the Amar RPG site: leather header, vellum page,
+           generator output on a dark leather slate where the terminal colours belong */
+        @font-face { font-family: "Garamond"; src: url(static/fonts/garamond.woff2) format("woff2"); font-display: swap; }
+        @font-face { font-family: "Garamond"; src: url(static/fonts/garamond-italic.woff2) format("woff2"); font-style: italic; font-display: swap; }
+        @font-face { font-family: "Garamond"; src: url(static/fonts/garamond-bold.woff2) format("woff2"); font-weight: 700; font-display: swap; }
+        @font-face { font-family: "Libertine Display"; src: url(static/fonts/libertine-display.woff2) format("woff2"); font-display: swap; }
+
+        :root {
+            --vellum: #E8D5AE; --vellum-2: #F0E2C3; --ink: #2B1D12; --ink-soft: #5E4731;
+            --oxblood: #7D4733; --gold: #B58A3C; --rubric: #8A2A17; --leather: #2E1F14;
+            --rule: #C2A574; --slate: #241911;
+            --display: "Libertine Display", "Linux Libertine Display O", Georgia, serif;
+            --mono: "DejaVu Sans Mono", ui-monospace, Menlo, Consolas, monospace;
+            color-scheme: light;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --vellum: #1D1510; --vellum-2: #281D16; --ink: #EADCBF; --ink-soft: #BCA583;
+                --oxblood: #DDA06B; --gold: #C9A04E; --rubric: #E47C58; --leather: #110B07;
+                --rule: #5C4631; --slate: #130D09; color-scheme: dark;
             }
         }
-
-        @media (max-width: 480px) {
-            .title {
-                font-size: 12px;
-            }
-
-            .menu-item {
-                flex: 0 0 calc(33.333% - 5px);
-                padding: 6px;
-                font-size: 11px;
-            }
-
-            #welcomeImage img {
-                max-height: 30vh !important;
-            }
-
-            .output {
-                font-size: 10px;
-            }
+        :root[data-theme="dark"] {
+            --vellum: #1D1510; --vellum-2: #281D16; --ink: #EADCBF; --ink-soft: #BCA583;
+            --oxblood: #DDA06B; --gold: #C9A04E; --rubric: #E47C58; --leather: #110B07;
+            --rule: #5C4631; --slate: #130D09; color-scheme: dark;
         }
 
-        /* Touch-friendly adjustments */
-        @media (pointer: coarse) {
-            .menu-item {
-                min-height: 44px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+        * { box-sizing: border-box; }
+        html { background: var(--vellum); color: var(--ink);
+            font: 400 clamp(1.02rem, 0.96rem + 0.25vw, 1.15rem)/1.5 Garamond, "EB Garamond", Georgia, serif; }
+        body { margin: 0; }
+        a { color: var(--oxblood); text-underline-offset: 0.16em; }
+        a:hover { color: var(--rubric); }
+        :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+        .hidden { display: none !important; }
 
-            .btn, .edit-btn {
-                min-height: 44px;
-            }
+        /* header: the leather spine of the site */
+        .bar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 1.1rem;
+            height: 3.3rem; padding: 0 max(1.2rem, calc((100vw - 76rem) / 2)); background: var(--leather);
+            border-bottom: 2px solid var(--gold); }
+        .mark { font: 1.3rem var(--display); letter-spacing: 0.34em; text-transform: uppercase; color: #E3BE72;
+            text-decoration: none; padding-left: 0.3em; }
+        .mark:hover { color: #F4D48E; }
+        .bar-title { font: 1.15rem var(--display); color: #CDB58D; }
+        .bar-links { margin-left: auto; }
+        .bar-links a { color: #E3BE72; font-size: 0.95rem; text-decoration: none; }
+        .bar-links a:hover { text-decoration: underline; }
+        .mode { background: none; border: 0; padding: 0.25rem; cursor: pointer; color: #E3BE72; line-height: 0; }
+        .mode svg { width: 1.25rem; height: 1.25rem; }
+        .mode .sun { display: none; }
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) .mode .sun { display: block; }
+            :root:not([data-theme="light"]) .mode .moon { display: none; }
+        }
+        :root[data-theme="dark"] .mode .sun { display: block; }
+        :root[data-theme="dark"] .mode .moon { display: none; }
+        .hamburger-menu { display: none; background: none; border: 0; color: #E3BE72; font: inherit;
+            font-size: 0.95rem; cursor: pointer; padding: 0.3rem 0; }
 
-            input, select, textarea {
-                min-height: 44px;
-                font-size: 16px; /* Prevents zoom on iOS */
-            }
+        /* menu and work area */
+        .container { display: grid; grid-template-columns: 14.5rem minmax(0, 1fr); gap: 3rem;
+            max-width: 76rem; margin: 0 auto; padding: 0 1.2rem 3rem; }
+        .menu-panel { position: sticky; top: 3.3rem; align-self: start; padding: 1.5rem 0.5rem 1rem 0;
+            font-size: 0.93rem; line-height: 1.3; }
+        .menu-item { display: block; padding: 0.2rem 0 0.2rem 0.7rem; color: var(--ink-soft); cursor: pointer;
+            border-left: 2px solid transparent; user-select: none; }
+        .menu-item:hover:not(.separator) { color: var(--ink); border-left-color: var(--rule); }
+        .menu-item.selected { color: var(--ink); border-left-color: var(--gold); font-weight: 700; }
+        .menu-panel:not(.focused) .menu-item.selected { font-weight: 400; }
+        .menu-item.separator { font: 1.02rem var(--display); color: var(--oxblood); cursor: default;
+            padding: 1rem 0 0.25rem; border: 0; }
+        .menu-item.separator:first-child { padding-top: 0; }
+
+        .content-panel { min-width: 0; padding: 1.6rem 0 1rem; }
+        .content-panel h1 { font: clamp(2rem, 1.6rem + 1.6vw, 2.8rem)/1.1 var(--display); margin: 0 0 1rem; }
+        .content-panel h1::after { content: ""; display: block; width: 3.5rem; height: 2px; margin-top: 0.55rem; background: var(--gold); }
+
+        /* forms */
+        .form-container { margin: 0 0 1.4rem; }
+        .form-container h3 { font: 1.6rem var(--display); color: var(--oxblood); margin: 0 0 0.8rem; }
+        .form-row { display: flex; flex-wrap: wrap; gap: 0.8rem 1.2rem; margin-bottom: 0.8rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.2rem; }
+        .form-group label { font-size: 0.88rem; font-style: italic; color: var(--ink-soft); }
+        input, select, textarea { font: inherit; font-size: 0.95rem; color: var(--ink); background: var(--vellum-2);
+            border: 1px solid var(--rule); border-radius: 3px; padding: 0.3rem 0.45rem; min-width: 4.5rem; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--oxblood);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--gold) 45%, transparent); }
+        .btn, .edit-btn { font: inherit; cursor: pointer; border-radius: 3px; line-height: 1.25; }
+        .btn { background: var(--oxblood); color: var(--vellum); border: 1.5px solid var(--oxblood);
+            padding: 0.45rem 1.1rem; margin-top: 0.3rem; }
+        .btn:hover { background: var(--rubric); border-color: var(--rubric); }
+        .btn:disabled { opacity: 0.5; cursor: default; }
+
+        /* generator output: the dark leather slate */
+        .output { background: var(--slate); color: #E6D6B6; border-top: 2px solid var(--gold);
+            padding: 1rem 1.2rem; font: 0.8rem/1.4 var(--mono); white-space: pre-wrap; overflow-x: auto;
+            border-radius: 0 0 3px 3px; filter: saturate(0.72); }
+        .output .output { padding: 0; border: 0; background: none; filter: none; white-space: pre; margin-top: 0.6rem; }
+        /* the terminal's dark colours, lightened for the slate */
+        .output span[style*="#008000"] { color: #7CC27C !important; }
+        .output span[style*="#870000"] { color: #E0806A !important; }
+        .output span[style*="#800080"] { color: #C58FD8 !important; }
+        .output span[style*="#008080"] { color: #6FC2C2 !important; }
+        .output span[style*="#444444"] { color: #8A7E70 !important; }
+        .output a { color: #E3BE72; }
+        .output img { max-width: 100%; height: auto; background: #F0E2C3; border-radius: 2px; }
+        #output:has(> .welcome) { background: none; color: inherit; border: 0; padding: 0; font: inherit;
+            white-space: normal; filter: none; }
+        .welcome p { max-width: 38rem; margin: 0 0 0.85rem; }
+        .welcome a { color: var(--oxblood); }
+        .welcome img { display: block; max-width: 100%; height: auto; margin-top: 1.2rem; border: 1px solid var(--leather); }
+        .fg-14 { color: #00ffff; } .fg-229 { color: #ffffaf; } .fg-15 { color: #ffffff; } .fg-13 { color: #ff00ff; }
+        .fg-7 { color: #c0c0c0; } .fg-10 { color: #00ff00; } .fg-202 { color: #ff5f00; } .bold { font-weight: bold; }
+        .loading { color: #E3BE72; font-style: italic; }
+        .error { color: #F08A6A; font-weight: bold; }
+        .edit-buttons { display: flex; gap: 0.5rem; justify-content: flex-end; }
+        .edit-btn { background: none; color: #E3BE72; border: 1px solid rgba(227, 190, 114, 0.55);
+            padding: 0.25rem 0.8rem; font-size: 0.9rem; font-family: Garamond, Georgia, serif; }
+        .edit-btn:hover { background: rgba(227, 190, 114, 0.12); }
+        .edit-textarea { width: 100%; min-height: 60vh; font: 0.84rem/1.4 var(--mono); }
+
+        .status-bar { grid-column: 2; font-size: 0.88rem; font-style: italic; color: var(--ink-soft); }
+        .foot { border-top: 2px solid var(--gold); background: var(--leather); color: #CDB58D;
+            padding: 1.3rem max(1.2rem, calc((100vw - 76rem) / 2)); font-size: 0.9rem; }
+        .foot p { margin: 0 0 0.4rem; }
+        .foot a { color: #E3BE72; margin-right: 1.4rem; }
+
+        /* phones: the menu folds away behind the Menu button */
+        @media (max-width: 52rem) {
+            .container { display: block; }
+            .hamburger-menu { display: block; }
+            .bar-links { display: none; }
+            .mode { margin-left: auto; }
+            .menu-panel { display: none; position: static; padding: 0.6rem 0 1.2rem; columns: 2 8rem;
+                column-gap: 1.2rem; border-bottom: 2px solid var(--gold); font-size: 0.9rem; }
+            .menu-panel.open { display: block; }
+            .menu-item.separator { break-after: avoid; }
+            .content-panel { padding-top: 1.1rem; }
+            .output { margin: 0 -1.2rem; border-radius: 0; font-size: 0.74rem; }
+            #output:has(> .welcome) { margin: 0; }
+            .form-group input, .form-group select { max-width: 100%; }
         }
     </style>
 </head>
 <body>
-    <!-- Hamburger Menu for Mobile -->
-    <button class="hamburger-menu" id="hamburgerMenu" onclick="toggleMobileMenu()">
-        ☰
-    </button>
-    <div class="mobile-menu-dropdown" id="mobileMenuDropdown">
-        <div class="menu-item" data-action="npc" onclick="handleMobileMenuClick('npc')">Generate NPC</div>
-        <div class="menu-item" data-action="encounter" onclick="handleMobileMenuClick('encounter')">Generate Encounter</div>
-        <div class="menu-item" data-action="monster" onclick="handleMobileMenuClick('monster')">Generate Monster</div>
-        <div class="menu-item" style="color: #42A5A5; font-weight: bold; background: rgba(66,165,165,0.1);">WORLD BUILDING</div>
-        <div class="menu-item" data-action="town" onclick="handleMobileMenuClick('town')">Town/City Generator</div>
-        <div class="menu-item" data-action="weather" onclick="handleMobileMenuClick('weather')">Weather Generator</div>
-        <div class="menu-item" data-action="names" onclick="handleMobileMenuClick('names')">Name Generator</div>
-        <div class="menu-item" style="color: #855A85; font-weight: bold; background: rgba(133,90,133,0.1);">UTILITIES</div>
-        <div class="menu-item" data-action="roll" onclick="handleMobileMenuClick('roll')">Roll Open Ended d6</div>
-        <div class="menu-item" data-action="help" onclick="handleMobileMenuClick('help')">Help</div>
-    </div>
+    <header class="bar">
+        <a class="mark" href="https://d6gaming.org/">Amar</a>
+        <span class="bar-title">Tools</span>
+        <nav class="bar-links"><a href="https://d6gaming.org/">Rules and world</a></nav>
+        <button class="mode" type="button" onclick="toggleMode()" aria-label="Switch between light and dark pages" title="Light or dark"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg></button>
+        <button class="hamburger-menu" id="hamburgerMenu" type="button" onclick="toggleMobileMenu()">Menu</button>
+    </header>
 
     <div class="container">
-        <div class="header">
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <div class="title"><a href="https://d6gaming.org/" target="_blank" style="color: #00ffff; text-decoration: none;">AMAR RPG</a> TOOLS</div>
-                <button id="themeToggle" onclick="toggleTheme()" style="background: #333; color: #00ffff; border: 1px solid #555; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 12px;">
-                    <span id="themeToggleText">🎨 Modern UI</span>
-                </button>
-            </div>
-        </div>
 
-        <div class="menu-panel focused" id="menuPanel">
-            <div class="menu-item separator" style="color: #2AA52A; text-align: left;">NEW 3-TIER SYSTEM</div>
+<div class="menu-panel focused" id="menuPanel">
+            <div class="menu-item separator">People and monsters</div>
             <div class="menu-item" data-action="npc">Generate NPC</div>
             <div class="menu-item" data-action="encounter">Generate Encounter</div>
             <div class="menu-item" data-action="monster">Generate Monster</div>
-            <div class="menu-item separator" style="color: #42A5A5; text-align: left;">WORLD BUILDING</div>
+            <div class="menu-item separator">World building</div>
             <div class="menu-item" data-action="town">Town/City Generator</div>
             <div class="menu-item" data-action="weather">Weather Generator</div>
             <div class="menu-item" data-action="names">Name Generator</div>
-            <div class="menu-item separator" style="color: #855A85; text-align: left;">UTILITIES</div>
+            <div class="menu-item separator">Dice and help</div>
             <div class="menu-item" data-action="roll">Roll Open Ended d6</div>
             <div class="menu-item" data-action="help">Help</div>
         </div>
 
         <div class="content-panel" id="contentPanel">
-            <div class="output" id="output">Welcome to the <a href="https://d6gaming.org/" target="_blank" style="color: #00ffff;">Amar RPG</a> Tools! Select an option from the menu to get started.
-
-This web interface provides the exact same functionality as the <a href="https://github.com/isene/Amar-Tools" target="_blank" style="color: #00ffff;">terminal version</a>.
-<span id="geekUIText">To have a whiff of how the terminal version looks like, try the Geek UI.</span>
-
-<div id="welcomeImage" style="margin-top: 20px;">
-    <img src="/static/amar0.jpg" alt="AMAR RPG" style="max-width: 90%; max-height: 60vh; object-fit: contain; opacity: 0.9;">
-</div>
-            </div>
+            <div class="output" id="output"><div class="welcome">
+<h1>Amar Tools</h1>
+<p>Generators for the <a href="https://d6gaming.org/">Amar RPG</a>: people and monsters with full 3-tier stats, encounters, towns with their inhabitants, weather and names. Pick one in the menu.</p>
+<p>The same tools run in a terminal too: see <a href="https://github.com/isene/Amar-Tools">Amar Tools on GitHub</a>.</p>
+<p>On a keyboard, the arrow keys or j and k move in the menu, Enter picks, Tab jumps to the form and Escape goes back.</p>
+<img src="static/amar0.jpg" alt="Map of the Kingdom of Amar" width="1200">
+</div></div>
 
             <!-- NPC Generation Form -->
             <div class="form-container hidden" id="npcForm">
-                <h3 style="color: #00ffff; margin: 0 0 8px 0; font-size: 14px;">Generate NPC</h3>
+                <h3>Generate NPC</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="npcName">Name:</label>
@@ -1040,12 +318,11 @@ This web interface provides the exact same functionality as the <a href="https:/
                         <input type="text" id="npcDescription" placeholder="Auto" style="width: 150px;">
                     </div>
                 </div>
-                <button class="btn" onclick="generateNPC()" style="margin: 8px 0 0 5px; display: block;">Generate NPC</button>
-            </div>
+                <button class="btn" onclick="generateNPC()" style="margin: 8px 0 0 5px; display: block;">Generate NPC</button></div>
 
             <!-- Weather Generation Form -->
             <div class="form-container hidden" id="weatherForm">
-                <h3 style="color: #00ffff; margin: 0 0 8px 0; font-size: 14px;">Weather Generator</h3>
+                <h3>Weather Generator</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="weatherMonth">Month:</label>
@@ -1105,12 +382,11 @@ This web interface provides the exact same functionality as the <a href="https:/
                         </select>
                     </div>
                 </div>
-                <button class="btn" onclick="generateWeather()" style="margin: 8px 0 0 5px; display: block;">Generate Weather</button>
-            </div>
+                <button class="btn" onclick="generateWeather()" style="margin: 8px 0 0 5px; display: block;">Generate Weather</button></div>
 
             <!-- Name Generation Form -->
             <div class="form-container hidden" id="namesForm">
-                <h3 style="color: #00ffff; margin: 0 0 8px 0; font-size: 14px;">Name Generator</h3>
+                <h3>Name Generator</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="nameType">Type:</label>
@@ -1141,12 +417,11 @@ This web interface provides the exact same functionality as the <a href="https:/
                         </select>
                     </div>
                 </div>
-                <button class="btn" onclick="generateNames()" style="margin: 8px 0 0 5px; display: block;">Generate Names</button>
-            </div>
+                <button class="btn" onclick="generateNames()" style="margin: 8px 0 0 5px; display: block;">Generate Names</button></div>
 
             <!-- Town Generation Form -->
             <div class="form-container hidden" id="townForm">
-                <h3 style="color: #00ffff; margin: 0 0 8px 0; font-size: 16px;">Town/City Generator</h3>
+                <h3>Town/City Generator</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="townName">Name:</label>
@@ -1169,12 +444,11 @@ This web interface provides the exact same functionality as the <a href="https:/
                         </select>
                     </div>
                 </div>
-                <button class="btn" onclick="generateTown()" style="margin: 8px 0 0 5px; display: block;">Generate Town</button>
-            </div>
+                <button class="btn" onclick="generateTown()" style="margin: 8px 0 0 5px; display: block;">Generate Town</button></div>
 
             <!-- Encounter Generation Form -->
             <div class="form-container hidden" id="encounterForm">
-                <h3 style="color: #00ffff; margin: 0 0 8px 0; font-size: 16px;">Generate Encounter</h3>
+                <h3>Generate Encounter</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="encTime">Time:</label>
@@ -1303,12 +577,11 @@ This web interface provides the exact same functionality as the <a href="https:/
                         <input type="number" id="encNumber" min="0" max="20" value="0" placeholder="Random" style="width: 80px;">
                     </div>
                 </div>
-                <button class="btn" onclick="generateEncounter()" style="margin: 8px 0 0 5px; display: block;">Generate Encounter</button>
-            </div>
+                <button class="btn" onclick="generateEncounter()" style="margin: 8px 0 0 5px; display: block;">Generate Encounter</button></div>
 
             <!-- Monster Generation Form -->
             <div class="form-container hidden" id="monsterForm">
-                <h3 style="color: #00ffff; margin: 0 0 8px 0; font-size: 16px;">Generate Monster</h3>
+                <h3>Generate Monster</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="monsterType">Type:</label>
@@ -1334,19 +607,18 @@ This web interface provides the exact same functionality as the <a href="https:/
                         </select>
                     </div>
                 </div>
-                <button class="btn" onclick="generateMonster()" style="margin: 8px 0 0 5px; display: block;">Generate Monster</button>
-            </div>
+                <button class="btn" onclick="generateMonster()" style="margin: 8px 0 0 5px; display: block;">Generate Monster</button></div>
 
             </div>
-        </div>
 
-        <div class="status-bar" id="statusBar">
-            <span>AMAR RPG Tools v2.0</span> |
-            <a href="https://d6gaming.org/" target="_blank" style="color: #f4f1e8 !important; text-decoration: underline;">Visit AMAR RPG Wiki at d6gaming.org</a>
-        </div>
+        <div class="status-bar" id="statusBar">Pick a generator in the menu.</div>
     </div>
 
-    <script>
+    <footer class="foot">
+        <p>Amar Tools 2.0, for the Amar RPG by Geir Isene (Isy Allon) with Bent Brakas (Ben Brakas) and Jonatan Isene.</p>
+        <p><a href="https://d6gaming.org/">The Amar RPG</a> <a href="https://github.com/isene/Amar-Tools">Amar Tools on GitHub</a></p>
+    </footer>
+<script>
         let selectedMenuItem = 0;
         let currentFocus = 'menu';
         let lastEncounterOutput = null;  // Store the last encounter output
@@ -1696,7 +968,7 @@ This feature exists in the TUI version and will be ported to the web interface s
             });
 
             try {
-                const response = await fetch('/api/roll', {
+                const response = await fetch('api/roll', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1755,7 +1027,7 @@ Failed to connect to server: ${error.message}
             });
 
             try {
-                const response = await fetch('/api/encounter', {
+                const response = await fetch('api/encounter', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1772,13 +1044,7 @@ Failed to connect to server: ${error.message}
 
                     // Make encounter NPCs clickable for detailed view
                     const clickableOutput = makeEncountersClickable(result.output);
-                    output.innerHTML = `
-                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
-                            <button class="edit-btn" onclick="editOutput('encounter', currentEditContent)">Edit Encounter</button>
-                            <button class="edit-btn" onclick="downloadOutput('encounter', currentEditContent)">Download</button>
-                        </div>
-                        <div class="output">${clickableOutput}</div>
-                    `;
+                    output.innerHTML = `<div class="edit-buttons"><button class="edit-btn" onclick="editOutput('encounter', currentEditContent)">Edit Encounter</button><button class="edit-btn" onclick="downloadOutput('encounter', currentEditContent)">Download</button></div><div class="output">${clickableOutput}</div>`;
                     updateStatus('Encounter generated successfully - Click names for details, Edit or Download');
                 } else {
                     output.innerHTML = `<div class="error">Error generating encounter</div>
@@ -1818,7 +1084,7 @@ Failed to connect to server: ${error.message}
             });
 
             try {
-                const response = await fetch('/api/monster', {
+                const response = await fetch('api/monster', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1830,13 +1096,7 @@ Failed to connect to server: ${error.message}
 
                 if (result.success) {
                     currentEditContent = result.output;
-                    output.innerHTML = `
-                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
-                            <button class="edit-btn" onclick="editOutput('monster', currentEditContent)">Edit Monster</button>
-                            <button class="edit-btn" onclick="downloadOutput('monster', currentEditContent)">Download</button>
-                        </div>
-                        <div class="output">${result.output}</div>
-                    `;
+                    output.innerHTML = `<div class="edit-buttons"><button class="edit-btn" onclick="editOutput('monster', currentEditContent)">Edit Monster</button><button class="edit-btn" onclick="downloadOutput('monster', currentEditContent)">Download</button></div><div class="output">${result.output}</div>`;
                     updateStatus('Monster generated successfully - Edit or Download available');
                 } else {
                     output.innerHTML = `<div class="error">Error generating monster</div>
@@ -1871,8 +1131,7 @@ Failed to connect to server: ${error.message}
             const houseCount = params.town_size;
 
             if (houseCount > 5) {
-                output.innerHTML = `
-                    <div class="loading">Generating town with ${houseCount} houses...</div>
+                output.innerHTML = `<div class="loading">Generating town with ${houseCount} houses...</div>
                     <div class="progress-container">
                         <div class="progress-bar" id="townProgressBar">
                             <div class="progress-text" id="townProgressText">0%</div>
@@ -1893,7 +1152,7 @@ Failed to connect to server: ${error.message}
             });
 
             try {
-                const response = await fetch('/api/town', {
+                const response = await fetch('api/town', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1941,12 +1200,7 @@ Failed to connect to server: ${error.message}
                         setTimeout(() => generateTownRelationships(), 500);
                     }
 
-                    output.innerHTML = `
-                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
-                            <button class="edit-btn" onclick="editOutput('town', currentEditContent)">Edit Town</button>
-                            <button class="edit-btn" onclick="downloadOutput('town', currentEditContent)">Download</button>
-                        </div>
-                        <div class="output">${result.output}</div>
+                    output.innerHTML = `<div class="edit-buttons"><button class="edit-btn" onclick="editOutput('town', currentEditContent)">Edit Town</button><button class="edit-btn" onclick="downloadOutput('town', currentEditContent)">Download</button></div><div class="output">${result.output}</div>
                         ${relationshipSection}
                     `;
                     updateStatus('Town generated successfully - Edit or Download available');
@@ -1990,7 +1244,7 @@ Failed to connect to server: ${error.message}
             });
 
             try {
-                const response = await fetch('/api/weather', {
+                const response = await fetch('api/weather', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2002,14 +1256,7 @@ Failed to connect to server: ${error.message}
 
                 if (result.success) {
                     currentEditContent = result.output;
-                    output.innerHTML = `
-                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
-                            <button class="edit-btn" onclick="editOutput('weather', currentEditContent)">Edit Weather</button>
-                            <button class="edit-btn" onclick="generateWeatherPDF()">Generate PDF</button>
-                            <button class="edit-btn" onclick="downloadOutput('weather', currentEditContent)">Download</button>
-                        </div>
-                        <div class="output">${result.output}</div>
-                    `;
+                    output.innerHTML = `<div class="edit-buttons"><button class="edit-btn" onclick="editOutput('weather', currentEditContent)">Edit Weather</button><button class="edit-btn" onclick="generateWeatherPDF()">Generate PDF</button><button class="edit-btn" onclick="downloadOutput('weather', currentEditContent)">Download</button></div><div class="output">${result.output}</div>`;
                     updateStatus('Weather generated successfully - Edit, Generate PDF, or Download available');
                 } else {
                     output.innerHTML = `<div class="error">Error generating weather</div>
@@ -2049,7 +1296,7 @@ Failed to connect to server: ${error.message}
             });
 
             try {
-                const response = await fetch('/api/names', {
+                const response = await fetch('api/names', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2060,8 +1307,7 @@ Failed to connect to server: ${error.message}
                 const result = await response.json();
 
                 if (result.success) {
-                    output.innerHTML = `<div class="output">${result.output}</div>
-`;
+                    output.innerHTML = `<div class="output">${result.output}</div>`;
                     updateStatus('Names generated successfully | ESC to return to menu');
                 } else {
                     output.innerHTML = `<div class="error">Error generating names</div>
@@ -2093,7 +1339,6 @@ Failed to connect to server: ${error.message}
 • Click menu options to access generators
 • Tab to switch between menu and content panels
 • ESC to return to main menu from any form
-• 🎨 Theme toggle in header switches between Geek/Fantasy modes
 
 <div style="color: #ffff00; margin: 15px 0;">Revolutionary 3-Tier System Features:</div>
 • <span style="color: #228b22;">Generate NPC</span> - Enhanced characters with weapon assignment
@@ -2171,7 +1416,7 @@ Thank you for using Amar RPG Tools!
             });
 
             try {
-                const response = await fetch('/api/npc_old', {
+                const response = await fetch('api/npc_old', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2183,11 +1428,8 @@ Thank you for using Amar RPG Tools!
 
                 if (result.success) {
                     currentEditContent = result.output;
-                    output.innerHTML = `
-                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
-                        </div>
-                        <div class="output">${result.output}</div>
-                    `;
+                    output.innerHTML = `<div class="edit-buttons">
+                        </div><div class="output">${result.output}</div>`;
                     updateStatus('Legacy NPC generated - Edit or Download available');
                 } else {
                     output.innerHTML = `<div class="error">Error generating old NPC: ${result.error}</div>`;
@@ -2220,7 +1462,7 @@ Thank you for using Amar RPG Tools!
             });
 
             try {
-                const response = await fetch('/api/encounter_old', {
+                const response = await fetch('api/encounter_old', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2232,11 +1474,8 @@ Thank you for using Amar RPG Tools!
 
                 if (result.success) {
                     currentEditContent = result.output;
-                    output.innerHTML = `
-                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
-                        </div>
-                        <div class="output">${result.output}</div>
-                    `;
+                    output.innerHTML = `<div class="edit-buttons">
+                        </div><div class="output">${result.output}</div>`;
                     updateStatus('Legacy encounter generated - Edit or Download available');
                 } else {
                     output.innerHTML = `<div class="error">Error generating old encounter: ${result.error}</div>`;
@@ -2253,71 +1492,24 @@ Thank you for using Amar RPG Tools!
         }
 
         function toggleMobileMenu() {
-            const dropdown = document.getElementById('mobileMenuDropdown');
-            dropdown.classList.toggle('active');
+            document.getElementById('menuPanel').classList.toggle('open');
         }
 
-        function handleMobileMenuClick(action) {
-            // Close the dropdown
-            document.getElementById('mobileMenuDropdown').classList.remove('active');
-
-            // Find the corresponding menu item and trigger its click event
-            const menuItems = document.querySelectorAll('#menuPanel .menu-item');
-            menuItems.forEach(item => {
-                if (item.dataset.action === action) {
-                    item.click();
-                }
-            });
-        }
-
-        // Close dropdown when clicking outside
+        // On a phone, the menu folds away again once a tool is picked
         document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('mobileMenuDropdown');
-            const hamburger = document.getElementById('hamburgerMenu');
-
-            if (!dropdown.contains(event.target) && event.target !== hamburger) {
-                dropdown.classList.remove('active');
+            const menu = document.getElementById('menuPanel');
+            if (event.target.id === 'hamburgerMenu') return;
+            if (!menu.contains(event.target) || event.target.classList.contains('menu-item') && !event.target.classList.contains('separator')) {
+                menu.classList.remove('open');
             }
         });
 
-        function toggleTheme() {
-            const body = document.body;
-            const toggleButton = document.getElementById('themeToggleText');
-            const geekUIText = document.getElementById('geekUIText');
-
-            if (body.classList.contains('modern-theme')) {
-                // Switch back to authentic geek mode
-                body.classList.remove('modern-theme');
-                toggleButton.textContent = '🎨 Modern UI';
-                localStorage.setItem('amarTheme', 'geek');
-                if (geekUIText) {
-                    geekUIText.innerHTML = 'You can get the TUI version as a Ruby gem. Just hop on over to the <a href="https://github.com/isene/Amar-Tools" target="_blank" style="color: #00ffff;">github repo</a>.';
-                }
-            } else {
-                // Switch to modern fancy mode
-                body.classList.add('modern-theme');
-                toggleButton.textContent = '🖥️ Geek UI';
-                localStorage.setItem('amarTheme', 'modern');
-                if (geekUIText) {
-                    geekUIText.textContent = 'To have a whiff of how the terminal version looks like, try the Geek UI.';
-                }
-            }
+        // The light/dark switch, shared with the Amar RPG site
+        function toggleMode() {
+            const dark = getComputedStyle(document.documentElement).colorScheme.includes('dark');
+            document.documentElement.dataset.theme = dark ? 'light' : 'dark';
+            try { localStorage.setItem('theme', dark ? 'light' : 'dark'); } catch (e) {}
         }
-
-        // Load saved theme preference on page load - DEFAULT TO MODERN
-        window.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('amarTheme') || 'modern'; // Default to modern
-            const geekUIText = document.getElementById('geekUIText');
-            if (savedTheme === 'modern') {
-                document.body.classList.add('modern-theme');
-                document.getElementById('themeToggleText').textContent = '🖥️ Geek UI';
-                if (geekUIText) {
-                    geekUIText.textContent = 'To have a whiff of how the terminal version looks like, try the Geek UI.';
-                }
-            } else if (savedTheme === 'geek' && geekUIText) {
-                geekUIText.innerHTML = 'You can get the TUI version as a Ruby gem. Just hop on over to the <a href="https://github.com/isene/Amar-Tools" target="_blank" style="color: #00ffff;">github repo</a>.';
-            }
-        });
 
         async function generateNPC() {
             const params = {
@@ -2344,7 +1536,7 @@ Thank you for using Amar RPG Tools!
             document.getElementById('npcForm').classList.add('hidden');
 
             try {
-                const response = await fetch('/api/npc', {
+                const response = await fetch('api/npc', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2357,13 +1549,7 @@ Thank you for using Amar RPG Tools!
                 if (result.success) {
                     // Store content and add top-positioned edit+download buttons
                     currentEditContent = result.output;
-                    output.innerHTML = `
-                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
-                            <button class="edit-btn" onclick="editOutput('npc', currentEditContent)">Edit NPC</button>
-                            <button class="edit-btn" onclick="downloadOutput('npc', currentEditContent)">Download</button>
-                        </div>
-                        <div class="output" id="npc-output">${result.output}</div>
-                    `;
+                    output.innerHTML = `<div class="edit-buttons"><button class="edit-btn" onclick="editOutput('npc', currentEditContent)">Edit NPC</button><button class="edit-btn" onclick="downloadOutput('npc', currentEditContent)">Download</button></div><div class="output" id="npc-output">${result.output}</div>`;
                     updateStatus('NPC generated successfully - Edit or Download available');
                 } else {
                     output.innerHTML = `<div class="error">Error generating NPC</div>
@@ -2465,7 +1651,7 @@ Failed to connect to server: ${error.message}
                     age: parseInt(age)
                 };
 
-                const response = await fetch('/api/encounter_npc/0', {
+                const response = await fetch('api/encounter_npc/0', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2477,10 +1663,8 @@ Failed to connect to server: ${error.message}
 
                 if (result.success) {
                     // Add a back button to return to encounter - positioned left like Generate buttons
-                    output.innerHTML = `
-                        <button class="btn" onclick="goBackToEncounter()" style="margin: 0 0 10px 0; display: block;">← Back to Encounter</button>
-                        <div class="output">${result.output}</div>
-                    `;
+                    output.innerHTML = `<button class="btn" onclick="goBackToEncounter()" style="margin: 0 0 10px 0; display: block;">← Back to Encounter</button>
+                        <div class="output">${result.output}</div>`;
                     updateStatus('Detailed NPC view loaded');
                 } else {
                     output.innerHTML = `<div class="error">Error loading detailed view: ${result.error}</div>`;
@@ -2498,10 +1682,8 @@ Failed to connect to server: ${error.message}
                 currentEditContent = lastEncounterOutput;
                 const output = document.getElementById('output');
                 const clickableOutput = makeEncountersClickable(lastEncounterOutput);
-                output.innerHTML = `
-                    <button class="edit-btn" onclick="editOutput('encounter', currentEditContent)" style="margin: 0 0 10px 0;">Edit Encounter</button>
-                    <div class="output">${clickableOutput}</div>
-                `;
+                output.innerHTML = `<button class="edit-btn" onclick="editOutput('encounter', currentEditContent)" style="margin: 0 0 10px 0;">Edit Encounter</button>
+                    <div class="output">${clickableOutput}</div>`;
                 updateStatus('Encounter list restored - Click character names for details');
             } else {
                 // Fallback if no stored encounter (shouldn't happen)
@@ -2564,12 +1746,8 @@ Failed to connect to server: ${error.message}
             const plainText = content.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 
             const output = document.getElementById('output');
-            output.innerHTML = `
-                <div class="edit-container">
-                    <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
-                        <button class="edit-btn" onclick="saveEdit('${type}')">Save Changes</button>
-                        <button class="edit-btn" onclick="cancelEdit('${type}')">Cancel</button>
-                    </div>
+            output.innerHTML = `<div class="edit-container">
+                    <div class="edit-buttons"><button class="edit-btn" onclick="saveEdit('${type}')">Save Changes</button><button class="edit-btn" onclick="cancelEdit('${type}')">Cancel</button></div>
                     <textarea class="edit-textarea" id="edit-content">${plainText}</textarea>
                 </div>
             `;
@@ -2589,25 +1767,13 @@ Failed to connect to server: ${error.message}
             currentEditContent = htmlContent;
 
             const output = document.getElementById('output');
-            output.innerHTML = `
-                <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
-                    <button class="edit-btn" onclick="editOutput('${type}', currentEditContent)">Edit ${type.charAt(0).toUpperCase() + type.slice(1)}</button>
-                    <button class="edit-btn" onclick="downloadOutput('${type}', currentEditContent)">Download</button>
-                </div>
-                <div class="output">${htmlContent}</div>
-            `;
+            output.innerHTML = `<div class="edit-buttons"><button class="edit-btn" onclick="editOutput('${type}', currentEditContent)">Edit ${type.charAt(0).toUpperCase() + type.slice(1)}</button><button class="edit-btn" onclick="downloadOutput('${type}', currentEditContent)">Download</button></div><div class="output">${htmlContent}</div>`;
             updateStatus(`${type.charAt(0).toUpperCase() + type.slice(1)} edited and saved`);
         }
 
         function cancelEdit(type) {
             const output = document.getElementById('output');
-            output.innerHTML = `
-                <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
-                    <button class="edit-btn" onclick="editOutput('${type}', currentEditContent)">Edit ${type.charAt(0).toUpperCase() + type.slice(1)}</button>
-                    <button class="edit-btn" onclick="downloadOutput('${type}', currentEditContent)">Download</button>
-                </div>
-                <div class="output">${currentEditContent}</div>
-            `;
+            output.innerHTML = `<div class="edit-buttons"><button class="edit-btn" onclick="editOutput('${type}', currentEditContent)">Edit ${type.charAt(0).toUpperCase() + type.slice(1)}</button><button class="edit-btn" onclick="downloadOutput('${type}', currentEditContent)">Download</button></div><div class="output">${currentEditContent}</div>`;
             updateStatus('Edit cancelled - original content restored');
         }
 
@@ -2638,7 +1804,7 @@ Failed to connect to server: ${error.message}
             console.log('DEBUG: Town data:', currentEditContent);
 
             try {
-                const response = await fetch('/api/town_relationships', {
+                const response = await fetch('api/town_relationships', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2694,7 +1860,7 @@ Failed to connect to server: ${error.message}
             });
 
             try {
-                const response = await fetch('/api/weather_pdf', {
+                const response = await fetch('api/weather_pdf', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2706,14 +1872,7 @@ Failed to connect to server: ${error.message}
 
                 if (result.success) {
                     currentEditContent = result.output;
-                    output.innerHTML = `
-                        <div style="display: flex; justify-content: flex-end; gap: 5px; margin: 0 0 5px 0;">
-                            <button class="edit-btn" onclick="editOutput('weather-pdf', currentEditContent)">Edit PDF Info</button>
-                            <button class="edit-btn" onclick="downloadOutput('weather-pdf', currentEditContent)">Download Info</button>
-                            <button class="edit-btn" onclick="downloadWeatherPDF()">Download PDF</button>
-                        </div>
-                        <div class="output">${result.output}</div>
-                    `;
+                    output.innerHTML = `<div class="edit-buttons"><button class="edit-btn" onclick="editOutput('weather-pdf', currentEditContent)">Edit PDF Info</button><button class="edit-btn" onclick="downloadOutput('weather-pdf', currentEditContent)">Download Info</button><button class="edit-btn" onclick="downloadWeatherPDF()">Download PDF</button></div><div class="output">${result.output}</div>`;
                     updateStatus('Weather PDF generated - Download PDF button available');
                 } else {
                     output.innerHTML = `<div class="error">Error generating weather PDF: ${result.error}</div>`;

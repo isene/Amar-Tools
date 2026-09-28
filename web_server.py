@@ -1506,7 +1506,7 @@ town_dot2txt("{temp_town_file}")
                 except:
                     pass
 
-            return jsonify({'success': True, 'image_url': f'/static/town_relationships_{timestamp}.png'})
+            return jsonify({'success': True, 'image_url': f'static/town_relationships_{timestamp}.png'})
         else:
             print(f"DEBUG: PNG not found")
             return jsonify({'success': False, 'error': f'No PNG generated at {expected_png}'})
@@ -1530,4 +1530,7 @@ if __name__ == '__main__':
     print("Press Ctrl+C to stop")
     print("=" * 60)
 
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    # Listens on this machine only, with the debugger off; a web server in front
+    # (Apache or nginx) passes requests on. AMAR_HOST/AMAR_PORT change that.
+    app.run(debug=False, host=os.environ.get('AMAR_HOST', '127.0.0.1'),
+            port=int(os.environ.get('AMAR_PORT', '5001')))
