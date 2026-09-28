@@ -159,6 +159,8 @@ def convert_ansi_to_css(text):
     return result
 
 app = Flask(__name__)
+# Re-read the page when the file changes, so a git pull deploys it without a restart
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 # Configuration
 RUBY_DIR = os.path.dirname(os.path.abspath(__file__))
