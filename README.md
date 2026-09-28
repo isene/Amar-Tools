@@ -28,7 +28,7 @@ game as the Game Master.
 For more info on the Amar RPG, game rules, adventures and more, see
 http://www.d6gaming.org/.
 
-For an online version of this program, go to https://isene.com/amar3.html
+For an online version of this program, go to https://d6gaming.org/tools/
 
 ## Requirements
 GraphViz is a requirement for generating relationship maps for towns and
