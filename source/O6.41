@@ -43,7 +43,7 @@
 040 CF 05
 041 STOP
 042 GTO 11	; GTO "D6" 
-043 LBL 01  ; We got a 1
+043 LBL 01	; We got a 1
 044 XEQ 00
 045 1
 046 X=Y?
@@ -64,7 +64,7 @@
 061 SF 00
 062 SF 05
 063 RTN 
-064 LBL 06 ; We got a 6
+064 LBL 06	; We got a 6
 065 XEQ 00
 066 6
 067 X=Y?
