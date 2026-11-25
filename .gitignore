@@ -4,3 +4,4 @@ saved/*
 cgi-bin/saved/*
 static/town_relationships_*.png
 __pycache__/
+.claude/
